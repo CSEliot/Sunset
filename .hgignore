@@ -1,0 +1,17 @@
+syntax: glob
+.DS_Store
+*.sln
+*.userprefs
+*.csproj
+*.pidb
+*.unitypackage
+*.suo
+*.unityproj
+*.bin
+ 
+Assets\Notes.txt.meta.orig.meta
+syntax: regexp
+^Library/.*
+^Temp/.*
+^obj/.*
+^Builds/.*
