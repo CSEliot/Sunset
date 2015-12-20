@@ -10,6 +10,8 @@ syntax: glob
 *.bin
  
 Assets\Notes.txt.meta.orig.meta
+Assets\StreamingAssets\build_info.txt
+Assets\StreamingAssets\build_info.txt.meta
 syntax: regexp
 ^Library/.*
 ^Temp/.*
