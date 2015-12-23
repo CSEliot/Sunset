@@ -8,11 +8,18 @@ public class IELdemo : MonoBehaviour
     public Transform[] cubes;
 
     #region CONNECTION HANDLING
+    public int SendRate;
 
     public void Awake()
     {
+        Debug.Log("Setting Send Rate to: " + SendRate);
+        PhotonNetwork.sendRate = SendRate;
+        PhotonNetwork.sendRateOnSerialize = SendRate;
+
         if (!PhotonNetwork.connected)
         {
+            PhotonNetwork.sendRate = SendRate;
+            PhotonNetwork.sendRateOnSerialize = SendRate;
             PhotonNetwork.autoJoinLobby = false;
             PhotonNetwork.ConnectUsingSettings("0.9");
         }
