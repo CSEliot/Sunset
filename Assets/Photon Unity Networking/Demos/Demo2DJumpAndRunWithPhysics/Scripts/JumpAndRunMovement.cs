@@ -9,6 +9,7 @@ public class JumpAndRunMovement : MonoBehaviour
     Animator m_Animator;
     Rigidbody2D m_Body;
     PhotonView m_PhotonView;
+    PhotonTransformView m_TransformView;
 
     bool m_IsGrounded;
 
@@ -17,6 +18,7 @@ public class JumpAndRunMovement : MonoBehaviour
         m_Animator = GetComponent<Animator>();
         m_Body = GetComponent<Rigidbody2D>();
         m_PhotonView = GetComponent<PhotonView>();
+        m_TransformView = GetComponent<PhotonTransformView>();
     }
 
     void Update() 
@@ -35,6 +37,8 @@ public class JumpAndRunMovement : MonoBehaviour
 
         UpdateMovement();
         UpdateJumping();
+        //Synchronious Update
+        m_TransformView.SetSynchronizedValues(m_Body.velocity, 0f);
     }
 
     void UpdateFacingDirection()

@@ -16,6 +16,6 @@ public class DemoRPGMovement : MonoBehaviour
 
         GameObject newPlayerObject = PhotonNetwork.Instantiate( "Robot Kyle RPG", position, Quaternion.identity, 0 );
 
-        Camera.Target = newPlayerObject.transform;
+        Camera.Target = GameObject.FindGameObjectWithTag("MainCamera").transform;//newPlayerObject.transform;
     }
 }
