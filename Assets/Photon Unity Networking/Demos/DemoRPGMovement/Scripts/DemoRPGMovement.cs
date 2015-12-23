@@ -3,7 +3,7 @@ using System.Collections;
 
 public class DemoRPGMovement : MonoBehaviour 
 {
-    public RPGCamera Camera;
+    public Transform Camera;
 
     void OnJoinedRoom()
     {
@@ -16,6 +16,6 @@ public class DemoRPGMovement : MonoBehaviour
 
         GameObject newPlayerObject = PhotonNetwork.Instantiate( "Robot Kyle RPG", position, Quaternion.identity, 0 );
 
-        Camera.Target = GameObject.FindGameObjectWithTag("MainCamera").transform;//newPlayerObject.transform;
+        Camera.SetParent(newPlayerObject.transform);
     }
 }

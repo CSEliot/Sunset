@@ -16,6 +16,14 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
     /// <summary>if we don't want to connect in Start(), we have to "remember" if we called ConnectUsingSettings()</summary>
     private bool ConnectInUpdate = true;
 
+    public int SendRate;
+
+    public void Awake()
+    {
+        Debug.Log("Setting Send Rate to: " + SendRate);
+        PhotonNetwork.sendRate = SendRate;
+        PhotonNetwork.sendRateOnSerialize = SendRate;
+    }
 
     public virtual void Start()
     {

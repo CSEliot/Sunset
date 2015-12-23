@@ -15,12 +15,17 @@ public class RPGMovement : MonoBehaviour
     PhotonView m_PhotonView;
     PhotonTransformView m_TransformView;
 
+    private bool GravitySwitched;
+    private float gravity;
+
     float m_AnimatorSpeed;
     Vector3 m_CurrentMovement;
     float m_CurrentTurnSpeed;
 
     void Start() 
     {
+        GravitySwitched = false;
+        gravity = -9.81f;
         m_CharacterController = GetComponent<CharacterController>();
         m_Animator = GetComponent<Animator>();
         m_PhotonView = GetComponent<PhotonView>();
@@ -41,7 +46,7 @@ public class RPGMovement : MonoBehaviour
 
             MoveCharacterController();
             ApplyGravityToCharacterController();
-
+            SwitchGravity();
             ApplySynchronizedValues();
         }
 
@@ -82,6 +87,19 @@ public class RPGMovement : MonoBehaviour
         m_LastPosition = transform.position;
     }
 
+    private void SwitchGravity()
+    {
+        if(!GravitySwitched && Input.GetKeyDown("space")){
+            gravity *= -1;
+            GravitySwitched = true;
+        }
+        if (GravitySwitched && Input.GetKeyUp("space"))
+        {
+            gravity *= -1;
+            GravitySwitched = false;
+        }
+    }
+
     void ResetSpeedValues()
     {
         m_CurrentMovement = Vector3.zero;
@@ -95,13 +113,14 @@ public class RPGMovement : MonoBehaviour
 
     void ApplyGravityToCharacterController()
     {
-        m_CharacterController.Move( transform.up * Time.deltaTime * -9.81f );
+        m_CharacterController.Move( transform.up * Time.deltaTime * gravity );
     }
 
     void MoveCharacterController()
     {
         m_CharacterController.Move( m_CurrentMovement * Time.deltaTime );
     }
+
 
     void UpdateForwardMovement()
     {
