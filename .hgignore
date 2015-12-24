@@ -12,6 +12,7 @@ syntax: glob
 Assets\Notes.txt.meta.orig.meta
 Assets\StreamingAssets\build_info.txt
 Assets\StreamingAssets\build_info.txt.meta
+Assets/PixelDraw
 syntax: regexp
 ^Library/.*
 ^Temp/.*
