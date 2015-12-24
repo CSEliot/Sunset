@@ -20,7 +20,7 @@ public class PhotonRigidbody2DView : MonoBehaviour
     bool m_SynchronizeVelocity = true;
 
     [SerializeField]
-    bool m_SynchronizeAngularVelocity = true;
+    bool m_SynchronizeAngularVelocity = false;
 
     Rigidbody2D m_Body;
 
