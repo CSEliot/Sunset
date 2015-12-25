@@ -9,6 +9,10 @@ public class GUIController : MonoBehaviour {
     public Text Name2;
 
     public Sprite[] AllSprites;
+
+    public Image StatFrame;
+    public Sprite[] AllStatSprites;
+
     private Master m;
     public string[] CharNames;
 
@@ -46,6 +50,7 @@ public class GUIController : MonoBehaviour {
         RightFrame.sprite = AllSprites[currentSelector + 1];
         Name1.text = CharNames[currentSelector - 1];
         Name2.text = CharNames[currentSelector - 1];
+        StatFrame.sprite = AllStatSprites[currentSelector - 1];
         UpdateStats();
         m.AssignClientCharacter(currentSelector - 1);   
     }
@@ -60,6 +65,7 @@ public class GUIController : MonoBehaviour {
         RightFrame.sprite = AllSprites[currentSelector + 1];
         Name1.text = CharNames[currentSelector - 1];
         Name2.text = CharNames[currentSelector - 1];
+        StatFrame.sprite = AllStatSprites[currentSelector - 1];
         UpdateStats();
         m.AssignClientCharacter(currentSelector-1);
     }
