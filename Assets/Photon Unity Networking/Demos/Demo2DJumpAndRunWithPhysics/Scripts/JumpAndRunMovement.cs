@@ -7,18 +7,23 @@ public class JumpAndRunMovement : MonoBehaviour
     public float JumpForce;
     //public float Gravity;
 
+    public LayerMask mask = -1;
+
     Rigidbody2D m_Body;
     PhotonView m_PhotonView;
     private PhotonTransformView m_PhotonTransform;
 
     private bool m_IsGrounded;
     private int jumpsRemaining;
+    private bool jumped;
     public int TotalJumpsAllowed;
 
-    public Vector2 GroundCheckStartOffset;
-    public Vector2 GroundCheckEndPoint;
+    public float GroundCheckEndPoint;
 
     private Vector2 position;
+
+    public int jumpLag;
+    private int totalJumpFrames;
 
     void Awake() 
     {
@@ -33,6 +38,8 @@ public class JumpAndRunMovement : MonoBehaviour
     {
         UpdateIsGrounded();
         UpdateIsRunning();
+        UpdateMovement();
+        UpdateJumping();
         UpdateFacingDirection();
         m_PhotonTransform.SetSynchronizedValues(m_Body.velocity, 0f);
     }
@@ -44,8 +51,6 @@ public class JumpAndRunMovement : MonoBehaviour
             return;
         }
 
-        UpdateMovement();
-        UpdateJumping();
     }
 
     void UpdateFacingDirection()
@@ -62,12 +67,17 @@ public class JumpAndRunMovement : MonoBehaviour
 
     void UpdateJumping()
     {
-        if( Input.GetKey( KeyCode.Space ) == true && m_IsGrounded == true )
+        if( Input.GetKey( KeyCode.Space ) == true 
+            && jumpsRemaining > 0 && totalJumpFrames < 0)
         {
             m_Body.AddForce( Vector2.up * JumpForce , ForceMode2D.Impulse);
+            jumped = true;
+            jumpsRemaining -= 1;
             m_PhotonView.RPC( "DoJump", PhotonTargets.Others );
             Debug.Log("Jumping!");
+            totalJumpFrames = jumpLag;
         }
+        totalJumpFrames -= 1;
     }
 
     [PunRPC]
@@ -104,15 +114,21 @@ public class JumpAndRunMovement : MonoBehaviour
     {
         Set2DPosition();
 
-        //RaycastHit2D hit = Physics2D.Raycast( position, -Vector2.up, 0.1f, 1 << LayerMask.NameToLayer( "Ground" ) );
-        RaycastHit2D hit = Physics2D.Raycast(position+GroundCheckStartOffset, 
-                                            -Vector2.up+GroundCheckEndPoint, 
-                                            (-Vector2.up.y+GroundCheckEndPoint.y));
-        Debug.DrawLine(position + GroundCheckStartOffset,  position + GroundCheckStartOffset + GroundCheckEndPoint, Color.red, 0.02f);
+        RaycastHit2D hit = 
+            Physics2D.Raycast(position, 
+                              -Vector2.up, 
+                              GroundCheckEndPoint, 
+                              mask.value);
+
+            Debug.DrawLine(position, 
+                           position - Vector2.up*GroundCheckEndPoint, 
+                           Color.red, 
+                           0.02f);
         m_IsGrounded = hit.collider != null;
         if (m_IsGrounded)
         {
             Debug.Log ("Grounded on: " + (hit.collider.name));
+            jumpsRemaining = TotalJumpsAllowed;
         }
     }
 
