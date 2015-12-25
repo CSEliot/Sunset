@@ -38,9 +38,12 @@ public class JumpAndRunMovement : MonoBehaviour
     public float PunchForceForward_Up;
     public float PunchForceDown;
 
+    private bool cameraFollowAssigned;
+
 
     void Awake() 
     {
+        cameraFollowAssigned = false;
         attackDisableDelay = new WaitForSeconds(0.15f);
         facingRight = true;
         position = new Vector2();
@@ -60,6 +63,8 @@ public class JumpAndRunMovement : MonoBehaviour
             return;
         UpdateAttacks();
         UpdateJumping();
+        if (!cameraFollowAssigned)
+            AssignCameraFollow();
     }
 
     void FixedUpdate()
@@ -212,10 +217,8 @@ public class JumpAndRunMovement : MonoBehaviour
         //apply force . . .
         if (col.name.Contains("Punch"))
         {
-            Debug.Log("GO GO GADGEt: PUNCH!");
             if (col.name.Contains("Forward"))
             {
-                Debug.Log("I GOT FORWARD PUNCHED");
                 m_Body.AddForce(Vector2.right * PunchForceForward_Forward +
                                 Vector2.up * PunchForceForward_Up, ForceMode2D.Impulse);
             }
@@ -234,5 +237,12 @@ public class JumpAndRunMovement : MonoBehaviour
     {
         yield return attackDisableDelay;
         dis.SetActive(false);
+    }
+
+    private void AssignCameraFollow()
+    {
+        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<UnityStandardAssets._2D.Camera2DFollow>()
+            .target = transform;
+        cameraFollowAssigned = true;
     }
 }
