@@ -25,6 +25,10 @@ public class JumpAndRunMovement : MonoBehaviour
     public int jumpLag;
     private int totalJumpFrames;
 
+    public GameObject[] AttackObjs;
+    public int AttackLag;
+    private int totalAttackFrames;
+
     void Awake() 
     {
         position = new Vector2();
@@ -42,6 +46,7 @@ public class JumpAndRunMovement : MonoBehaviour
         UpdateJumping();
         UpdateFacingDirection();
         m_PhotonTransform.SetSynchronizedValues(m_Body.velocity, 0f);
+        UpdateAttacks();
     }
 
     void FixedUpdate()
@@ -136,5 +141,15 @@ public class JumpAndRunMovement : MonoBehaviour
     {
         position.x = transform.position.x;
         position.y = transform.position.y;
+    }
+
+    void UpdateAttacks()
+    {
+
+    }
+
+    void DoAttacks()
+    {
+
     }
 }
