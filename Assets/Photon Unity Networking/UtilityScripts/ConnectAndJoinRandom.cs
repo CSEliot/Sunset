@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 /// <summary>
@@ -18,11 +19,14 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
 
     public int SendRate;
 
+    private Master m;
+
     public void Awake()
     {
         Debug.Log("Setting Send Rate to: " + SendRate);
         PhotonNetwork.sendRate = SendRate;
         PhotonNetwork.sendRateOnSerialize = SendRate;
+        m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
     }
 
     public virtual void Start()
@@ -37,7 +41,8 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
             Debug.Log("Update() was called by Unity. Scene is loaded. Let's connect to the Photon Master Server. Calling: PhotonNetwork.ConnectUsingSettings();");
 
             ConnectInUpdate = false;
-            PhotonNetwork.ConnectUsingSettings(Version + "."+Application.loadedLevel);
+            PhotonNetwork.ConnectUsingSettings(Version + "."+
+                SceneManager.GetActiveScene().buildIndex);
         }
     }
 
@@ -49,7 +54,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
     public virtual void OnConnectedToMaster()
     {
         Debug.Log("OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room. Calling: PhotonNetwork.JoinRandomRoom();");
-        PhotonNetwork.JoinRandomRoom();
+        PhotonNetwork.JoinRandomRoom();        
     }
 
     public virtual void OnJoinedLobby()
@@ -61,7 +66,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
     public virtual void OnPhotonRandomJoinFailed()
     {
         Debug.Log("OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one. Calling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 4}, null);");
-        PhotonNetwork.CreateRoom(null, new RoomOptions() { maxPlayers = 4 }, null);
+        PhotonNetwork.CreateRoom(null, new RoomOptions() { maxPlayers = Convert.ToByte(m.Max_Players) }, null);
     }
 
     // the following methods are implemented to give you some context. re-implement them as needed.
@@ -74,5 +79,12 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
     public void OnJoinedRoom()
     {
         Debug.Log("OnJoinedRoom() called by PUN. Now this client is in a room. From here on, your game would be running. For reference, all callbacks are listed in enum: PhotonNetworkingMessage");
+        ////Get room properties, containing things such as player info and selected character.
+        //ExitGames.Client.Photon.Hashtable playerProperties = PhotonNetwork.room.customProperties;
+        //Get total number of players logged into room.
+        int totalPlayersFound = PhotonNetwork.playerList.Length;
+        PhotonNetwork.playerName = "Player " + totalPlayersFound;
+        ////Track each player's chosen character.
+        //playerProperties.Add(PhotonNetwork.playerName, m.Client_CharNum);
     }
 }
