@@ -17,6 +17,7 @@ public class JumpAndRunMovement : MonoBehaviour
     private int jumpsRemaining;
     private bool jumped;
     public int TotalJumpsAllowed;
+    public Vector2 JumpOffset;
 
     public float GroundCheckEndPoint;
 
@@ -28,9 +29,14 @@ public class JumpAndRunMovement : MonoBehaviour
     public GameObject[] AttackObjs;
     public int AttackLag;
     private int totalAttackFrames;
+    private WaitForSeconds attackDisableDelay;
+
+    private bool facingRight;
 
     void Awake() 
     {
+        attackDisableDelay = new WaitForSeconds(0.15f);
+        facingRight = true;
         position = new Vector2();
         m_Body = GetComponent<Rigidbody2D>();
         jumpsRemaining = TotalJumpsAllowed;
@@ -55,30 +61,31 @@ public class JumpAndRunMovement : MonoBehaviour
         {
             return;
         }
-
     }
 
     void UpdateFacingDirection()
     {
-        if( m_Body.velocity.x > 0.2f )
+        if( !facingRight && m_Body.velocity.x > 0.2f )
         {
+            facingRight = true;
             transform.localScale = new Vector3( 1, 1, 1 );
         }
-        else if( m_Body.velocity.x < -0.2f )
+        else if( facingRight && m_Body.velocity.x < -0.2f )
         {
+            facingRight = false;
             transform.localScale = new Vector3( -1, 1, 1 );
         }
     }
 
     void UpdateJumping()
     {
-        if( Input.GetKey( KeyCode.Space ) == true 
+        if( Input.GetButtonDown("Jump") == true 
             && jumpsRemaining > 0 && totalJumpFrames < 0)
         {
             m_Body.AddForce( Vector2.up * JumpForce , ForceMode2D.Impulse);
             jumped = true;
             jumpsRemaining -= 1;
-            m_PhotonView.RPC( "DoJump", PhotonTargets.Others );
+            m_PhotonView.RPC( "DoJump", PhotonTargets.Others);
             Debug.Log("Jumping!");
             totalJumpFrames = jumpLag;
         }
@@ -120,15 +127,15 @@ public class JumpAndRunMovement : MonoBehaviour
         Set2DPosition();
 
         RaycastHit2D hit = 
-            Physics2D.Raycast(position, 
+            Physics2D.Raycast(position+JumpOffset, 
                               -Vector2.up, 
                               GroundCheckEndPoint, 
                               mask.value);
 
-            Debug.DrawLine(position, 
-                           position - Vector2.up*GroundCheckEndPoint, 
-                           Color.red, 
-                           0.02f);
+            //Debug.DrawLine(position, 
+            //               position - Vector2.up*GroundCheckEndPoint, 
+            //               Color.red, 
+            //               0.02f);
         m_IsGrounded = hit.collider != null;
         if (m_IsGrounded)
         {
@@ -145,11 +152,72 @@ public class JumpAndRunMovement : MonoBehaviour
 
     void UpdateAttacks()
     {
-
+        if(totalAttackFrames < 0 ){
+            if (Input.GetButtonDown("Up"))
+            {
+                AttackObjs[0].SetActive(true);
+                StartCoroutine(DisableDelay(AttackObjs[0]));
+                totalAttackFrames = AttackLag;
+                //m_PhotonView.RPC("UpAttack", PhotonTargets.Others);
+            }
+            if (Input.GetButtonDown("Down"))
+            {
+                AttackObjs[2].SetActive(true);
+                StartCoroutine(DisableDelay(AttackObjs[2]));
+                totalAttackFrames = AttackLag;
+                //m_PhotonView.RPC("DownAttack", PhotonTargets.Others);
+            }
+            if (facingRight && Input.GetButtonDown("Right"))
+            {
+                AttackObjs[1].SetActive(true);
+                StartCoroutine(DisableDelay(AttackObjs[1]));
+                totalAttackFrames = AttackLag;
+                //m_PhotonView.RPC("ForwardAttack", PhotonTargets.Others);
+            }
+            if (!facingRight && Input.GetButtonDown("Left"))
+            {
+                AttackObjs[1].SetActive(true);
+                StartCoroutine(DisableDelay(AttackObjs[1]));
+                totalAttackFrames = AttackLag;
+                //m_PhotonView.RPC("ForwardAttack", PhotonTargets.Others);
+            }
+        }
+        totalAttackFrames -= 1;
     }
 
-    void DoAttacks()
+    [PunRPC]
+    void UpAttack()
     {
+        AttackObjs[0].SetActive(true);
+        StartCoroutine(DisableDelay(AttackObjs[0]));
+    }
 
+    [PunRPC]
+    void ForwardAttack()
+    {
+        AttackObjs[1].SetActive(true);
+        StartCoroutine(DisableDelay(AttackObjs[1]));
+    }
+
+    [PunRPC]
+    void DownAttack()
+    {
+        AttackObjs[2].SetActive(true);
+        StartCoroutine(DisableDelay(AttackObjs[2]));
+    }
+
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col != null)
+        {
+            Debug.Log("I collided with: " + col.name);
+            Debug.Log("And I am: " + gameObject.name);
+        }
+    }
+
+    IEnumerator DisableDelay(GameObject dis)
+    {
+        yield return attackDisableDelay;
+        dis.SetActive(false);
     }
 }
