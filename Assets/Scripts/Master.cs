@@ -20,8 +20,7 @@ public class Master : MonoBehaviour {
         }
         DontDestroyOnLoad(gameObject);
         clientCharacter = AllCharacters[0];
-        Client_CharNum = 0;
-        Cursor.visible = false;
+        AssignClientCharacter(0);
         Cursor.lockState = CursorLockMode.Confined;
     }
 
