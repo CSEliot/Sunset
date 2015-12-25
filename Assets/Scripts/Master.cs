@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class Master : MonoBehaviour {
@@ -17,6 +18,10 @@ public class Master : MonoBehaviour {
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
+        clientCharacter = AllCharacters[0];
+        Client_CharNum = 0;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
 	// Use this for initialization
@@ -25,7 +30,12 @@ public class Master : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+        if (Input.GetKeyDown("escape"))
+        {
+            //PhotonNetwork.DestroyPlayerObjects();
+            PhotonNetwork.Disconnect();
+            SceneManager.LoadScene("CharacterSelect");
+        }
 	}
 
     public void AssignClientCharacter(int chosenChar)

@@ -87,4 +87,9 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
         ////Track each player's chosen character.
         //playerProperties.Add(PhotonNetwork.playerName, m.Client_CharNum);
     }
+
+    void OnPhotonPlayerDisconnected(PhotonPlayer player)
+    {
+        Debug.Log("OnPhotonPlayerDisconnected: " + player);
+    }
 }
