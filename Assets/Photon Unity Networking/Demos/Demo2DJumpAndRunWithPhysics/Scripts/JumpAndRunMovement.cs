@@ -212,8 +212,10 @@ public class JumpAndRunMovement : MonoBehaviour
         //apply force . . .
         if (col.name.Contains("Punch"))
         {
+            Debug.Log("GO GO GADGEt: PUNCH!");
             if (col.name.Contains("Forward"))
             {
+                Debug.Log("I GOT FORWARD PUNCHED");
                 m_Body.AddForce(Vector2.right * PunchForceForward_Forward +
                                 Vector2.up * PunchForceForward_Up, ForceMode2D.Impulse);
             }
