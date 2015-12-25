@@ -22,7 +22,7 @@ public class Master : MonoBehaviour {
         clientCharacter = AllCharacters[0];
         Client_CharNum = 0;
         Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Confined;
     }
 
 	// Use this for initialization
