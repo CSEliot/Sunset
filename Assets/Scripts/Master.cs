@@ -10,6 +10,7 @@ public class Master : MonoBehaviour {
 
     private GameObject clientCharacter;
     public int Client_CharNum;
+    public int Player_Number;
 
     void Awake()
     {
