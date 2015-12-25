@@ -15,6 +15,7 @@ Assets\StreamingAssets\build_info.txt.meta
 Assets/PixelDraw
 *.orig
 build_info.txt
+*orig.meta
 syntax: regexp
 ^Library/.*
 ^Temp/.*
