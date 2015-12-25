@@ -33,6 +33,12 @@ public class JumpAndRunMovement : MonoBehaviour
 
     private bool facingRight;
 
+    public float PunchForceUp;
+    public float PunchForceForward_Forward;
+    public float PunchForceForward_Up;
+    public float PunchForceDown;
+
+
     void Awake() 
     {
         attackDisableDelay = new WaitForSeconds(0.15f);
@@ -48,19 +54,19 @@ public class JumpAndRunMovement : MonoBehaviour
     {
         UpdateIsGrounded();
         UpdateIsRunning();
-        UpdateMovement();
-        UpdateJumping();
-        UpdateFacingDirection();
         m_PhotonTransform.SetSynchronizedValues(m_Body.velocity, 0f);
+        UpdateFacingDirection();
+        if(!m_PhotonView.isMine)
+            return;
         UpdateAttacks();
+        UpdateJumping();
     }
 
     void FixedUpdate()
     {
-        if( m_PhotonView.isMine == false )
-        {
+        if(!m_PhotonView.isMine)
             return;
-        }
+        UpdateMovement();
     }
 
     void UpdateFacingDirection()
@@ -101,19 +107,7 @@ public class JumpAndRunMovement : MonoBehaviour
     {
         Vector2 movementVelocity = m_Body.velocity;
 
-        if( Input.GetAxisRaw( "Horizontal" ) > 0.5f )
-        {
-            movementVelocity.x = Speed;
-            
-        }
-        else if( Input.GetAxisRaw( "Horizontal" ) < -0.5f )
-        {
-            movementVelocity.x = -Speed;
-        }
-        else
-        {
-            movementVelocity.x = 0;
-        }
+        movementVelocity.x = Speed * Input.GetAxis("Horizontal");
 
         m_Body.velocity = movementVelocity;
     }
@@ -137,6 +131,7 @@ public class JumpAndRunMovement : MonoBehaviour
             //               Color.red, 
             //               0.02f);
         m_IsGrounded = hit.collider != null;
+        //hit.collider.gameObject.layer
         if (m_IsGrounded)
         {
             Debug.Log ("Grounded on: " + (hit.collider.name));
@@ -158,28 +153,28 @@ public class JumpAndRunMovement : MonoBehaviour
                 AttackObjs[0].SetActive(true);
                 StartCoroutine(DisableDelay(AttackObjs[0]));
                 totalAttackFrames = AttackLag;
-                //m_PhotonView.RPC("UpAttack", PhotonTargets.Others);
+                m_PhotonView.RPC("UpAttack", PhotonTargets.Others);
             }
             if (Input.GetButtonDown("Down"))
             {
                 AttackObjs[2].SetActive(true);
                 StartCoroutine(DisableDelay(AttackObjs[2]));
                 totalAttackFrames = AttackLag;
-                //m_PhotonView.RPC("DownAttack", PhotonTargets.Others);
+                m_PhotonView.RPC("DownAttack", PhotonTargets.Others);
             }
             if (facingRight && Input.GetButtonDown("Right"))
             {
                 AttackObjs[1].SetActive(true);
                 StartCoroutine(DisableDelay(AttackObjs[1]));
                 totalAttackFrames = AttackLag;
-                //m_PhotonView.RPC("ForwardAttack", PhotonTargets.Others);
+                m_PhotonView.RPC("ForwardAttack", PhotonTargets.Others);
             }
             if (!facingRight && Input.GetButtonDown("Left"))
             {
                 AttackObjs[1].SetActive(true);
                 StartCoroutine(DisableDelay(AttackObjs[1]));
                 totalAttackFrames = AttackLag;
-                //m_PhotonView.RPC("ForwardAttack", PhotonTargets.Others);
+                m_PhotonView.RPC("ForwardAttack", PhotonTargets.Others);
             }
         }
         totalAttackFrames -= 1;
@@ -212,6 +207,24 @@ public class JumpAndRunMovement : MonoBehaviour
         {
             Debug.Log("I collided with: " + col.name);
             Debug.Log("And I am: " + gameObject.name);
+        }
+        
+        //apply force . . .
+        if (col.name.Contains("Punch"))
+        {
+            if (col.name.Contains("Forward"))
+            {
+                m_Body.AddForce(Vector2.right * PunchForceForward_Forward +
+                                Vector2.up * PunchForceForward_Up, ForceMode2D.Impulse);
+            }
+            else if (col.name.Contains("Up"))
+            {
+                m_Body.AddForce(Vector2.up * PunchForceUp, ForceMode2D.Impulse);
+            }
+            else if (col.name.Contains("Down"))
+            {
+                m_Body.AddForce(Vector2.down * PunchForceDown, ForceMode2D.Impulse);
+            }
         }
     }
 
