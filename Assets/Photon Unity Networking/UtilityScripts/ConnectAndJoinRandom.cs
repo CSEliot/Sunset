@@ -84,6 +84,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
         //Get total number of players logged into room.
         int totalPlayersFound = PhotonNetwork.playerList.Length;
         PhotonNetwork.playerName = "Player " + totalPlayersFound;
+        m.Player_Number = totalPlayersFound-1;
         ////Track each player's chosen character.
         //playerProperties.Add(PhotonNetwork.playerName, m.Client_CharNum);
     }
