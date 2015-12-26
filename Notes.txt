@@ -1,0 +1,5 @@
+Horizontal attack only moves up
+dmg % not complete
+no way to die
+no way to lose
+force amount too low
