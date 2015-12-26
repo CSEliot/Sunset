@@ -7,6 +7,8 @@ public class JumpAndRunMovement : MonoBehaviour
     public float JumpForce;
     //public float Gravity;
 
+    public float MaxVelocityMag;
+
     public LayerMask mask = -1;
 
     Rigidbody2D m_Body;
@@ -72,6 +74,12 @@ public class JumpAndRunMovement : MonoBehaviour
         if(!m_PhotonView.isMine)
             return;
         UpdateMovement();
+        //limit max velocity.
+        Debug.Log("R Velocity: " + m_Body.velocity.magnitude);
+        if (m_Body.velocity.magnitude >= MaxVelocityMag)
+        {
+
+        }
     }
 
     void UpdateFacingDirection()
@@ -219,6 +227,7 @@ public class JumpAndRunMovement : MonoBehaviour
         {
             if (col.name.Contains("Forward"))
             {
+
                 m_Body.AddForce(Vector2.right * PunchForceForward_Forward +
                                 Vector2.up * PunchForceForward_Up, ForceMode2D.Impulse);
             }
