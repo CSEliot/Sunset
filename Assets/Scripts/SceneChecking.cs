@@ -6,9 +6,12 @@ public class SceneChecking : MonoBehaviour {
 
     public bool newScene;
     public string targetSceneName;
+    private Master m;
 
 	// Use this for initialization
 	void Start () {
+        m = GameObject.FindGameObjectWithTag("Master").GetComponent
+            <Master>();
         newScene = false;
 	}
 	
@@ -21,6 +24,8 @@ public class SceneChecking : MonoBehaviour {
 	}
 
 	public void ChangeScene(){
+        if (m.Client_CharNum == 6)
+            return;
         if(targetSceneName!="null")
             SceneManager.LoadScene(targetSceneName);
 	}
