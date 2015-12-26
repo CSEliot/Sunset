@@ -26,7 +26,6 @@ public class GUIController : MonoBehaviour {
 	void Start () {
         currentSelector = 1;
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
-        m.AssignClientCharacter(currentSelector);
 	}
 	
 	// Update is called once per frame

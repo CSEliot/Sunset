@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class OnJoinedInstantiate : MonoBehaviour
@@ -6,6 +7,9 @@ public class OnJoinedInstantiate : MonoBehaviour
     public Transform[] SpawnPosition;
     public float PositionOffset = 2.0f;
     private Master m;
+
+    public Sprite[] UIHeads;
+    public Image PlayerHead; 
 
     void Awake()
     {
@@ -23,5 +27,19 @@ public class OnJoinedInstantiate : MonoBehaviour
         random = random.normalized;
         Vector3 itempos = spawnPos + this.PositionOffset * random;
         PhotonNetwork.Instantiate(m.GetClientCharacter(), itempos, Quaternion.identity, 0);
+        PlayerHead.sprite = GetImage();
+    }
+
+    private Sprite GetImage()
+    {
+        for (int i = 0; i < UIHeads.Length; i++)
+        {
+            if (UIHeads[i].name == m.GetClientCharacter())
+            {
+                return UIHeads[i];
+            }
+        }
+        Debug.LogError("No Head Name Found!");
+        return null;
     }
 }

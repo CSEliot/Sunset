@@ -19,7 +19,6 @@ public class Master : MonoBehaviour {
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
-        clientCharacter = AllCharacters[0];
         AssignClientCharacter(0);
         Cursor.lockState = CursorLockMode.Confined;
     }
@@ -46,6 +45,7 @@ public class Master : MonoBehaviour {
 
     public string GetClientCharacter()
     {
+        Debug.Log("Sending: " + clientCharacter.name);
         return clientCharacter.name;
     }
 }
