@@ -210,8 +210,8 @@ public class JumpAndRunMovement : MonoBehaviour
     {
         if (col != null)
         {
-            Debug.Log("I collided with: " + col.name);
-            Debug.Log("And I am: " + gameObject.name);
+            //Debug.Log("I collided with: " + col.name);
+            //Debug.Log("And I am: " + gameObject.name);
         }
         
         //apply force . . .
@@ -242,7 +242,7 @@ public class JumpAndRunMovement : MonoBehaviour
     private void AssignCameraFollow()
     {
         GameObject.FindGameObjectWithTag("MainCamera").GetComponent<UnityStandardAssets._2D.Camera2DFollow>()
-            .target = transform;
+            .SetTarget(transform);  
         cameraFollowAssigned = true;
     }
 }
