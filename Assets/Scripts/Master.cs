@@ -1,9 +1,17 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 using System.Collections;
 
 public class Master : MonoBehaviour {
 
+    [Serializable]
+    public class MyEnumEntry
+    {
+        public MyEnum key;
+        public int value;
+    }
+    public Dictionary<string, float> CharStrengths;
     public int Max_Players;
     public GameObject[] AllCharacters;
     public int PlayableCharacters;
@@ -11,6 +19,7 @@ public class Master : MonoBehaviour {
     private GameObject clientCharacter;
     public int Client_CharNum;
     public int Player_Number;
+
 
     void Awake()
     {
@@ -33,6 +42,7 @@ public class Master : MonoBehaviour {
         {
             //PhotonNetwork.DestroyPlayerObjects();
             PhotonNetwork.Disconnect();
+            AssignClientCharacter(0);
             SceneManager.LoadScene("CharacterSelect");
         }
 	}
