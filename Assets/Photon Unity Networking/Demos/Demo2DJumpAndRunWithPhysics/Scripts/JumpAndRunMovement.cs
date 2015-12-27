@@ -286,8 +286,8 @@ public class JumpAndRunMovement : MonoBehaviour
                 }
                 else
                 {
-                    Vector2 temp = Vector2.left * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name] - Defense);
-                    temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name] - Defense);
+                    Vector2 temp = Vector2.left * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name+"(Clone)"] - Defense);
+                    temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name+"(Clone)"] - Defense);
                     StartCoroutine(
                         ApplyPunchForce(temp)
                     );
@@ -297,7 +297,7 @@ public class JumpAndRunMovement : MonoBehaviour
             {
                 StartCoroutine(
                     ApplyPunchForce(
-                        (Vector2.up * (PunchForceUp + StrengthsList[col.transform.parent.name] - Defense))
+                        (Vector2.up * (PunchForceUp + StrengthsList[col.transform.parent.name+"(Clone)"] - Defense))
                     )
                 );
             }
@@ -305,7 +305,7 @@ public class JumpAndRunMovement : MonoBehaviour
             {
                 StartCoroutine(
                     ApplyPunchForce(
-                        (Vector2.down * (PunchForceDown + StrengthsList[col.transform.parent.name] - Defense))
+                        (Vector2.down * (PunchForceDown + StrengthsList[col.transform.parent.name+"(Clone)"] - Defense))
                     )
                 );
             }
