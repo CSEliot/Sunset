@@ -23,10 +23,17 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
 
     public void Awake()
     {
-        Debug.Log("Setting Send Rate to: " + SendRate);
-        PhotonNetwork.sendRate = SendRate;
-        PhotonNetwork.sendRateOnSerialize = SendRate;
-        m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
+        if (GameObject.FindGameObjectWithTag("Master") == null)
+        {
+            SceneManager.LoadScene("CharacterSelect");
+        }
+        else
+        {
+            Debug.Log("Setting Send Rate to: " + SendRate);
+            PhotonNetwork.sendRate = SendRate;
+            PhotonNetwork.sendRateOnSerialize = SendRate;
+            m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
+        }
     }
 
     public virtual void Start()

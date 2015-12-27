@@ -25,10 +25,16 @@ public class DamageTracker : MonoBehaviour {
 	
 	}
 
-    public void IncreaseDamageBy(int increase)
+    public void IncreaseDamageBy(float increase)
     {
-        damage += increase;
+        damage += (int)increase;
         Damage_Text.text = ""+ damage + "%";
+    }
+
+    public void SetDamageTo(float amount)
+    {
+        damage = (int)amount;
+        Damage_Text.text = "" + damage + "%";
     }
 
     public int GetDamage()

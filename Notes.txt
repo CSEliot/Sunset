@@ -1,5 +1,8 @@
-Horizontal attack only moves up
-dmg % not complete
-no way to die
-no way to lose
-force amount too low
+Changelog:
+
+ / Fixed Battle UI tracking newest joined player.
+ / BattleUI Damage % assigned, not +='d
+ + Quit Game Button quits game.
+ - Punch colliders no longer count as DeathWall colliders.
+ + Implemented Actual networking calls for death n damage taking.
+ / Damaging now fixed. Only runs on client.
