@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class JumpAndRunMovement : MonoBehaviour 
 {
@@ -51,6 +52,7 @@ public class JumpAndRunMovement : MonoBehaviour
     private float punchForceForward_ForwardTemp;
     private float punchForceForward_UpTemp;
     private float punchForceDownTemp;
+    private Dictionary<string, float> StrengthsList;
 
     //private bool PunchUp;
     //private bool PunchLeft;
@@ -62,6 +64,8 @@ public class JumpAndRunMovement : MonoBehaviour
 
     void Awake() 
     {
+        StrengthsList = GameObject.FindGameObjectWithTag("Master").
+            GetComponent<Master>().GetStrengthList();
         jumpForceTemp = 0f;
         SpeedTemp = 0f;
         cameraFollowAssigned = false;
@@ -274,31 +278,36 @@ public class JumpAndRunMovement : MonoBehaviour
                 //velocity += Vector2.right * PunchForceForward_Forward;
                 if (col.transform.parent.localScale.x > 0)
                 {
-
+                    Vector2 temp = Vector2.right * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name] - Defense);
+                    temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name] - Defense);
                     StartCoroutine(
-                        ApplyPunchForce(
-                            Vector2.right * PunchForceForward_Forward +
-                            Vector2.up * PunchForceForward_Up
-                        )
+                        ApplyPunchForce(temp)
                     );
                 }
                 else
                 {
+                    Vector2 temp = Vector2.left * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name] - Defense);
+                    temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name] - Defense);
                     StartCoroutine(
-                        ApplyPunchForce(
-                            Vector2.left * PunchForceForward_Forward +
-                            Vector2.up * PunchForceForward_Up
-                        )
+                        ApplyPunchForce(temp)
                     );
                 }
             }
             else if (col.name == "PunchUp")
             {
-                StartCoroutine(ApplyPunchForce(Vector2.up * PunchForceUp));
+                StartCoroutine(
+                    ApplyPunchForce(
+                        (Vector2.up * (PunchForceUp + StrengthsList[col.transform.parent.name] - Defense))
+                    )
+                );
             }
             else
             {
-                StartCoroutine(ApplyPunchForce(Vector2.down * PunchForceDown));
+                StartCoroutine(
+                    ApplyPunchForce(
+                        (Vector2.down * (PunchForceDown + StrengthsList[col.transform.parent.name] - Defense))
+                    )
+                );
             }
         }
     }

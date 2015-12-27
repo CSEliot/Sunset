@@ -6,13 +6,13 @@ using System.Collections;
 public class Master : MonoBehaviour {
 
     [System.Serializable]
-    public class CharStrength
+    public class NameToStrength
     {
         public string Name;
         public float Power;
     }
-    public CharStrength[] test;
-    public Dictionary<string, float> CharStrengths;
+    public NameToStrength[] StrengthsList;
+    private Dictionary<string, float> NameStrengthDict;
     public int Max_Players;
     public GameObject[] AllCharacters;
     public int PlayableCharacters;
@@ -24,6 +24,11 @@ public class Master : MonoBehaviour {
 
     void Awake()
     {
+        NameStrengthDict = new Dictionary<string,float>();
+        foreach (NameToStrength character in StrengthsList){
+            NameStrengthDict.Add(character.Name, character.Power);
+        }
+
         if (GameObject.FindGameObjectsWithTag("Master").Length > 1)
         {
             Destroy(gameObject);
@@ -58,5 +63,10 @@ public class Master : MonoBehaviour {
     {
         Debug.Log("Sending: " + clientCharacter.name);
         return clientCharacter.name;
+    }
+
+    public Dictionary<string, float> GetStrengthList()
+    {
+        return NameStrengthDict;
     }
 }
