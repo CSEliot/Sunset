@@ -264,7 +264,7 @@ public class JumpAndRunMovement : MonoBehaviour
 
         if (col != null)
         {
-            //Debug.Log("I collided with: " + col.name);
+            Debug.Log("I collided with: " + col.transform.parent.name);
             //Debug.Log("And I am: " + gameObject.name);
         }
 
@@ -274,12 +274,11 @@ public class JumpAndRunMovement : MonoBehaviour
         {
             if (col.name == "PunchForward")
             {
-                //Debug.Log("Got Punched forward: " + (Vector2.right * PunchForceForward_Forward));
                 //velocity += Vector2.right * PunchForceForward_Forward;
                 if (col.transform.parent.localScale.x > 0)
                 {
-                    Vector2 temp = Vector2.right * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name] - Defense);
-                    temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name] - Defense);
+                    Vector2 temp = Vector2.right * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name + "(Clone)"] - Defense);
+                    temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name + "(Clone)"] - Defense);
                     StartCoroutine(
                         ApplyPunchForce(temp)
                     );
