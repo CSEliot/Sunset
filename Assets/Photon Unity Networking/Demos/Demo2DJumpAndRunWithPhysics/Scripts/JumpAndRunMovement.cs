@@ -66,6 +66,8 @@ public class JumpAndRunMovement : MonoBehaviour
     {
         StrengthsList = GameObject.FindGameObjectWithTag("Master").
             GetComponent<Master>().GetStrengthList();
+
+        Debug.Log("Str List: " + StrengthsList.ToStringFull());
         jumpForceTemp = 0f;
         SpeedTemp = 0f;
         cameraFollowAssigned = false;
@@ -277,16 +279,16 @@ public class JumpAndRunMovement : MonoBehaviour
                 //velocity += Vector2.right * PunchForceForward_Forward;
                 if (col.transform.parent.localScale.x > 0)
                 {
-                    Vector2 temp = Vector2.right * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name + "(Clone)"] - Defense);
-                    temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name + "(Clone)"] - Defense);
+                    Vector2 temp = Vector2.right * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name] - Defense);
+                    temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name] - Defense);
                     StartCoroutine(
                         ApplyPunchForce(temp)
                     );
                 }
                 else
                 {
-                    Vector2 temp = Vector2.left * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name+"(Clone)"] - Defense);
-                    temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name+"(Clone)"] - Defense);
+                    Vector2 temp = Vector2.left * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name] - Defense);
+                    temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name] - Defense);
                     StartCoroutine(
                         ApplyPunchForce(temp)
                     );
@@ -296,7 +298,7 @@ public class JumpAndRunMovement : MonoBehaviour
             {
                 StartCoroutine(
                     ApplyPunchForce(
-                        (Vector2.up * (PunchForceUp + StrengthsList[col.transform.parent.name+"(Clone)"] - Defense))
+                        (Vector2.up * (PunchForceUp + StrengthsList[col.transform.parent.name] - Defense))
                     )
                 );
             }
@@ -304,7 +306,7 @@ public class JumpAndRunMovement : MonoBehaviour
             {
                 StartCoroutine(
                     ApplyPunchForce(
-                        (Vector2.down * (PunchForceDown + StrengthsList[col.transform.parent.name+"(Clone)"] - Defense))
+                        (Vector2.down * (PunchForceDown + StrengthsList[col.transform.parent.name] - Defense))
                     )
                 );
             }
