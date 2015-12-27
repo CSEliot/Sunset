@@ -50,7 +50,7 @@ public class DamageTracker : MonoBehaviour {
     public void ResetDamage()
     {
         damage = 0;
-        Damage_Text.text = "" + damage + "%";
+        Damage_Text.text = "000%";
     }
     public void LoseALife()
     {
