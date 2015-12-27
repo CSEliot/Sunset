@@ -4,8 +4,13 @@ using System.Collections;
 public class JumpAndRunMovement : MonoBehaviour 
 {
     public float Speed;
+    public float SpeedAccel = 0.5f;
+    public float SpeedDecel = 0.5f;
+    private float SpeedTemp;
     public float JumpForce;
-    //public float Gravity;
+    public float JumpDecel = 0.5f;
+    private float jumpForceTemp;
+    public float Gravity;
 
     public float MaxVelocityMag;
 
@@ -24,6 +29,7 @@ public class JumpAndRunMovement : MonoBehaviour
     public float GroundCheckEndPoint;
 
     private Vector2 position;
+    private Vector2 velocity;
 
     public int jumpLag;
     private int totalJumpFrames;
@@ -39,6 +45,10 @@ public class JumpAndRunMovement : MonoBehaviour
     public float PunchForceForward_Forward;
     public float PunchForceForward_Up;
     public float PunchForceDown;
+    //private bool PunchUp;
+    //private bool PunchLeft;
+    //private bool PunchRight;
+    //private bool PunchDown;
 
     private bool cameraFollowAssigned;
 
@@ -57,29 +67,36 @@ public class JumpAndRunMovement : MonoBehaviour
 
     void Update() 
     {
-        UpdateIsGrounded();
-        UpdateIsRunning();
         m_PhotonTransform.SetSynchronizedValues(m_Body.velocity, 0f);
-        UpdateFacingDirection();
         if(!m_PhotonView.isMine)
             return;
-        UpdateAttacks();
+
+        //Jump Detection Only, no physics handling.
         UpdateJumping();
+        UpdateAttacks();
         if (!cameraFollowAssigned)
             AssignCameraFollow();
     }
 
     void FixedUpdate()
     {
+        jumpForceTemp = 0f;
+        SpeedTemp = 0f;
+        UpdateIsGrounded();
+        UpdateFacingDirection();
         if(!m_PhotonView.isMine)
             return;
-        UpdateMovement();
+        UpdateJumpingPhysics();
+        UpdateMovementPhysics();
         //limit max velocity.
-        Debug.Log("R Velocity: " + m_Body.velocity.magnitude);
+        //Debug.Log("R Velocity: " + m_Body.velocity.magnitude);
         if (m_Body.velocity.magnitude >= MaxVelocityMag)
         {
-
         }
+
+        velocity += Vector2.down * Gravity;
+        m_Body.velocity = velocity;
+        velocity = Vector3.zero;
     }
 
     void UpdateFacingDirection()
@@ -101,32 +118,41 @@ public class JumpAndRunMovement : MonoBehaviour
         if( Input.GetButtonDown("Jump") == true 
             && jumpsRemaining > 0 && totalJumpFrames < 0)
         {
-            m_Body.AddForce( Vector2.up * JumpForce , ForceMode2D.Impulse);
             jumped = true;
             jumpsRemaining -= 1;
-            m_PhotonView.RPC( "DoJump", PhotonTargets.Others);
-            Debug.Log("Jumping!");
             totalJumpFrames = jumpLag;
         }
         totalJumpFrames -= 1;
     }
 
-    [PunRPC]
-    void DoJump()
+    void UpdateJumpingPhysics()
     {
+        if (jumped)
+        {
+            jumpForceTemp = JumpForce;
+            jumped = false;
+        } 
+        velocity.y += jumpForceTemp;
+        jumpForceTemp = Mathf.Lerp(jumpForceTemp, 0f, JumpDecel);
     }
 
-    void UpdateMovement()
+    void UpdateMovementPhysics()
     {
-        Vector2 movementVelocity = m_Body.velocity;
-
-        movementVelocity.x = Speed * Input.GetAxis("Horizontal");
-
-        m_Body.velocity = movementVelocity;
-    }
-
-    void UpdateIsRunning()
-    {
+        //Normally we'd have any Input Handling get called from Update,
+        //But dropped inputs aren't a problem with 'getaxis' since it's
+        //Continuous and not a single frame like GetButtonDown
+        if(Input.GetAxis("Horizontal") > 0){
+            SpeedTemp = Mathf.Lerp(SpeedTemp, Speed, SpeedAccel);
+        }
+        else if (Input.GetAxis("Horizontal") < 0)
+        {
+            SpeedTemp = Mathf.Lerp(SpeedTemp, -Speed, SpeedAccel);
+        }
+        else
+        {
+            SpeedTemp = Mathf.Lerp(SpeedTemp, 0f, SpeedDecel);
+        }
+        velocity.x += SpeedTemp;
     }
 
     void UpdateIsGrounded()
@@ -193,6 +219,7 @@ public class JumpAndRunMovement : MonoBehaviour
         totalAttackFrames -= 1;
     }
 
+
     [PunRPC]
     void UpAttack()
     {
@@ -216,28 +243,40 @@ public class JumpAndRunMovement : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
+        if (col == null)
+            return;
+
         if (col != null)
         {
             //Debug.Log("I collided with: " + col.name);
             //Debug.Log("And I am: " + gameObject.name);
         }
-        
+
+
         //apply force . . .
         if (col.name.Contains("Punch"))
         {
-            if (col.name.Contains("Forward"))
+            if (col.name == "PunchForward")
             {
-
-                m_Body.AddForce(Vector2.right * PunchForceForward_Forward +
-                                Vector2.up * PunchForceForward_Up, ForceMode2D.Impulse);
+                //Debug.Log("Got Punched forward: " + (Vector2.right * PunchForceForward_Forward));
+                //velocity += Vector2.right * PunchForceForward_Forward;
+                if (col.transform.parent.localScale.x > 0)
+                {
+                    velocity += Vector2.right * PunchForceForward_Forward;
+                }
+                else
+                {
+                    velocity += Vector2.left * PunchForceForward_Forward;
+                }
+                velocity += Vector2.up * PunchForceForward_Up;
             }
-            else if (col.name.Contains("Up"))
+            else if (col.name == "PunchUp")
             {
-                m_Body.AddForce(Vector2.up * PunchForceUp, ForceMode2D.Impulse);
+                velocity += Vector2.up * PunchForceUp;
             }
-            else if (col.name.Contains("Down"))
+            else
             {
-                m_Body.AddForce(Vector2.down * PunchForceDown, ForceMode2D.Impulse);
+                velocity += Vector2.down * PunchForceDown;
             }
         }
     }
