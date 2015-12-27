@@ -61,6 +61,8 @@ public class JumpAndRunMovement : MonoBehaviour
 
     private bool cameraFollowAssigned;
 
+    private int damage;
+
 
     void Awake() 
     {
