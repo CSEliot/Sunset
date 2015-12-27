@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
 
@@ -13,7 +14,14 @@ public class OnJoinedInstantiate : MonoBehaviour
 
     void Awake()
     {
-        m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
+        if (GameObject.FindGameObjectWithTag("Master") == null)
+        {
+            SceneManager.LoadScene("CharacterSelect");
+        }
+        else
+        {
+            m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
+        }
     }
 
     public void OnJoinedRoom()

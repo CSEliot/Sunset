@@ -60,8 +60,9 @@ public class JumpAndRunMovement : MonoBehaviour
     //private bool PunchDown;
 
     private bool cameraFollowAssigned;
+    private bool battleUIAssigned;
 
-    private int damage;
+    private float damage;
     private bool isDead;
 
     private DamageTracker BattleUI;
@@ -71,11 +72,9 @@ public class JumpAndRunMovement : MonoBehaviour
     void Awake() 
     {
         isDead = false;
-        BattleUI = GameObject.FindGameObjectWithTag("BattleUI")
-            .GetComponent<DamageTracker>();
+        battleUIAssigned = false;
         SpawnPoints = GameObject.FindGameObjectWithTag
             ("SpawnPoints").GetComponent<OnJoinedInstantiate>().SpawnPosition;
-        GameObject.FindGameObjectWithTag("BattleUI").GetComponent<DamageTracker>();
         StrengthsList = GameObject.FindGameObjectWithTag("Master").
             GetComponent<Master>().GetStrengthList();
 
@@ -103,11 +102,17 @@ public class JumpAndRunMovement : MonoBehaviour
         if(!m_PhotonView.isMine)
             return;
 
+        if (!cameraFollowAssigned)
+            AssignCameraFollow(transform);
+        if (!battleUIAssigned){
+            BattleUI = GameObject.FindGameObjectWithTag("BattleUI")
+                .GetComponent<DamageTracker>();
+            battleUIAssigned = true;
+        }
+
         //Jump Detection Only, no physics handling.
         UpdateJumping();
         UpdateAttacks();
-        if (!cameraFollowAssigned)
-            AssignCameraFollow(transform);
     }
 
     void FixedUpdate()
@@ -274,7 +279,7 @@ public class JumpAndRunMovement : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        if (col == null)
+        if (col == null || !m_PhotonView.isMine)
             return;
 
         if (col != null)
@@ -287,8 +292,8 @@ public class JumpAndRunMovement : MonoBehaviour
         //apply force . . .
         if (col.name.Contains("Punch"))
         {
-            damage += 10;
-            BattleUI.IncreaseDamageBy(10);
+            damage += 10f;
+            BattleUI.SetDamageTo(damage);
             if (col.name == "PunchForward")
             {
                 //velocity += Vector2.right * PunchForceForward_Forward;
@@ -297,7 +302,7 @@ public class JumpAndRunMovement : MonoBehaviour
                     Vector2 temp = Vector2.right * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name] - Defense);
                     temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name] - Defense);
                     StartCoroutine(
-                        ApplyPunchForce(temp * (damage/100))
+                        ApplyPunchForce(temp * (damage/100f))
                     );
                 }
                 else
@@ -305,7 +310,7 @@ public class JumpAndRunMovement : MonoBehaviour
                     Vector2 temp = Vector2.left * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name] - Defense);
                     temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name] - Defense);
                     StartCoroutine(
-                        ApplyPunchForce(temp * (damage / 100))
+                        ApplyPunchForce(temp * (damage / 100f))
                     );
                 }
             }
@@ -313,7 +318,7 @@ public class JumpAndRunMovement : MonoBehaviour
             {
                 StartCoroutine(
                     ApplyPunchForce(
-                        (Vector2.up * (PunchForceUp + StrengthsList[col.transform.parent.name] - Defense) * (damage / 100))
+                        (Vector2.up * (PunchForceUp + StrengthsList[col.transform.parent.name] - Defense) * (damage / 100f))
                     )
                 );
             }
@@ -321,7 +326,7 @@ public class JumpAndRunMovement : MonoBehaviour
             {
                 StartCoroutine(
                     ApplyPunchForce(
-                        (Vector2.down * (PunchForceDown + StrengthsList[col.transform.parent.name] - Defense) * (damage / 100))
+                        (Vector2.down * (PunchForceDown + StrengthsList[col.transform.parent.name] - Defense) * (damage / 100f))
                     )
                 );
             }
@@ -354,20 +359,28 @@ public class JumpAndRunMovement : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D col)
     {
-        BattleUI.LoseALife();
-        if (BattleUI.GetLives() > 0)
+        if (col.tag != "DeathWall" || !m_PhotonView.isMine)
+            return;
+
+        if (BattleUI.GetLives() > 0){
+            BattleUI.LoseALife();
             StartCoroutine(respawn());
+        }
         else
+        {
             StartCoroutine(Ghost());
+        }
     }
 
     IEnumerator Ghost()
     {
+        m_PhotonView.RPC("OnGhost", PhotonTargets.Others);
         isDead = true;
         m_Body.velocity = Vector2.zero;
         velocity = Vector2.zero;
-        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
         m_Body.isKinematic = true;
+        transform.tag = "PlayerGhost";
+        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
         yield return new WaitForSeconds(3f);
         AssignCameraFollow(GameObject
             .FindGameObjectWithTag("PlayerSelf").transform);
@@ -375,17 +388,33 @@ public class JumpAndRunMovement : MonoBehaviour
 
     IEnumerator respawn()
     {
+        m_PhotonView.RPC("OnDeath", PhotonTargets.Others);
         isDead = true;
         m_Body.velocity = Vector2.zero;
         velocity = Vector2.zero;
-        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
         m_Body.isKinematic = true;
+        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
         yield return new WaitForSeconds(3f);
         damage = 0;
         BattleUI.ResetDamage();
         transform.position = SpawnPoints[Random.Range(0, 6)].position;
-        m_Body.isKinematic = false;
+        m_Body.isKinematic = false; 
         transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
         isDead = false;
+    }
+
+    [PunRPC]
+    IEnumerator OnDeath()
+    {
+        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+        yield return new WaitForSeconds(3f);
+        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
+    }
+
+    [PunRPC]
+    void OnGhost()
+    {
+        transform.tag = "PlayerGhost";
+        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
     }
 }
