@@ -3,6 +3,7 @@ using System.Collections;
 
 public class JumpAndRunMovement : MonoBehaviour 
 {
+    public float Defense;
     public float Speed;
     public float SpeedAccel = 0.5f;
     public float SpeedDecel = 0.5f;
@@ -10,7 +11,7 @@ public class JumpAndRunMovement : MonoBehaviour
     public float JumpForce;
     public float JumpDecel = 0.5f;
     private float jumpForceTemp;
-    public float Gravity;
+    public float GravityForce;
 
     public float MaxVelocityMag;
 
@@ -34,7 +35,7 @@ public class JumpAndRunMovement : MonoBehaviour
     public int jumpLag;
     private int totalJumpFrames;
 
-    public GameObject[] AttackObjs;
+    private GameObject[] AttackObjs;
     public int AttackLag;
     private int totalAttackFrames;
     private WaitForSeconds attackDisableDelay;
@@ -45,6 +46,12 @@ public class JumpAndRunMovement : MonoBehaviour
     public float PunchForceForward_Forward;
     public float PunchForceForward_Up;
     public float PunchForceDown;
+    public float PunchForceDecel;
+    private float punchForceUpTemp;
+    private float punchForceForward_ForwardTemp;
+    private float punchForceForward_UpTemp;
+    private float punchForceDownTemp;
+
     //private bool PunchUp;
     //private bool PunchLeft;
     //private bool PunchRight;
@@ -55,6 +62,8 @@ public class JumpAndRunMovement : MonoBehaviour
 
     void Awake() 
     {
+        jumpForceTemp = 0f;
+        SpeedTemp = 0f;
         cameraFollowAssigned = false;
         attackDisableDelay = new WaitForSeconds(0.15f);
         facingRight = true;
@@ -63,6 +72,11 @@ public class JumpAndRunMovement : MonoBehaviour
         jumpsRemaining = TotalJumpsAllowed;
         m_PhotonView = GetComponent<PhotonView>();
         m_PhotonTransform = GetComponent<PhotonTransformView>();
+
+        AttackObjs = new GameObject[3];
+        AttackObjs[0] = transform.GetChild(3).gameObject;
+        AttackObjs[1] = transform.GetChild(1).gameObject;
+        AttackObjs[2] = transform.GetChild(2).gameObject;
     }
 
     void Update() 
@@ -80,8 +94,6 @@ public class JumpAndRunMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        jumpForceTemp = 0f;
-        SpeedTemp = 0f;
         UpdateIsGrounded();
         UpdateFacingDirection();
         if(!m_PhotonView.isMine)
@@ -94,7 +106,7 @@ public class JumpAndRunMovement : MonoBehaviour
         {
         }
 
-        velocity += Vector2.down * Gravity;
+        velocity += Vector2.down * GravityForce;
         m_Body.velocity = velocity;
         velocity = Vector3.zero;
     }
@@ -262,21 +274,31 @@ public class JumpAndRunMovement : MonoBehaviour
                 //velocity += Vector2.right * PunchForceForward_Forward;
                 if (col.transform.parent.localScale.x > 0)
                 {
-                    velocity += Vector2.right * PunchForceForward_Forward;
+
+                    StartCoroutine(
+                        ApplyPunchForce(
+                            Vector2.right * PunchForceForward_Forward +
+                            Vector2.up * PunchForceForward_Up
+                        )
+                    );
                 }
                 else
                 {
-                    velocity += Vector2.left * PunchForceForward_Forward;
+                    StartCoroutine(
+                        ApplyPunchForce(
+                            Vector2.left * PunchForceForward_Forward +
+                            Vector2.up * PunchForceForward_Up
+                        )
+                    );
                 }
-                velocity += Vector2.up * PunchForceForward_Up;
             }
             else if (col.name == "PunchUp")
             {
-                velocity += Vector2.up * PunchForceUp;
+                StartCoroutine(ApplyPunchForce(Vector2.up * PunchForceUp));
             }
             else
             {
-                velocity += Vector2.down * PunchForceDown;
+                StartCoroutine(ApplyPunchForce(Vector2.down * PunchForceDown));
             }
         }
     }
@@ -292,5 +314,16 @@ public class JumpAndRunMovement : MonoBehaviour
         GameObject.FindGameObjectWithTag("MainCamera").GetComponent<UnityStandardAssets._2D.Camera2DFollow>()
             .SetTarget(transform);  
         cameraFollowAssigned = true;
+    }
+
+    IEnumerator ApplyPunchForce(Vector2 punchForce)
+    {
+        Vector2 tempPunchForce = punchForce;
+        while (tempPunchForce.magnitude > 0.01f)
+        {
+            velocity += tempPunchForce;
+            tempPunchForce = Vector2.Lerp(tempPunchForce, Vector2.zero, PunchForceDecel);
+            yield return null;
+        }
     }
 }
