@@ -107,7 +107,7 @@ public class JumpAndRunMovement : MonoBehaviour
         UpdateJumping();
         UpdateAttacks();
         if (!cameraFollowAssigned)
-            AssignCameraFollow();
+            AssignCameraFollow(transform);
     }
 
     void FixedUpdate()
@@ -334,10 +334,10 @@ public class JumpAndRunMovement : MonoBehaviour
         dis.SetActive(false);
     }
 
-    private void AssignCameraFollow()
+    private void AssignCameraFollow(Transform myTransform)
     {
         GameObject.FindGameObjectWithTag("MainCamera").GetComponent<UnityStandardAssets._2D.Camera2DFollow>()
-            .SetTarget(transform);  
+            .SetTarget(myTransform);  
         cameraFollowAssigned = true;
     }
 
@@ -355,7 +355,22 @@ public class JumpAndRunMovement : MonoBehaviour
     void OnTriggerExit2D(Collider2D col)
     {
         BattleUI.LoseALife();
-        StartCoroutine(respawn());
+        if (BattleUI.GetLives() > 0)
+            StartCoroutine(respawn());
+        else
+            StartCoroutine(Ghost());
+    }
+
+    IEnumerator Ghost()
+    {
+        isDead = true;
+        m_Body.velocity = Vector2.zero;
+        velocity = Vector2.zero;
+        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+        m_Body.isKinematic = true;
+        yield return new WaitForSeconds(3f);
+        AssignCameraFollow(GameObject
+            .FindGameObjectWithTag("PlayerSelf").transform);
     }
 
     IEnumerator respawn()
