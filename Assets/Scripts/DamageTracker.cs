@@ -47,6 +47,11 @@ public class DamageTracker : MonoBehaviour {
         Lives_Text.text = "" + lives; 
     }
 
+    public void ResetDamage()
+    {
+        damage = 0;
+        Damage_Text.text = "" + damage + "%";
+    }
     public void LoseALife()
     {
         lives--;
