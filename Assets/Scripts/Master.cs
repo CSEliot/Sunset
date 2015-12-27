@@ -5,12 +5,13 @@ using System.Collections;
 
 public class Master : MonoBehaviour {
 
-    [Serializable]
-    public class MyEnumEntry
+    [System.Serializable]
+    public class CharStrength
     {
-        public MyEnum key;
-        public int value;
+        public string Name;
+        public float Power;
     }
+    public CharStrength[] test;
     public Dictionary<string, float> CharStrengths;
     public int Max_Players;
     public GameObject[] AllCharacters;
