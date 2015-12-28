@@ -50,4 +50,22 @@ public class OnJoinedInstantiate : MonoBehaviour
         Debug.LogError("No Head Name Found!");
         return null;
     }
+
+    public int GetImageNum()
+    {
+        for (int i = 0; i < UIHeads.Length; i++)
+        {
+            if (UIHeads[i].name == m.GetClientCharacter())
+            {
+                return i;
+            }
+        }
+        Debug.LogError("No Head Name Found!");
+        return -1;
+    }
+
+    public Sprite GetImage(int num)
+    {
+        return UIHeads[num];
+    }
 }

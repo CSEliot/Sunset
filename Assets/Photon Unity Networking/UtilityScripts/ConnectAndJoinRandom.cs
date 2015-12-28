@@ -67,6 +67,10 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
     public virtual void OnJoinedLobby()
     {
         Debug.Log("OnJoinedLobby(). This client is connected and does get a room-list, which gets stored as PhotonNetwork.GetRoomList(). This script now calls: PhotonNetwork.JoinRandomRoom();");
+        ////Get room properties, containing things such as player info and selected character.
+        ExitGames.Client.Photon.Hashtable playerProperties = PhotonNetwork.room.customProperties;
+        ////Track each player's chosen character.
+        playerProperties.Add("ChosenCharNum", m.Client_CharNum);
         PhotonNetwork.JoinRandomRoom();
     }
 

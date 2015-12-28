@@ -12,8 +12,9 @@ public class ReadyUp : MonoBehaviour {
     private bool readyUped;
 
     private PhotonView m_PhotonView;
+    private Master m;
 
-    private Sprite headSprite;
+    private int headSprite;
 
     public Sprite Empty;
 
@@ -21,22 +22,34 @@ public class ReadyUp : MonoBehaviour {
 
     private int totalLoggedIn;
 
-    private Dictionary<int, int> ID_to_ReadyNum;
+    private Dictionary<int, int> ID_to_SlotNum;
+    private Dictionary<int, int> ID_to_CharNum;
+
+    private int myLogInID;
+
+    private int[] SlotList;
 
 	// Use this for initialization
 	void Start () {
-        ID_to_ReadyNum = new Dictionary<int, int>();
+        m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
+        ID_to_SlotNum = new Dictionary<int, int>();
+        ID_to_CharNum = new Dictionary<int, int>();
         totalLoggedIn = 0;
         m_PhotonView = GetComponent<PhotonView>();
         isReady = false;
         readyUped = false;
         headSprite = GameObject.FindGameObjectWithTag("SpawnPoints")
-            .GetComponent<OnJoinedInstantiate>().GetImage();
+            .GetComponent<OnJoinedInstantiate>().GetImageNum();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        
+        SlotList = new int[6];
+        for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
+        {
+            SlotList[i] = PhotonNetwork.playerList[i].ID;
+        }
+
         if (!readyUped && Input.GetButtonDown("Left") && !isReady)
         {
             SelectorYes.SetActive(true);
@@ -51,22 +64,46 @@ public class ReadyUp : MonoBehaviour {
         }
         if (!readyUped && Input.GetButtonDown("Submit") && isReady)
         {
-            m_PhotonView.RPC("ShowReady", PhotonTargets.All, headSprite);
+            m_PhotonView.RPC("ShowReady", PhotonTargets.All, myLogInID);
             SelectorYes.SetActive(false);
         }
 	}
 
+    //Need 2 things: Chosen CHaracter and Player Num
     [PunRPC]
-    void ShowReady(Sprite playerSprite)
+    void ShowReady(int LogInID)
     {
-        PlayerSlots[totalLoggedIn].sprite = playerSprite;
-
+        int readyChar = ID_to_CharNum[LogInID];
+        int readySlot = ID_to_SlotNum[LogInID];
+        PlayerSlots[readySlot].sprite = GameObject.FindGameObjectWithTag("SpawnPoints")
+            .GetComponent<OnJoinedInstantiate>().GetImage(readyChar);
         readyUped = true;
     }
 
     void OnJoinedRoom()
     {
-        Debug.Log("GOGOGO");
+        myLogInID = PhotonNetwork.player.ID;
+        ExitGames.Client.Photon.Hashtable tempTable = PhotonNetwork.player.customProperties;
+
+        //Add self to player info tracking.
+        ID_to_CharNum.Add(myLogInID, headSprite);
+        ID_to_SlotNum.Add(myLogInID, PhotonNetwork.playerList.Length - 1);
+
+        //Add info from others already logged in.
+        int otherLogInID = 0;
+        int otherSlotNum = 0;
+        int otherCharNum = 0;
+        for(int i = 0; i < PhotonNetwork.playerList.Length; i++){
+            PlayerSlots[i].transform.gameObject.SetActive(true);
+            otherLogInID = PhotonNetwork.playerList[i].ID;
+            if (myLogInID != otherLogInID)
+            {
+                otherSlotNum = i;
+                otherCharNum = (int)PhotonNetwork.playerList[i].customProperties["ChosenCharNum"];
+                ID_to_CharNum.Add(otherLogInID, otherCharNum);
+                ID_to_SlotNum.Add(otherLogInID, otherSlotNum);
+            }
+        }
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -75,8 +112,12 @@ public class ReadyUp : MonoBehaviour {
 
     void OnPhotonPlayerConnected(PhotonPlayer player)
     {
-        Debug.Log("Player Connected!" + player.ID);
-        ID_to_ReadyNum.Add(player.ID, totalLoggedIn);
+        int otherLogInID = PhotonNetwork.player.ID; ;
+        ID_to_CharNum.Add(otherLogInID
+            , (int)player.customProperties["ChosenCharNum"]);
+        ID_to_SlotNum.Add(otherLogInID, PhotonNetwork.playerList.Length - 1);
+        Debug.Log("Player Connected! ID: " + player.ID);
+        //ID_to_ReadyNum.Add(otherLogInID, );
         totalLoggedIn++;
     }
 
