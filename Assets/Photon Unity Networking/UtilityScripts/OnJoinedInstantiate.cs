@@ -24,7 +24,7 @@ public class OnJoinedInstantiate : MonoBehaviour
         }
     }
 
-    public void OnReadyUp()
+    public void OnJoinedRoom()
     {
         Vector3 spawnPos = Vector3.up;
         int totalPlayersFound = PhotonNetwork.playerList.Length;
@@ -38,7 +38,7 @@ public class OnJoinedInstantiate : MonoBehaviour
         PlayerHead.sprite = GetImage();
     }
 
-    private Sprite GetImage()
+    public Sprite GetImage()
     {
         for (int i = 0; i < UIHeads.Length; i++)
         {
