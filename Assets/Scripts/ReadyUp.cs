@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class ReadyUp : MonoBehaviour {
@@ -9,16 +10,16 @@ public class ReadyUp : MonoBehaviour {
     private bool isReady;
     private bool readyUped;
 
-    public PhotonView m_PhotonView;
+    private PhotonView m_PhotonView;
 
     private Sprite headSprite;
 
-    public GameObject[] PlayerSlots;
+    public Image[] PlayerSlots;
 
 
 	// Use this for initialization
 	void Start () {
-        PlayerSlots = new GameObject[6];
+        m_PhotonView = GetComponent<PhotonView>();
         isReady = false;
         readyUped = false;
         headSprite = GameObject.FindGameObjectWithTag("SpawnPoints")
@@ -37,7 +38,7 @@ public class ReadyUp : MonoBehaviour {
             SelectorYes.SetActive(false);
             SelectorNo.SetActive(true);
         }
-        if (!readyUped && Input.GetButtonDown("Submit"))
+        if (!readyUped && Input.GetButtonDown("Submit") && isReady)
         {
             m_PhotonView.RPC("ShowReady", PhotonTargets.All);
         }
@@ -46,7 +47,7 @@ public class ReadyUp : MonoBehaviour {
     [PunRPC]
     void ShowReady()
     {
-        //Add
+        
     }
 
     private void AddUser(Sprite headSprite)

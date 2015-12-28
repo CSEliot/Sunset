@@ -12,7 +12,7 @@ public class CamShakeSimple : MonoBehaviour
 
     public void BeginShake(float BodyVelocityMag, bool isClient)
     {
-        float timeDiv = isClient ? 3 : 1;
+        float timeDiv = isClient ? 1 : 3;
         BodyVelocityMag = isClient ? BodyVelocityMag : BodyVelocityMag * 0.9f;
         gameObject.GetComponent<UnityStandardAssets._2D.Camera2DFollow>().enabled = false;
         originalCameraPosition = transform.position;

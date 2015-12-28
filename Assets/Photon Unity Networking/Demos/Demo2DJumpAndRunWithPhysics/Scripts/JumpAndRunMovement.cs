@@ -10,8 +10,11 @@ public class JumpAndRunMovement : MonoBehaviour
     public float SpeedDecel = 0.5f;
     private float SpeedTemp;
     public float JumpForce;
+    public float DownJumpForce;
     public float JumpDecel = 0.5f;
+    public float DownJumpDecel = 0.5f;
     private float jumpForceTemp;
+    private float downJumpForceTemp;
     public float GravityForce;
 
     public float MaxVelocityMag;
@@ -25,6 +28,8 @@ public class JumpAndRunMovement : MonoBehaviour
     private bool m_IsGrounded;
     private int jumpsRemaining;
     private bool jumped;
+    private bool canDownJump;
+    private bool downJumped;
     public int TotalJumpsAllowed;
     public Vector2 JumpOffset;
 
@@ -163,8 +168,30 @@ public class JumpAndRunMovement : MonoBehaviour
             jumped = true;
             jumpsRemaining -= 1;
             totalJumpFrames = jumpLag;
+            canDownJump = true;
         }
         totalJumpFrames -= 1;
+    }
+
+    void UpdateDownJumping()
+    {
+        if (Input.GetButtonDown("DownJump") == true
+            && canDownJump)
+        {
+            downJumped = true;
+            canDownJump = false;
+        }
+    }
+
+    void UpdateDownJumpingPhysics()
+    {
+        if (downJumped)
+        {
+            jumpForceTemp = DownJumpForce;
+            downJumped = false;
+        }
+        velocity.y -= downJumpForceTemp;
+        downJumpForceTemp = Mathf.Lerp(downJumpForceTemp, 0f, DownJumpDecel);
     }
 
     void UpdateJumpingPhysics()
@@ -177,6 +204,7 @@ public class JumpAndRunMovement : MonoBehaviour
         velocity.y += jumpForceTemp;
         jumpForceTemp = Mathf.Lerp(jumpForceTemp, 0f, JumpDecel);
     }
+
 
     void UpdateMovementPhysics()
     {
@@ -331,11 +359,22 @@ public class JumpAndRunMovement : MonoBehaviour
             }
             else
             {
-                StartCoroutine(
-                    ApplyPunchForce(
-                        (Vector2.down * (PunchForceDown + StrengthsList[col.transform.parent.name] - Defense) * (damage / 100f))
-                    )
-                );
+                if (!m_IsGrounded)
+                {
+                    StartCoroutine(
+                        ApplyPunchForce(
+                            (Vector2.down * (PunchForceDown + StrengthsList[col.transform.parent.name] - Defense) * (damage / 100f))
+                        )
+                    );
+                }
+                else
+                {
+                    StartCoroutine(
+                        ApplyPunchForce(
+                            (Vector2.up * (PunchForceDown + StrengthsList[col.transform.parent.name] - Defense) * (damage / 200f))
+                        )
+                    );
+                }
             }
         }
     }
