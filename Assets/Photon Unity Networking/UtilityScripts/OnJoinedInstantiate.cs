@@ -24,7 +24,7 @@ public class OnJoinedInstantiate : MonoBehaviour
         }
     }
 
-    public void OnJoinedRoom()
+    public void OnReadyUp()
     {
         Vector3 spawnPos = Vector3.up;
         int totalPlayersFound = PhotonNetwork.playerList.Length;
