@@ -1,12 +1,3 @@
 Changelog:
 
- / Fixed Josh's Jump.
- / Fixed having too many jumps.
- / Not everyone has double jump now.
- / Punch percent add changed from 10% to 7%.
- + Screen shake on death and punch
- / Screen shake yours vs other death fixed.
- + Beginning to work on Readying Up screen.
- + w does jump.
- + Grounded while Down Smashed causes 50% up force.
- + DownJump made. Can downjump once after jumping.
+ 
