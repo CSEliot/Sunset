@@ -62,6 +62,10 @@ public class ReadyUp : MonoBehaviour {
         readyUped = true;
     }
 
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    { 
+    }
+
     void OnPhotonPlayerConnected(PhotonPlayer player)
     {
         Debug.Log("Player Connected!" + player.ID);
