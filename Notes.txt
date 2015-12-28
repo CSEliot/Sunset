@@ -1,8 +1,6 @@
 Changelog:
 
- / Fixed Battle UI tracking newest joined player.
- / BattleUI Damage % assigned, not +='d
- + Quit Game Button quits game.
- - Punch colliders no longer count as DeathWall colliders.
- + Implemented Actual networking calls for death n damage taking.
- / Damaging now fixed. Only runs on client.
+ / Fixed Josh's Jump.
+ / Fixed having too many jumps.
+ / Not everyone has double jump now.
+ / Punch percent add changed from 10% to 7%.

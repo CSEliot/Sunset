@@ -32,7 +32,7 @@ public class JumpAndRunMovement : MonoBehaviour
 
     private Vector2 position;
     private Vector2 velocity;
-
+    
     public int jumpLag;
     private int totalJumpFrames;
 
@@ -43,6 +43,7 @@ public class JumpAndRunMovement : MonoBehaviour
 
     private bool facingRight;
 
+    public int PunchPercentAdd;
     public float PunchForceUp;
     public float PunchForceForward_Forward;
     public float PunchForceForward_Up;
@@ -61,6 +62,7 @@ public class JumpAndRunMovement : MonoBehaviour
 
     private bool cameraFollowAssigned;
     private bool battleUIAssigned;
+    private CamShakeSimple camShaker;
 
     private float damage;
     private bool isDead;
@@ -69,8 +71,12 @@ public class JumpAndRunMovement : MonoBehaviour
 
     private Transform[] SpawnPoints;
 
+
     void Awake() 
     {
+        camShaker = GameObject.FindGameObjectWithTag("MainCamera")
+            .GetComponent<CamShakeSimple>();
+
         isDead = false;
         battleUIAssigned = false;
         SpawnPoints = GameObject.FindGameObjectWithTag
@@ -201,13 +207,14 @@ public class JumpAndRunMovement : MonoBehaviour
                               GroundCheckEndPoint, 
                               mask.value);
 
-            //Debug.DrawLine(position, 
-            //               position - Vector2.up*GroundCheckEndPoint, 
-            //               Color.red, 
-            //               0.02f);
+        Debug.DrawLine(position+JumpOffset,
+                       position + (-Vector2.up * GroundCheckEndPoint),
+                       Color.red,
+                       0.01f);
+
         m_IsGrounded = hit.collider != null;
         //hit.collider.gameObject.layer
-        if (m_IsGrounded)
+        if (m_IsGrounded && !jumped)
         {
             Debug.Log ("Grounded on: " + (hit.collider.name));
             jumpsRemaining = TotalJumpsAllowed;
@@ -292,7 +299,7 @@ public class JumpAndRunMovement : MonoBehaviour
         //apply force . . .
         if (col.name.Contains("Punch"))
         {
-            damage += 10f;
+            damage += PunchPercentAdd;
             BattleUI.SetDamageTo(damage);
             if (col.name == "PunchForward")
             {
@@ -341,6 +348,10 @@ public class JumpAndRunMovement : MonoBehaviour
 
     private void AssignCameraFollow(Transform myTransform)
     {
+        if (myTransform == null)
+        {
+            return;
+        }
         GameObject.FindGameObjectWithTag("MainCamera").GetComponent<UnityStandardAssets._2D.Camera2DFollow>()
             .SetTarget(myTransform);  
         cameraFollowAssigned = true;
@@ -349,6 +360,7 @@ public class JumpAndRunMovement : MonoBehaviour
     IEnumerator ApplyPunchForce(Vector2 punchForce)
     {
         Vector2 tempPunchForce = punchForce;
+        camShaker.BeginShake(punchForce.magnitude, m_PhotonView.isMine, 1);
         while (tempPunchForce.magnitude > 0.01f)
         {
             velocity += tempPunchForce;
@@ -359,7 +371,10 @@ public class JumpAndRunMovement : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D col)
     {
-        if (col.tag != "DeathWall" || !m_PhotonView.isMine)
+        if (col.tag != "DeathWall")
+            return;
+        camShaker.BeginShake(m_Body.velocity.magnitude, m_PhotonView.isMine);
+        if(!m_PhotonView.isMine)
             return;
 
         if (BattleUI.GetLives() > 0){
@@ -382,8 +397,8 @@ public class JumpAndRunMovement : MonoBehaviour
         transform.tag = "PlayerGhost";
         transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
         yield return new WaitForSeconds(3f);
-        AssignCameraFollow(GameObject
-            .FindGameObjectWithTag("PlayerSelf").transform);
+        if (GameObject.FindGameObjectWithTag("PlayerSelf") != null)
+            AssignCameraFollow(GameObject.FindGameObjectWithTag("PlayerSelf").transform);
     }
 
     IEnumerator respawn()
