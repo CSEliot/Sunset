@@ -41,11 +41,13 @@ public class ReadyUp : MonoBehaviour {
         {
             SelectorYes.SetActive(true);
             SelectorNo.SetActive(false);
+            isReady = true;
         }
         if (!readyUped && Input.GetButtonDown("Right") && isReady)
         {
             SelectorYes.SetActive(false);
             SelectorNo.SetActive(true);
+            isReady = false;
         }
         if (!readyUped && Input.GetButtonDown("Submit") && isReady)
         {
@@ -60,6 +62,11 @@ public class ReadyUp : MonoBehaviour {
         PlayerSlots[totalLoggedIn].sprite = playerSprite;
 
         readyUped = true;
+    }
+
+    void OnJoinedRoom()
+    {
+        Debug.Log("GOGOGO");
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
