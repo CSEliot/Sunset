@@ -87,6 +87,7 @@ public class JumpAndRunMovement : MonoBehaviour
     {
         readyGUI = GameObject.FindGameObjectWithTag("ReadyOBJ")
             .GetComponent<ReadyUp>();
+        readyGUI.transform.gameObject.SetActive(false);
         playersSpawned = false;
         punching = false;
         camShaker = GameObject.FindGameObjectWithTag("MainCamera")
