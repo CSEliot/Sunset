@@ -82,12 +82,11 @@ public class JumpAndRunMovement : MonoBehaviour
     private bool playersSpawned;
 
     private ReadyUp readyGUI;
+    private bool readyGUIDisabled;
 
     void Awake() 
     {
-        readyGUI = GameObject.FindGameObjectWithTag("ReadyOBJ")
-            .GetComponent<ReadyUp>();
-        readyGUI.transform.gameObject.SetActive(false);
+        readyGUIDisabled = false;
         playersSpawned = false;
         punching = false;
         camShaker = GameObject.FindGameObjectWithTag("MainCamera")
@@ -126,7 +125,12 @@ public class JumpAndRunMovement : MonoBehaviour
         if(!m_PhotonView.isMine)
             return;
 
-
+        if (!readyGUIDisabled)
+        {
+            readyGUI = GameObject.FindGameObjectWithTag("ReadyOBJ")
+                .GetComponent<ReadyUp>();
+            readyGUI.transform.gameObject.SetActive(false);
+        }
         if (!cameraFollowAssigned)
             AssignCameraFollow(transform);
         if (!battleUIAssigned){
