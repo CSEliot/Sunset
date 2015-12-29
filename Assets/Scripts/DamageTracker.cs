@@ -9,6 +9,8 @@ public class DamageTracker : MonoBehaviour {
 
     public Text Lives_Text;
     public Text Damage_Text;
+    public GameObject YouLoseText;
+    public GameObject YouWinText;
 
     public int StartingLives;
     private int lives;
@@ -62,5 +64,15 @@ public class DamageTracker : MonoBehaviour {
     {
         lives--;
         Lives_Text.text = "" + lives; 
+    }
+
+    public void Lost()
+    {
+        YouLoseText.SetActive(true);
+    }
+
+    public void Won()
+    {
+        YouWinText.SetActive(true);
     }
 }

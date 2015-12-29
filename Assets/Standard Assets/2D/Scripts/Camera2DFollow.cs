@@ -32,6 +32,14 @@ namespace UnityStandardAssets._2D
         {
             if (target == null)
                 return;
+
+            if (target.tag == "PlayerGhost")
+            {
+                if (GameObject.FindGameObjectWithTag("PlayerSelf") != null)
+                {
+                    SetTarget(GameObject.FindGameObjectWithTag("PlayerSelf").transform);
+                }
+            }
             // only update lookahead pos if accelerating or changed direction
             float xMoveDelta = (target.position - m_LastTargetPosition).x;
 

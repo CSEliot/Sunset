@@ -21,9 +21,18 @@ public class Master : MonoBehaviour {
     public int Client_CharNum;
     public int Player_Number;
 
+    public AudioClip[] SFX;
+    public AudioClip[] MSX;
+    private AudioSource myMusicAudio;
+    private AudioSource mySFXAudio;
+
+    private int totalPlayers;
 
     void Awake()
     {
+        myMusicAudio = GetComponent<AudioSource>();
+        mySFXAudio = transform.GetChild(0).GetComponent<AudioSource>();
+        PlayMSX(0);
         NameStrengthDict = new Dictionary<string,float>();
         foreach (NameToStrength character in StrengthsList){
             NameStrengthDict.Add(character.Name, character.Power);
@@ -40,16 +49,27 @@ public class Master : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        totalPlayers = 100;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+        
         if (Input.GetKeyDown("escape"))
         {
             //PhotonNetwork.DestroyPlayerObjects();
             PhotonNetwork.Disconnect();
             AssignClientCharacter(0);
             SceneManager.LoadScene("CharacterSelect");
+        }
+        if (totalPlayers <= 1)
+        {
+            if (GameObject.FindGameObjectWithTag("PlayerSelf") != null)
+            {
+                GameObject.FindGameObjectWithTag("PlayerSelf").GetComponent<JumpAndRunMovement>().CheckWon();
+                StartCoroutine(returnToSelect());
+                totalPlayers = 100;
+            }
         }
 	}
 
@@ -68,5 +88,44 @@ public class Master : MonoBehaviour {
     public Dictionary<string, float> GetStrengthList()
     {
         return NameStrengthDict;
+    }
+
+    public void endGame(){
+        PhotonNetwork.Disconnect();
+        AssignClientCharacter(0);
+        SceneManager.LoadScene("CharacterSelect");
+    }
+
+    public void GameStarts(int myTotalPlayers)
+    {
+        Debug.Log("Game Starting with " + myTotalPlayers + " players.");
+        totalPlayers = myTotalPlayers;
+    }
+
+    public void Idied()
+    {
+        totalPlayers--;
+    }
+
+    IEnumerator returnToSelect()
+    {
+        yield return new WaitForSeconds(3f);
+        PhotonNetwork.Disconnect();
+        AssignClientCharacter(0);
+        SceneManager.LoadScene("CharacterSelect");
+    }
+
+    public void PlaySFX(int num)
+    {
+        mySFXAudio.Stop();
+        mySFXAudio.clip = SFX[num];
+        mySFXAudio.Play();
+    }
+
+    public void PlayMSX(int num)
+    {
+        myMusicAudio.Stop();
+        myMusicAudio.clip = MSX[num];
+        myMusicAudio.Play();
     }
 }
