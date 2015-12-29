@@ -84,8 +84,13 @@ public class JumpAndRunMovement : MonoBehaviour
     private ReadyUp readyGUI;
     private bool readyGUIDisabled;
 
+    public AudioClip DeathNoise;
+    private AudioSource myAudioSrc;
+
     void Awake() 
     {
+        myAudioSrc = GetComponent<AudioSource>();
+        myAudioSrc.clip = DeathNoise;
         readyGUIDisabled = false;
         playersSpawned = false;
         punching = false;
@@ -179,7 +184,11 @@ public class JumpAndRunMovement : MonoBehaviour
                 if (!isDead)
                 {
                     BattleUI.Won();
-                    readyGUI.EndGame();
+                    StartCoroutine(WinWait());
+                }
+                else
+                {
+                    StartCoroutine(LoseWait());
                 }
             }
         }
@@ -190,6 +199,20 @@ public class JumpAndRunMovement : MonoBehaviour
                 playersSpawned  = true;
             }
         }
+    }
+
+    IEnumerator WinWait()
+    {
+        yield return new WaitForSeconds(2f);
+        readyGUI.transform.gameObject.SetActive(true);
+        readyGUI.EndGame();
+    }
+
+    IEnumerator LoseWait()
+    {
+        yield return new WaitForSeconds(1.9f);
+        readyGUI.transform.gameObject.SetActive(true);
+        readyGUI.EndGame(); 
     }
 
     void UpdateFacingDirection()
@@ -465,7 +488,7 @@ public class JumpAndRunMovement : MonoBehaviour
         if (col.tag != "DeathWall")
             return;
         camShaker.BeginShake(m_Body.velocity.magnitude, m_PhotonView.isMine);
-
+        myAudioSrc.Play();
         if(!m_PhotonView.isMine)
             return;
 

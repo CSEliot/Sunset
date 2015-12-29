@@ -61,6 +61,7 @@ public class Master : MonoBehaviour {
             PhotonNetwork.Disconnect();
             AssignClientCharacter(0);
             SceneManager.LoadScene("CharacterSelect");
+            PlayMSX(0);
         }
         if (totalPlayers <= 1)
         {
@@ -91,6 +92,7 @@ public class Master : MonoBehaviour {
     }
 
     public void endGame(){
+        PlayMSX(0);
         PhotonNetwork.Disconnect();
         AssignClientCharacter(0);
         SceneManager.LoadScene("CharacterSelect");

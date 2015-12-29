@@ -14,7 +14,9 @@ public class CamShakeSimple : MonoBehaviour
     {
         float timeDiv = isClient ? 1 : 5;
         BodyVelocityMag = isClient ? BodyVelocityMag : BodyVelocityMag * 0.9f;
-        gameObject.GetComponent<UnityStandardAssets._2D.Camera2DFollow>().enabled = false;
+        if(!isClient)
+            gameObject.GetComponent<UnityStandardAssets._2D.Camera2DFollow>()
+                .enabled = false;
         originalCameraPosition = transform.position;
         shakeAmt = BodyVelocityMag * ShakeMod;
         InvokeRepeating("CameraShake", 0, .01f);
@@ -25,7 +27,9 @@ public class CamShakeSimple : MonoBehaviour
     {
         float timeDiv = isClient ? 3 : 1;
         BodyVelocityMag = isClient ? BodyVelocityMag : BodyVelocityMag * 0.9f;
-        gameObject.GetComponent<UnityStandardAssets._2D.Camera2DFollow>().enabled = false;
+        if (!isClient)
+            gameObject.GetComponent<UnityStandardAssets._2D.Camera2DFollow>()
+                .enabled = false;
         originalCameraPosition = transform.position;
         shakeAmt = BodyVelocityMag * ShakeMod;
         InvokeRepeating("CameraShake", 0, .01f);
@@ -49,7 +53,8 @@ public class CamShakeSimple : MonoBehaviour
     {
         CancelInvoke("CameraShake");
         transform.position = originalCameraPosition;
-        transform.GetComponent<UnityStandardAssets._2D.Camera2DFollow>().enabled = true;
+        transform.GetComponent<UnityStandardAssets._2D.Camera2DFollow>()
+            .enabled = true;
     }
 
 }
