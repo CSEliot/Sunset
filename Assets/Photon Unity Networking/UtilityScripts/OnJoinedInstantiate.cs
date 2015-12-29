@@ -24,17 +24,17 @@ public class OnJoinedInstantiate : MonoBehaviour
         }
     }
 
-    public void OnReadyUp()
+    public void OnReadyUp(int myID)
     {
-        Vector3 spawnPos = Vector3.up;
+        Vector3 spawnPos;
         int totalPlayersFound = PhotonNetwork.playerList.Length;
-        spawnPos = SpawnPosition[totalPlayersFound-1].position;
+        spawnPos = SpawnPosition[myID].position;
 
         Vector3 random = Random.insideUnitSphere;
         random.y = 0;
         random = random.normalized;
-        Vector3 itempos = spawnPos + this.PositionOffset * random;
-        PhotonNetwork.Instantiate(m.GetClientCharacter(), itempos, Quaternion.identity, 0);
+        Vector3 itempos = spawnPos;
+        PhotonNetwork.Instantiate(m.GetClientCharacter(), spawnPos, Quaternion.identity, 0);
         PlayerHead.sprite = GetImage();
     }
 

@@ -61,16 +61,26 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
     public virtual void OnConnectedToMaster()
     {
         Debug.Log("OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room. Calling: PhotonNetwork.JoinRandomRoom();");
+        ////Get room properties, containing things such as player info and selected character.
+        
+        Debug.Log("Adding player property");
+        ExitGames.Client.Photon.Hashtable playerProperties = PhotonNetwork.player.customProperties;
+        ////Track each player's chosen character.
+        if (playerProperties.ContainsKey("ChosenCharNum"))
+        {
+            playerProperties["ChosenCharNum"] = m.Client_CharNum;
+        }
+        else { 
+            playerProperties.Add("ChosenCharNum", m.Client_CharNum);
+        }
+
+        PhotonNetwork.player.SetCustomProperties(playerProperties);
         PhotonNetwork.JoinRandomRoom();        
     }
 
     public virtual void OnJoinedLobby()
     {
         Debug.Log("OnJoinedLobby(). This client is connected and does get a room-list, which gets stored as PhotonNetwork.GetRoomList(). This script now calls: PhotonNetwork.JoinRandomRoom();");
-        ////Get room properties, containing things such as player info and selected character.
-        ExitGames.Client.Photon.Hashtable playerProperties = PhotonNetwork.room.customProperties;
-        ////Track each player's chosen character.
-        playerProperties.Add("ChosenCharNum", m.Client_CharNum);
         PhotonNetwork.JoinRandomRoom();
     }
 
@@ -90,13 +100,20 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
     public void OnJoinedRoom()
     {
         Debug.Log("OnJoinedRoom() called by PUN. Now this client is in a room. From here on, your game would be running. For reference, all callbacks are listed in enum: PhotonNetworkingMessage");
-        ////Get room properties, containing things such as player info and selected character.
+        //Get room properties, containing things such as player info and selected character.
         //ExitGames.Client.Photon.Hashtable playerProperties = PhotonNetwork.room.customProperties;
         //Get total number of players logged into room.
         int totalPlayersFound = PhotonNetwork.playerList.Length;
         PhotonNetwork.playerName = "Player " + totalPlayersFound;
         m.Player_Number = totalPlayersFound-1;
-        ////Track each player's chosen character.
+        if (!PhotonNetwork.room.customProperties.ContainsKey("GameStarted"))
+        {
+            ExitGames.Client.Photon.Hashtable tempTable = PhotonNetwork
+                .room.customProperties;
+            tempTable.Add("GameStarted", false);
+            PhotonNetwork.room.SetCustomProperties(tempTable);
+        }
+        //Track each player's chosen character.
         //playerProperties.Add(PhotonNetwork.playerName, m.Client_CharNum);
     }
 
