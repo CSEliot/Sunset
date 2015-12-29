@@ -13,43 +13,52 @@ public class ReadyUp : MonoBehaviour {
 
     private PhotonView m_PhotonView;
     private Master m;
+    private OnJoinedInstantiate j;
 
     private int headSprite;
 
     public Sprite Empty;
 
+    public Text PercentReady;
+
     public Image[] PlayerSlots;
 
     private int totalLoggedIn;
+    private int totalReady;
 
     private Dictionary<int, int> ID_to_SlotNum;
     private Dictionary<int, int> ID_to_CharNum;
+    private Dictionary<int, bool>ID_to_IsReady;
 
     private int myLogInID;
 
-    private int[] SlotList;
+    //private int[] SlotList;
 
 	// Use this for initialization
 	void Start () {
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
+        j = GameObject.FindGameObjectWithTag("SpawnPoints")
+            .GetComponent<OnJoinedInstantiate>();
         ID_to_SlotNum = new Dictionary<int, int>();
         ID_to_CharNum = new Dictionary<int, int>();
+        ID_to_IsReady = new Dictionary<int, bool>();
+
         totalLoggedIn = 0;
+        totalReady = 0;
         m_PhotonView = GetComponent<PhotonView>();
         isReady = false;
         readyUped = false;
-        headSprite = GameObject.FindGameObjectWithTag("SpawnPoints")
-            .GetComponent<OnJoinedInstantiate>().GetImageNum();
+        headSprite = j.GetImageNum();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        SlotList = new int[6];
-        for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
-        {
-            SlotList[i] = PhotonNetwork.playerList[i].ID;
-        }
-
+        //SlotList = new int[6];
+        //for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
+        //{
+        //    SlotList[i] = PhotonNetwork.playerList[i].ID;
+        //}
+        PercentReady.text = "" + totalReady + "/" + totalLoggedIn;
         if (!readyUped && Input.GetButtonDown("Left") && !isReady)
         {
             SelectorYes.SetActive(true);
@@ -62,10 +71,12 @@ public class ReadyUp : MonoBehaviour {
             SelectorNo.SetActive(true);
             isReady = false;
         }
-        if (!readyUped && Input.GetButtonDown("Submit") && isReady)
+        if (!readyUped && Input.GetButtonDown("Submit") && isReady
+            && totalLoggedIn > 1)
         {
             m_PhotonView.RPC("ShowReady", PhotonTargets.All, myLogInID);
             SelectorYes.SetActive(false);
+            readyUped = true;
         }
 	}
 
@@ -73,11 +84,26 @@ public class ReadyUp : MonoBehaviour {
     [PunRPC]
     void ShowReady(int LogInID)
     {
+        totalReady++;
         int readyChar = ID_to_CharNum[LogInID];
         int readySlot = ID_to_SlotNum[LogInID];
-        PlayerSlots[readySlot].sprite = GameObject.FindGameObjectWithTag("SpawnPoints")
-            .GetComponent<OnJoinedInstantiate>().GetImage(readyChar);
-        readyUped = true;
+        ID_to_IsReady[LogInID] = true;
+
+        PlayerSlots[readySlot].sprite = j.GetImage(readyChar);
+        if (totalReady == totalLoggedIn)
+        {
+            Debug.Log("Start Game!");
+            j.OnReadyUp(readySlot);
+            ExitGames.Client.Photon.Hashtable tempTable = PhotonNetwork
+                .room.customProperties;
+            tempTable["GameStarted"] = true;
+            PhotonNetwork.room.SetCustomProperties(tempTable);
+            gameObject.SetActive(false);
+        }
+        else 
+        {
+            Debug.Log("Not all Ready: " + totalReady + "/" + totalLoggedIn);
+        }
     }
 
     void OnJoinedRoom()
@@ -88,6 +114,7 @@ public class ReadyUp : MonoBehaviour {
         //Add self to player info tracking.
         ID_to_CharNum.Add(myLogInID, headSprite);
         ID_to_SlotNum.Add(myLogInID, PhotonNetwork.playerList.Length - 1);
+        ID_to_IsReady.Add(myLogInID, false);
 
         //Add info from others already logged in.
         int otherLogInID = 0;
@@ -103,6 +130,7 @@ public class ReadyUp : MonoBehaviour {
                 ID_to_CharNum.Add(otherLogInID, otherCharNum);
                 ID_to_SlotNum.Add(otherLogInID, otherSlotNum);
             }
+            totalLoggedIn++;
         }
     }
 
@@ -112,19 +140,57 @@ public class ReadyUp : MonoBehaviour {
 
     void OnPhotonPlayerConnected(PhotonPlayer player)
     {
-        int otherLogInID = PhotonNetwork.player.ID; ;
+        PlayerSlots[PhotonNetwork.playerList.Length - 1]
+            .transform.gameObject.SetActive(true);
+        int otherLogInID = player.ID;
+        //Debug.Log("Player Connected! ID: " + player.ID);
+        //foreach (object k in player.customProperties.Keys)
+        //{
+        //    Debug.Log("Key: " + (string)k);
+        //}
         ID_to_CharNum.Add(otherLogInID
             , (int)player.customProperties["ChosenCharNum"]);
         ID_to_SlotNum.Add(otherLogInID, PhotonNetwork.playerList.Length - 1);
-        Debug.Log("Player Connected! ID: " + player.ID);
         //ID_to_ReadyNum.Add(otherLogInID, );
         totalLoggedIn++;
     }
 
     void OnPhotonPlayerDisconnected(PhotonPlayer player)
     {
+        int otherID = player.ID;
+        PlayerSlots[ID_to_SlotNum[otherID]].sprite = Empty;
+        PlayerSlots[ID_to_SlotNum[otherID]].transform.gameObject.SetActive(false);
+        ID_to_SlotNum.Remove(otherID);
+        ID_to_CharNum.Remove(otherID);
         totalLoggedIn--;
+        if (ID_to_IsReady[otherID])
+        {
+            totalReady--;
+        }
+        ID_to_IsReady.Remove(otherID);
+        fixReadyHeads();
     }
 
+    private void fixReadyHeads()
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            PlayerSlots[i].transform.gameObject.SetActive(false);
+        }
 
+        int logInID = 0;
+        for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
+        {
+            PlayerSlots[i].transform.gameObject.SetActive(true);
+            logInID = PhotonNetwork.playerList[i].ID;
+            if (ID_to_IsReady[logInID])
+            {
+                PlayerSlots[i].sprite = j.GetImage(ID_to_CharNum[logInID]);
+            }
+            else
+            {
+                PlayerSlots[i].sprite = Empty;
+            }
+        }
+    }
 }
