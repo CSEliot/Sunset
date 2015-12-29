@@ -117,7 +117,6 @@ public class ReadyUp : MonoBehaviour {
             tempPlayerTable["IsReady"] = true;
             PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
             m.GameStarts(totalReady);
-            gameObject.SetActive(false);
         }
         else 
         {
