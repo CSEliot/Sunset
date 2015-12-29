@@ -123,6 +123,7 @@ public class JumpAndRunMovement : MonoBehaviour
 
         //Jump Detection Only, no physics handling.
         UpdateJumping();
+        UpdateDownJumping();    
         UpdateAttacks();
     }
 
@@ -133,6 +134,7 @@ public class JumpAndRunMovement : MonoBehaviour
         if(!m_PhotonView.isMine)
             return;
         UpdateJumpingPhysics();
+        UpdateDownJumpingPhysics();
         UpdateMovementPhysics();
         //limit max velocity.
         //Debug.Log("R Velocity: " + m_Body.velocity.magnitude);
@@ -178,7 +180,6 @@ public class JumpAndRunMovement : MonoBehaviour
         if (Input.GetButtonDown("DownJump") == true
             && canDownJump)
         {
-            Debug.Log("DownJumped");
             downJumped = true;
             canDownJump = false;
         }
@@ -188,6 +189,7 @@ public class JumpAndRunMovement : MonoBehaviour
     {
         if (downJumped)
         {
+            Debug.Log("DownJumped");
             jumpForceTemp = DownJumpForce;
             downJumped = false;
         }
@@ -245,7 +247,7 @@ public class JumpAndRunMovement : MonoBehaviour
         //hit.collider.gameObject.layer
         if (m_IsGrounded && !jumped)
         {
-            Debug.Log ("Grounded on: " + (hit.collider.name));
+            //Debug.Log ("Grounded on: " + (hit.collider.name));
             jumpsRemaining = TotalJumpsAllowed;
         }
     }
