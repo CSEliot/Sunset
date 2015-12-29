@@ -94,10 +94,14 @@ public class ReadyUp : MonoBehaviour {
         {
             Debug.Log("Start Game!");
             j.OnReadyUp(readySlot);
-            ExitGames.Client.Photon.Hashtable tempTable = PhotonNetwork
+            ExitGames.Client.Photon.Hashtable tempRoomTable = PhotonNetwork
                 .room.customProperties;
-            tempTable["GameStarted"] = true;
-            PhotonNetwork.room.SetCustomProperties(tempTable);
+            tempRoomTable["GameStarted"] = true;
+            PhotonNetwork.room.SetCustomProperties(tempRoomTable);
+            ExitGames.Client.Photon.Hashtable tempPlayerTable = PhotonNetwork
+                .player.customProperties;
+            tempPlayerTable["IsReady"] = true;
+            PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
             gameObject.SetActive(false);
         }
         else 
@@ -110,6 +114,9 @@ public class ReadyUp : MonoBehaviour {
     {
         myLogInID = PhotonNetwork.player.ID;
         ExitGames.Client.Photon.Hashtable tempTable = PhotonNetwork.player.customProperties;
+        tempTable.Add("IsReady", false);
+        //Create IsReady state. Begins false.
+        PhotonNetwork.player.SetCustomProperties(tempTable);
 
         //Add self to player info tracking.
         ID_to_CharNum.Add(myLogInID, headSprite);
@@ -120,15 +127,20 @@ public class ReadyUp : MonoBehaviour {
         int otherLogInID = 0;
         int otherSlotNum = 0;
         int otherCharNum = 0;
+        bool otherIsReady = false;
         for(int i = 0; i < PhotonNetwork.playerList.Length; i++){
             PlayerSlots[i].transform.gameObject.SetActive(true);
             otherLogInID = PhotonNetwork.playerList[i].ID;
             if (myLogInID != otherLogInID)
             {
                 otherSlotNum = i;
-                otherCharNum = (int)PhotonNetwork.playerList[i].customProperties["ChosenCharNum"];
+                otherCharNum = (int)PhotonNetwork.playerList[i]
+                    .customProperties["ChosenCharNum"];
+                otherIsReady = (bool)PhotonNetwork.playerList[i]
+                    .customProperties["IsReady"];
                 ID_to_CharNum.Add(otherLogInID, otherCharNum);
                 ID_to_SlotNum.Add(otherLogInID, otherSlotNum);
+                ID_to_IsReady.Add(otherLogInID, otherIsReady);
             }
             totalLoggedIn++;
         }
@@ -151,6 +163,7 @@ public class ReadyUp : MonoBehaviour {
         ID_to_CharNum.Add(otherLogInID
             , (int)player.customProperties["ChosenCharNum"]);
         ID_to_SlotNum.Add(otherLogInID, PhotonNetwork.playerList.Length - 1);
+        ID_to_IsReady.Add(otherLogInID, false);
         //ID_to_ReadyNum.Add(otherLogInID, );
         totalLoggedIn++;
     }
