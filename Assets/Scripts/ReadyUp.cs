@@ -114,7 +114,9 @@ public class ReadyUp : MonoBehaviour {
     {
         myLogInID = PhotonNetwork.player.ID;
         ExitGames.Client.Photon.Hashtable tempTable = PhotonNetwork.player.customProperties;
-        tempTable.Add("IsReady", false);
+        if(!tempTable.ContainsKey("IsReady"))
+            tempTable.Add("IsReady", false);
+
         //Create IsReady state. Begins false.
         PhotonNetwork.player.SetCustomProperties(tempTable);
 
@@ -160,7 +162,7 @@ public class ReadyUp : MonoBehaviour {
         //{
         //    Debug.Log("Key: " + (string)k);
         //}
-        ID_to_CharNum.Add(otherLogInID
+         ID_to_CharNum.Add(otherLogInID
             , (int)player.customProperties["ChosenCharNum"]);
         ID_to_SlotNum.Add(otherLogInID, PhotonNetwork.playerList.Length - 1);
         ID_to_IsReady.Add(otherLogInID, false);
