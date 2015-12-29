@@ -173,16 +173,15 @@ public class ReadyUp : MonoBehaviour {
     void OnPhotonPlayerDisconnected(PhotonPlayer player)
     {
         int otherID = player.ID;
-        PlayerSlots[ID_to_SlotNum[otherID]].sprite = Empty;
-        PlayerSlots[ID_to_SlotNum[otherID]].transform.gameObject.SetActive(false);
         ID_to_SlotNum.Remove(otherID);
         ID_to_CharNum.Remove(otherID);
-        totalLoggedIn--;
-        if (ID_to_IsReady[otherID])
-        {
-            totalReady--;
-        }
         ID_to_IsReady.Remove(otherID);
+        totalLoggedIn--;
+        totalReady = 0;
+        SelectorYes.SetActive(false);
+        SelectorNo.SetActive(true);
+        isReady = false;
+        readyUped = false;
         fixReadyHeads();
     }
 
@@ -191,21 +190,12 @@ public class ReadyUp : MonoBehaviour {
         for (int i = 0; i < 6; i++)
         {
             PlayerSlots[i].transform.gameObject.SetActive(false);
+            PlayerSlots[i].sprite = Empty;
         }
-
-        int logInID = 0;
+        
         for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
         {
             PlayerSlots[i].transform.gameObject.SetActive(true);
-            logInID = PhotonNetwork.playerList[i].ID;
-            if (ID_to_IsReady[logInID])
-            {
-                PlayerSlots[i].sprite = j.GetImage(ID_to_CharNum[logInID]);
-            }
-            else
-            {
-                PlayerSlots[i].sprite = Empty;
-            }
         }
     }
 }
