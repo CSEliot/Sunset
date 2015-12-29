@@ -30,12 +30,21 @@ public class ReadyUp : MonoBehaviour {
     private Dictionary<int, int> ID_to_CharNum;
     private Dictionary<int, bool>ID_to_IsReady;
 
+
     private int myLogInID;
 
+    public Text ReadyText;
+    public GameObject Yes;
+    public GameObject No;
+
+
+
+    private bool waiting;
     //private int[] SlotList;
 
 	// Use this for initialization
 	void Start () {
+        waiting = false;
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
         j = GameObject.FindGameObjectWithTag("SpawnPoints")
             .GetComponent<OnJoinedInstantiate>();
@@ -49,10 +58,14 @@ public class ReadyUp : MonoBehaviour {
         isReady = false;
         readyUped = false;
         headSprite = j.GetImageNum();
+        
 	}
 	
 	// Update is called once per frame
 	void Update () {
+        if (waiting)
+            return;
+        
         //SlotList = new int[6];
         //for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
         //{
@@ -102,6 +115,7 @@ public class ReadyUp : MonoBehaviour {
                 .player.customProperties;
             tempPlayerTable["IsReady"] = true;
             PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
+            m.GameStarts(totalReady);
             gameObject.SetActive(false);
         }
         else 
@@ -112,6 +126,25 @@ public class ReadyUp : MonoBehaviour {
 
     void OnJoinedRoom()
     {
+        if (PhotonNetwork.room.customProperties.ContainsKey("GameStarted")
+            && (bool)PhotonNetwork.room.customProperties["GameStarted"] == true)
+        {
+            if (GameObject.FindGameObjectWithTag("PlayerSelf") != null)
+                AssignCameraFollow(GameObject.FindGameObjectWithTag("PlayerSelf").transform);
+            Yes.SetActive(false);
+            SelectorYes.SetActive(false);
+            No.SetActive(false);
+            SelectorNo.SetActive(false);
+
+            ReadyText.text = "Please Wait. . .";
+            PercentReady.text = "";
+            waiting = true;
+            for (int i = 0; i < PlayerSlots.Length; i++)
+            {
+                PlayerSlots[i].transform.gameObject.SetActive(false);
+            }
+            return;
+        }
         myLogInID = PhotonNetwork.player.ID;
         ExitGames.Client.Photon.Hashtable tempTable = PhotonNetwork.player.customProperties;
         if(!tempTable.ContainsKey("IsReady"))
@@ -146,6 +179,17 @@ public class ReadyUp : MonoBehaviour {
             }
             totalLoggedIn++;
         }
+    }
+
+    [PunRPC]
+    void RESTARTGAME()
+    {
+        m.endGame();
+    }
+
+    public void EndGame()
+    {
+        m_PhotonView.RPC("RESTARTGAME", PhotonTargets.All);
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -197,5 +241,15 @@ public class ReadyUp : MonoBehaviour {
         {
             PlayerSlots[i].transform.gameObject.SetActive(true);
         }
+    }
+
+    private void AssignCameraFollow(Transform myTransform)
+    {
+        if (myTransform == null)
+        {
+            return;
+        }
+        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<UnityStandardAssets._2D.Camera2DFollow>()
+            .SetTarget(myTransform);
     }
 }

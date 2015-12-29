@@ -48,6 +48,7 @@ public class JumpAndRunMovement : MonoBehaviour
 
     private bool facingRight;
 
+    private bool punching;
     public int PunchPercentAdd;
     public float PunchForceUp;
     public float PunchForceForward_Forward;
@@ -76,11 +77,22 @@ public class JumpAndRunMovement : MonoBehaviour
 
     private Transform[] SpawnPoints;
 
+    private Master m;
+
+    private bool playersSpawned;
+
+    private ReadyUp readyGUI;
 
     void Awake() 
     {
+        readyGUI = GameObject.FindGameObjectWithTag("ReadyOBJ")
+            .GetComponent<ReadyUp>();
+        playersSpawned = false;
+        punching = false;
         camShaker = GameObject.FindGameObjectWithTag("MainCamera")
             .GetComponent<CamShakeSimple>();
+        m = GameObject.FindGameObjectWithTag("Master")
+            .GetComponent<Master>();
 
         isDead = false;
         battleUIAssigned = false;
@@ -113,6 +125,7 @@ public class JumpAndRunMovement : MonoBehaviour
         if(!m_PhotonView.isMine)
             return;
 
+
         if (!cameraFollowAssigned)
             AssignCameraFollow(transform);
         if (!battleUIAssigned){
@@ -120,6 +133,7 @@ public class JumpAndRunMovement : MonoBehaviour
                 .GetComponent<DamageTracker>();
             battleUIAssigned = true;
         }
+        
 
         //Jump Detection Only, no physics handling.
         UpdateJumping();
@@ -146,6 +160,30 @@ public class JumpAndRunMovement : MonoBehaviour
         if(!isDead)
             m_Body.velocity = velocity;
         velocity = Vector3.zero;
+    }
+
+    void LateUpdate()
+    {
+        if (!m_PhotonView.isMine)
+            return;
+        if (playersSpawned)
+        {
+            if (GameObject.FindGameObjectsWithTag("PlayerSelf").Length <= 1)
+            {
+                if (!isDead)
+                {
+                    BattleUI.Won();
+                    readyGUI.EndGame();
+                }
+            }
+        }
+        else
+        {
+            if (GameObject.FindGameObjectsWithTag("PlayerSelf").Length > 1)
+            {
+                playersSpawned  = true;
+            }
+        }
     }
 
     void UpdateFacingDirection()
@@ -261,29 +299,33 @@ public class JumpAndRunMovement : MonoBehaviour
     void UpdateAttacks()
     {
         if(totalAttackFrames < 0 ){
-            if (Input.GetButtonDown("Up"))
+            if (Input.GetButtonDown("Up") && !punching)
             {
+                punching = true;
                 AttackObjs[0].SetActive(true);
                 StartCoroutine(DisableDelay(AttackObjs[0]));
                 totalAttackFrames = AttackLag;
                 m_PhotonView.RPC("UpAttack", PhotonTargets.Others);
             }
-            if (Input.GetButtonDown("Down"))
+            if (Input.GetButtonDown("Down") && !punching)
             {
+                punching = true;
                 AttackObjs[2].SetActive(true);
                 StartCoroutine(DisableDelay(AttackObjs[2]));
                 totalAttackFrames = AttackLag;
                 m_PhotonView.RPC("DownAttack", PhotonTargets.Others);
             }
-            if (facingRight && Input.GetButtonDown("Right"))
+            if (facingRight && Input.GetButtonDown("Right") && !punching)
             {
+                punching = true;
                 AttackObjs[1].SetActive(true);
                 StartCoroutine(DisableDelay(AttackObjs[1]));
                 totalAttackFrames = AttackLag;
                 m_PhotonView.RPC("ForwardAttack", PhotonTargets.Others);
             }
-            if (!facingRight && Input.GetButtonDown("Left"))
+            if (!facingRight && Input.GetButtonDown("Left") && !punching)
             {
+                punching = true;
                 AttackObjs[1].SetActive(true);
                 StartCoroutine(DisableDelay(AttackObjs[1]));
                 totalAttackFrames = AttackLag;
@@ -386,6 +428,7 @@ public class JumpAndRunMovement : MonoBehaviour
     {
         yield return attackDisableDelay;
         dis.SetActive(false);
+        punching = false;
     }
 
     private void AssignCameraFollow(Transform myTransform)
@@ -416,6 +459,7 @@ public class JumpAndRunMovement : MonoBehaviour
         if (col.tag != "DeathWall")
             return;
         camShaker.BeginShake(m_Body.velocity.magnitude, m_PhotonView.isMine);
+
         if(!m_PhotonView.isMine)
             return;
 
@@ -431,6 +475,7 @@ public class JumpAndRunMovement : MonoBehaviour
 
     IEnumerator Ghost()
     {
+        BattleUI.Lost();
         m_PhotonView.RPC("OnGhost", PhotonTargets.Others);
         isDead = true;
         m_Body.velocity = Vector2.zero;
@@ -473,5 +518,18 @@ public class JumpAndRunMovement : MonoBehaviour
     {
         transform.tag = "PlayerGhost";
         transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+    }
+
+    public bool GetIsDead()
+    {
+        return isDead;
+    }
+
+    public void CheckWon()
+    {
+        if (m_PhotonView.isMine && !isDead)
+        {
+            BattleUI.Won();
+        }
     }
 }
