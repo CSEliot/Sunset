@@ -1,3 +1,6 @@
+<<[[Crunch Time over, resuming normal commit messages]]>>
 Changelog:
 
- 
+  - Fixed everyone spawning in the same location to start.
+  - Fixed incorrect readiness trackign on late joiners.
+  - Stopped being able to attack multiple times at once.
