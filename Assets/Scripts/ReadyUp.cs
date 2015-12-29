@@ -58,7 +58,7 @@ public class ReadyUp : MonoBehaviour {
         isReady = false;
         readyUped = false;
         headSprite = j.GetImageNum();
-        
+        m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
 	}
 	
 	// Update is called once per frame
@@ -90,6 +90,7 @@ public class ReadyUp : MonoBehaviour {
             m_PhotonView.RPC("ShowReady", PhotonTargets.All, myLogInID);
             SelectorYes.SetActive(false);
             readyUped = true;
+            m.PlaySFX(2);
         }
 	}
 
@@ -189,6 +190,7 @@ public class ReadyUp : MonoBehaviour {
 
     public void EndGame()
     {
+        PhotonNetwork.room.customProperties["GameStarted"] = false;
         m_PhotonView.RPC("RESTARTGAME", PhotonTargets.All);
     }
 
