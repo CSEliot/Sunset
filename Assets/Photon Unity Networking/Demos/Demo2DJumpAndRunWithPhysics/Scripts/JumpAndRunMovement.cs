@@ -130,6 +130,7 @@ public class JumpAndRunMovement : MonoBehaviour
             readyGUI = GameObject.FindGameObjectWithTag("ReadyOBJ")
                 .GetComponent<ReadyUp>();
             readyGUI.transform.gameObject.SetActive(false);
+            readyGUIDisabled = true;
         }
         if (!cameraFollowAssigned)
             AssignCameraFollow(transform);
