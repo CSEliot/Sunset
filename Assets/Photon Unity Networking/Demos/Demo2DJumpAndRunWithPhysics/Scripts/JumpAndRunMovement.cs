@@ -178,6 +178,7 @@ public class JumpAndRunMovement : MonoBehaviour
         if (Input.GetButtonDown("DownJump") == true
             && canDownJump)
         {
+            Debug.Log("DownJumped");
             downJumped = true;
             canDownJump = false;
         }
