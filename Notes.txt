@@ -3,15 +3,34 @@ Changelog:
  / Waitign for next game no says 'Spectating'
  + Spectating text glows as does ready up text.
  + Spectating now shows when you die.
+ + Sectating occurs on late join.
+ / louder punch volume
+ 
 
 
 To Be Made:
  
- - Logging in while game is in session not working as expected
- - Need "Spectating . . ."
  - Actual Help text
- = Louder punching sounds or quieter music.
+ - BUFF DEFENSE
+ - Side Jumping
+ - jump detection left and right corners.
+ - Left and Right to Swap Spectators
+ - Re-'yes' when someone else joins.
+ - Can DownJump in-air without jumping.
+ - Fight-miusic starts when player joins.
+ - When new players join, the down arrow pops up during spectation.
+ - Server Choices.
+ - Charging attacks.
 
- 
+Later:
 
+ - Special Abilities
+ - Destructable Terrain
+ - More maps.
+ - Items.
+ - Mouse Control Options.
+ - Controller Support.
 
+"Cool" Ideas:
+
+ - Pierce takes over another character.
