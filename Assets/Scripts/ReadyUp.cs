@@ -37,11 +37,11 @@ public class ReadyUp : MonoBehaviour {
     public GameObject Yes;
     public GameObject No;
 
-
-
     private bool waiting;
+    private bool isSpectating;
     //private int[] SlotList;
 
+    
 	// Use this for initialization
 	void Start () {
         waiting = false;
@@ -65,7 +65,21 @@ public class ReadyUp : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (waiting)
+        {
+            if (GameObject.FindGameObjectsWithTag("PlayerSelf").Length <= 1)
+            {
+                EndGame();
+            }
+            if (!isSpectating)
+            {
+                if (GameObject.FindGameObjectWithTag("PlayerSelf") != null)
+                {
+                    AssignCameraFollow(GameObject.FindGameObjectWithTag("PlayerSelf").transform);
+                    isSpectating = true;
+                }
+            }
             return;
+        }
         
         //SlotList = new int[6];
         //for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
@@ -110,6 +124,7 @@ public class ReadyUp : MonoBehaviour {
 
         PlayerSlots[readySlot].sprite = j.GetImage(readyChar);
         
+        m.PlayMSX(2);
         if (totalReady == totalLoggedIn)
         {
             Debug.Log("Start Game!");
@@ -119,7 +134,6 @@ public class ReadyUp : MonoBehaviour {
             tempRoomTable["GameStarted"] = true;
             PhotonNetwork.room.SetCustomProperties(tempRoomTable);
             m.GameStarts(totalReady);
-            m.PlayMSX(2);
         }
         else 
         {
@@ -132,22 +146,10 @@ public class ReadyUp : MonoBehaviour {
         if (PhotonNetwork.room.customProperties.ContainsKey("GameStarted")
             && (bool)PhotonNetwork.room.customProperties["GameStarted"] == true)
         {
-            if (GameObject.FindGameObjectWithTag("PlayerSelf") != null)
-                AssignCameraFollow(GameObject.FindGameObjectWithTag("PlayerSelf").transform);
-            Yes.SetActive(false);
-            SelectorYes.SetActive(false);
-            No.SetActive(false);
-            SelectorNo.SetActive(false);
-
-            ReadyText.text = "Please Wait. . .";
-            PercentReady.text = "";
-            waiting = true;
-            for (int i = 0; i < PlayerSlots.Length; i++)
-            {
-                PlayerSlots[i].transform.gameObject.SetActive(false);
-            }
+            SetSpectating();
             return;
         }
+
         myLogInID = PhotonNetwork.player.ID;
         ExitGames.Client.Photon.Hashtable tempTable = PhotonNetwork.player.customProperties;
         if (!tempTable.ContainsKey("IsReady"))
@@ -196,16 +198,26 @@ public class ReadyUp : MonoBehaviour {
         }
     }
 
-    [PunRPC]
-    void RESTARTGAME()
-    {
-        m.endGame();
-    }
-
     public void EndGame()
     {
         PhotonNetwork.room.customProperties["GameStarted"] = false;
-        m_PhotonView.RPC("RESTARTGAME", PhotonTargets.All);
+        m.endGame();
+    }
+
+    public void SetSpectating()
+    {
+        Yes.SetActive(false);
+        SelectorYes.SetActive(false);
+        No.SetActive(false);
+        SelectorNo.SetActive(false);
+
+        ReadyText.text = "Spectating . . .";
+        PercentReady.text = "";
+        waiting = true;
+        for (int i = 0; i < PlayerSlots.Length; i++)
+        {
+            PlayerSlots[i].transform.gameObject.SetActive(false);
+        }
     }
 
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -265,6 +277,7 @@ public class ReadyUp : MonoBehaviour {
 
     private void AssignCameraFollow(Transform myTransform)
     {
+        Debug.Log("Testing Assign Camera.");
         if (myTransform == null)
         {
             return;
