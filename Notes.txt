@@ -1,6 +1,17 @@
-<<[[Crunch Time over, resuming normal commit messages]]>>
 Changelog:
+ / Life Counter starts at 2
+ / Waitign for next game no says 'Spectating'
+ + Spectating text glows as does ready up text.
+ + Spectating now shows when you die.
 
-  - Fixed everyone spawning in the same location to start.
-  - Fixed incorrect readiness trackign on late joiners.
-  - Stopped being able to attack multiple times at once.
+
+To Be Made:
+ 
+ - Logging in while game is in session not working as expected
+ - Need "Spectating . . ."
+ - Actual Help text
+ = Louder punching sounds or quieter music.
+
+ 
+
+
