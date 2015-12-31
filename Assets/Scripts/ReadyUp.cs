@@ -65,7 +65,7 @@ public class ReadyUp : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (waiting)
-        {
+        {   
             if (GameObject.FindGameObjectsWithTag("PlayerSelf").Length <= 1)
             {
                 EndGame();
@@ -124,9 +124,10 @@ public class ReadyUp : MonoBehaviour {
 
         PlayerSlots[readySlot].sprite = j.GetImage(readyChar);
         
-        m.PlayMSX(2);
+        
         if (totalReady == totalLoggedIn)
         {
+            m.PlayMSX(2);
             Debug.Log("Start Game!");
             j.OnReadyUp(ID_to_SlotNum[myLogInID]);
             ExitGames.Client.Photon.Hashtable tempRoomTable = PhotonNetwork
