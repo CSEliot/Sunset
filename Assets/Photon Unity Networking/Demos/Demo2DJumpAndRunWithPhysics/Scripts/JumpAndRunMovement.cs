@@ -60,6 +60,8 @@ public class JumpAndRunMovement : MonoBehaviour
     private float punchForceForward_UpTemp;
     private float punchForceDownTemp;
     private Dictionary<string, float> StrengthsList;
+	private bool punchForceApplied;
+	public float MinimumPunchForce;
 
     //private bool PunchUp;
     //private bool PunchLeft;
@@ -292,7 +294,8 @@ public class JumpAndRunMovement : MonoBehaviour
         {
             SpeedTemp = Mathf.Lerp(SpeedTemp, 0f, SpeedDecel);
         }
-        velocity.x += SpeedTemp;
+		if(!punchForceApplied)
+        	velocity.x += SpeedTemp;
     }
 
     void UpdateIsGrounded()
@@ -475,12 +478,14 @@ public class JumpAndRunMovement : MonoBehaviour
     {
         Vector2 tempPunchForce = punchForce;
         camShaker.BeginShake(punchForce.magnitude, m_PhotonView.isMine, 1);
-        while (tempPunchForce.magnitude > 0.01f)
+        while (tempPunchForce.magnitude > MinimumPunchForce)
         {
+			punchForceApplied = true;
             velocity += tempPunchForce;
             tempPunchForce = Vector2.Lerp(tempPunchForce, Vector2.zero, PunchForceDecel);
             yield return null;
         }
+		punchForceApplied = false;
     }
 
     void OnTriggerExit2D(Collider2D col)
