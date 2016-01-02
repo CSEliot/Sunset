@@ -10,30 +10,40 @@ public class CamShakeSimple : MonoBehaviour
     public float ShakeMod;
     public float ShakeTime;
 
-    public void BeginShake(float BodyVelocityMag, bool isClient)
+	private Transform clientTf;
+	private UnityStandardAssets._2D.Camera2DFollow cam;
+	private bool isClientFound;
+
+	void Start(){
+		isClientFound = false;	
+		cam = GetComponent<UnityStandardAssets._2D.Camera2DFollow> ();
+	}
+
+	void Update(){
+		if (!isClientFound && cam.target != null) {
+			clientTf = cam.target;
+			isClientFound = true;
+		}
+	}
+
+
+    public void BeginDeathShake(float BodyVelocityMag, bool isClient)
     {
-        float timeDiv = isClient ? 1 : 5;
-        BodyVelocityMag = isClient ? BodyVelocityMag : BodyVelocityMag * 0.9f;
-        if(!isClient)
-            gameObject.GetComponent<UnityStandardAssets._2D.Camera2DFollow>()
-                .enabled = false;
-        originalCameraPosition = transform.position;
+        float timeDiv = isClient ? 1 : 3;
+		BodyVelocityMag = isClient ? BodyVelocityMag : BodyVelocityMag * 1/timeDiv;
+        gameObject.GetComponent<UnityStandardAssets._2D.Camera2DFollow>().enabled = false;
         shakeAmt = BodyVelocityMag * ShakeMod;
         InvokeRepeating("CameraShake", 0, .01f);
         Invoke("StopShaking", ShakeTime/timeDiv);
     }
 
-    public void BeginShake(float BodyVelocityMag, bool isClient, float time)
+	//Called for Punches
+    public void BeginPunchShake(float BodyVelocityMag, float time)
     {
-        float timeDiv = isClient ? 3 : 1;
-        BodyVelocityMag = isClient ? BodyVelocityMag : BodyVelocityMag * 0.9f;
-        if (!isClient)
-            gameObject.GetComponent<UnityStandardAssets._2D.Camera2DFollow>()
-                .enabled = false;
-        originalCameraPosition = transform.position;
+        gameObject.GetComponent<UnityStandardAssets._2D.Camera2DFollow>() .enabled = false;
         shakeAmt = BodyVelocityMag * ShakeMod;
         InvokeRepeating("CameraShake", 0, .01f);
-        Invoke("StopShaking", time / timeDiv);
+        Invoke("StopShaking", time / 3f);
     }
 
     void CameraShake()
@@ -41,8 +51,8 @@ public class CamShakeSimple : MonoBehaviour
         if (shakeAmt > 0)
         {
             float quakeAmt = Random.value * shakeAmt * 2 - shakeAmt;
-            Vector3 pp = transform.position;
-            pp.y += quakeAmt; // can also add to x and/or z
+			Vector3 pp = cam.target.position;
+            pp.y += quakeAmt;
             quakeAmt = Random.value * shakeAmt * 2 - shakeAmt;
             pp.x += quakeAmt;
             transform.position = pp;
@@ -52,7 +62,6 @@ public class CamShakeSimple : MonoBehaviour
     void StopShaking()
     {
         CancelInvoke("CameraShake");
-        transform.position = originalCameraPosition;
         transform.GetComponent<UnityStandardAssets._2D.Camera2DFollow>()
             .enabled = true;
     }

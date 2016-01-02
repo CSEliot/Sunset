@@ -476,8 +476,9 @@ public class JumpAndRunMovement : MonoBehaviour
 
     IEnumerator ApplyPunchForce(Vector2 punchForce)
     {
+		
         Vector2 tempPunchForce = punchForce;
-        camShaker.BeginShake(punchForce.magnitude, m_PhotonView.isMine, 1);
+        camShaker.BeginPunchShake(punchForce.magnitude, 1f);
         while (tempPunchForce.magnitude > MinimumPunchForce)
         {
 			punchForceApplied = true;
@@ -492,7 +493,7 @@ public class JumpAndRunMovement : MonoBehaviour
     {
         if (col.tag != "DeathWall")
             return;
-        camShaker.BeginShake(m_Body.velocity.magnitude, m_PhotonView.isMine);
+        camShaker.BeginDeathShake(m_Body.velocity.magnitude, m_PhotonView.isMine);
         myAudioSrc.Play();
         if(!m_PhotonView.isMine)
             return;
