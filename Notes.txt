@@ -1,10 +1,7 @@
 Changelog:
- / Life Counter starts at 2
- / Waitign for next game no says 'Spectating'
- + Spectating text glows as does ready up text.
- + Spectating now shows when you die.
- + Sectating occurs on late join.
- / louder punch volume
+ / Wait Music doesn't plays while waiting, fixed. 
+ / Can't move self while feeling force of a punch.
+ + New 'Minimum Punch Force' variable.
  
 
 
@@ -31,84 +28,6 @@ Later:
  - Mouse Control Options.
  - Controller Support.
 
-"Cool" Ideas:
+"Cool" Ideas
 
  - Pierce takes over another character.
-
-Crash Report:
- - Uncaught abort(143) at Error
-    at jsStackTrace (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:1057:12)
-    at stackTrace (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:1071:21)
-    at abort (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:3290378:43)
-    at nullFunc_ii (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:15313:2)
-    at Array.b143 (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:3285483:2)
-    at __Z24SetPlayerRunInBackgroundb [SetPlayerRunInBackground(bool)] (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:2895306:72)
-    at Array.__Z42Application_Set_Custom_PropRunInBackgroundh [Application_Set_Custom_PropRunInBackground(unsigned char)] (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:3266562:2)
-    at Object.dynCall_vi (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:3279878:30)
-    at invoke_vi (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:16677:23)
-    at Array._Application_set_runInBackground_m_751787555_0 (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:2817719:3)
-
-
-
-
-optimizing out Math.fround calls
-UnityLoader.js:3386 run() called, but dependencies remain, so not runningModule.printErr @ UnityLoader.js:3386
-UnityLoader.js:3667 loading WebGLFullOp.data from remote
-UnityLoader.js:3386 pre-main prep time: 5634 msModule.printErr @ UnityLoader.js:3386
-blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:5946 The devicemotion event is deprecated on insecure origins, and support will be removed in the future. You should consider switching your application to a secure origin, such as HTTPS. See https://goo.gl/rStTGz for more details.
-blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:5946 The deviceorientation event is deprecated on insecure origins, and support will be removed in the future. You should consider switching your application to a secure origin, such as HTTPS. See https://goo.gl/rStTGz for more details.
-UnityLoader.js:3382 PlayerConnection initialized from  (debug = 0)
-UnityLoader.js:3382 PlayerConnection disabled  - listening mode not supported
-UnityLoader.js:3382 Initialize engine version: 5.3.1f1 (cc9cbbcc37b4)
-UnityLoader.js:3382 Creating WebGL 1.0 context.
-UnityLoader.js:3382 Renderer: WebKit WebGL
-UnityLoader.js:3382 Vendor:   WebKit
-UnityLoader.js:3382 Version:  WebGL 1.0 (OpenGL ES 2.0 Chromium)
-UnityLoader.js:3382 GLES:     0
-UnityLoader.js:3382 ANGLE_instanced_arrays GL_ANGLE_instanced_arrays EXT_blend_minmax GL_EXT_blend_minmax EXT_frag_depth GL_EXT_frag_depth EXT_shader_texture_lod GL_EXT_shader_texture_lod EXT_sRGB GL_EXT_sRGB EXT_texture_filter_anisotropic GL_EXT_texture_filter_anisotropic WEBKIT_EXT_texture_filter_anisotropic GL_WEBKIT_EXT_texture_filter_anisotropic OES_element_index_uint GL_OES_element_index_uint OES_standard_derivatives GL_OES_standard_derivatives OES_texture_float GL_OES_texture_float OES_texture_float_linear GL_OES_texture_float_linear OES_texture_half_float GL_OES_texture_half_float OES_texture_half_float_linear GL_OES_texture_half_float_linear OES_vertex_array_object GL_OES_vertex_array_object WEBGL_compressed_texture_s3tc GL_WEBGL_compressed_texture_s3tc WEBKIT_WEBGL_compressed_texture_s3tc GL_WEBKIT_WEBGL_compressed_texture_s3tc WEBGL_debug_renderer_info GL_WEBGL_debug_renderer_info WEBGL_debug_shaders GL_WEBGL_debug_shaders WEBGL_depth_texture GL_WEBGL_depth_texture WEBKIT_WEBGL_depth_texture GL_WEBKIT_WEBGL_depth_tex
-UnityLoader.js:3382 ture WEBGL_draw_buffers GL_WEBGL_draw_buffers WEBGL_lose_context GL_WEBGL_lose_context WEBKIT_WEBGL_lose_context GL_WEBKIT_WEBGL_lose_context
-UnityLoader.js:3382 OPENGL LOG: Creating OpenGL ES 2.0 graphics device
-UnityLoader.js:3382 UnloadTime: 45.305000 ms
-UnityLoader.js:3382 UnloadTime: 42.320000 ms
-UnityLoader.js:3382 Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
-UnityLoader.js:3382 System memory in use before: 61.7 MB.
-UnityLoader.js:3382 System memory in use after: 61.7 MB.
-UnityLoader.js:3382 
-UnityLoader.js:3382 Unloading 24 unused Assets to reduce memory usage. Loaded Objects now: 689.
-UnityLoader.js:3382 Total: 30.520000 ms (FindLiveObjects: 0.775000 ms CreateObjectMapping: 3.015000 ms MarkObjects: 21.845000 ms  DeleteObjects: 4.765000 ms)
-UnityLoader.js:3382 
-UnityLoader.js:3382 UnloadTime: 18.455000 ms
-blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:8579 Setting Send Rate to: 60
-UnityEngine.Debug:Log(Object)
-ConnectAndJoinRandom:Awake()
-
-
-UnityLoader.js:3386 Invalid function pointer called with signature 'ii'. Perhaps this is an invalid value (e.g. caused by calling a virtual method on a NULL pointer)? Or calling a function with an incorrect type, which will fail? (it is worth building your source files with -Werror (warnings are errors), as warnings can indicate undefined behavior which can cause this)Module.printErr @ UnityLoader.js:3386
-UnityLoader.js:3386 Build with ASSERTIONS=2 for more info.Module.printErr @ UnityLoader.js:3386
-UnityLoader.js:3382 143
-UnityLoader.js:3386 143Module.printErr @ UnityLoader.js:3386
-UnityLoader.js:3325 Invoking error handler due to
-Uncaught abort(143) at Error
-    at jsStackTrace (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:1057:12)
-    at stackTrace (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:1071:21)
-    at abort (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:3290378:43)
-    at nullFunc_ii (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:15313:2)
-    at Array.b143 (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:3285483:2)
-    at __Z24SetPlayerRunInBackgroundb [SetPlayerRunInBackground(bool)] (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:2895306:72)
-    at Array.__Z42Application_Set_Custom_PropRunInBackgroundh [Application_Set_Custom_PropRunInBackground(unsigned char)] (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:3266562:2)
-    at Object.dynCall_vi (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:3279878:30)
-    at invoke_vi (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:16677:23)
-    at Array._Application_set_runInBackground_m_751787555_0 (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:2817719:3)
-blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:10671 Uncaught abort(143) at Error
-    at jsStackTrace (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:1057:12)
-    at stackTrace (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:1071:21)
-    at abort (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:3290378:43)
-    at nullFunc_ii (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:15313:2)
-    at Array.b143 (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:3285483:2)
-    at __Z24SetPlayerRunInBackgroundb [SetPlayerRunInBackground(bool)] (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:2895306:72)
-    at Array.__Z42Application_Set_Custom_PropRunInBackgroundh [Application_Set_Custom_PropRunInBackground(unsigned char)] (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:3266562:2)
-    at Object.dynCall_vi (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:3279878:30)
-    at invoke_vi (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:16677:23)
-    at Array._Application_set_runInBackground_m_751787555_0 (blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:2817719:3)
-blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:6009 'webkitMovementX' is deprecated. Please use 'movementX' instead.
-blob:http%3A//52.6.243.86%3A8084/decf1434-aeb8-4b8b-b085-c6ee0bee676c:6010 'webkitMovementY' is deprecated. Please use 'movementY' instead.
