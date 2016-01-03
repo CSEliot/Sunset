@@ -12,9 +12,9 @@ public class SelectSFX : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetButtonDown("Left") || Input.GetButtonDown("Right"))
+        if (Input.GetButtonDown("Up") || Input.GetButtonDown("Right"))
         {
-            m.PlaySFX(5);
+            m.PlaySFX(1);
         }
 	}
 }

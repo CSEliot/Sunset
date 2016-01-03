@@ -28,5 +28,6 @@ public class SceneChecking : MonoBehaviour {
             return;
         if(targetSceneName!="null")
             SceneManager.LoadScene(targetSceneName);
+            m.PlaySFX(0);
 	}
 }

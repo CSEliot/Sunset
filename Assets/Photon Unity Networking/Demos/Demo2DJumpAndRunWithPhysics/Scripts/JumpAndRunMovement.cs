@@ -61,7 +61,6 @@ public class JumpAndRunMovement : MonoBehaviour
     private float punchForceDownTemp;
     private Dictionary<string, float> StrengthsList;
 	private bool punchForceApplied;
-	public float MinimumPunchForce;
 
     //private bool PunchUp;
     //private bool PunchLeft;
@@ -84,7 +83,7 @@ public class JumpAndRunMovement : MonoBehaviour
     private bool playersSpawned;
 
     private ReadyUp readyGUI;
-    private bool readyGUIDisabled;
+    private bool readyGUIFound;
 
     public AudioClip DeathNoise;
     private AudioSource myAudioSrc;
@@ -93,7 +92,7 @@ public class JumpAndRunMovement : MonoBehaviour
     {
         myAudioSrc = GetComponent<AudioSource>();
         myAudioSrc.clip = DeathNoise;
-        readyGUIDisabled = false;
+        readyGUIFound = false;
         playersSpawned = false;
         punching = false;
         camShaker = GameObject.FindGameObjectWithTag("MainCamera")
@@ -132,12 +131,11 @@ public class JumpAndRunMovement : MonoBehaviour
         if(!m_PhotonView.isMine)
             return;
 
-        if (!readyGUIDisabled)
+        if (!readyGUIFound)
         {
-            readyGUI = GameObject.FindGameObjectWithTag("ReadyOBJ")
-                .GetComponent<ReadyUp>();
-            readyGUI.transform.gameObject.SetActive(false);
-            readyGUIDisabled = true;
+            readyGUI = GameObject.FindGameObjectWithTag("MainCamera")
+                .GetComponent<ReadyUITracker>().rdyGUI;
+            readyGUIFound = true;
         }
         if (!cameraFollowAssigned)
             AssignCameraFollow(transform);
@@ -283,10 +281,10 @@ public class JumpAndRunMovement : MonoBehaviour
         //Normally we'd have any Input Handling get called from Update,
         //But dropped inputs aren't a problem with 'getaxis' since it's
         //Continuous and not a single frame like GetButtonDown
-        if(Input.GetAxis("Horizontal") > 0){
+        if(Input.GetAxis("MoveHorizontal") > 0){
             SpeedTemp = Mathf.Lerp(SpeedTemp, Speed, SpeedAccel);
         }
-        else if (Input.GetAxis("Horizontal") < 0)
+        else if (Input.GetAxis("MoveHorizontal") < 0)
         {
             SpeedTemp = Mathf.Lerp(SpeedTemp, -Speed, SpeedAccel);
         }
@@ -476,24 +474,34 @@ public class JumpAndRunMovement : MonoBehaviour
 
     IEnumerator ApplyPunchForce(Vector2 punchForce)
     {
-		
         Vector2 tempPunchForce = punchForce;
-        camShaker.BeginPunchShake(punchForce.magnitude, 1f);
-        while (tempPunchForce.magnitude > MinimumPunchForce)
+        bool isTempForceLow = false;
+        camShaker.BeginPunchShake(punchForce.magnitude, 0.2f);
+        while (tempPunchForce.magnitude > 0.01f)
         {
-			punchForceApplied = true;
             velocity += tempPunchForce;
             tempPunchForce = Vector2.Lerp(tempPunchForce, Vector2.zero, PunchForceDecel);
+            
+            if (!isTempForceLow &&
+                tempPunchForce.magnitude < punchForce.magnitude * 0.25f)
+            {
+                isTempForceLow = true;
+                //if the force goes below 25%, let the character move again. 
+	        	punchForceApplied = false;
+            }
+            else if(!isTempForceLow)
+            {
+			    punchForceApplied = true;
+            }
             yield return null;
         }
-		punchForceApplied = false;
     }
 
     void OnTriggerExit2D(Collider2D col)
     {
         if (col.tag != "DeathWall")
             return;
-        camShaker.BeginDeathShake(m_Body.velocity.magnitude, m_PhotonView.isMine);
+        camShaker.BeginDeathShake((float)BattleUI.GetDamage(), m_PhotonView.isMine);
         myAudioSrc.Play();
         if(!m_PhotonView.isMine)
             return;
