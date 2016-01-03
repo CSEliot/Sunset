@@ -13,7 +13,7 @@ public class MenuSFX : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetButtonDown("Horizontal") || Input.GetButtonDown("Vertical"))
+        if (Input.GetButtonDown("Up") || Input.GetButtonDown("Right"))
         {
             m.PlaySFX(1);
         }

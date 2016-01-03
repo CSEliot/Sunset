@@ -16,9 +16,12 @@ namespace UnityStandardAssets._2D
         private Vector3 m_CurrentVelocity;
         private Vector3 m_LookAheadPos;
 
+        private bool target_IsNew;
+
         // Use this for initialization
         private void Start()
         {
+            target_IsNew = false;
             if (target == null)
                 return;
             m_LastTargetPosition = target.position;
@@ -68,6 +71,17 @@ namespace UnityStandardAssets._2D
             m_LastTargetPosition = target.position;
             m_OffsetZ = (transform.position - target.position).z;
             transform.parent = null;
+            target_IsNew = true;
+        }
+
+        public bool HasNewTarget()
+        {
+            if (target_IsNew)
+            {
+                target_IsNew = false;
+                return true;
+            }
+            return target_IsNew;
         }
     }
 }

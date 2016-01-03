@@ -1,9 +1,4 @@
-Changelog:
- / Wait Music doesn't play while waiting, fixed. 
- / Can't move self while feeling force of a punch.
- + New 'Minimum Punch Force' variable.
  
-
 
 To Be Made:
  

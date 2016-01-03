@@ -30,20 +30,13 @@ public class GUIController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetButtonDown("Left"))
-        {
-            ShiftSelectionLeft();
-        }
-        if (Input.GetButtonDown("Right"))
-        {
-            ShiftSelectionRight();
-        }
 	}
 
-    private void ShiftSelectionLeft()
+    public void ShiftSelectionLeft()
     {
         if (currentSelector == 1)
             return;
+        m.PlaySFX(5);
         currentSelector += -1;
         LeftFrame.sprite = AllSprites[currentSelector - 1];
         MidFrame.sprite = AllSprites[currentSelector];
@@ -55,10 +48,11 @@ public class GUIController : MonoBehaviour {
         m.AssignClientCharacter(currentSelector - 1);   
     }
 
-    private void ShiftSelectionRight()
+    public void ShiftSelectionRight()
     {
         if (currentSelector == 7)
             return;
+        m.PlaySFX(5);   
         currentSelector += 1;
         LeftFrame.sprite  = AllSprites[currentSelector - 1];
         MidFrame.sprite   = AllSprites[currentSelector];

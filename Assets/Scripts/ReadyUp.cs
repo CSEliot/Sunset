@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class ReadyUp : MonoBehaviour {
 
@@ -30,6 +31,9 @@ public class ReadyUp : MonoBehaviour {
     private Dictionary<int, int> ID_to_CharNum;
     private Dictionary<int, bool>ID_to_IsReady;
 
+    private int readyUpBypassCount;
+    private int readyUpBypassTotal;
+    private bool isBypassed;
 
     private int myLogInID;
 
@@ -41,9 +45,13 @@ public class ReadyUp : MonoBehaviour {
     private bool isSpectating;
     //private int[] SlotList;
 
-    
+    public Text roomName;
+
 	// Use this for initialization
 	void Start () {
+        isBypassed = false;
+        readyUpBypassCount = 0;
+        readyUpBypassTotal = 2;
         waiting = false;
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
         m.PlayMSX(1);
@@ -60,10 +68,23 @@ public class ReadyUp : MonoBehaviour {
         readyUped = false;
         headSprite = j.GetImageNum();
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
+        
 	}
 	
 	// Update is called once per frame
 	void Update () {
+        if (Input.GetKeyDown("p"))
+        {
+            readyUpBypassCount++;
+        }
+        if (!isBypassed && readyUpBypassTotal < readyUpBypassCount)
+        {
+            isBypassed = false;
+            totalReady = 100;
+            StartGame();
+            j.OnReadyUp(ID_to_SlotNum[myLogInID]);
+        }
+
         if (waiting)
         {   
             if (GameObject.FindGameObjectsWithTag("PlayerSelf").Length <= 1)
@@ -111,6 +132,13 @@ public class ReadyUp : MonoBehaviour {
             tempPlayerTable["IsReady"] = true;
             PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
         }
+        if (!readyUped && Input.GetButtonDown("Submit") && !isReady)
+        {
+            PhotonNetwork.Disconnect();
+            m.AssignClientCharacter(0);
+            SceneManager.LoadScene("CharacterSelect");
+            m.PlayMSX(0);
+        }
 	}
 
     //Need 2 things: Chosen CHaracter and Player Num
@@ -127,14 +155,7 @@ public class ReadyUp : MonoBehaviour {
         
         if (totalReady == totalLoggedIn)
         {
-            m.PlayMSX(2);
-            Debug.Log("Start Game!");
-            j.OnReadyUp(ID_to_SlotNum[myLogInID]);
-            ExitGames.Client.Photon.Hashtable tempRoomTable = PhotonNetwork
-                .room.customProperties;
-            tempRoomTable["GameStarted"] = true;
-            PhotonNetwork.room.SetCustomProperties(tempRoomTable);
-            m.GameStarts(totalReady);
+            StartGame();
         }
         else 
         {
@@ -142,8 +163,22 @@ public class ReadyUp : MonoBehaviour {
         }
     }
 
+    private void StartGame()
+    {
+        m.PlayMSX(2);
+        Debug.Log("Start Game!");
+        j.OnReadyUp(ID_to_SlotNum[myLogInID]);
+        ExitGames.Client.Photon.Hashtable tempRoomTable = PhotonNetwork
+            .room.customProperties;
+        tempRoomTable["GameStarted"] = true;
+        PhotonNetwork.room.SetCustomProperties(tempRoomTable);
+        m.GameStarts(totalReady);
+        gameObject.SetActive(false);
+    }
+
     void OnJoinedRoom()
     {
+        roomName.text = PhotonNetwork.room.name;    
         if (PhotonNetwork.room.customProperties.ContainsKey("GameStarted")
             && (bool)PhotonNetwork.room.customProperties["GameStarted"] == true)
         {
