@@ -55,6 +55,10 @@ public class CamShakeSimple : MonoBehaviour
 
     void CameraShake()
     {
+        if (clientTf == null)
+        {
+            return;
+        }
         if (shakeAmt > 0)
         {
             float quakeAmt = Random.value * shakeAmt * 2 - shakeAmt;
