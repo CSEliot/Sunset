@@ -1,22 +1,26 @@
-Changelog:
- / Death before Punch Animation finishes causes bug FIX.
- / Up punch nerfed.
- / Punch % add set to +4%.
+Changelog - V0.22:
+ 
 
+
+Balance Changes:
+ - Tom OP
+ - Cloud and Henry need better Jumps and Stronger DownJumps
 
 To Be Made:
  - Quieter Music / Volume slider.
  - Bottom platform needs shading. 
  - Actual Help text
- - BUFF DEFENSE
+ - Usernames.
  - Side Jumping
  - jump detection left and right corners.
  - Left and Right to Swap Spectators
  - Re-'yes' when someone else joins.
+ - 
  - Can DownJump in-air without jumping.
  - When new players join, the down arrow pops up during spectation.
  - Server Choices.
- - Charging attacks.
+ - Charging attacks
+
 
 Later:
 
@@ -29,10 +33,15 @@ Later:
 
 
 Bugs:
- - Damage % randomly shoots up and KOs in 1 hit.
+ - Damage % randomly shoots up and KOs in 1 hit. (Kissing hitboxes.)
  - Teleporty bug.
- -
+ - Can't re-ready after a new player joins.
 
-"Cool" Ideas
+Cool Ideas
 
- - Pierce takes over another character.
+:
+- Pierce takes over another character.
+
+- Shit Quality makes everyone one single pixel.
+- *Nude Mod
+- HD Mod
