@@ -501,10 +501,10 @@ public class JumpAndRunMovement : MonoBehaviour
     {
         if (col.tag != "DeathWall")
             return;
-        camShaker.BeginDeathShake((float)BattleUI.GetDamage(), m_PhotonView.isMine);
         myAudioSrc.Play();
         if(!m_PhotonView.isMine)
             return;
+        camShaker.BeginDeathShake((float)BattleUI.GetDamage(), m_PhotonView.isMine);
 
         if (BattleUI.GetLives() > 0){
             BattleUI.LoseALife();
