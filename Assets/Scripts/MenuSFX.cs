@@ -10,7 +10,18 @@ public class MenuSFX : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
-        //GetComponent<Slider>().onValueChanged.
+        //
+
+        test b = newFunc;
+        UnityEngine.Events.UnityAction<float> a;
+        a = new UnityEngine.Events.UnityAction<float>(b);
+
+        //GetComponent<Slider>().onValueChanged.AddListener((0) =>
+        
+        //    test(a)
+        
+        //);
+        
 	}
 	
 	// Update is called once per frame
@@ -25,4 +36,10 @@ public class MenuSFX : MonoBehaviour {
             m.PlaySFX(0);
         }
 	}
+
+    public delegate void test(float a);
+
+    public void newFunc(float a){
+        Debug.Log("a is: " + a);
+    }
 }
