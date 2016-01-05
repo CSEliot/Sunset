@@ -1,5 +1,7 @@
 Changelog - V0.22:
- 
+ - Collision detection from interpolated,continuous to none,discrete.
+ - Better Help Text.
+ -  
 
 
 Balance Changes:
