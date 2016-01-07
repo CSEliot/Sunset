@@ -12,15 +12,7 @@ public class MenuSFX : MonoBehaviour {
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
         //
 
-        test b = newFunc;
-        UnityEngine.Events.UnityAction<float> a;
-        a = new UnityEngine.Events.UnityAction<float>(b);
-
-        //GetComponent<Slider>().onValueChanged.AddListener((0) =>
         
-        //    test(a)
-        
-        //);
         
 	}
 	

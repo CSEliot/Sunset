@@ -28,6 +28,8 @@ public class Master : MonoBehaviour {
 
     private int totalPlayers;
 
+    private bool isEast;
+
     void Awake()
     {
         myMusicAudio = GetComponent<AudioSource>();
@@ -129,5 +131,35 @@ public class Master : MonoBehaviour {
         myMusicAudio.Stop();
         myMusicAudio.clip = MSX[num];
         myMusicAudio.Play();
+    }
+
+    public void SetSFXVolume(float amt)
+    {
+        if (amt < 0f || amt > 1f)
+        {
+            Debug.LogError("Volume amount must be betweeen 0 and 1.");
+        }
+        mySFXAudio.volume = amt;
+        Debug.Log("SFXVolume Set");
+    }
+
+    public void SetMSXVolume(float amt)
+    {
+        if (amt < 0f || amt > 1f)
+        {
+            Debug.LogError("Volume amount must be betweeen 0 and 1.");
+        }
+        myMusicAudio.volume = amt;
+        Debug.Log("MSXVolume Set");
+    }
+
+    public void SetServer(bool isEast)
+    {
+        this.isEast = isEast;
+    }
+
+    public bool GetServerIsEast()
+    {
+        return isEast;
     }
 }

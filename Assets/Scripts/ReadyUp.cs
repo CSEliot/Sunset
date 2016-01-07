@@ -205,12 +205,9 @@ public class ReadyUp : MonoBehaviour {
         int otherLogInID = 0;
         int otherSlotNum = 0;
         int otherCharNum = 0;
-        bool otherIsReady = false;
         for(int i = 0; i < PhotonNetwork.playerList.Length; i++){
             PlayerSlots[i].transform.gameObject.SetActive(true);
             otherLogInID = PhotonNetwork.playerList[i].ID;
-            otherIsReady = (bool)PhotonNetwork.playerList[i]
-                .customProperties["IsReady"];
             if (myLogInID != otherLogInID)
             {
                 otherSlotNum = i;
@@ -218,18 +215,9 @@ public class ReadyUp : MonoBehaviour {
                     .customProperties["ChosenCharNum"];
                 ID_to_CharNum.Add(otherLogInID, otherCharNum);
                 ID_to_SlotNum.Add(otherLogInID, otherSlotNum);
-                ID_to_IsReady.Add(otherLogInID, otherIsReady);
-                if (otherIsReady)
-                {
-                    totalReady++;
-                    int readyChar = ID_to_CharNum[otherLogInID];
-                    int readySlot = ID_to_SlotNum[otherLogInID];
-
-                    PlayerSlots[readySlot].sprite = j.GetImage(readyChar);
-                }
+                //Everyone Unreadies when someone new joins.
+                ID_to_IsReady.Add(otherLogInID, false);
             }
-            Debug.Log("Ready? " + otherIsReady + "ID: " + otherLogInID
-                + "Slot: " + otherSlotNum);
             totalLoggedIn++;
         }
     }
@@ -274,8 +262,20 @@ public class ReadyUp : MonoBehaviour {
             , (int)player.customProperties["ChosenCharNum"]);
         ID_to_SlotNum.Add(otherLogInID, PhotonNetwork.playerList.Length - 1);
         ID_to_IsReady.Add(otherLogInID, false);
-        //ID_to_ReadyNum.Add(otherLogInID, );
         totalLoggedIn++;
+
+        ///Reset GFX & Ready Status for new players.
+        totalReady = 0;
+        SelectorYes.SetActive(false);
+        SelectorNo.SetActive(true);
+        isReady = false;
+        readyUped = false;
+        fixReadyHeads();
+
+        ExitGames.Client.Photon.Hashtable tempPlayerTable = PhotonNetwork
+            .player.customProperties;
+        tempPlayerTable["IsReady"] = false;
+        PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
     }
 
     void OnPhotonPlayerDisconnected(PhotonPlayer player)
