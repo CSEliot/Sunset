@@ -26,6 +26,7 @@ public class JumpAndRunMovement : MonoBehaviour
     private PhotonTransformView m_PhotonTransform;
 
     private bool m_IsGrounded;
+    private bool m_wasGrounded;
     private int jumpsRemaining;
     private bool jumped;
     private bool canDownJump;
@@ -158,14 +159,18 @@ public class JumpAndRunMovement : MonoBehaviour
         UpdateFacingDirection();
         if(!m_PhotonView.isMine)
             return;
+        if (m_wasGrounded && m_IsGrounded)
+        {
+            canDownJump = true;
+        }
         UpdateJumpingPhysics();
         UpdateDownJumpingPhysics();
         UpdateMovementPhysics();
-        //limit max velocity.
-        //Debug.Log("R Velocity: " + m_Body.velocity.magnitude);
-        if (m_Body.velocity.magnitude >= MaxVelocityMag)
-        {
-        }
+        ////limit max velocity.
+        ////Debug.Log("R Velocity: " + m_Body.velocity.magnitude);
+        ////if (m_Body.velocity.magnitude >= MaxVelocityMag)
+        ////{
+        ////}
 
         velocity += Vector2.down * GravityForce;
         if(!isDead)
@@ -237,7 +242,6 @@ public class JumpAndRunMovement : MonoBehaviour
             jumped = true;
             jumpsRemaining -= 1;
             totalJumpFrames = jumpLag;
-            canDownJump = true;
         }
         totalJumpFrames -= 1;
     }
@@ -310,7 +314,7 @@ public class JumpAndRunMovement : MonoBehaviour
                        position + (-Vector2.up * GroundCheckEndPoint),
                        Color.red,
                        0.01f);
-
+        m_wasGrounded = m_IsGrounded;
         m_IsGrounded = hit.collider != null;
         //hit.collider.gameObject.layer
         if (m_IsGrounded && !jumped)
@@ -318,6 +322,7 @@ public class JumpAndRunMovement : MonoBehaviour
             //Debug.Log ("Grounded on: " + (hit.collider.name));
             jumpsRemaining = TotalJumpsAllowed;
         }
+        //if(!m_IsGrounded && down)
     }
 
     private void Set2DPosition()

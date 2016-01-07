@@ -43,13 +43,24 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
 
     public virtual void Update()
     {
-        if (ConnectInUpdate && AutoConnect && !PhotonNetwork.connected)
+        if (ConnectInUpdate && AutoConnect && !PhotonNetwork.connected 
+            && m.GetServerIsEast())
         {
             Debug.Log("Update() was called by Unity. Scene is loaded. Let's connect to the Photon Master Server. Calling: PhotonNetwork.ConnectUsingSettings();");
 
             ConnectInUpdate = false;
             PhotonNetwork.ConnectUsingSettings(Version + "."+
                 SceneManager.GetActiveScene().buildIndex);
+        }else 
+        if(ConnectInUpdate && AutoConnect && !PhotonNetwork.connected 
+           && !m.GetServerIsEast())
+        {
+            Debug.Log("Update() was called by Unity. Scene is loaded. Let's connect to the Photon Master Server. Calling: PhotonNetwork.ConnectToMaster(); This is WEST COAST Server!");
+
+            ConnectInUpdate = false;
+            PhotonNetwork.ConnectToMaster("52.9.58.118", 5055,
+                "d4e9e94d-de9a-44ec-9668-5f1898d4e76c", 
+                Version + "." + SceneManager.GetActiveScene().buildIndex);
         }
     }
 
@@ -95,7 +106,17 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
 
     public virtual void OnFailedToConnectToPhoton(DisconnectCause cause)
     {
-        Debug.LogError("Cause: " + cause);
+        if (!m.GetServerIsEast())
+        {
+            bool isEast = true;
+            m.SetServer(isEast);
+            PhotonNetwork.ConnectUsingSettings(Version + "." +
+                SceneManager.GetActiveScene().buildIndex);
+        }
+        else
+        {
+            Debug.LogError("Cause: " + cause);
+        }
     }
 
     public void OnJoinedRoom()
