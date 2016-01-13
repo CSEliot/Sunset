@@ -1,25 +1,32 @@
 Changelog - V0.23:
- / Collision detection from interpolated,continuous to none,discrete.
- / Better Help Text.
- + Server Selection! West coast goes to Fancy West Coast Amazon server. East goes to Photon cloud server.
- + Audio Selection! Fully working MSX and SFX sliders using delegate functions. Though UI looks poopy.
- / Players Unready upon someone joining the room as well.
- + If you try to join the West Coast Server when it's down, you'll reroute to east coast server.
- + Can DownJump once after leaving ground. Does not require jump first. (is important for upSmash recovery.)
- BALANCE CHANGES:
- / Six and Cloud have stronger jumps and downjumps. Not higher, just stronger. 
- / Lore is slightly squishier. And weaker downjump. Jump slightly higher.
+ / Movement momentum carries you if you're in the air.
+ + Specials Implementation part 1!
+ + Server Select working, AND mouse support.
+ / Punch volume minimized.
+ / Bottom platform shading. (thx Josh)
+ / Can DownJump in-air without jumping.
+ + Mouse is invisible upon loading.
+ / ReadyUp noise happens for all players.
+
+
+  Balance Changes:
+   - Attack animation slightly shorter.
+   - Cloud and Six slightly more jump.
+   - Side Edge of map 50% larger.
+   - Lore slightly higher jump.
+   
 
 Balance Changes Needed:
 
+Suggestions:
+ - Allow attacking behind you
+
 To Be Made:
- + Short hops.
- / Bottom platform needs shading.
+ + Short hops.  
  + Usernames.
  + Side Jumping
  / jump detection left and right corners.
  + Left and Right to Swap Spectators
- / Can DownJump in-air without jumping.
  + When new players join, the down arrow pops up during spectation.
  + Charging attacks
  + Special Abilities
@@ -37,6 +44,7 @@ Bugs:
  - Damage % randomly shoots up and KOs in 1 hit. (Kissing hitboxes.)
  - Teleporty bug.
  - Can't re-ready after a new player joins.
+ - Can't move after being punched at lower percentages.
 
 Cool Ideas
 

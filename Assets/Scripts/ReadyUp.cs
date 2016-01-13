@@ -126,7 +126,6 @@ public class ReadyUp : MonoBehaviour {
             m_PhotonView.RPC("ShowReady", PhotonTargets.All, myLogInID);
             SelectorYes.SetActive(false);
             readyUped = true;
-            m.PlaySFX(2);
             ExitGames.Client.Photon.Hashtable tempPlayerTable = PhotonNetwork
             .player.customProperties;
             tempPlayerTable["IsReady"] = true;
@@ -145,6 +144,7 @@ public class ReadyUp : MonoBehaviour {
     [PunRPC]
     void ShowReady(int LogInID)
     {
+        m.PlaySFX(2);
         totalReady++;
         int readyChar = ID_to_CharNum[LogInID];
         int readySlot = ID_to_SlotNum[LogInID];
