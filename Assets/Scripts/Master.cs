@@ -46,8 +46,8 @@ public class Master : MonoBehaviour {
         }
         DontDestroyOnLoad(gameObject);
         AssignClientCharacter(0);
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Confined;
+        //Cursor.visible = false;
     }
 
 	// Use this for initialization
