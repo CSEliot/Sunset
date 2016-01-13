@@ -108,10 +108,11 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
     {
         if (!m.GetServerIsEast())
         {
+            PhotonNetwork.Disconnect();
+            Debug.Log("Server Connecting Failed!");
             bool isEast = true;
             m.SetServer(isEast);
-            PhotonNetwork.ConnectUsingSettings(Version + "." +
-                SceneManager.GetActiveScene().buildIndex);
+            SceneManager.LoadScene("GameScreen");
         }
         else
         {

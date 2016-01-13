@@ -7,6 +7,7 @@ public class JumpAndRunMovement : MonoBehaviour
     public float Defense;
     public float Speed;
     public float SpeedAccel = 0.5f;
+    public float AirSpeedDecel;
     public float SpeedDecel = 0.5f;
     private float SpeedTemp;
     public float JumpForce;
@@ -34,6 +35,9 @@ public class JumpAndRunMovement : MonoBehaviour
     public int TotalJumpsAllowed;
     public Vector2 JumpOffset;
 
+    private bool moveLeft;
+    private bool moveRight;
+
     public float GroundCheckEndPoint;
 
     private Vector2 position;
@@ -44,6 +48,7 @@ public class JumpAndRunMovement : MonoBehaviour
 
     private GameObject[] AttackObjs;
     public int AttackLag;
+    public float AttackLife;
     private int totalAttackFrames;
     private WaitForSeconds attackDisableDelay;
 
@@ -62,6 +67,7 @@ public class JumpAndRunMovement : MonoBehaviour
     private float punchForceDownTemp;
     private Dictionary<string, float> StrengthsList;
 	private bool punchForceApplied;
+    public float PunchDisablePerc;
 
     //private bool PunchUp;
     //private bool PunchLeft;
@@ -89,8 +95,16 @@ public class JumpAndRunMovement : MonoBehaviour
     public AudioClip DeathNoise;
     private AudioSource myAudioSrc;
 
+    private bool controlsPaused;
+
+    private Animator anim;
+
     void Awake() 
     {
+        anim = GetComponentInChildren<Animator>();
+        moveRight = false;
+        moveLeft = false;
+        controlsPaused = false;
         myAudioSrc = GetComponent<AudioSource>();
         myAudioSrc.clip = DeathNoise;
         readyGUIFound = false;
@@ -112,7 +126,7 @@ public class JumpAndRunMovement : MonoBehaviour
         jumpForceTemp = 0f;
         SpeedTemp = 0f;
         cameraFollowAssigned = false;
-        attackDisableDelay = new WaitForSeconds(0.15f);
+        attackDisableDelay = new WaitForSeconds(AttackLife);
         facingRight = true;
         position = new Vector2();
         m_Body = GetComponent<Rigidbody2D>();
@@ -148,24 +162,33 @@ public class JumpAndRunMovement : MonoBehaviour
         
 
         //Jump Detection Only, no physics handling.
-        UpdateJumping();
-        UpdateDownJumping();    
-        UpdateAttacks();
+        if (controlsPaused)
+        {
+            moveLeft = false;
+            moveRight = false;
+            return;
+        }
+
+        updateSpecials();
+        updateJumping();
+        updateDownJumping();    
+        updateAttacks();
+        updateMovement();
     }
 
     void FixedUpdate()
     {
-        UpdateIsGrounded();
-        UpdateFacingDirection();
+        updateFacingDirection();
         if(!m_PhotonView.isMine)
             return;
         if (m_wasGrounded && m_IsGrounded)
         {
             canDownJump = true;
         }
-        UpdateJumpingPhysics();
-        UpdateDownJumpingPhysics();
-        UpdateMovementPhysics();
+        updateIsGrounded();
+        updateJumpingPhysics();
+        updateDownJumpingPhysics();
+        updateMovementPhysics();
         ////limit max velocity.
         ////Debug.Log("R Velocity: " + m_Body.velocity.magnitude);
         ////if (m_Body.velocity.magnitude >= MaxVelocityMag)
@@ -220,7 +243,18 @@ public class JumpAndRunMovement : MonoBehaviour
         readyGUI.EndGame(); 
     }
 
-    void UpdateFacingDirection()
+    //private void 
+
+    private void updateSpecials()
+    {
+        if (Input.GetButtonDown("Special"))
+        {
+            anim.SetBool("Activating", true);
+            PauseMvmnt();
+        }
+    }
+
+    private void updateFacingDirection()
     {
         if( !facingRight && m_Body.velocity.x > 0.2f )
         {
@@ -234,7 +268,7 @@ public class JumpAndRunMovement : MonoBehaviour
         }
     }
 
-    void UpdateJumping()
+    private void updateJumping()
     {
         if( Input.GetButtonDown("Jump") == true 
             && jumpsRemaining > 0 && totalJumpFrames < 0)
@@ -246,7 +280,7 @@ public class JumpAndRunMovement : MonoBehaviour
         totalJumpFrames -= 1;
     }
 
-    void UpdateDownJumping()
+    private void updateDownJumping()
     {
         if (Input.GetButtonDown("DownJump") == true
             && canDownJump)
@@ -256,7 +290,26 @@ public class JumpAndRunMovement : MonoBehaviour
         }
     }
 
-    void UpdateDownJumpingPhysics()
+    private void updateMovement()
+    {
+        if (Input.GetAxis("MoveHorizontal") > 0)
+        {
+            moveLeft = false;
+            moveRight = true;
+        }
+        else if (Input.GetAxis("MoveHorizontal") < 0)
+        {
+            moveLeft = true;
+            moveRight = false;
+        }
+        else
+        {
+            moveLeft = false;
+            moveRight = false; 
+        }
+    }
+
+    private void updateDownJumpingPhysics()
     {
         if (downJumped)
         {
@@ -268,7 +321,7 @@ public class JumpAndRunMovement : MonoBehaviour
         downJumpForceTemp = Mathf.Lerp(downJumpForceTemp, 0f, DownJumpDecel);
     }
 
-    void UpdateJumpingPhysics()
+    private void updateJumpingPhysics()
     {
         if (jumped)
         {
@@ -280,29 +333,33 @@ public class JumpAndRunMovement : MonoBehaviour
     }
 
 
-    void UpdateMovementPhysics()
+    private void updateMovementPhysics()
     {
         //Normally we'd have any Input Handling get called from Update,
         //But dropped inputs aren't a problem with 'getaxis' since it's
         //Continuous and not a single frame like GetButtonDown
-        if(Input.GetAxis("MoveHorizontal") > 0){
+        if(moveRight){
             SpeedTemp = Mathf.Lerp(SpeedTemp, Speed, SpeedAccel);
         }
-        else if (Input.GetAxis("MoveHorizontal") < 0)
+        else if (moveLeft)
         {
             SpeedTemp = Mathf.Lerp(SpeedTemp, -Speed, SpeedAccel);
         }
-        else
+        else if(m_IsGrounded)
         {
             SpeedTemp = Mathf.Lerp(SpeedTemp, 0f, SpeedDecel);
+        }
+        else
+        {
+            SpeedTemp = Mathf.Lerp(SpeedTemp, 0f, AirSpeedDecel);
         }
 		if(!punchForceApplied)
         	velocity.x += SpeedTemp;
     }
 
-    void UpdateIsGrounded()
+    private void updateIsGrounded()
     {
-        Set2DPosition();
+        set2DPosition();
 
         RaycastHit2D hit = 
             Physics2D.Raycast(position+JumpOffset, 
@@ -325,13 +382,13 @@ public class JumpAndRunMovement : MonoBehaviour
         //if(!m_IsGrounded && down)
     }
 
-    private void Set2DPosition()
+    private void set2DPosition()
     {
         position.x = transform.position.x;
         position.y = transform.position.y;
     }
 
-    void UpdateAttacks()
+    private void updateAttacks()
     {
         if(totalAttackFrames < 0 ){
             if (Input.GetButtonDown("Up") && !punching)
@@ -488,7 +545,7 @@ public class JumpAndRunMovement : MonoBehaviour
             tempPunchForce = Vector2.Lerp(tempPunchForce, Vector2.zero, PunchForceDecel);
             
             if (!isTempForceLow &&
-                tempPunchForce.magnitude < punchForce.magnitude * 0.25f)
+                tempPunchForce.magnitude < punchForce.magnitude * PunchDisablePerc)
             {
                 isTempForceLow = true;
                 //if the force goes below 25%, let the character move again. 
@@ -581,5 +638,15 @@ public class JumpAndRunMovement : MonoBehaviour
         {
             BattleUI.Won();
         }
+    }
+
+    public void PauseMvmnt()
+    {
+        controlsPaused = true;
+    }
+
+    public void UnpauseMvmnt()
+    {
+        controlsPaused = false;
     }
 }
