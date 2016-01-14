@@ -76,7 +76,7 @@ public class JumpAndRunMovement : MonoBehaviour
 
     private bool cameraFollowAssigned;
     private bool battleUIAssigned;
-    private CamShakeSimple camShaker;
+    private CamManager camShaker;
 
     private float damage;
     private bool isDead;
@@ -111,7 +111,7 @@ public class JumpAndRunMovement : MonoBehaviour
         playersSpawned = false;
         punching = false;
         camShaker = GameObject.FindGameObjectWithTag("MainCamera")
-            .GetComponent<CamShakeSimple>();
+            .GetComponent<CamManager>();
         m = GameObject.FindGameObjectWithTag("Master")
             .GetComponent<Master>();
 
@@ -249,7 +249,7 @@ public class JumpAndRunMovement : MonoBehaviour
     {
         if (Input.GetButtonDown("Special"))
         {
-            anim.SetBool("Activating", true);
+            m_PhotonView.RPC("SpecialActivate", PhotonTargets.All);
             PauseMvmnt();
         }
     }
@@ -449,6 +449,12 @@ public class JumpAndRunMovement : MonoBehaviour
         StartCoroutine(DisableDelay(AttackObjs[2]));
     }
 
+    [PunRPC]
+    void SpecialActivate()
+    {
+        anim.SetBool("Activating", true);
+    }
+
     void OnTriggerEnter2D(Collider2D col)
     {
         if (col == null || !m_PhotonView.isMine)
@@ -529,8 +535,7 @@ public class JumpAndRunMovement : MonoBehaviour
         {
             return;
         }
-        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<UnityStandardAssets._2D.Camera2DFollow>()
-            .SetTarget(myTransform);  
+        camShaker.SetTarget(myTransform);  
         cameraFollowAssigned = true;
     }
 
@@ -538,7 +543,7 @@ public class JumpAndRunMovement : MonoBehaviour
     {
         Vector2 tempPunchForce = punchForce;
         bool isTempForceLow = false;
-        camShaker.BeginPunchShake(punchForce.magnitude, 0.2f);
+        camShaker.PunchShake(tempPunchForce.magnitude);
         while (tempPunchForce.magnitude > 0.01f)
         {
             velocity += tempPunchForce;
@@ -564,9 +569,10 @@ public class JumpAndRunMovement : MonoBehaviour
         if (col.tag != "DeathWall")
             return;
         myAudioSrc.Play();
+        camShaker.DeathShake(m_Body.velocity.magnitude, transform.position);
+		
         if(!m_PhotonView.isMine)
             return;
-        camShaker.BeginDeathShake((float)BattleUI.GetDamage(), m_PhotonView.isMine);
 
         if (BattleUI.GetLives() > 0){
             BattleUI.LoseALife();
@@ -576,7 +582,7 @@ public class JumpAndRunMovement : MonoBehaviour
         {
             StartCoroutine(Ghost());
         }
-    }
+    }	  	
 
     IEnumerator Ghost()
     {
