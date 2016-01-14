@@ -318,7 +318,7 @@ public class ReadyUp : MonoBehaviour {
         {
             return;
         }
-        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<UnityStandardAssets._2D.Camera2DFollow>()
+        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CamManager>()
             .SetTarget(myTransform);
     }
 }
