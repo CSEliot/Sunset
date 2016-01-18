@@ -123,22 +123,34 @@ public class ReadyUp : MonoBehaviour {
         if (!readyUped && Input.GetButtonDown("Submit") && isReady
             && totalLoggedIn > 1)
         {
-            m_PhotonView.RPC("ShowReady", PhotonTargets.All, myLogInID);
-            SelectorYes.SetActive(false);
-            readyUped = true;
-            ExitGames.Client.Photon.Hashtable tempPlayerTable = PhotonNetwork
-            .player.customProperties;
-            tempPlayerTable["IsReady"] = true;
-            PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
+            Ready();
         }
         if (!readyUped && Input.GetButtonDown("Submit") && !isReady)
         {
-            PhotonNetwork.Disconnect();
-            m.AssignClientCharacter(0);
-            SceneManager.LoadScene("CharacterSelect");
-            m.PlayMSX(0);
+            NotReady();
         }
 	}
+
+    public void Ready()
+    {
+        isReady = true;
+        m_PhotonView.RPC("ShowReady", PhotonTargets.All, myLogInID);
+        SelectorYes.SetActive(false);
+        readyUped = true;
+        ExitGames.Client.Photon.Hashtable tempPlayerTable = PhotonNetwork
+        .player.customProperties;
+        tempPlayerTable["IsReady"] = true;
+        PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
+    }
+
+    public void NotReady(){
+        isReady = false;
+        readyUped = false;
+        PhotonNetwork.Disconnect();
+        m.AssignClientCharacter(0);
+        SceneManager.LoadScene("CharacterSelect");
+        m.PlayMSX(0);
+    }
 
     //Need 2 things: Chosen CHaracter and Player Num
     [PunRPC]

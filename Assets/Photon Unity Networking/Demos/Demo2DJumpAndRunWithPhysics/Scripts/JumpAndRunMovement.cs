@@ -138,6 +138,17 @@ public class JumpAndRunMovement : MonoBehaviour
         AttackObjs[0] = transform.GetChild(3).gameObject;
         AttackObjs[1] = transform.GetChild(1).gameObject;
         AttackObjs[2] = transform.GetChild(2).gameObject;
+
+        if (m_PhotonView.isMine)
+        {
+            m_PhotonView.RPC("AssignPlayerTag", PhotonTargets.All, PhotonNetwork.player.ID);
+        }
+    }
+
+    [PunRPC]
+    void AssignPlayerTag(int ID)
+    {
+        transform.GetChild(0).tag = "" + ID;
     }
 
     void Update() 
