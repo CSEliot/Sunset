@@ -7,6 +7,8 @@ public class SpecialsController : MonoBehaviour {
     private JumpAndRunMovement j;
     private Animator anim;
 
+    public GameObject Book;
+
 	// Use this for initialization
 	void Start () {
         anim = GetComponent<Animator>();
@@ -37,5 +39,10 @@ public class SpecialsController : MonoBehaviour {
     private void ActivateSpecial(int spclNum)
     {
         Debug.Log("Activating Special Number: " + spclNum);
+    }
+
+    private void LoreOverload()
+    {
+        //Instantiate
     }
 }

@@ -51,6 +51,8 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
             ConnectInUpdate = false;
             PhotonNetwork.ConnectUsingSettings(Version + "."+
                 SceneManager.GetActiveScene().buildIndex);
+            PhotonNetwork.sendRate = SendRate;
+            PhotonNetwork.sendRateOnSerialize = SendRate;
         }else 
         if(ConnectInUpdate && AutoConnect && !PhotonNetwork.connected 
            && !m.GetServerIsEast())
@@ -61,6 +63,8 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
             PhotonNetwork.ConnectToMaster("52.9.58.118", 5055,
                 "d4e9e94d-de9a-44ec-9668-5f1898d4e76c", 
                 Version + "." + SceneManager.GetActiveScene().buildIndex);
+            PhotonNetwork.sendRate = SendRate;
+            PhotonNetwork.sendRateOnSerialize = SendRate;
         }
     }
 
