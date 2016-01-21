@@ -1,20 +1,26 @@
-Changelog - V0.23:
- / Movement momentum carries you if you're in the air.
- + Specials Implementation part 1!
- + Server Select working, AND mouse support.
- / Punch volume minimized.
- / Bottom platform shading. (thx Josh)
- / Can DownJump in-air without jumping.
- + Mouse is invisible upon loading.
- / ReadyUp noise happens for all players.
-
+Changelog - V0.24:
+ + Ready Up Yes and No are clickable.
+  
+JOSH CAN'T JUMP
+ENEMY DEATH SCREEN SHAKE REDUCE
+Performance drop from multiple packet sends?
+SAVE SOUND SETTINGS
 
   Balance Changes:
    - Attack animation slightly shorter.
    - Cloud and Six slightly more jump.
    - Side Edge of map 50% larger.
    - Lore slightly higher jump.
+   - GLOBAL REBALANCE (everyone weaker, accurate stats)
+   - Dire is high af. (floatier, +1 jump)
+  
    
+
+Networking Notes:
+ - No discernible lag in 1v1 west vs east
+ - Jon and Henry are super underpowered
+ - A bunch of moving crates appears to be fine functionally.
+
 
 Balance Changes Needed:
 

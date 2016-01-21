@@ -99,6 +99,8 @@ public class JumpAndRunMovement : MonoBehaviour
 
     private Animator anim;
 
+    public float BoxPunch;
+
     void Awake() 
     {
         anim = GetComponentInChildren<Animator>();
@@ -468,22 +470,26 @@ public class JumpAndRunMovement : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
+        if (col.name == "Physics Box(Clone)")
+        {
+            Debug.Log("PUNCH");
+            if(transform.localScale.x > 0){
+                col.GetComponent<Rigidbody2D>().AddForce(new Vector2(BoxPunch, BoxPunch), ForceMode2D.Impulse);
+            }else{
+                col.GetComponent<Rigidbody2D>().AddForce(new Vector2(-BoxPunch, BoxPunch), ForceMode2D.Impulse);
+            }
+        }
+
         if (col == null || !m_PhotonView.isMine)
             return;
 
-        if (col != null)
-        {
-            Debug.Log("I collided with: " + col.transform.parent.name);
-            //Debug.Log("And I am: " + gameObject.name);
-        }
-
 
         //apply force . . .
-        if (col.name.Contains("Punch"))
+        else if (col.name.Contains("Punch"))
         {
             damage += PunchPercentAdd;
             BattleUI.SetDamageTo(damage);
-            if (col.name == "PunchForward")
+            if (col.name.Contains("PunchForward"))
             {
                 //velocity += Vector2.right * PunchForceForward_Forward;
                 if (col.transform.parent.localScale.x > 0)

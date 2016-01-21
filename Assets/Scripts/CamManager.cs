@@ -36,7 +36,7 @@ public class CamManager : MonoBehaviour
     // Use this for initialization
     private void Start()
     {
-        maxDeathDistance = 1000f;
+        maxDeathDistance = 2000f;
         target_IsNew = false;
         if (target == null)
             return;

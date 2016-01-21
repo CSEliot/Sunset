@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Demo2DJumpAndRun : MonoBehaviour 
 {
+    public Transform location;
+
     void OnJoinedRoom()
     {
         if( PhotonNetwork.isMasterClient == false )
@@ -10,6 +12,35 @@ public class Demo2DJumpAndRun : MonoBehaviour
             return;
         }
 
-        //PhotonNetwork.InstantiateSceneObject( "Physics Box", new Vector3( -4.5f, 5.5f, 0 ), Quaternion.identity, 0, null );
+        PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+        PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+        PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+        PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+        PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+            PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+            PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+            PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+            PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+            PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+        PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+        PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+        PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+        PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+        PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+            PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+            PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+            PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+            PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+            PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+        PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+        PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+        PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+        PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+        PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+            PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+            PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+            PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+            PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
+            PhotonNetwork.InstantiateSceneObject("Physics Box", location.position, Quaternion.identity, 0, null);
     }
 }
