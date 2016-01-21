@@ -8,12 +8,14 @@ public class SpecialsController : MonoBehaviour {
     private Animator anim;
 
     public GameObject Book;
+    public float SpawnHeight;
+    public float SpawnAdjust;
 
 	// Use this for initialization
 	void Start () {
         anim = GetComponent<Animator>();
         j = GetComponentInParent<JumpAndRunMovement>();
-        if (transform.parent.name == "Lore")
+        if (transform.parent.name == "Lore(Clone)")
         {
             specialsNum = 2;
         }
@@ -33,16 +35,29 @@ public class SpecialsController : MonoBehaviour {
     {
         anim.SetBool("Activating", false);
         j.UnpauseMvmnt();
-        ActivateSpecial(specialsNum);
+        ActivateSpecial();
     }
 
-    private void ActivateSpecial(int spclNum)
+    private void ActivateSpecial()
     {
-        Debug.Log("Activating Special Number: " + spclNum);
+        switch (specialsNum)
+        {
+            case 1:
+                break;
+            case 2:
+                LoreOverload();
+                break;
+            default:
+                Debug.LogError("BAD SPECIAL NUM GIVEN: " + specialsNum);
+                break;
+
+        }
     }
 
     private void LoreOverload()
     {
-        //Instantiate
+        Vector3 bookSpawn = transform.parent.position + new Vector3(SpawnAdjust, SpawnHeight, 0);
+        GameObject book = Instantiate(Book, bookSpawn, Quaternion.EulerAngles(0f, 0f, 0f)) as GameObject;
+        book.GetComponent<BookSplosion>().SetOwnerTag(transform.tag);
     }
 }
