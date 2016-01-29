@@ -110,12 +110,9 @@ public class CamManager : MonoBehaviour
     /// </summary>
     /// <param name="BodyVelocityMag">Moving force player is feeling.</param>
     /// <param name="playerLoc"> player location in WORLD space.</param>
-    public void DeathShake(float BodyVelocityMag, Vector3 playerLoc)
+    public void DeathShake(bool isMyDeath)
     {
-        Debug.Log("BodyVelocityMag is: " + BodyVelocityMag);
-        float distanceMag = (playerLoc - transform.position).sqrMagnitude;
-        float distancePerc = distanceMag / (maxDeathDistance * maxDeathDistance);
-        float shakeAmt = BodyVelocityMag * DeathShakeMod * distancePerc;
+        float shakeAmt = DeathShakeMod * (isMyDeath? 2f: 1f);
         StartCoroutine(CameraShake(OnDeathWaitTicks, shakeAmt));
     }
 

@@ -1,10 +1,16 @@
-Changelog - V0.24:
+Changelog - V0.34:
  + Ready Up Yes and No are clickable.
-  
-JOSH CAN'T JUMP
-ENEMY DEATH SCREEN SHAKE REDUCE
-Performance drop from multiple packet sends?
-SAVE SOUND SETTINGS
+ + Audio Options saved locally.
+ / Cam Shake now static  	
+ + Players are invincible for 5 frames after being punched.
+
+ Fixes:
+ - Could click Ready >Yes and Play alone, breaking game.
+ - Josh couldn't jump. Fixed.
+
+TO RESUME: getting hurt animation to lpay only once.
+Performance drop from multiple packet sends? yes, but that's okay.
+
 
   Balance Changes:
    - Attack animation slightly shorter.

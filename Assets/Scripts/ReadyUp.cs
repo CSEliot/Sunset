@@ -133,6 +133,10 @@ public class ReadyUp : MonoBehaviour {
 
     public void Ready()
     {
+        if (totalLoggedIn < 2)
+        {
+            return;
+        }
         isReady = true;
         m_PhotonView.RPC("ShowReady", PhotonTargets.All, myLogInID);
         SelectorYes.SetActive(false);
