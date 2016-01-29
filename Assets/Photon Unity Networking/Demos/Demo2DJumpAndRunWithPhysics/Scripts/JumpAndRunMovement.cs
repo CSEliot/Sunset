@@ -51,6 +51,8 @@ public class JumpAndRunMovement : MonoBehaviour
     public float AttackLife;
     private int totalAttackFrames;
     private WaitForSeconds attackDisableDelay;
+    public float InvicibilityFrames;
+    private float invincibilityCount;
 
     private bool facingRight;
 
@@ -187,6 +189,7 @@ public class JumpAndRunMovement : MonoBehaviour
         updateDownJumping();    
         updateAttacks();
         updateMovement();
+        UpdateHurt();
     }
 
     void FixedUpdate()
@@ -242,6 +245,12 @@ public class JumpAndRunMovement : MonoBehaviour
         }
     }
 
+    private void UpdateHurt()
+    {
+        if(invincibilityCount>=0)
+            invincibilityCount--;
+    }
+
     IEnumerator WinWait()
     {
         yield return new WaitForSeconds(2f);
@@ -260,7 +269,7 @@ public class JumpAndRunMovement : MonoBehaviour
 
     private void updateSpecials()
     {
-        if (Input.GetButtonDown("Special"))
+        if (Input.GetButtonDown("Special") && invincibilityCount < 0)
         {
             m_PhotonView.RPC("SpecialActivate", PhotonTargets.All);
             PauseMvmnt();
@@ -287,6 +296,7 @@ public class JumpAndRunMovement : MonoBehaviour
             && jumpsRemaining > 0 && totalJumpFrames < 0)
         {
             jumped = true;
+            Debug.Log("Jumped is true!");
             jumpsRemaining -= 1;
             totalJumpFrames = jumpLag;
         }
@@ -340,6 +350,7 @@ public class JumpAndRunMovement : MonoBehaviour
         {
             jumpForceTemp = JumpForce;
             jumped = false;
+            Debug.Log("Jumped is false!");
         } 
         velocity.y += jumpForceTemp;
         jumpForceTemp = Mathf.Lerp(jumpForceTemp, 0f, JumpDecel);
@@ -387,10 +398,19 @@ public class JumpAndRunMovement : MonoBehaviour
         m_wasGrounded = m_IsGrounded;
         m_IsGrounded = hit.collider != null;
         //hit.collider.gameObject.layer
+        ///Can't regain jumpcounts before jump force is applied.
         if (m_IsGrounded && !jumped)
         {
-            //Debug.Log ("Grounded on: " + (hit.collider.name));
+            Debug.Log("Grounded on: " + (hit.collider.name));
             jumpsRemaining = TotalJumpsAllowed;
+        }
+        else if (m_IsGrounded)
+        {
+            Debug.Log("Grounded on: " + (hit.collider.name));
+        }
+        else
+        {
+            Debug.Log("No Raycast Contact.");
         }
         //if(!m_IsGrounded && down)
     }
@@ -468,6 +488,27 @@ public class JumpAndRunMovement : MonoBehaviour
         anim.SetBool("Activating", true);
     }
 
+    [PunRPC]
+    void HurtAnim(int hurtNum)
+    {
+        switch (hurtNum)
+        {
+            case 1:
+                anim.SetBool("HurtSmall", true);
+                break;
+            case 2:
+                anim.SetBool("HurtMedium", true);
+                break;
+            case 3:
+                anim.SetBool("HurtBig", true);
+                break;
+            default:
+                Debug.LogError("BAD ANIM NUMBER GIVEN");
+                break;
+        }
+    }
+
+
     void OnTriggerEnter2D(Collider2D col)
     {
         if (col.name == "Physics Box(Clone)")
@@ -487,7 +528,27 @@ public class JumpAndRunMovement : MonoBehaviour
         //apply force . . .
         else if (col.name.Contains("Punch"))
         {
+            if (invincibilityCount > 0)
+            {
+                return;
+            }
+            else
+            {
+                invincibilityCount = InvicibilityFrames;
+            }
             damage += PunchPercentAdd;
+            if (damage < 30)
+            {
+                m_PhotonView.RPC("HurtAnim", PhotonTargets.All, 1);
+            }
+            else if (damage < 60)
+            {
+                m_PhotonView.RPC("HurtAnim", PhotonTargets.All, 2);
+            }
+            else
+            {
+                m_PhotonView.RPC("HurtAnim", PhotonTargets.All, 3);
+            }
             BattleUI.SetDamageTo(damage);
             if (col.name.Contains("PunchForward"))
             {
@@ -586,7 +647,7 @@ public class JumpAndRunMovement : MonoBehaviour
         if (col.tag != "DeathWall")
             return;
         myAudioSrc.Play();
-        camShaker.DeathShake(m_Body.velocity.magnitude, transform.position);
+        camShaker.DeathShake(m_PhotonView.isMine);
 		
         if(!m_PhotonView.isMine)
             return;

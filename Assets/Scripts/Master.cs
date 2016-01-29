@@ -53,7 +53,9 @@ public class Master : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         totalPlayers = 100;
-	}
+        SetMSXVolume(PlayerPrefs.GetFloat("MSXVol", 0.5f));
+        SetSFXVolume(PlayerPrefs.GetFloat("SFXVol", 0.5f));
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -141,6 +143,8 @@ public class Master : MonoBehaviour {
             Debug.LogError("Volume amount must be betweeen 0 and 1.");
         }
         mySFXAudio.volume = amt;
+        PlayerPrefs.SetFloat("SFXVol", amt);
+        PlayerPrefs.Save();
         Debug.Log("SFXVolume Set");
     }
 
@@ -151,6 +155,8 @@ public class Master : MonoBehaviour {
             Debug.LogError("Volume amount must be betweeen 0 and 1.");
         }
         myMusicAudio.volume = amt;
+        PlayerPrefs.SetFloat("MSXVol", amt);
+        PlayerPrefs.Save();
         Debug.Log("MSXVolume Set");
     }
 
