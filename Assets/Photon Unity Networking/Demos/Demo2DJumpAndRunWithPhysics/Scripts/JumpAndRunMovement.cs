@@ -391,10 +391,10 @@ public class JumpAndRunMovement : MonoBehaviour
                               GroundCheckEndPoint, 
                               mask.value);
 
-        Debug.DrawLine(position+JumpOffset,
-                       position + (-Vector2.up * GroundCheckEndPoint),
-                       Color.red,
-                       0.01f);
+        //Debug.DrawLine(position+JumpOffset,
+        //               position + (-Vector2.up * GroundCheckEndPoint),
+        //               Color.red,
+        //               0.01f);
         m_wasGrounded = m_IsGrounded;
         m_IsGrounded = hit.collider != null;
         //hit.collider.gameObject.layer
@@ -491,21 +491,21 @@ public class JumpAndRunMovement : MonoBehaviour
     [PunRPC]
     void HurtAnim(int hurtNum)
     {
-        switch (hurtNum)
-        {
-            case 1:
-                anim.SetBool("HurtSmall", true);
-                break;
-            case 2:
-                anim.SetBool("HurtMedium", true);
-                break;
-            case 3:
-                anim.SetBool("HurtBig", true);
-                break;
-            default:
-                Debug.LogError("BAD ANIM NUMBER GIVEN");
-                break;
-        }
+        //switch (hurtNum)
+        //{
+        //    case 1:
+        //        anim.SetBool("HurtSmall", true);
+        //        break;
+        //    case 2:
+        //        anim.SetBool("HurtMedium", true);
+        //        break;
+        //    case 3:
+        //        anim.SetBool("HurtBig", true);
+        //        break;
+        //    default:
+        //        Debug.LogError("BAD ANIM NUMBER GIVEN");
+        //        break;
+        //}
     }
 
 
