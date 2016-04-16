@@ -491,21 +491,21 @@ public class JumpAndRunMovement : MonoBehaviour
     [PunRPC]
     void HurtAnim(int hurtNum)
     {
-        //switch (hurtNum)
-        //{
-        //    case 1:
-        //        anim.SetBool("HurtSmall", true);
-        //        break;
-        //    case 2:
-        //        anim.SetBool("HurtMedium", true);
-        //        break;
-        //    case 3:
-        //        anim.SetBool("HurtBig", true);
-        //        break;
-        //    default:
-        //        Debug.LogError("BAD ANIM NUMBER GIVEN");
-        //        break;
-        //}
+        switch (hurtNum)
+        {
+            case 1:
+                anim.SetBool("HurtSmall", true);
+                break;
+            case 2:
+                anim.SetBool("HurtMedium", true);
+                break;
+            case 3:
+                anim.SetBool("HurtBig", true);
+                break;
+            default:
+                Debug.LogError("BAD ANIM NUMBER GIVEN");
+                break;
+        }
     }
 
 
