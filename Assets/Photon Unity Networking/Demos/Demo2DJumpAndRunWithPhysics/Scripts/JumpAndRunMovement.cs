@@ -297,7 +297,7 @@ public class JumpAndRunMovement : MonoBehaviour
     {
         // 
         if ((Input.GetButtonDown("Jump") == true
-            || Input_M.GetButtonDown("Jump"))
+            || Input_M.GetButtonDownStay("Jump"))
             && jumpsRemaining > 0 && totalJumpFrames < 0)
         {
             jumped = true;
