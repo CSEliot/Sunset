@@ -21,6 +21,8 @@ public class Master : MonoBehaviour {
     public int Client_CharNum;
     public int Player_Number;
 
+    private string RoomName;
+
     public AudioClip[] SFX;
     public AudioClip[] MSX;
     private AudioSource myMusicAudio;
@@ -168,5 +170,15 @@ public class Master : MonoBehaviour {
     public bool GetServerIsEast()
     {
         return isEast;
+    }
+
+    public void SetRoomName(string room_name)
+    {
+        RoomName = room_name;
+    }
+
+    public string GetRoomName()
+    {
+        return RoomName;
     }
 }

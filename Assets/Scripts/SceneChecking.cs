@@ -23,11 +23,23 @@ public class SceneChecking : MonoBehaviour {
         }
 	}
 
-	public void ChangeScene(){
-        if (m.Client_CharNum == 6)
+    public void ChangeScene() {
+        if (targetSceneName == "GameScreen_")
+        {
+            if (targetSceneName != "null")
+            {
+                SceneManager.LoadScene(targetSceneName + m.GetRoomName());
+                m.PlaySFX(0);
+            }
+        }
+        else if (m.Client_CharNum == 6)
+        { 
             return;
-        if(targetSceneName!="null")
+        }
+        else if (targetSceneName != "null")
+        {
             SceneManager.LoadScene(targetSceneName);
             m.PlaySFX(0);
+        }
 	}
 }

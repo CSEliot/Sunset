@@ -25,6 +25,7 @@ public class JumpAndRunMovement : MonoBehaviour
     Rigidbody2D m_Body;
     PhotonView m_PhotonView;
     private PhotonTransformView m_PhotonTransform;
+    private MobileController Input_M;
 
     private bool m_IsGrounded;
     private bool m_wasGrounded;
@@ -142,6 +143,8 @@ public class JumpAndRunMovement : MonoBehaviour
         AttackObjs[0] = transform.GetChild(3).gameObject;
         AttackObjs[1] = transform.GetChild(1).gameObject;
         AttackObjs[2] = transform.GetChild(2).gameObject;
+
+        Input_M = GameObject.FindGameObjectWithTag("MobileController").GetComponent<MobileController>();
 
         if (m_PhotonView.isMine)
         {
@@ -292,7 +295,9 @@ public class JumpAndRunMovement : MonoBehaviour
 
     private void updateJumping()
     {
-        if( Input.GetButtonDown("Jump") == true 
+        // 
+        if ((Input.GetButtonDown("Jump") == true
+            || Input_M.GetButtonDown("Jump"))
             && jumpsRemaining > 0 && totalJumpFrames < 0)
         {
             jumped = true;
@@ -305,7 +310,8 @@ public class JumpAndRunMovement : MonoBehaviour
 
     private void updateDownJumping()
     {
-        if (Input.GetButtonDown("DownJump") == true
+        if ((Input.GetButtonDown("DownJump") == true
+            || Input_M.GetButtonDown("DownJump"))
             && canDownJump)
         {
             downJumped = true;
@@ -315,12 +321,12 @@ public class JumpAndRunMovement : MonoBehaviour
 
     private void updateMovement()
     {
-        if (Input.GetAxis("MoveHorizontal") > 0)
+        if (Input.GetAxis("MoveHorizontal") > 0 || Input_M.GetButtonDown("MoveRight"))
         {
             moveLeft = false;
             moveRight = true;
         }
-        else if (Input.GetAxis("MoveHorizontal") < 0)
+        else if (Input.GetAxis("MoveHorizontal") < 0 || Input_M.GetButtonDown("MoveLeft"))
         {
             moveLeft = true;
             moveRight = false;
@@ -424,7 +430,7 @@ public class JumpAndRunMovement : MonoBehaviour
     private void updateAttacks()
     {
         if(totalAttackFrames < 0 ){
-            if (Input.GetButtonDown("Up") && !punching)
+            if ((Input.GetButtonDown("Up") || Input_M.GetButtonDown("Up")) && !punching)
             {
                 punching = true;
                 AttackObjs[0].SetActive(true);
@@ -432,7 +438,7 @@ public class JumpAndRunMovement : MonoBehaviour
                 totalAttackFrames = AttackLag;
                 m_PhotonView.RPC("UpAttack", PhotonTargets.Others);
             }
-            if (Input.GetButtonDown("Down") && !punching)
+            if ((Input.GetButtonDown("Down") || Input_M.GetButtonDown("Down")) && !punching)
             {
                 punching = true;
                 AttackObjs[2].SetActive(true);
@@ -440,7 +446,7 @@ public class JumpAndRunMovement : MonoBehaviour
                 totalAttackFrames = AttackLag;
                 m_PhotonView.RPC("DownAttack", PhotonTargets.Others);
             }
-            if (facingRight && Input.GetButtonDown("Right") && !punching)
+            if (facingRight && (Input.GetButtonDown("Right") || Input_M.GetButtonDown("Right")) && !punching)
             {
                 punching = true;
                 AttackObjs[1].SetActive(true);
@@ -448,7 +454,7 @@ public class JumpAndRunMovement : MonoBehaviour
                 totalAttackFrames = AttackLag;
                 m_PhotonView.RPC("ForwardAttack", PhotonTargets.Others);
             }
-            if (!facingRight && Input.GetButtonDown("Left") && !punching)
+            if (!facingRight && (Input.GetButtonDown("Left") || Input_M.GetButtonDown("Left")) && !punching)
             {
                 punching = true;
                 AttackObjs[1].SetActive(true);
