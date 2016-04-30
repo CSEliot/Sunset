@@ -23,10 +23,10 @@ public class MenuSFX : MonoBehaviour {
         {
             m.PlaySFX(1);
         }
-        if (Input.GetButtonDown("Submit"))
-        {
-            m.PlaySFX(0);
-        }
+        //if (Input.GetButtonDown("Submit"))
+        //{
+        //    m.PlaySFX(0);
+        //}
 	}
 
     public delegate void test(float a);

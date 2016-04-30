@@ -321,12 +321,12 @@ public class JumpAndRunMovement : MonoBehaviour
 
     private void updateMovement()
     {
-        if (Input.GetAxis("MoveHorizontal") > 0 || Input_M.GetButtonDown("MoveRight"))
+        if (Input.GetAxis("MoveHorizontal") > 0 || Input_M.GetButtonDownStay("MoveRight"))
         {
             moveLeft = false;
             moveRight = true;
         }
-        else if (Input.GetAxis("MoveHorizontal") < 0 || Input_M.GetButtonDown("MoveLeft"))
+        else if (Input.GetAxis("MoveHorizontal") < 0 || Input_M.GetButtonDownStay("MoveLeft"))
         {
             moveLeft = true;
             moveRight = false;
