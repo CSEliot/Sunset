@@ -33,7 +33,6 @@ public class ReadyUp : MonoBehaviour {
 
     private int readyUpBypassCount;
     private int readyUpBypassTotal;
-    private bool isBypassed;
 
     private int myLogInID;
 
@@ -49,7 +48,6 @@ public class ReadyUp : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        isBypassed = false;
         readyUpBypassCount = 0;
         readyUpBypassTotal = 2;
         waiting = false;
@@ -77,10 +75,9 @@ public class ReadyUp : MonoBehaviour {
         {
             readyUpBypassCount++;
         }
-        if (!isBypassed && readyUpBypassTotal < readyUpBypassCount)
+        if (readyUpBypassTotal < readyUpBypassCount)
         {
-            isBypassed = false;
-            totalReady = 100;
+            totalReady = 6;
             StartGame();
             j.OnReadyUp(ID_to_SlotNum[myLogInID]);
         }
@@ -336,5 +333,10 @@ public class ReadyUp : MonoBehaviour {
         }
         GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CamManager>()
             .SetTarget(myTransform);
+    }
+
+    public void CheatGame()
+    {
+        readyUpBypassCount = 3;
     }
 }
