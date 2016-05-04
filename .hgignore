@@ -17,6 +17,7 @@ Assets/PixelDraw
 build_info.txt
 *orig.meta
 Photon-Unity-Win81.unitypackage.meta
+*.psd
 syntax: regexp
 ^Library/.*
 ^Temp/.*
