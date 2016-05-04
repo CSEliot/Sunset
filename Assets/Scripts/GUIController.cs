@@ -50,7 +50,7 @@ public class GUIController : MonoBehaviour {
 
     public void ShiftSelectionRight()
     {
-        if (currentSelector == 7)
+        if (currentSelector == 6)
             return;
         m.PlaySFX(5);   
         currentSelector += 1;
