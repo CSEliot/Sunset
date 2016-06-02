@@ -1,68 +1,49 @@
-Changelog - V0.34:
- + Ready Up Yes and No are clickable.
- + Audio Options saved locally.
- / Cam Shake now static  	
- + Players are invincible for 5 frames after being punched.
+CHANGELOG - V0.50
+Changes:
+    + Hurt Animations working.
+    + Damage receiving particle effect (unfinished)
+    + Changed Map Selection to be different scenes.
+    + Map selection.
+    + Test Map
 
- Fixes:
- - Could click Ready >Yes and Play alone, breaking game.
- - Josh couldn't jump. Fixed.
+Fixes:
+	Pierce was selectable.
 
-TO RESUME: getting hurt animation to lpay only once.
-Performance drop from multiple packet sends? yes, but that's okay.
-
-
-  Balance Changes:
-   - Attack animation slightly shorter.
-   - Cloud and Six slightly more jump.
-   - Side Edge of map 50% larger.
-   - Lore slightly higher jump.
-   - GLOBAL REBALANCE (everyone weaker, accurate stats)
-   - Dire is high af. (floatier, +1 jump)
-  
-   
-
+Balance Changes:
+    
 Networking Notes:
- - No discernible lag in 1v1 west vs east
- - Jon and Henry are super underpowered
- - A bunch of moving crates appears to be fine functionally.
-
 
 Balance Changes Needed:
 
 Suggestions:
- - Allow attacking behind you
 
 To Be Made:
  + Short hops.  
  + Usernames.
- + Side Jumping
+ + Wall Jumping
  / jump detection left and right corners.
  + Left and Right to Swap Spectators
- + When new players join, the down arrow pops up during spectation.
+ + When new players join, the down arrow pops up during spectating.
  + Charging attacks
  + Special Abilities
 
 Later:
- - Destructable Terrain
- - More maps.
- - Items.
- - Mouse Control Options.
- - Controller Support.
-
- - Mobile Support.
+ + Destructible Terrain
+ + More maps.
+ + Items.
+ + Mouse Control Options.
+ + Controller Support.
+ + Mobile Support.
 
 Bugs:
- - Damage % randomly shoots up and KOs in 1 hit. (Kissing hitboxes.)
+ - FIXED? Damage % randomly shoots up and KOs in 1 hit. (Kissing hitboxes.)
  - Teleporty bug.
  - Can't re-ready after a new player joins.
  - Can't move after being punched at lower percentages.
 
-Cool Ideas
+Cool Ideas:
 
-:
 - Pierce takes over another character.
-
 - Shit Quality makes everyone one single pixel.
 - *Nude Mod
 - HD Mod
