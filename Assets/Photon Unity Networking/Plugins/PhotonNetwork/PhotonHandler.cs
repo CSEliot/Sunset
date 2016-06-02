@@ -11,6 +11,7 @@ using ExitGames.Client.Photon;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using SupportClassPun = ExitGames.Client.Photon.SupportClass;
 
 
 /// <summary>
@@ -31,7 +32,7 @@ internal class PhotonHandler : Photon.MonoBehaviour
     private static bool sendThreadShouldRun;
 
     private static Stopwatch timerToStopConnectionInBackground;
-    
+
     protected internal static bool AppQuits;
 
     protected internal static Type PingImplementation = null;
@@ -76,12 +77,11 @@ internal class PhotonHandler : Photon.MonoBehaviour
             {
                 timerToStopConnectionInBackground = new Stopwatch();
             }
+            timerToStopConnectionInBackground.Reset();
 
             if (pause)
             {
-                timerToStopConnectionInBackground.Reset();
                 timerToStopConnectionInBackground.Start();
-                
             }
             else
             {
@@ -154,7 +154,7 @@ internal class PhotonHandler : Photon.MonoBehaviour
     protected void OnLevelWasLoaded(int level)
     {
         PhotonNetwork.networkingPeer.NewSceneLoaded();
-        PhotonNetwork.networkingPeer.SetLevelInPropsIfSynced(Application.loadedLevelName);
+        PhotonNetwork.networkingPeer.SetLevelInPropsIfSynced(SceneManagerHelper.ActiveSceneName);
     }
 
     protected void OnJoinedRoom()
@@ -164,7 +164,7 @@ internal class PhotonHandler : Photon.MonoBehaviour
 
     protected void OnCreatedRoom()
     {
-        PhotonNetwork.networkingPeer.SetLevelInPropsIfSynced(Application.loadedLevelName);
+        PhotonNetwork.networkingPeer.SetLevelInPropsIfSynced(SceneManagerHelper.ActiveSceneName);
     }
 
     public static void StartFallbackSendAckThread()
@@ -176,7 +176,7 @@ internal class PhotonHandler : Photon.MonoBehaviour
         }
 
         sendThreadShouldRun = true;
-        SupportClass.CallInBackground(FallbackSendAckThread);   // thread will call this every 100ms until method returns false
+        SupportClassPun.CallInBackground(FallbackSendAckThread);   // thread will call this every 100ms until method returns false
 #endif
     }
 
@@ -191,25 +191,21 @@ internal class PhotonHandler : Photon.MonoBehaviour
     {
         if (sendThreadShouldRun && PhotonNetwork.networkingPeer != null)
         {
-            PhotonNetwork.networkingPeer.SendAcksOnly();
-
             // check if the client should disconnect after some seconds in background
             if (timerToStopConnectionInBackground != null && PhotonNetwork.BackgroundTimeout > 0.001f)
             {
-                if (timerToStopConnectionInBackground.ElapsedMilliseconds > PhotonNetwork.BackgroundTimeout*1000)
+                if (timerToStopConnectionInBackground.ElapsedMilliseconds > PhotonNetwork.BackgroundTimeout * 1000)
                 {
-                    timerToStopConnectionInBackground.Stop();
-                    timerToStopConnectionInBackground.Reset();
-
-                    PhotonNetwork.Disconnect();
                     return sendThreadShouldRun;
                 }
             }
+
+            PhotonNetwork.networkingPeer.SendAcksOnly();
         }
 
         return sendThreadShouldRun;
     }
-    
+
 
     #region Photon Cloud Ping Evaluation
 

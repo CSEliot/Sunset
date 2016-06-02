@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class HubGui : MonoBehaviour
 {
@@ -41,7 +42,7 @@ public class HubGui : MonoBehaviour
         GUILayout.Label("Basics", m_Headline);
         if (GUILayout.Button("Demo Boxes", GUILayout.Width(280)))
         {
-            demoDescription = "<color=orange>Demo Boxes</color>\n\nUses ConnectAndJoinRandom script.\n(joins a random room or creates one)\n\nInstantiates simple prefab.\nSynchronizes positions without smoothing.";
+            demoDescription = "<color=orange>Demo Boxes</color>\n\nUses ConnectAndJoinRandom script.\n(joins a random room or creates one)\n\nInstantiates simple prefabs.\nSynchronizes positions without smoothing.\nShows that RPCs target a specific object.";
             demoBtn = new DemoBtn() { Text = "Start", Link = "DemoBoxes-Scene" };
         }
         if (GUILayout.Button("Demo Worker", GUILayout.Width(280)))
@@ -51,7 +52,7 @@ public class HubGui : MonoBehaviour
         }
         if (GUILayout.Button("Movement Smoothing", GUILayout.Width(280)))
         {
-            demoDescription = "<color=orange>Movement Smoothing</color>\n\nUses ConnectAndJoinRandom script.\nShows several basic ways to update positions of remote objects.";
+            demoDescription = "<color=orange>Movement Smoothing</color>\n\nUses ConnectAndJoinRandom script.\nShows several basic ways to synchronize positions between controlling client and remote ones.\nThe TransformView is a good default to use.";
             demoBtn = new DemoBtn() { Text = "Start", Link = "DemoSynchronization-Scene" };
         }
 
@@ -117,7 +118,7 @@ public class HubGui : MonoBehaviour
         {
             if (GUILayout.Button(this.demoBtn.Text))
             {
-                Application.LoadLevel(this.demoBtn.Link);
+                SceneManager.LoadScene(this.demoBtn.Link);
             }
         }
         if (!string.IsNullOrEmpty(this.webLink.Text))

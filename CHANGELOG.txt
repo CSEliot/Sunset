@@ -5,7 +5,8 @@ Changes:
     + Changed Map Selection to be different scenes.
     + Map selection.
     + Test Map
-
+	/ Photon's Update to 1.69
+	
 Fixes:
 	Pierce was selectable.
 

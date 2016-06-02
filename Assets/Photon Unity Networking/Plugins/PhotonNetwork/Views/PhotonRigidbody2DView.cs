@@ -1,4 +1,14 @@
-﻿using UnityEngine;
+﻿// ----------------------------------------------------------------------------
+// <copyright file="PhotonRigidbody2DView.cs" company="Exit Games GmbH">
+//   PhotonNetwork Framework for Unity - Copyright (C) 2016 Exit Games GmbH
+// </copyright>
+// <summary>
+//   Component to synchronize 2d rigidbodies via PUN.
+// </summary>
+// <author>developer@exitgames.com</author>
+// ----------------------------------------------------------------------------
+
+using UnityEngine;
 using System.Collections;
 
 /// <summary>
@@ -20,7 +30,7 @@ public class PhotonRigidbody2DView : MonoBehaviour
     bool m_SynchronizeVelocity = true;
 
     [SerializeField]
-    bool m_SynchronizeAngularVelocity = false;
+    bool m_SynchronizeAngularVelocity = true;
 
     Rigidbody2D m_Body;
 
