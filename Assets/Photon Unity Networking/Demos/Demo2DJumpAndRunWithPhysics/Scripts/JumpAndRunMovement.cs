@@ -35,9 +35,11 @@ public class JumpAndRunMovement : MonoBehaviour
     private bool downJumped;
     public int TotalJumpsAllowed;
     public Vector2 JumpOffset;
+    float tempAxisKey;
+    float tempAxisTouch;
 
-    private bool moveLeft;
-    private bool moveRight;
+    private float moveLeft;
+    private float moveRight;
 
     public float GroundCheckEndPoint;
 
@@ -107,8 +109,8 @@ public class JumpAndRunMovement : MonoBehaviour
     void Awake() 
     {
         anim = GetComponentInChildren<Animator>();
-        moveRight = false;
-        moveLeft = false;
+        moveRight = 0;
+        moveLeft = 0;
         controlsPaused = false;
         myAudioSrc = GetComponent<AudioSource>();
         myAudioSrc.clip = DeathNoise;
@@ -182,8 +184,8 @@ public class JumpAndRunMovement : MonoBehaviour
         //Jump Detection Only, no physics handling.
         if (controlsPaused)
         {
-            moveLeft = false;
-            moveRight = false;
+            moveLeft = 0;
+            moveRight = 0;
             return;
         }
 
@@ -295,7 +297,6 @@ public class JumpAndRunMovement : MonoBehaviour
 
     private void updateJumping()
     {
-        // 
         if ((Input.GetButtonDown("Jump") == true
             || Input_M.GetButtonDownStay("Jump"))
             && jumpsRemaining > 0 && totalJumpFrames < 0)
@@ -321,20 +322,24 @@ public class JumpAndRunMovement : MonoBehaviour
 
     private void updateMovement()
     {
-        if (Input.GetAxis("MoveHorizontal") > 0 || Input_M.GetButtonDownStay("MoveRight"))
+        //tempAxis left n right, keyboar axis left n right, or no input
+        tempAxisKey = Input.GetAxis("MoveHorizontal");
+        tempAxisTouch = Input_M.GetAxis("MoveHorizontal");
+        if ( tempAxisKey > 0 || tempAxisTouch > 0)
         {
-            moveLeft = false;
-            moveRight = true;
+            Debug.Log("Move axis: " + tempAxisTouch);
+            moveLeft = 0;
+            moveRight = tempAxisTouch > tempAxisKey ? tempAxisTouch : tempAxisKey;
         }
-        else if (Input.GetAxis("MoveHorizontal") < 0 || Input_M.GetButtonDownStay("MoveLeft"))
+        else if ( tempAxisKey < 0 || tempAxisTouch < 0)
         {
-            moveLeft = true;
-            moveRight = false;
+            moveLeft = tempAxisTouch < tempAxisKey ? tempAxisTouch : tempAxisKey;
+            moveRight = 0;
         }
         else
         {
-            moveLeft = false;
-            moveRight = false; 
+            moveLeft = 0;
+            moveRight = 0; 
         }
     }
 
@@ -368,12 +373,12 @@ public class JumpAndRunMovement : MonoBehaviour
         //Normally we'd have any Input Handling get called from Update,
         //But dropped inputs aren't a problem with 'getaxis' since it's
         //Continuous and not a single frame like GetButtonDown
-        if(moveRight){
-            SpeedTemp = Mathf.Lerp(SpeedTemp, Speed, SpeedAccel);
+        if(moveRight != 0){
+            SpeedTemp = Mathf.Lerp(SpeedTemp, Speed*moveRight, SpeedAccel);
         }
-        else if (moveLeft)
+        else if (moveLeft != 0)
         {
-            SpeedTemp = Mathf.Lerp(SpeedTemp, -Speed, SpeedAccel);
+            SpeedTemp = Mathf.Lerp(SpeedTemp, Speed*moveLeft, SpeedAccel);
         }
         else if(m_IsGrounded)
         {
@@ -407,16 +412,16 @@ public class JumpAndRunMovement : MonoBehaviour
         ///Can't regain jumpcounts before jump force is applied.
         if (m_IsGrounded && !jumped)
         {
-            Debug.Log("Grounded on: " + (hit.collider.name));
+            //Debug.Log("Grounded on: " + (hit.collider.name));
             jumpsRemaining = TotalJumpsAllowed;
         }
         else if (m_IsGrounded)
         {
-            Debug.Log("Grounded on: " + (hit.collider.name));
+            //Debug.Log("Grounded on: " + (hit.collider.name));
         }
         else
         {
-            Debug.Log("No Raycast Contact.");
+            //Debug.Log("No Raycast Contact.");
         }
         //if(!m_IsGrounded && down)
     }

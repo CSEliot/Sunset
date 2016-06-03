@@ -9,7 +9,8 @@ Changes:
 	/ Photon's Update to 1.69
     + Hell map added
     + Server select updated
-	
+    + Touch Controls started, movement not finished.
+
 Fixes:
 	Pierce was selectable.
 
@@ -46,7 +47,7 @@ Bugs:
  - Can't move after being punched at lower percentages.
 
 Cool Ideas:
-
+- Sunset Project
 - Pierce takes over another character.
 - Shit Quality makes everyone one single pixel.
 - *Nude Mod
