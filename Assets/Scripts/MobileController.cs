@@ -74,7 +74,7 @@ public class MobileController : MonoBehaviour {
     /// <returns></returns>
     public float GetAxis(string name)
     {
-        if (!ButtonStates.ContainsKey(name))
+        if (!AxisStates.ContainsKey(name))
         {
             AxisStates.Add(name, 0f);
             return 0f;
@@ -85,36 +85,21 @@ public class MobileController : MonoBehaviour {
         return temp;
     }
 
-    public void SetAxisDown(string name)
+    public void SetAxisDown(string name, float axis)
     {
-        if (!ButtonStates.ContainsKey(name))
+        if (!AxisStates.ContainsKey(name))
         {
-            if(name == "MoveLeft")
-            {
-                AxisStates.Add(name, -1f);
-            }
-            else
-            {
-                AxisStates.Add(name, 1f);
-            }
+            AxisStates.Add(name, axis);
         }
         else
         {
-            if (name == "MoveLeft")
-            {
-                AxisStates[name] = -1f;
-            }
-            else
-            {
-                AxisStates[name] = 1f;
-            }
-            AxisStates[name] = 1f;
+            AxisStates[name] = axis;
         }
     }
 
     public void SetAxisUp(string name)
     {
-        if (!ButtonStates.ContainsKey(name))
+        if (!AxisStates.ContainsKey(name))
         {
             AxisStates.Add(name, 0f);
         }
