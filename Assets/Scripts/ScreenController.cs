@@ -84,15 +84,15 @@ public class ScreenController : MonoBehaviour
 
         mCtrl = GameObject.FindGameObjectWithTag("MobileController").GetComponent<MobileController>();
 
-        bottomRightLimit = -1f / 4f * Mathf.PI;
-        topRightLimit = 1f / 4f * Mathf.PI;
-        topLeftLimit = 3f / 4f * Mathf.PI;
-        bottomLeftLimit = -3f / 4f * Mathf.PI;
+        bottomRightLimit = -45f;
+        topRightLimit = 45f;
+        topLeftLimit = 135f;
+        bottomLeftLimit = -135f;
 
         distMax =  leftRgnHeight - leftRgnCenter.y;
         distLimit = distMax * distThresh;
-        
 
+        //CHANGES TO DO: Jump 75% of height, left and right bigger gaps, all maps, and fix infinite jump
     }
 
     // Update is called once per frame
@@ -122,6 +122,17 @@ public class ScreenController : MonoBehaviour
         {
             mCtrl.SetAxisDown("MoveHorizontal", -tempSpeed);
         }
+
+        if(LeftScnPos.y - leftRgnCenter.y > 0)
+        {
+            mCtrl.SetButtonDown("Jump");
+        }
+        else
+        {
+            mCtrl.SetButtonUp("Jump");
+            mCtrl.SetButtonDown("DownJump");
+        }
+        
     }
 
     private void registerAttacks()

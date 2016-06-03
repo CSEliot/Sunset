@@ -1,5 +1,4 @@
-CHANGELOG - V0.50
-
+CHANGELOG - V0.51
 Changes:
     + Hurt Animations working.
     + Damage receiving particle effect (unfinished)
@@ -9,7 +8,7 @@ Changes:
 	/ Photon's Update to 1.69
     + Hell map added
     + Server select updated
-    + Touch Controls started, movement not finished.
+    + Touch Controls started, movement not finished. 
 
 Fixes:
 	Pierce was selectable.
