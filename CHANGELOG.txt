@@ -1,5 +1,8 @@
 CHANGELOG - V0.51
 Changes:
+    + Sunset Project rebranding
+    + New button theme
+    + Spring cleaning art assets
     + Hurt Animations working.
     + Damage receiving particle effect (unfinished)
     + Changed Map Selection to be different scenes.
