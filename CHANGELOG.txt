@@ -12,6 +12,7 @@ Changes:
     + Hell map added
     + Server select updated
     + Touch Controls started, movement not finished. 
+    + New menu graphics
 
 Fixes:
 	Pierce was selectable.
