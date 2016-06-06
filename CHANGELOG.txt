@@ -80,4 +80,4 @@ Working Devices List:
  - LG G4
  - Samsung S7 Edge 2016
  - 2015 Moto X
- - 
+ - Samsung S6 Edge
