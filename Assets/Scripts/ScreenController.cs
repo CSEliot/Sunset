@@ -11,12 +11,13 @@ public class ScreenController : MonoBehaviour
     private float rgnLength;
     private float screenHeight;
 
-    public float LeftRgnScaler; //Modifies how tall control are should be.
+    private float leftRgnScaler; //Modifies how tall control are should be.
     private float leftRgnHeight;
-    public float RightRgnScaler; // Same but on attack side.
+    private float rightRgnScaler; // Same but on attack side.
     private float rightRgnHeight;
     private Vector2 rightRgnCenter;
     private Vector2 leftRgnCenter;
+    private float leftRgnCtrHghtScaler;
 
     private Vector2 LeftScnPos; // Pos @ 0, 0 means no input
     private Vector2 RightScnPos; // Pos @ 0, 0 means no input
@@ -38,9 +39,7 @@ public class ScreenController : MonoBehaviour
     private MobileController mCtrl;
 
     private float angle;
-    [Tooltip("Must be between 1.0 and 0.0 !")]
-    [Range(1.0f, 0.0f)]
-    public float distThresh; // Between 1 and 0;
+    private float distThresh; // Between 1 and 0;
     private float distLimit;
     private float distMax;
 
@@ -61,10 +60,13 @@ public class ScreenController : MonoBehaviour
         rgnLength = screenLength / 2;
         screenHeight = Screen.height;
 
-        leftRgnHeight = screenHeight * LeftRgnScaler;
-        rightRgnHeight = screenHeight * RightRgnScaler;
+        leftRgnScaler = 0.5f;
+        rightRgnScaler = 0.5f;
+        leftRgnHeight = screenHeight * leftRgnScaler;
+        rightRgnHeight = screenHeight * rightRgnScaler;
         rightRgnCenter = new Vector2(screenLength * 0.75f, rightRgnHeight / 2f);
-        leftRgnCenter = new Vector2(screenLength * 0.25f, leftRgnHeight / 2f);
+        leftRgnCtrHghtScaler = 0.40f;
+        leftRgnCenter = new Vector2(screenLength * 0.25f, (leftRgnHeight * leftRgnCtrHghtScaler));
 
         LeftScnPos = Vector2.zero;
         RightScnPos = Vector2.zero;
@@ -89,10 +91,10 @@ public class ScreenController : MonoBehaviour
         topLeftLimit = 135f;
         bottomLeftLimit = -135f;
 
+        distThresh = 0.6f;
         distMax =  leftRgnHeight - leftRgnCenter.y;
         distLimit = distMax * distThresh;
-
-        //CHANGES TO DO: Jump 75% of height, left and right bigger gaps, all maps, and fix infinite jump
+        
     }
 
     // Update is called once per frame
@@ -104,17 +106,23 @@ public class ScreenController : MonoBehaviour
             assignScreenActivity();
 
         registerAttacks();
+        registerMovement();
 
+        //Debug.DrawLine();
+    }
+
+    private void registerMovement()
+    {
         if (!isLeftActive)
             return;
 
         //get distance first.
         tempDist = Vector2.Distance(leftRgnCenter, LeftScnPos);
         tempSpeed = tempDist > distLimit ? 1.0f : tempDist / distMax; //OR DISTMAX?!
-        
+
 
         //now get location to apply distance.
-        if(LeftScnPos.x - leftRgnCenter.x > 0)
+        if (LeftScnPos.x - leftRgnCenter.x > 0)
         {
             mCtrl.SetAxisDown("MoveHorizontal", tempSpeed);
         }
@@ -123,7 +131,7 @@ public class ScreenController : MonoBehaviour
             mCtrl.SetAxisDown("MoveHorizontal", -tempSpeed);
         }
 
-        if(LeftScnPos.y - leftRgnCenter.y > 0)
+        if (LeftScnPos.y - leftRgnCenter.y > 0)
         {
             mCtrl.SetButtonDown("Jump");
         }
@@ -132,7 +140,6 @@ public class ScreenController : MonoBehaviour
             mCtrl.SetButtonUp("Jump");
             mCtrl.SetButtonDown("DownJump");
         }
-        
     }
 
     private void registerAttacks()
@@ -142,6 +149,7 @@ public class ScreenController : MonoBehaviour
             return;
 
         angle = Mathf.Atan2(RightScnPos.y - rightRgnCenter.y, RightScnPos.x - rightRgnCenter.x);
+        angle = angle * (180f / Mathf.PI);
 
         if (angle > bottomRightLimit && angle < topRightLimit)
         {
