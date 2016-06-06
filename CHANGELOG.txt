@@ -82,3 +82,4 @@ Working Devices List:
  - 2015 Moto X
  - Samsung S6 Edge
  - iPhone 6S
+ - DOOGEE VOYAGER 2
