@@ -1,18 +1,36 @@
-CHANGELOG - V0.51
+CHANGELOG - V0.53
 Changes:
+    
+    Art:
     + Sunset Project rebranding
+    
     + New button theme
+    
     + Spring cleaning art assets
     + Hurt Animations working.
     + Damage receiving particle effect (unfinished)
     + Changed Map Selection to be different scenes.
+    / UI Universal Resizing test 3
+    - Removed mistletoe
+    + New UI begin imlpemented    
+    
+
+    General:
     + Map selection.
     + Test Map
-	/ Photon's Update to 1.69
+    / Photon's Update to 1.69
+    
     + Hell map added
+    
     + Server select updated
+    
+    Gameplay/Code:
     + Touch Controls started, movement not finished. 
-    + New menu graphics
+    / All movement speed reduced by 10%. Acceleration by -0.1.
+    / Platforms now act like smash bros platforms.
+    / Maps are smaller.
+    / Attack regions returns to normal.
+    / Jump region raised a bit.    
 
 Fixes:
 	Pierce was selectable.
@@ -55,3 +73,11 @@ Cool Ideas:
 - Shit Quality makes everyone one single pixel.
 - *Nude Mod
 - HD Mod
+
+Working Devices List:
+ - Samsung Galaxy S4
+ - Sumsung Tab 4 SM-T230NU
+ - LG G4
+ - Samsung S7 Edge 2016
+ - 2015 Moto X
+ - 
