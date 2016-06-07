@@ -81,5 +81,9 @@ Working Devices List:
  - Samsung S7 Edge 2016
  - 2015 Moto X
  - Samsung S6 Edge
- - iPhone 6S
+ - iPhone 6S (B)
  - DOOGEE VOYAGER 2
+ - iPhone 4s 
+ - iPhone 6s (N)
+ - Nokia 635 W8.1
+ - Asus MeMO Pad 8
