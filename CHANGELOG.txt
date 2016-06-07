@@ -75,15 +75,14 @@ Cool Ideas:
 - HD Mod
 
 Working Devices List:
- - Samsung Galaxy S4
- - Sumsung Tab 4 SM-T230NU
- - LG G4
- - Samsung S7 Edge 2016
- - 2015 Moto X
- - Samsung S6 Edge
- - iPhone 6S (B)
- - DOOGEE VOYAGER 2
- - iPhone 4s 
- - iPhone 6s (N)
- - Nokia 635 W8.1
- - Asus MeMO Pad 8
+ - Samsung Galaxy S4 (Eli)
+ - Sumsung Tab 4 SM-T230NU (Eli)
+ - LG G4  (Bryan, Josh)
+ - Samsung S7 Edge 2016 (Jon)
+ - 2015 Moto X (Tom)
+ - Samsung S6 Edge (Kit, Richard)
+ - iPhone 6S (Brandan, Nate)
+ - DOOGEE VOYAGER 2 (Lilo)
+ - iPhone 4s (Paul)
+ - Nokia 635 W8.1 (Dobrynia)
+ - Asus MeMO Pad 8 (Paul)
