@@ -1,0 +1,65 @@
+CHANGELOG - V0.54
+Game Changes:
+    
+    Art:
+    / Buttons all lit by default (PC unfriendly, Mobile friendly).
+    / More UI fiddling on Title Screen.
+    
+    General:
+    
+    Gameplay/Code:
+
+    Fixes:
+    
+Networking Changes:
+
+Balance Changes Needed:
+
+Suggestions:
+
+To Be Made:
+ + Short hops.  
+ + Usernames.
+ + Wall Jumping
+ / jump detection left and right corners.
+ + Left and Right to Swap Spectators
+ + When new players join, the down arrow pops up during spectating.
+ + Charging attacks
+ + Special Abilities
+ + Cosmetic System Support
+ + Bigger hit boxes
+ + Item gambling System
+
+Later:
+ + Destructible Terrain
+ + More maps.
+ + Items.
+ + Mouse Control Options.
+ + Controller Support.
+ + Mobile Support.
+
+Bugs:
+ - FIXED? Damage % randomly shoots up and KOs in 1 hit. (Kissing hitboxes.)
+ - Teleporty bug.
+ - Can't re-ready after a new player joins.
+ - Can't move after being punched at lower percentages.
+
+Cool Ideas:
+- Sunset Project
+- Pierce takes over another character.
+- Shit Quality makes everyone one single pixel.
+- *Nude Mod
+- HD Mod
+
+Working Devices List:
+ - Samsung Galaxy S4 (Eli)
+ - Sumsung Tab 4 SM-T230NU (Eli)
+ - LG G4  (Bryan, Josh)
+ - Samsung S7 Edge 2016 (Jon)
+ - 2015 Moto X (Tom)
+ - Samsung S6 Edge (Kit, Richard)
+ - iPhone 6S (Brandan, Nate)
+ - DOOGEE VOYAGER 2 (Lilo)
+ - iPhone 4s (Paul)
+ - Nokia 635 W8.1 (Dobrynia)
+ - Asus MeMO Pad 8 (Paul)

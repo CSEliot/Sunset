@@ -1,43 +1,18 @@
-CHANGELOG - V0.53
-Changes:
+CHANGELOG - V0.54
+Game Changes:
     
     Art:
-    + Sunset Project rebranding
-    
-    + New button theme
-    
-    + Spring cleaning art assets
-    + Hurt Animations working.
-    + Damage receiving particle effect (unfinished)
-    + Changed Map Selection to be different scenes.
-    / UI Universal Resizing test 3
-    - Removed mistletoe
-    + New UI begin imlpemented    
-    
+    / Buttons all lit by default (PC unfriendly, Mobile friendly).
+    / More UI fiddling on Title Screen.
 
     General:
-    + Map selection.
-    + Test Map
-    / Photon's Update to 1.69
-    
-    + Hell map added
-    
-    + Server select updated
+    + UI Line Renderer ALMOST implemented.
     
     Gameplay/Code:
-    + Touch Controls started, movement not finished. 
-    / All movement speed reduced by 10%. Acceleration by -0.1.
-    / Platforms now act like smash bros platforms.
-    / Maps are smaller.
-    / Attack regions returns to normal.
-    / Jump region raised a bit.    
 
-Fixes:
-	Pierce was selectable.
-
-Balance Changes:
+    Fixes:
     
-Networking Notes:
+Networking Changes:
 
 Balance Changes Needed:
 
@@ -52,6 +27,9 @@ To Be Made:
  + When new players join, the down arrow pops up during spectating.
  + Charging attacks
  + Special Abilities
+ + Cosmetic System Support
+ + Bigger hit boxes
+ + Item gambling System
 
 Later:
  + Destructible Terrain
