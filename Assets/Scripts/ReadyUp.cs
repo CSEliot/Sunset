@@ -77,9 +77,9 @@ public class ReadyUp : MonoBehaviour {
         }
         if (readyUpBypassTotal < readyUpBypassCount)
         {
-            totalReady = 6;
+            totalReady = 2;
+			j.OnReadyUp(ID_to_SlotNum[myLogInID]);
             StartGame();
-            j.OnReadyUp(ID_to_SlotNum[myLogInID]);
         }
 
         if (waiting)

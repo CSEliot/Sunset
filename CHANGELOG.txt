@@ -6,7 +6,7 @@ Game Changes:
     / More UI fiddling on Title Screen.
 
     General:
-    + UI Line Renderer ALMOST implemented.
+    + UI Controls Lines implemented.
     
     Gameplay/Code:
 

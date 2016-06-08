@@ -5,7 +5,10 @@ public class ScreenController : MonoBehaviour
 {
 
 	private Camera cam;
-	private LineRenderer line;
+	private LineRenderer line1;
+	private LineRenderer line2;
+	private LineRenderer line3;
+
 	public float LineZ; 
 	private float tempZ;
 
@@ -57,7 +60,11 @@ public class ScreenController : MonoBehaviour
     private float bottomLeftLimit;
 
 	private Vector2[] debugDisplayList;
+	private int[] line1PointList;
+	private int[] line2PointList;
+	private int[] line3PointList;
 	private float attackLineLng;
+	private int x;
 
 
     // Use this for initialization
@@ -65,7 +72,12 @@ public class ScreenController : MonoBehaviour
     {
 
 		cam = GameObject.FindGameObjectWithTag ("MainCamera").GetComponent<Camera> ();
-		line = GetComponent<LineRenderer> ();
+		line1 = transform.GetChild(0).GetComponent<LineRenderer> ();
+		line2 = transform.GetChild(1).GetComponent<LineRenderer> ();
+		line3 = GetComponent<LineRenderer> ();
+		line1PointList = new int [] {0, 1, 2, 3, 5, 20, 4, 0, 1, 20, 12, 15, 11, 15, 14, 15, 13};
+		line2PointList = new int [] {10, 6, 10, 7, 10, 8, 10, 9};
+		line3PointList = new int [] {16, 17, 19, 18, 16};
 
         mouseX = 0;
         mouseY = 0;
@@ -110,7 +122,7 @@ public class ScreenController : MonoBehaviour
 
 
 		attackLineLng = Mathf.Sqrt(Mathf.Pow(screenLength/4, 2) + Mathf.Pow(rightRgnHeight, 2))/2;
-		debugDisplayList = new Vector2 [20];
+		debugDisplayList = new Vector2 [21];
 		debugDisplayList [0] = new Vector2 (0, leftRgnHeight);
 		debugDisplayList [1] = new Vector2 (rgnLength, leftRgnHeight);
 		debugDisplayList [2] = new Vector2 (rgnLength, rightRgnHeight);
@@ -135,21 +147,32 @@ public class ScreenController : MonoBehaviour
 		debugDisplayList [17] = new Vector2 (distLimit + leftRgnCenter.x, distLimit + leftRgnCenter.y);
 		debugDisplayList [18] = new Vector2 (-distLimit + leftRgnCenter.x, -distLimit + leftRgnCenter.y);
 		debugDisplayList [19] = new Vector2 (distLimit + leftRgnCenter.x, -distLimit + leftRgnCenter.y);
-
-		for (int x = 0; x < 20; x++) {
-			line.SetPosition(x, cam.ScreenToWorldPoint(new Vector3(debugDisplayList[x].x, debugDisplayList[x].y, 0f)));
-		}
-    }
+		debugDisplayList [20] = new Vector2 (screenLength/2, 0);
+	}
 
     // Update is called once per frame
     void Update()
     {
-		if (tempZ != LineZ) {
-			for (int x = 0; x < 20; x++) {
-				line.SetPosition(x, cam.ScreenToWorldPoint(new Vector3(debugDisplayList[x].x, debugDisplayList[x].y, LineZ)));
+			for (x = 0; x < 17; x++) {
+				line1.SetPosition(x, cam.ScreenToWorldPoint(new Vector3(
+					debugDisplayList[line1PointList[x]].x, 
+					debugDisplayList[line1PointList[x]].y, 
+					LineZ)));
+				Debug.Log ("X is: " + x);
 			}
-			tempZ = LineZ;
-		}
+			for (x = 0; x < 8; x++) {
+				line2.SetPosition(x, cam.ScreenToWorldPoint(new Vector3(
+					debugDisplayList[line2PointList[x]].x, 
+					debugDisplayList[line2PointList[x]].y, 
+					LineZ)));
+			}
+			for (x = 0; x < 5; x++) {
+				line3.SetPosition(x, cam.ScreenToWorldPoint(new Vector3(
+					debugDisplayList[line3PointList[x]].x, 
+					debugDisplayList[line3PointList[x]].y, 
+					LineZ)));
+			}
+
 		
         if (Application.isEditor)
             assignScreenActivityPCTEST();
