@@ -1,8 +1,13 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class ScreenController : MonoBehaviour
 {
+
+	private Camera cam;
+	private LineRenderer line;
+	public float LineZ; 
+	private float tempZ;
 
     private float mouseX;
     private float mouseY;
@@ -51,9 +56,17 @@ public class ScreenController : MonoBehaviour
     private float topLeftLimit;
     private float bottomLeftLimit;
 
+	private Vector2[] debugDisplayList;
+	private float attackLineLng;
+
+
     // Use this for initialization
     void Start()
     {
+
+		cam = GameObject.FindGameObjectWithTag ("MainCamera").GetComponent<Camera> ();
+		line = GetComponent<LineRenderer> ();
+
         mouseX = 0;
         mouseY = 0;
         screenLength = Screen.width;
@@ -94,12 +107,50 @@ public class ScreenController : MonoBehaviour
         distThresh = 0.6f;
         distMax =  leftRgnHeight - leftRgnCenter.y;
         distLimit = distMax * distThresh;
-        
+
+
+		attackLineLng = Mathf.Sqrt(Mathf.Pow(screenLength/4, 2) + Mathf.Pow(rightRgnHeight, 2))/2;
+		debugDisplayList = new Vector2 [20];
+		debugDisplayList [0] = new Vector2 (0, leftRgnHeight);
+		debugDisplayList [1] = new Vector2 (rgnLength, leftRgnHeight);
+		debugDisplayList [2] = new Vector2 (rgnLength, rightRgnHeight);
+		debugDisplayList [3] = new Vector2 (rgnLength * 2f, rightRgnHeight);
+		debugDisplayList [4] = new Vector2 (0, 0);
+		debugDisplayList [5] = new Vector2 (screenLength, 0);
+		debugDisplayList [6] = new Vector2 (Mathf.Cos ( topLeftLimit * (Mathf.PI / 180f) ) * attackLineLng + rightRgnCenter.x, 
+		                                    Mathf.Sin ( topLeftLimit * (Mathf. PI / 180f) ) * attackLineLng + rightRgnCenter.y);
+		debugDisplayList [7] = new Vector2 (Mathf.Cos ( topRightLimit * (Mathf.PI / 180f) ) * attackLineLng + rightRgnCenter.x, 
+		                                    Mathf.Sin ( topRightLimit * (Mathf.PI / 180f) ) * attackLineLng + rightRgnCenter.y);
+		debugDisplayList [8] = new Vector2 (Mathf.Cos ( bottomLeftLimit * (Mathf.PI / 180f) ) * attackLineLng + rightRgnCenter.x, 
+		                                    Mathf.Sin ( bottomLeftLimit * (Mathf.PI / 180f) ) * attackLineLng + rightRgnCenter.y);
+		debugDisplayList [9] = new Vector2 (Mathf.Cos (( bottomRightLimit * (Mathf.PI / 180f) )) * attackLineLng + rightRgnCenter.x, 
+		                                    Mathf.Sin (( bottomRightLimit * (Mathf.PI / 180f) )) * attackLineLng + rightRgnCenter.y);
+		debugDisplayList [10] = new Vector2 (rightRgnCenter.x, rightRgnCenter.y); 
+		debugDisplayList [11] = new Vector2 (leftRgnCenter.x, leftRgnHeight);
+		debugDisplayList [12] = new Vector2 (leftRgnCenter.x, 0);
+		debugDisplayList [13] = new Vector2 (0, leftRgnCenter.y);
+		debugDisplayList [14] = new Vector2 (rgnLength, leftRgnCenter.y);
+		debugDisplayList [15] = new Vector2 (leftRgnCenter.x, leftRgnCenter.y);
+		debugDisplayList [16] = new Vector2 (-distLimit + leftRgnCenter.x, distLimit + leftRgnCenter.y);
+		debugDisplayList [17] = new Vector2 (distLimit + leftRgnCenter.x, distLimit + leftRgnCenter.y);
+		debugDisplayList [18] = new Vector2 (-distLimit + leftRgnCenter.x, -distLimit + leftRgnCenter.y);
+		debugDisplayList [19] = new Vector2 (distLimit + leftRgnCenter.x, -distLimit + leftRgnCenter.y);
+
+		for (int x = 0; x < 20; x++) {
+			line.SetPosition(x, cam.ScreenToWorldPoint(new Vector3(debugDisplayList[x].x, debugDisplayList[x].y, 0f)));
+		}
     }
 
     // Update is called once per frame
     void Update()
     {
+		if (tempZ != LineZ) {
+			for (int x = 0; x < 20; x++) {
+				line.SetPosition(x, cam.ScreenToWorldPoint(new Vector3(debugDisplayList[x].x, debugDisplayList[x].y, LineZ)));
+			}
+			tempZ = LineZ;
+		}
+		
         if (Application.isEditor)
             assignScreenActivityPCTEST();
         else
@@ -108,7 +159,7 @@ public class ScreenController : MonoBehaviour
         registerAttacks();
         registerMovement();
 
-        //Debug.DrawLine();
+        
     }
 
     private void registerMovement()

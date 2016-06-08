@@ -15,6 +15,10 @@ public class QuitGameClass : MonoBehaviour {
 
     public void QuitGame()
     {
+		System.Diagnostics.Process.GetCurrentProcess().Kill();
+		//
         Application.Quit();
+		//Test
+
     }
 }
