@@ -1,14 +1,16 @@
-CHANGELOG - V0.54a
+CHANGELOG - V0.54b
 Game Changes:
     
     Art:
+    / Map screen AFTER character select.
+    / Character Select Scaling
+    / How To Play Scaling
 
     General:
     
     Gameplay/Code:
 
     Fixes:
-    - Purple from missing materials.
     
 Networking Changes:
 
@@ -17,7 +19,8 @@ Balance Changes Needed:
 Suggestions:
 
 To Be Made:
- / Map screen AFTER character select.
+ / pixelated particle effect.
+ / Back buttons go back 1 screen.
  / Toggle control lines in settings.
  + Disconnect detection.
  + Map select working same way as character select.
