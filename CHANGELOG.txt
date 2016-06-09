@@ -1,16 +1,20 @@
-CHANGELOG - V0.54b
+CHANGELOG - V0.55
 Game Changes:
     
     Art:
     / Map screen AFTER character select.
     / Character Select Scaling
     / How To Play Scaling
+    + Sunrays in all Background     
 
     General:
+    / Character select happens first, THEN map select.
     
     Gameplay/Code:
 
     Fixes:
+
+ KEY: (/) Change, (+) Addition, (-) Removal
     
 Networking Changes:
 
