@@ -85,69 +85,7 @@ public class ScreenController : MonoBehaviour
         rgnLength = screenLength / 2;
         screenHeight = Screen.height;
 
-        leftRgnScaler = 0.5f;
-        rightRgnScaler = 0.5f;
-        leftRgnHeight = screenHeight * leftRgnScaler;
-        rightRgnHeight = screenHeight * rightRgnScaler;
-        rightRgnCenter = new Vector2(screenLength * 0.75f, rightRgnHeight / 2f);
-        leftRgnCtrHghtScaler = 0.40f;
-        leftRgnCenter = new Vector2(screenLength * 0.25f, (leftRgnHeight * leftRgnCtrHghtScaler));
-
-        LeftScnPos = Vector2.zero;
-        RightScnPos = Vector2.zero;
-
-        allInputs = Input.touches;
-        totalInputs = Input.touchCount;
-        inputNum = 0;
-
-        wasLeftActive = false;
-        wasRightActive = true;
-        isLeftActive = false;
-        isRightActive = false;
-        isLeftToggledOff = false;
-        isLeftToggledOn = false;
-        isRightToggledOff = false;
-        isRightToggledOn = false;
-
-        mCtrl = GameObject.FindGameObjectWithTag("MobileController").GetComponent<MobileController>();
-
-        bottomRightLimit = -45f;
-        topRightLimit = 45f;
-        topLeftLimit = 135f;
-        bottomLeftLimit = -135f;
-
-        distThresh = 0.6f;
-        distMax =  leftRgnHeight - leftRgnCenter.y;
-        distLimit = distMax * distThresh;
-
-
-		attackLineLng = Mathf.Sqrt(Mathf.Pow(screenLength/4, 2) + Mathf.Pow(rightRgnHeight, 2))/2;
-		debugDisplayList = new Vector2 [21];
-		debugDisplayList [0] = new Vector2 (0, leftRgnHeight);
-		debugDisplayList [1] = new Vector2 (rgnLength, leftRgnHeight);
-		debugDisplayList [2] = new Vector2 (rgnLength, rightRgnHeight);
-		debugDisplayList [3] = new Vector2 (rgnLength * 2f, rightRgnHeight);
-		debugDisplayList [4] = new Vector2 (0, 0);
-		debugDisplayList [5] = new Vector2 (screenLength, 0);
-		debugDisplayList [6] = new Vector2 (Mathf.Cos ( topLeftLimit * (Mathf.PI / 180f) ) * attackLineLng + rightRgnCenter.x, 
-		                                    Mathf.Sin ( topLeftLimit * (Mathf. PI / 180f) ) * attackLineLng + rightRgnCenter.y);
-		debugDisplayList [7] = new Vector2 (Mathf.Cos ( topRightLimit * (Mathf.PI / 180f) ) * attackLineLng + rightRgnCenter.x, 
-		                                    Mathf.Sin ( topRightLimit * (Mathf.PI / 180f) ) * attackLineLng + rightRgnCenter.y);
-		debugDisplayList [8] = new Vector2 (Mathf.Cos ( bottomLeftLimit * (Mathf.PI / 180f) ) * attackLineLng + rightRgnCenter.x, 
-		                                    Mathf.Sin ( bottomLeftLimit * (Mathf.PI / 180f) ) * attackLineLng + rightRgnCenter.y);
-		debugDisplayList [9] = new Vector2 (Mathf.Cos (( bottomRightLimit * (Mathf.PI / 180f) )) * attackLineLng + rightRgnCenter.x, 
-		                                    Mathf.Sin (( bottomRightLimit * (Mathf.PI / 180f) )) * attackLineLng + rightRgnCenter.y);
-		debugDisplayList [10] = new Vector2 (rightRgnCenter.x, rightRgnCenter.y); 
-		debugDisplayList [11] = new Vector2 (leftRgnCenter.x, leftRgnHeight);
-		debugDisplayList [12] = new Vector2 (leftRgnCenter.x, 0);
-		debugDisplayList [13] = new Vector2 (0, leftRgnCenter.y);
-		debugDisplayList [14] = new Vector2 (rgnLength, leftRgnCenter.y);
-		debugDisplayList [15] = new Vector2 (leftRgnCenter.x, leftRgnCenter.y);
-		debugDisplayList [16] = new Vector2 (-distLimit + leftRgnCenter.x, distLimit + leftRgnCenter.y);
-		debugDisplayList [17] = new Vector2 (distLimit + leftRgnCenter.x, distLimit + leftRgnCenter.y);
-		debugDisplayList [18] = new Vector2 (-distLimit + leftRgnCenter.x, -distLimit + leftRgnCenter.y);
-		debugDisplayList [19] = new Vector2 (distLimit + leftRgnCenter.x, -distLimit + leftRgnCenter.y);
-		debugDisplayList [20] = new Vector2 (screenLength/2, 0);
+        assignDrawPoints();
 	}
 
     // Update is called once per frame
@@ -184,6 +122,146 @@ public class ScreenController : MonoBehaviour
 
         
     }
+
+    public void assignDrawPoints()
+    {
+        leftRgnScaler = 0.5f;
+        rightRgnScaler = 0.5f;
+        leftRgnHeight = screenHeight * leftRgnScaler;
+        rightRgnHeight = screenHeight * rightRgnScaler;
+        rightRgnCenter = new Vector2(screenLength * 0.75f, rightRgnHeight / 2f);
+        leftRgnCtrHghtScaler = 0.40f;
+        leftRgnCenter = new Vector2(screenLength * 0.25f, (leftRgnHeight * leftRgnCtrHghtScaler));
+
+        LeftScnPos = Vector2.zero;
+        RightScnPos = Vector2.zero;
+
+        allInputs = Input.touches;
+        totalInputs = Input.touchCount;
+        inputNum = 0;
+
+        wasLeftActive = false;
+        wasRightActive = true;
+        isLeftActive = false;
+        isRightActive = false;
+        isLeftToggledOff = false;
+        isLeftToggledOn = false;
+        isRightToggledOff = false;
+        isRightToggledOn = false;
+
+        mCtrl = GameObject.FindGameObjectWithTag("MobileController").GetComponent<MobileController>();
+
+        bottomRightLimit = -45f;
+        topRightLimit = 45f;
+        topLeftLimit = 135f;
+        bottomLeftLimit = -135f;
+
+        distThresh = 0.6f;
+        distMax = leftRgnHeight - leftRgnCenter.y;
+        distLimit = distMax * distThresh;
+
+
+        attackLineLng = Mathf.Sqrt(Mathf.Pow(screenLength / 4, 2) + Mathf.Pow(rightRgnHeight, 2)) / 2;
+        debugDisplayList = new Vector2[21];
+        debugDisplayList[0] = new Vector2(0, leftRgnHeight);
+        debugDisplayList[1] = new Vector2(rgnLength, leftRgnHeight);
+        debugDisplayList[2] = new Vector2(rgnLength, rightRgnHeight);
+        debugDisplayList[3] = new Vector2(rgnLength * 2f, rightRgnHeight);
+        debugDisplayList[4] = new Vector2(0, 0);
+        debugDisplayList[5] = new Vector2(screenLength, 0);
+        debugDisplayList[6] = new Vector2(Mathf.Cos(topLeftLimit * (Mathf.PI / 180f)) * attackLineLng + rightRgnCenter.x,
+                                            Mathf.Sin(topLeftLimit * (Mathf.PI / 180f)) * attackLineLng + rightRgnCenter.y);
+        debugDisplayList[7] = new Vector2(Mathf.Cos(topRightLimit * (Mathf.PI / 180f)) * attackLineLng + rightRgnCenter.x,
+                                            Mathf.Sin(topRightLimit * (Mathf.PI / 180f)) * attackLineLng + rightRgnCenter.y);
+        debugDisplayList[8] = new Vector2(Mathf.Cos(bottomLeftLimit * (Mathf.PI / 180f)) * attackLineLng + rightRgnCenter.x,
+                                            Mathf.Sin(bottomLeftLimit * (Mathf.PI / 180f)) * attackLineLng + rightRgnCenter.y);
+        debugDisplayList[9] = new Vector2(Mathf.Cos((bottomRightLimit * (Mathf.PI / 180f))) * attackLineLng + rightRgnCenter.x,
+                                            Mathf.Sin((bottomRightLimit * (Mathf.PI / 180f))) * attackLineLng + rightRgnCenter.y);
+        debugDisplayList[10] = new Vector2(rightRgnCenter.x, rightRgnCenter.y);
+        debugDisplayList[11] = new Vector2(leftRgnCenter.x, leftRgnHeight);
+        debugDisplayList[12] = new Vector2(leftRgnCenter.x, 0);
+        debugDisplayList[13] = new Vector2(0, leftRgnCenter.y);
+        debugDisplayList[14] = new Vector2(rgnLength, leftRgnCenter.y);
+        debugDisplayList[15] = new Vector2(leftRgnCenter.x, leftRgnCenter.y);
+        debugDisplayList[16] = new Vector2(-distLimit + leftRgnCenter.x, distLimit + leftRgnCenter.y);
+        debugDisplayList[17] = new Vector2(distLimit + leftRgnCenter.x, distLimit + leftRgnCenter.y);
+        debugDisplayList[18] = new Vector2(-distLimit + leftRgnCenter.x, -distLimit + leftRgnCenter.y);
+        debugDisplayList[19] = new Vector2(distLimit + leftRgnCenter.x, -distLimit + leftRgnCenter.y);
+        debugDisplayList[20] = new Vector2(screenLength / 2, 0);
+    }
+
+    public void UpLeftHeight()
+    {
+        leftRgnScaler += 0.05f;
+        assignDrawPoints();
+    }
+
+    public void DownLeftHeight()
+    {
+        leftRgnScaler -= 0.05f;
+        assignDrawPoints();
+    }
+
+    public void UpRightHeight()
+    {
+        rightRgnScaler += 0.05f;
+        assignDrawPoints();
+    }
+
+    public void DownRightHeight()
+    {
+        rightRgnScaler -= 0.05f;
+        assignDrawPoints();
+    }
+
+    public void WidenAttack()
+    {
+        bottomLeftLimit += -5f;
+        topLeftLimit += 5f;
+        topRightLimit -= 5f;
+        bottomRightLimit -= 5f;
+
+        assignDrawPoints();
+    }
+
+    public void TallenAttack()
+    {
+        bottomLeftLimit -= -5f;
+        topLeftLimit -= 5f;
+        topRightLimit += 5f;
+        bottomRightLimit += 5f;
+
+        assignDrawPoints();
+    }
+
+    public void LowerJumpBar()
+    {
+        leftRgnCtrHghtScaler -= 0.05f;
+
+        assignDrawPoints();
+    }
+
+    public void RaiseJumpBar()
+    {
+        leftRgnCtrHghtScaler += 0.05f;
+
+        assignDrawPoints();
+    }
+
+    public void RaiseMaxMove()
+    {
+        distThresh += 0.05f;
+        
+        assignDrawPoints();
+    }
+
+    public void LowerMaxMove()
+    {
+        distThresh -= 0.05f;
+
+        assignDrawPoints();
+    }
+
 
     private void registerMovement()
     {
