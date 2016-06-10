@@ -5,7 +5,9 @@ Game Changes:
     / Map screen AFTER character select.
     / Character Select Scaling
     / How To Play Scaling
-    + Sunrays in all Background     
+    + Sunrays in all Background  
+    + Tons more buttons
+    / Cloud character revision   
 
     General:
     / Character select happens first, THEN map select.
