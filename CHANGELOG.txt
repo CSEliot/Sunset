@@ -11,6 +11,7 @@ Game Changes:
     / Character select happens first, THEN map select.
     
     Gameplay/Code:
+    + Framerate and Send Rate optimized.
 
     Fixes:
 

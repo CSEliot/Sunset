@@ -118,7 +118,7 @@ public class Master : MonoBehaviour {
 
     IEnumerator returnToSelect()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(6f);
         PhotonNetwork.Disconnect();
         AssignClientCharacter(0);
         SceneManager.LoadScene("CharacterSelect");

@@ -5,9 +5,9 @@ public class ScreenController : MonoBehaviour
 {
 
 	private Camera cam;
-	private LineRenderer line1;
-	private LineRenderer line2;
-	private LineRenderer line3;
+	public  LineRenderer Line1;
+	public  LineRenderer Line2;
+	public  LineRenderer Line3;
 
 	public float LineZ; 
 	private float tempZ;
@@ -70,11 +70,8 @@ public class ScreenController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
 		cam = GameObject.FindGameObjectWithTag ("MainCamera").GetComponent<Camera> ();
-		line1 = transform.GetChild(0).GetComponent<LineRenderer> ();
-		line2 = transform.GetChild(1).GetComponent<LineRenderer> ();
-		line3 = GetComponent<LineRenderer> ();
+
 		line1PointList = new int [] {0, 1, 2, 3, 5, 20, 4, 0, 1, 20, 12, 15, 11, 15, 14, 15, 13};
 		line2PointList = new int [] {10, 6, 10, 7, 10, 8, 10, 9};
 		line3PointList = new int [] {16, 17, 19, 18, 16};
@@ -92,20 +89,20 @@ public class ScreenController : MonoBehaviour
     void Update()
     {
 			for (x = 0; x < 17; x++) {
-				line1.SetPosition(x, cam.ScreenToWorldPoint(new Vector3(
+				Line1.SetPosition(x, cam.ScreenToWorldPoint(new Vector3(
 					debugDisplayList[line1PointList[x]].x, 
 					debugDisplayList[line1PointList[x]].y, 
 					LineZ)));
 				Debug.Log ("X is: " + x);
 			}
 			for (x = 0; x < 8; x++) {
-				line2.SetPosition(x, cam.ScreenToWorldPoint(new Vector3(
+				Line2.SetPosition(x, cam.ScreenToWorldPoint(new Vector3(
 					debugDisplayList[line2PointList[x]].x, 
 					debugDisplayList[line2PointList[x]].y, 
 					LineZ)));
 			}
 			for (x = 0; x < 5; x++) {
-				line3.SetPosition(x, cam.ScreenToWorldPoint(new Vector3(
+				Line3.SetPosition(x, cam.ScreenToWorldPoint(new Vector3(
 					debugDisplayList[line3PointList[x]].x, 
 					debugDisplayList[line3PointList[x]].y, 
 					LineZ)));
