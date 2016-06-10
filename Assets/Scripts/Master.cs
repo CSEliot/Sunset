@@ -31,9 +31,11 @@ public class Master : MonoBehaviour {
     private int totalPlayers;
 
     private bool isEast;
+    
 
     void Awake()
     {
+
         myMusicAudio = GetComponent<AudioSource>();
         mySFXAudio = transform.GetChild(0).GetComponent<AudioSource>();
         PlayMSX(0);
