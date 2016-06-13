@@ -83,6 +83,12 @@ public class ScreenController : MonoBehaviour
         screenHeight = Screen.height;
 
         assignDrawPoints();
+		for (x = 0; x < 5; x++) {
+				Line3.SetPosition(x, cam.ScreenToWorldPoint(new Vector3(
+					debugDisplayList[line3PointList[x]].x, 
+					debugDisplayList[line3PointList[x]].y, 
+					LineZ)));
+			}
 	}
 
     // Update is called once per frame
@@ -100,13 +106,13 @@ public class ScreenController : MonoBehaviour
 					debugDisplayList[line2PointList[x]].x, 
 					debugDisplayList[line2PointList[x]].y, 
 					LineZ)));
-			}
+			}/*
 			for (x = 0; x < 5; x++) {
 				Line3.SetPosition(x, cam.ScreenToWorldPoint(new Vector3(
 					debugDisplayList[line3PointList[x]].x, 
 					debugDisplayList[line3PointList[x]].y, 
 					LineZ)));
-			}
+			}*/
 
 		
         if (Application.isEditor)
