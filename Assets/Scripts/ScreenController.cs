@@ -4,10 +4,10 @@ using System.Collections;
 public class ScreenController : MonoBehaviour
 {
 
-	private Camera cam;
-	public  LineRenderer Line1;
-	public  LineRenderer Line2;
-	public  LineRenderer Line3;
+	public Camera cam;
+	public LineRenderer Line1;
+	public LineRenderer Line2;
+	public LineRenderer Line3;
 
 	public float LineZ; 
 	private float tempZ;
@@ -44,7 +44,7 @@ public class ScreenController : MonoBehaviour
     private bool isLeftToggledOn;
     private bool isRightToggledOn;
 
-    private MobileController mCtrl;
+    public MobileController mCtrl;
 
     private float angle;
     private float distThresh; // Between 1 and 0;
@@ -70,7 +70,6 @@ public class ScreenController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-		cam = GameObject.FindGameObjectWithTag ("MainCamera").GetComponent<Camera> ();
 
 		line1PointList = new int [] {0, 1, 2, 3, 5, 20, 4, 0, 1, 20, 12, 15, 11, 15, 14, 15, 13};
 		line2PointList = new int [] {10, 6, 10, 7, 10, 8, 10, 9};
@@ -78,16 +77,16 @@ public class ScreenController : MonoBehaviour
 
         mouseX = 0;
         mouseY = 0;
-        screenLength = Screen.width;
+        screenLength = 200f*(Screen.width/Screen.height); //Cam works in grid quads. X & Y == QI, -X,Y == QII, etc.
         rgnLength = screenLength / 2;
-        screenHeight = Screen.height;
+        screenHeight = 200f; //Cam height is always 100 at all resolutions.
 
         assignDrawPoints();
 		for (x = 0; x < 5; x++) {
-				Line3.SetPosition(x, cam.ScreenToWorldPoint(new Vector3(
-					debugDisplayList[line3PointList[x]].x, 
-					debugDisplayList[line3PointList[x]].y, 
-					LineZ)));
+				Line3.SetPosition(x, new Vector3(
+					debugDisplayList[line3PointList[x]].x-(screenLength/2f), 
+					debugDisplayList[line3PointList[x]].y-(screenHeight/2f), 
+					LineZ));
 			}
 	}
 
@@ -95,17 +94,17 @@ public class ScreenController : MonoBehaviour
     void Update()
     {
 			for (x = 0; x < 17; x++) {
-				Line1.SetPosition(x, cam.ScreenToWorldPoint(new Vector3(
-					debugDisplayList[line1PointList[x]].x, 
-					debugDisplayList[line1PointList[x]].y, 
-					LineZ)));
+				Line1.SetPosition(x, new Vector3(
+					debugDisplayList[line1PointList[x]].x-(screenLength/2f), 
+					debugDisplayList[line1PointList[x]].y-(screenHeight/2f), 
+					LineZ));
 				Debug.Log ("X is: " + x);
 			}
 			for (x = 0; x < 8; x++) {
-				Line2.SetPosition(x, cam.ScreenToWorldPoint(new Vector3(
-					debugDisplayList[line2PointList[x]].x, 
-					debugDisplayList[line2PointList[x]].y, 
-					LineZ)));
+				Line2.SetPosition(x, new Vector3(
+					debugDisplayList[line2PointList[x]].x-(screenLength/2f), 
+					debugDisplayList[line2PointList[x]].y-(screenHeight/2f), 
+					LineZ));
 			}/*
 			for (x = 0; x < 5; x++) {
 				Line3.SetPosition(x, cam.ScreenToWorldPoint(new Vector3(
@@ -151,8 +150,6 @@ public class ScreenController : MonoBehaviour
         isLeftToggledOn = false;
         isRightToggledOff = false;
         isRightToggledOn = false;
-
-        mCtrl = GameObject.FindGameObjectWithTag("MobileController").GetComponent<MobileController>();
 
         bottomRightLimit = -45f;
         topRightLimit = 45f;
