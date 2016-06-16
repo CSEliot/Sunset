@@ -24,22 +24,20 @@ public class SceneChecking : MonoBehaviour {
 	}
 
     public void ChangeScene() {
-        if (targetSceneName == "GameScreen_")
+        Debug.Log("Changing scene to: " + targetSceneName);
+        if(targetSceneName == "MapSelect" && m.IsTestMode)
         {
-            if (targetSceneName != "null")
-            {
-                SceneManager.LoadScene(targetSceneName + m.GetRoomName());
-                m.PlaySFX(0);
-            }
-        }
-        else if (m.Client_CharNum == 6)
-        { 
-            return;
+            SceneManager.LoadScene("GameScreen_Test");
+            m.PlaySFX(0);
         }
         else if (targetSceneName != "null")
         {
             SceneManager.LoadScene(targetSceneName);
             m.PlaySFX(0);
+        }
+        if (m.Client_CharNum == 6)
+        { 
+            return;
         }
 	}
 }

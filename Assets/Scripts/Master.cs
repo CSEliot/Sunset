@@ -3,7 +3,8 @@ using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.Collections;
 
-public class Master : MonoBehaviour {
+public class Master : MonoBehaviour
+{
 
     [System.Serializable]
     public class NameToStrength
@@ -31,16 +32,24 @@ public class Master : MonoBehaviour {
     private int totalPlayers;
 
     private bool isEast;
-    
+
+    private bool isTestMode;
+
+    private bool isControlsShown;
 
     void Awake()
     {
 
+        isTestMode = false;
+        isEast = true;
+        isControlsShown = true;
+
         myMusicAudio = GetComponent<AudioSource>();
         mySFXAudio = transform.GetChild(0).GetComponent<AudioSource>();
         PlayMSX(0);
-        NameStrengthDict = new Dictionary<string,float>();
-        foreach (NameToStrength character in StrengthsList){
+        NameStrengthDict = new Dictionary<string, float>();
+        foreach (NameToStrength character in StrengthsList)
+        {
             NameStrengthDict.Add(character.Name, character.Power);
         }
 
@@ -54,16 +63,18 @@ public class Master : MonoBehaviour {
         //Cursor.visible = false;
     }
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         totalPlayers = 100;
         SetMSXVolume(PlayerPrefs.GetFloat("MSXVol", 0.5f));
         SetSFXVolume(PlayerPrefs.GetFloat("SFXVol", 0.5f));
     }
-	
-	// Update is called once per frame
-	void Update () {
-        
+
+    // Update is called once per frame
+    void Update()
+    {
+
         if (Input.GetKeyDown("escape"))
         {
             //PhotonNetwork.DestroyPlayerObjects();
@@ -81,7 +92,7 @@ public class Master : MonoBehaviour {
                 totalPlayers = 100;
             }
         }
-	}
+    }
 
     public void AssignClientCharacter(int chosenChar)
     {
@@ -100,7 +111,8 @@ public class Master : MonoBehaviour {
         return NameStrengthDict;
     }
 
-    public void endGame(){
+    public void endGame()
+    {
         PlayMSX(0);
         PhotonNetwork.Disconnect();
         AssignClientCharacter(0);
@@ -166,12 +178,14 @@ public class Master : MonoBehaviour {
 
     public void SetServer(bool isEast)
     {
-        this.isEast = isEast;
+        this.isEast = true;
+        //this.isEast = isEast;
     }
 
     public bool GetServerIsEast()
     {
-        return isEast;
+        return true;
+        //return isEast;
     }
 
     public void SetRoomName(string room_name)
@@ -182,5 +196,31 @@ public class Master : MonoBehaviour {
     public string GetRoomName()
     {
         return RoomName;
+    }
+
+    public bool IsTestMode
+    {
+        get
+        {
+            return isTestMode;
+        }
+
+        set
+        {
+            isTestMode = value;
+        }
+    }
+
+    public bool IsControlsShown
+    {
+        get
+        {
+            return isControlsShown;
+        }
+
+        set
+        {
+            isControlsShown = value;
+        }
     }
 }

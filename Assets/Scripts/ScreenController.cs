@@ -32,7 +32,7 @@ public class ScreenController : MonoBehaviour
 
     private Touch[] allInputs;
     private int totalInputs;
-    private int inputNum;
+    private int inputNum; //an "i" for loop
     private Touch tempTouch;
 
     private bool wasLeftActive;
@@ -77,47 +77,30 @@ public class ScreenController : MonoBehaviour
 
         mouseX = 0;
         mouseY = 0;
-        screenLength = 200f*(Screen.width/Screen.height); //Cam works in grid quads. X & Y == QI, -X,Y == QII, etc.
-        rgnLength = screenLength / 2;
-        screenHeight = 200f; //Cam height is always 100 at all resolutions.
+        LeftScnPos = Vector2.zero;
+        RightScnPos = Vector2.zero;
+        allInputs = Input.touches;
+        totalInputs = Input.touchCount;
+        wasLeftActive = false;
+        wasRightActive = true;
+        isLeftActive = false;
+        isRightActive = false;
+        isLeftToggledOff = false;
+        isLeftToggledOn = false;
+        isRightToggledOff = false;
+        isRightToggledOn = false;
 
         assignDrawPoints();
-		for (x = 0; x < 5; x++) {
-				Line3.SetPosition(x, new Vector3(
-					debugDisplayList[line3PointList[x]].x-(screenLength/2f), 
-					debugDisplayList[line3PointList[x]].y-(screenHeight/2f), 
-					LineZ));
-			}
-	}
+        assignReadPoints();
+    }
 
     // Update is called once per frame
     void Update()
     {
-			for (x = 0; x < 17; x++) {
-				Line1.SetPosition(x, new Vector3(
-					debugDisplayList[line1PointList[x]].x-(screenLength/2f), 
-					debugDisplayList[line1PointList[x]].y-(screenHeight/2f), 
-					LineZ));
-				Debug.Log ("X is: " + x);
-			}
-			for (x = 0; x < 8; x++) {
-				Line2.SetPosition(x, new Vector3(
-					debugDisplayList[line2PointList[x]].x-(screenLength/2f), 
-					debugDisplayList[line2PointList[x]].y-(screenHeight/2f), 
-					LineZ));
-			}/*
-			for (x = 0; x < 5; x++) {
-				Line3.SetPosition(x, cam.ScreenToWorldPoint(new Vector3(
-					debugDisplayList[line3PointList[x]].x, 
-					debugDisplayList[line3PointList[x]].y, 
-					LineZ)));
-			}*/
-
-		
         if (Application.isEditor)
             assignScreenActivityPCTEST();
         else
-            assignScreenActivity();
+            readScreenActivity();
 
         registerAttacks();
         registerMovement();
@@ -127,29 +110,20 @@ public class ScreenController : MonoBehaviour
 
     public void assignDrawPoints()
     {
+
+        screenLength = 200f * (((float)Screen.width) / ((float)Screen.height)); //Cam works in grid quads. X & Y == QI, -X,Y == QII, etc.
+        rgnLength = screenLength / 2;
+        screenHeight = 200f; //Cam height is always 100 at all resolutions.
+
         leftRgnScaler = 0.5f;
         rightRgnScaler = 0.5f;
+
         leftRgnHeight = screenHeight * leftRgnScaler;
         rightRgnHeight = screenHeight * rightRgnScaler;
         rightRgnCenter = new Vector2(screenLength * 0.75f, rightRgnHeight / 2f);
         leftRgnCtrHghtScaler = 0.40f;
         leftRgnCenter = new Vector2(screenLength * 0.25f, (leftRgnHeight * leftRgnCtrHghtScaler));
 
-        LeftScnPos = Vector2.zero;
-        RightScnPos = Vector2.zero;
-
-        allInputs = Input.touches;
-        totalInputs = Input.touchCount;
-        inputNum = 0;
-
-        wasLeftActive = false;
-        wasRightActive = true;
-        isLeftActive = false;
-        isRightActive = false;
-        isLeftToggledOff = false;
-        isLeftToggledOn = false;
-        isRightToggledOff = false;
-        isRightToggledOn = false;
 
         bottomRightLimit = -45f;
         topRightLimit = 45f;
@@ -162,6 +136,7 @@ public class ScreenController : MonoBehaviour
 
 
         attackLineLng = Mathf.Sqrt(Mathf.Pow(screenLength / 4, 2) + Mathf.Pow(rightRgnHeight, 2)) / 2;
+
         debugDisplayList = new Vector2[21];
         debugDisplayList[0] = new Vector2(0, leftRgnHeight);
         debugDisplayList[1] = new Vector2(rgnLength, leftRgnHeight);
@@ -188,7 +163,63 @@ public class ScreenController : MonoBehaviour
         debugDisplayList[18] = new Vector2(-distLimit + leftRgnCenter.x, -distLimit + leftRgnCenter.y);
         debugDisplayList[19] = new Vector2(distLimit + leftRgnCenter.x, -distLimit + leftRgnCenter.y);
         debugDisplayList[20] = new Vector2(screenLength / 2, 0);
+
+        for (x = 0; x < 5; x++)
+        {
+            Line3.SetPosition(x, new Vector3(
+                debugDisplayList[line3PointList[x]].x - (screenLength / 2f),
+                debugDisplayList[line3PointList[x]].y - (screenHeight / 2f),
+                LineZ));
+        }
+        for (x = 0; x < 17; x++)
+        {
+            Line1.SetPosition(x, new Vector3(
+                debugDisplayList[line1PointList[x]].x - (screenLength / 2f),
+                debugDisplayList[line1PointList[x]].y - (screenHeight / 2f),
+                LineZ));
+            Debug.Log("X is: " + x);
+        }
+        for (x = 0; x < 8; x++)
+        {
+            Line2.SetPosition(x, new Vector3(
+                debugDisplayList[line2PointList[x]].x - (screenLength / 2f),
+                debugDisplayList[line2PointList[x]].y - (screenHeight / 2f),
+                LineZ));
+        }
     }
+
+    public void assignReadPoints()
+    {
+
+        screenLength = Screen.width; //Cam works in grid quads. X & Y == QI, -X,Y == QII, etc.
+        rgnLength = screenLength / 2;
+        screenHeight = Screen.height; //Cam height is always 100 at all resolutions.
+
+        leftRgnScaler = 0.5f;
+        rightRgnScaler = 0.5f;
+
+        leftRgnHeight = screenHeight * leftRgnScaler;
+        rightRgnHeight = screenHeight * rightRgnScaler;
+        rightRgnCenter = new Vector2(screenLength * 0.75f, rightRgnHeight / 2f);
+        leftRgnCtrHghtScaler = 0.40f;
+        leftRgnCenter = new Vector2(screenLength * 0.25f, (leftRgnHeight * leftRgnCtrHghtScaler));
+
+
+        bottomRightLimit = -45f;
+        topRightLimit = 45f;
+        topLeftLimit = 135f;
+        bottomLeftLimit = -135f;
+
+        distThresh = 0.6f;
+        distMax = leftRgnHeight - leftRgnCenter.y;
+        distLimit = distMax * distThresh;
+
+
+        attackLineLng = Mathf.Sqrt(Mathf.Pow(screenLength / 4, 2) + Mathf.Pow(rightRgnHeight, 2)) / 2;
+
+    }
+
+
 
     public void UpLeftHeight()
     {
@@ -322,7 +353,7 @@ public class ScreenController : MonoBehaviour
         }
     }
 
-    private void assignScreenActivity()
+    private void readScreenActivity()
     {
         wasRightActive = IsRightActive;
         wasLeftActive = IsLeftActive;
