@@ -225,24 +225,28 @@ public class ScreenController : MonoBehaviour
     {
         leftRgnScaler += 0.05f;
         assignDrawPoints();
+        assignReadPoints();
     }
 
     public void DownLeftHeight()
     {
         leftRgnScaler -= 0.05f;
         assignDrawPoints();
+        assignReadPoints();
     }
 
     public void UpRightHeight()
     {
         rightRgnScaler += 0.05f;
         assignDrawPoints();
+        assignReadPoints();
     }
 
     public void DownRightHeight()
     {
         rightRgnScaler -= 0.05f;
         assignDrawPoints();
+        assignReadPoints();
     }
 
     public void WidenAttack()
@@ -253,6 +257,7 @@ public class ScreenController : MonoBehaviour
         bottomRightLimit -= 5f;
 
         assignDrawPoints();
+        assignReadPoints();
     }
 
     public void TallenAttack()
@@ -263,6 +268,7 @@ public class ScreenController : MonoBehaviour
         bottomRightLimit += 5f;
 
         assignDrawPoints();
+        assignReadPoints();
     }
 
     public void LowerJumpBar()
@@ -270,6 +276,7 @@ public class ScreenController : MonoBehaviour
         leftRgnCtrHghtScaler -= 0.05f;
 
         assignDrawPoints();
+        assignReadPoints();
     }
 
     public void RaiseJumpBar()
@@ -277,6 +284,7 @@ public class ScreenController : MonoBehaviour
         leftRgnCtrHghtScaler += 0.05f;
 
         assignDrawPoints();
+        assignReadPoints();
     }
 
     public void RaiseMaxMove()
@@ -284,6 +292,7 @@ public class ScreenController : MonoBehaviour
         distThresh += 0.05f;
         
         assignDrawPoints();
+        assignReadPoints();
     }
 
     public void LowerMaxMove()
@@ -291,6 +300,7 @@ public class ScreenController : MonoBehaviour
         distThresh -= 0.05f;
 
         assignDrawPoints();
+        assignReadPoints();
     }
 
 
