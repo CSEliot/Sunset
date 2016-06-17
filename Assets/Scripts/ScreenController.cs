@@ -66,12 +66,14 @@ public class ScreenController : MonoBehaviour
 	private float attackLineLng;
 	private int x;
 
+    private Master m;
 
     // Use this for initialization
     void Start()
     {
-
-		line1PointList = new int [] {0, 1, 2, 3, 5, 20, 4, 0, 1, 20, 12, 15, 11, 15, 14, 15, 13};
+        m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
+        
+        line1PointList = new int [] {0, 1, 2, 3, 5, 20, 4, 0, 1, 20, 12, 15, 11, 15, 14, 15, 13};
 		line2PointList = new int [] {10, 6, 10, 7, 10, 8, 10, 9};
 		line3PointList = new int [] {16, 17, 19, 18, 16};
 
@@ -90,8 +92,88 @@ public class ScreenController : MonoBehaviour
         isRightToggledOff = false;
         isRightToggledOn = false;
 
-        assignDrawPoints();
-        assignReadPoints();
+        screenLength = 200f * (((float)Screen.width) / ((float)Screen.height)); //Cam works in grid quads. X & Y == QI, -X,Y == QII, etc.
+        rgnLength = screenLength / 2;
+        screenHeight = 200f; //Cam height is always 100 at all resolutions.
+
+        leftRgnScaler = PlayerPrefs.GetFloat("leftRgnScaler", 0.5f);
+        rightRgnScaler = PlayerPrefs.GetFloat("rightRgnScaler", 0.5f);
+
+        leftRgnHeight = screenHeight * leftRgnScaler;
+        rightRgnHeight = screenHeight * rightRgnScaler;
+        rightRgnCenter = new Vector2(screenLength * 0.75f, rightRgnHeight / 2f);
+        leftRgnCtrHghtScaler = PlayerPrefs.GetFloat("leftRgnCtrHghtScaler", 0.40f);
+        leftRgnCenter = new Vector2(screenLength * 0.25f, (leftRgnHeight * leftRgnCtrHghtScaler));
+
+
+        bottomRightLimit = PlayerPrefs.GetFloat("bottomRightLimit", -45f);
+        topRightLimit = PlayerPrefs.GetFloat("topRightLimit", 45f);
+        topLeftLimit = PlayerPrefs.GetFloat("topLeftLimit", 135f);
+        bottomLeftLimit = PlayerPrefs.GetFloat("bottomLeftLimit", -135f);
+
+        distThresh = PlayerPrefs.GetFloat("distThresh", 0.6f);
+        distMax = leftRgnHeight - leftRgnCenter.y;
+        distLimit = distMax * distThresh;
+
+
+        attackLineLng = Mathf.Sqrt(Mathf.Pow(screenLength / 4, 2) + Mathf.Pow(rightRgnHeight, 2)) / 2;
+
+        debugDisplayList = new Vector2[21];
+        debugDisplayList[0] = new Vector2(0, leftRgnHeight);
+        debugDisplayList[1] = new Vector2(rgnLength, leftRgnHeight);
+        debugDisplayList[2] = new Vector2(rgnLength, rightRgnHeight);
+        debugDisplayList[3] = new Vector2(rgnLength * 2f, rightRgnHeight);
+        debugDisplayList[4] = new Vector2(0, 0);
+        debugDisplayList[5] = new Vector2(screenLength, 0);
+        debugDisplayList[6] = new Vector2(Mathf.Cos(topLeftLimit * (Mathf.PI / 180f)) * attackLineLng + rightRgnCenter.x,
+                                            Mathf.Sin(topLeftLimit * (Mathf.PI / 180f)) * attackLineLng + rightRgnCenter.y);
+        debugDisplayList[7] = new Vector2(Mathf.Cos(topRightLimit * (Mathf.PI / 180f)) * attackLineLng + rightRgnCenter.x,
+                                            Mathf.Sin(topRightLimit * (Mathf.PI / 180f)) * attackLineLng + rightRgnCenter.y);
+        debugDisplayList[8] = new Vector2(Mathf.Cos(bottomLeftLimit * (Mathf.PI / 180f)) * attackLineLng + rightRgnCenter.x,
+                                            Mathf.Sin(bottomLeftLimit * (Mathf.PI / 180f)) * attackLineLng + rightRgnCenter.y);
+        debugDisplayList[9] = new Vector2(Mathf.Cos((bottomRightLimit * (Mathf.PI / 180f))) * attackLineLng + rightRgnCenter.x,
+                                            Mathf.Sin((bottomRightLimit * (Mathf.PI / 180f))) * attackLineLng + rightRgnCenter.y);
+        debugDisplayList[10] = new Vector2(rightRgnCenter.x, rightRgnCenter.y);
+        debugDisplayList[11] = new Vector2(leftRgnCenter.x, leftRgnHeight);
+        debugDisplayList[12] = new Vector2(leftRgnCenter.x, 0);
+        debugDisplayList[13] = new Vector2(0, leftRgnCenter.y);
+        debugDisplayList[14] = new Vector2(rgnLength, leftRgnCenter.y);
+        debugDisplayList[15] = new Vector2(leftRgnCenter.x, leftRgnCenter.y);
+        debugDisplayList[16] = new Vector2(-distLimit + leftRgnCenter.x, distLimit + leftRgnCenter.y);
+        debugDisplayList[17] = new Vector2(distLimit + leftRgnCenter.x, distLimit + leftRgnCenter.y);
+        debugDisplayList[18] = new Vector2(-distLimit + leftRgnCenter.x, -distLimit + leftRgnCenter.y);
+        debugDisplayList[19] = new Vector2(distLimit + leftRgnCenter.x, -distLimit + leftRgnCenter.y);
+        debugDisplayList[20] = new Vector2(screenLength / 2, 0);
+
+        for (x = 0; x < 5; x++)
+        {
+            Line3.SetPosition(x, new Vector3(
+                debugDisplayList[line3PointList[x]].x - (screenLength / 2f),
+                debugDisplayList[line3PointList[x]].y - (screenHeight / 2f),
+                LineZ));
+        }
+        for (x = 0; x < 17; x++)
+        {
+            Line1.SetPosition(x, new Vector3(
+                debugDisplayList[line1PointList[x]].x - (screenLength / 2f),
+                debugDisplayList[line1PointList[x]].y - (screenHeight / 2f),
+                LineZ));
+            Debug.Log("X is: " + x);
+        }
+        for (x = 0; x < 8; x++)
+        {
+            Line2.SetPosition(x, new Vector3(
+                debugDisplayList[line2PointList[x]].x - (screenLength / 2f),
+                debugDisplayList[line2PointList[x]].y - (screenHeight / 2f),
+                LineZ));
+        }
+
+        if (!m.IsControlsShown)
+        {
+            Line1.enabled = false;
+            Line2.enabled = false;
+            Line3.enabled = false;
+        }
     }
 
     // Update is called once per frame
@@ -104,7 +186,6 @@ public class ScreenController : MonoBehaviour
 
         registerAttacks();
         registerMovement();
-
         
     }
 
@@ -115,25 +196,15 @@ public class ScreenController : MonoBehaviour
         rgnLength = screenLength / 2;
         screenHeight = 200f; //Cam height is always 100 at all resolutions.
 
-        leftRgnScaler = 0.5f;
-        rightRgnScaler = 0.5f;
-
         leftRgnHeight = screenHeight * leftRgnScaler;
         rightRgnHeight = screenHeight * rightRgnScaler;
         rightRgnCenter = new Vector2(screenLength * 0.75f, rightRgnHeight / 2f);
-        leftRgnCtrHghtScaler = 0.40f;
+
         leftRgnCenter = new Vector2(screenLength * 0.25f, (leftRgnHeight * leftRgnCtrHghtScaler));
 
 
-        bottomRightLimit = -45f;
-        topRightLimit = 45f;
-        topLeftLimit = 135f;
-        bottomLeftLimit = -135f;
-
-        distThresh = 0.6f;
         distMax = leftRgnHeight - leftRgnCenter.y;
         distLimit = distMax * distThresh;
-
 
         attackLineLng = Mathf.Sqrt(Mathf.Pow(screenLength / 4, 2) + Mathf.Pow(rightRgnHeight, 2)) / 2;
 
@@ -195,25 +266,13 @@ public class ScreenController : MonoBehaviour
         rgnLength = screenLength / 2;
         screenHeight = Screen.height; //Cam height is always 100 at all resolutions.
 
-        leftRgnScaler = 0.5f;
-        rightRgnScaler = 0.5f;
-
         leftRgnHeight = screenHeight * leftRgnScaler;
         rightRgnHeight = screenHeight * rightRgnScaler;
         rightRgnCenter = new Vector2(screenLength * 0.75f, rightRgnHeight / 2f);
-        leftRgnCtrHghtScaler = 0.40f;
         leftRgnCenter = new Vector2(screenLength * 0.25f, (leftRgnHeight * leftRgnCtrHghtScaler));
 
-
-        bottomRightLimit = -45f;
-        topRightLimit = 45f;
-        topLeftLimit = 135f;
-        bottomLeftLimit = -135f;
-
-        distThresh = 0.6f;
         distMax = leftRgnHeight - leftRgnCenter.y;
         distLimit = distMax * distThresh;
-
 
         attackLineLng = Mathf.Sqrt(Mathf.Pow(screenLength / 4, 2) + Mathf.Pow(rightRgnHeight, 2)) / 2;
 
@@ -224,80 +283,137 @@ public class ScreenController : MonoBehaviour
     public void UpLeftHeight()
     {
         leftRgnScaler += 0.05f;
+        PlayerPrefs.SetFloat("leftRgnScaler", leftRgnScaler);
         assignDrawPoints();
         assignReadPoints();
+
+        Debug.Log("Controls Reassigned 1");
     }
 
     public void DownLeftHeight()
     {
         leftRgnScaler -= 0.05f;
+        PlayerPrefs.SetFloat("leftRgnScaler", leftRgnScaler);
         assignDrawPoints();
         assignReadPoints();
+        Debug.Log("Controls Reassigned 2");
     }
 
     public void UpRightHeight()
     {
         rightRgnScaler += 0.05f;
+        PlayerPrefs.SetFloat("rightRgnScaler", rightRgnScaler);
         assignDrawPoints();
         assignReadPoints();
+        Debug.Log("Controls Reassigned 3");
     }
 
     public void DownRightHeight()
     {
         rightRgnScaler -= 0.05f;
+        PlayerPrefs.SetFloat("rightRgnScaler", rightRgnScaler);
         assignDrawPoints();
         assignReadPoints();
+        Debug.Log("Controls Reassigned 4");
     }
 
     public void WidenAttack()
     {
         bottomLeftLimit += -5f;
         topLeftLimit += 5f;
-        topRightLimit -= 5f;
-        bottomRightLimit -= 5f;
+        topRightLimit += -5f;
+        bottomRightLimit += 5f;
+
+        PlayerPrefs.SetFloat("bottomLeftLimit", bottomLeftLimit);
+        PlayerPrefs.SetFloat("topLeftLimit", topLeftLimit);
+        PlayerPrefs.SetFloat("topRightLimit", topRightLimit);
+        PlayerPrefs.SetFloat("bottomRightLimit", bottomRightLimit);
 
         assignDrawPoints();
         assignReadPoints();
+        Debug.Log("Controls Reassigned 5");
     }
 
     public void TallenAttack()
     {
-        bottomLeftLimit -= -5f;
-        topLeftLimit -= 5f;
+        bottomLeftLimit += 5f;
+        topLeftLimit += -5f;
         topRightLimit += 5f;
-        bottomRightLimit += 5f;
+        bottomRightLimit += -5f;
+
+        PlayerPrefs.SetFloat("bottomLeftLimit", bottomLeftLimit);
+        PlayerPrefs.SetFloat("topLeftLimit", topLeftLimit);
+        PlayerPrefs.SetFloat("topRightLimit", topRightLimit);
+        PlayerPrefs.SetFloat("bottomRightLimit", bottomRightLimit);
+
 
         assignDrawPoints();
         assignReadPoints();
+        Debug.Log("Controls Reassigned 6");
     }
 
     public void LowerJumpBar()
     {
         leftRgnCtrHghtScaler -= 0.05f;
 
+        PlayerPrefs.SetFloat("leftRgnCtrHghtScaler", leftRgnCtrHghtScaler);
         assignDrawPoints();
         assignReadPoints();
+        Debug.Log("Controls Reassigned 7");
     }
 
     public void RaiseJumpBar()
     {
         leftRgnCtrHghtScaler += 0.05f;
 
+        PlayerPrefs.SetFloat("leftRgnCtrHghtScaler", leftRgnCtrHghtScaler);
+
         assignDrawPoints();
         assignReadPoints();
+        Debug.Log("Controls Reassigned 8");
     }
 
     public void RaiseMaxMove()
     {
         distThresh += 0.05f;
-        
+
+        PlayerPrefs.SetFloat("distThresh", distThresh);
+
         assignDrawPoints();
         assignReadPoints();
+        Debug.Log("Controls Reassigned 9");
     }
 
     public void LowerMaxMove()
     {
         distThresh -= 0.05f;
+
+        PlayerPrefs.SetFloat("distThresh", distThresh);
+
+        assignDrawPoints();
+        assignReadPoints();
+        Debug.Log("Controls Reassigned 10");
+    }
+
+    public void ResetControls()
+    {
+        PlayerPrefs.SetFloat("leftRgnScaler", 0.5f);
+        PlayerPrefs.SetFloat("rightRgnScaler", 0.5f);
+        PlayerPrefs.SetFloat("distThresh", 0.6f);
+        PlayerPrefs.SetFloat("leftRgnCtrHghtScaler", 0.4f);
+        PlayerPrefs.SetFloat("bottomLeftLimit", -135f);
+        PlayerPrefs.SetFloat("topLeftLimit", 135f);
+        PlayerPrefs.SetFloat("topRightLimit", 45f);
+        PlayerPrefs.SetFloat("bottomRightLimit", -45f);
+
+        leftRgnScaler = 0.5f;
+        rightRgnScaler = 0.5f;
+        distThresh = 0.6f;
+        leftRgnCtrHghtScaler = 0.4f;
+        bottomLeftLimit = -135f;
+        topLeftLimit = 135f;
+        topRightLimit = 45f;
+        bottomRightLimit = -45f;
 
         assignDrawPoints();
         assignReadPoints();
