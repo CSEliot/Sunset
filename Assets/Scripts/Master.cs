@@ -42,7 +42,8 @@ public class Master : MonoBehaviour
 
         isTestMode = false;
         isEast = true;
-        isControlsShown = true;
+        bool tempControlsShown = PlayerPrefs.GetInt("isControlsShown", 1) == 1 ? true : false;
+        isControlsShown = tempControlsShown;
 
         myMusicAudio = GetComponent<AudioSource>();
         mySFXAudio = transform.GetChild(0).GetComponent<AudioSource>();
@@ -215,12 +216,15 @@ public class Master : MonoBehaviour
     {
         get
         {
+            
             return isControlsShown;
         }
 
         set
         {
             isControlsShown = value;
+            int toShow = value ? 1 : 0;
+            PlayerPrefs.SetInt("ShowControls", toShow);
         }
     }
 }

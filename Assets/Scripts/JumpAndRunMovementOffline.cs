@@ -312,7 +312,6 @@ public class JumpAndRunMovementOffline : MonoBehaviour
         tempAxisTouch = Input_M.GetAxis("MoveHorizontal");
         if ( tempAxisKey > 0 || tempAxisTouch > 0)
         {
-            Debug.Log("Move axis: " + tempAxisTouch);
             moveLeft = 0;
             moveRight = tempAxisTouch > tempAxisKey ? tempAxisTouch : tempAxisKey;
         }
