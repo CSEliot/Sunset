@@ -248,7 +248,7 @@ public class ScreenController : MonoBehaviour
                 debugDisplayList[line1PointList[x]].x - (screenLength / 2f),
                 debugDisplayList[line1PointList[x]].y - (screenHeight / 2f),
                 LineZ));
-            Debug.Log("X is: " + x);
+            //Debug.Log("X is: " + x);
         }
         for (x = 0; x < 8; x++)
         {
