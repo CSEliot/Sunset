@@ -3,8 +3,7 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class SceneChecking : MonoBehaviour {
-
-    public bool newScene;
+    
     public string targetSceneName;
     private Master m;
 
@@ -12,15 +11,10 @@ public class SceneChecking : MonoBehaviour {
 	void Start () {
         m = GameObject.FindGameObjectWithTag("Master").GetComponent
             <Master>();
-        newScene = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (newScene)
-        {
-            ChangeScene();
-        }
 	}
 
     public void ChangeScene() {
