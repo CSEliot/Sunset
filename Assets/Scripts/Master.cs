@@ -78,11 +78,25 @@ public class Master : MonoBehaviour
 
         if (Input.GetKeyDown("escape"))
         {
-            //PhotonNetwork.DestroyPlayerObjects();
-            PhotonNetwork.Disconnect();
-            AssignClientCharacter(0);
-            SceneManager.LoadScene("CharacterSelect");
-            PlayMSX(0);
+            if(SceneManager.GetActiveScene().name.Contains("Test"))
+            {
+                isTestMode = false;
+                SceneManager.LoadScene("TitleScreen");
+                PlayMSX(0);
+            }
+            else if (SceneManager.GetActiveScene().name.Contains("GameScreen"))
+            {
+                PhotonNetwork.Disconnect();
+                AssignClientCharacter(0);
+                SceneManager.LoadScene("CharacterSelect");
+                PlayMSX(0);
+            }
+            else if (SceneManager.GetActiveScene().name.Contains("MapSelect"))
+            {
+                AssignClientCharacter(0);
+                SceneManager.LoadScene("CharacterSelect");
+                PlayMSX(0);
+            }
         }
         if (totalPlayers <= 1)
         {
@@ -225,6 +239,7 @@ public class Master : MonoBehaviour
             isControlsShown = value;
             int toShow = value ? 1 : 0;
             PlayerPrefs.SetInt("ShowControls", toShow);
+            PlayerPrefs.Save();
         }
     }
 }

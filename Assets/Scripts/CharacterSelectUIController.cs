@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class GUIController : MonoBehaviour {
+public class CharacterSelectUIController : MonoBehaviour {
 
 
     public Text Name1;
