@@ -13,9 +13,9 @@ public class TestMode : MonoBehaviour {
 	
 	}
 
-    public void SetMode()
+    public void SetMode(bool isTest)
     {
-        GameObject.FindGameObjectWithTag("Master").GetComponent<Master>().IsTestMode = !GameObject.FindGameObjectWithTag("Master").GetComponent<Master>().IsTestMode;
+        GameObject.FindGameObjectWithTag("Master").GetComponent<Master>().IsTestMode = isTest;
     }
     
 }

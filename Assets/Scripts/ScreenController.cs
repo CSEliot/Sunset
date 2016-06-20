@@ -174,6 +174,20 @@ public class ScreenController : MonoBehaviour
             Line2.enabled = false;
             Line3.enabled = false;
         }
+
+        screenLength = Screen.width; //Cam works in grid quads. X & Y == QI, -X,Y == QII, etc.
+        rgnLength = screenLength / 2;
+        screenHeight = Screen.height; //Cam height is always 100 at all resolutions.
+
+        leftRgnHeight = screenHeight * leftRgnScaler;
+        rightRgnHeight = screenHeight * rightRgnScaler;
+        rightRgnCenter = new Vector2(screenLength * 0.75f, rightRgnHeight / 2f);
+        leftRgnCenter = new Vector2(screenLength * 0.25f, (leftRgnHeight * leftRgnCtrHghtScaler));
+
+        distMax = leftRgnHeight - leftRgnCenter.y;
+        distLimit = distMax * distThresh;
+
+        attackLineLng = Mathf.Sqrt(Mathf.Pow(screenLength / 4, 2) + Mathf.Pow(rightRgnHeight, 2)) / 2;
     }
 
     // Update is called once per frame
@@ -284,6 +298,7 @@ public class ScreenController : MonoBehaviour
     {
         leftRgnScaler += 0.05f;
         PlayerPrefs.SetFloat("leftRgnScaler", leftRgnScaler);
+        PlayerPrefs.Save();
         assignDrawPoints();
         assignReadPoints();
 
@@ -294,6 +309,7 @@ public class ScreenController : MonoBehaviour
     {
         leftRgnScaler -= 0.05f;
         PlayerPrefs.SetFloat("leftRgnScaler", leftRgnScaler);
+        PlayerPrefs.Save();
         assignDrawPoints();
         assignReadPoints();
         Debug.Log("Controls Reassigned 2");
@@ -303,6 +319,7 @@ public class ScreenController : MonoBehaviour
     {
         rightRgnScaler += 0.05f;
         PlayerPrefs.SetFloat("rightRgnScaler", rightRgnScaler);
+        PlayerPrefs.Save();
         assignDrawPoints();
         assignReadPoints();
         Debug.Log("Controls Reassigned 3");
@@ -312,6 +329,7 @@ public class ScreenController : MonoBehaviour
     {
         rightRgnScaler -= 0.05f;
         PlayerPrefs.SetFloat("rightRgnScaler", rightRgnScaler);
+        PlayerPrefs.Save();
         assignDrawPoints();
         assignReadPoints();
         Debug.Log("Controls Reassigned 4");
@@ -329,9 +347,9 @@ public class ScreenController : MonoBehaviour
         PlayerPrefs.SetFloat("topRightLimit", topRightLimit);
         PlayerPrefs.SetFloat("bottomRightLimit", bottomRightLimit);
 
+        PlayerPrefs.Save();
         assignDrawPoints();
         assignReadPoints();
-        Debug.Log("Controls Reassigned 5");
     }
 
     public void TallenAttack()
@@ -347,9 +365,9 @@ public class ScreenController : MonoBehaviour
         PlayerPrefs.SetFloat("bottomRightLimit", bottomRightLimit);
 
 
+        PlayerPrefs.Save();
         assignDrawPoints();
         assignReadPoints();
-        Debug.Log("Controls Reassigned 6");
     }
 
     public void LowerJumpBar()
@@ -357,9 +375,9 @@ public class ScreenController : MonoBehaviour
         leftRgnCtrHghtScaler -= 0.05f;
 
         PlayerPrefs.SetFloat("leftRgnCtrHghtScaler", leftRgnCtrHghtScaler);
+        PlayerPrefs.Save();
         assignDrawPoints();
         assignReadPoints();
-        Debug.Log("Controls Reassigned 7");
     }
 
     public void RaiseJumpBar()
@@ -367,10 +385,10 @@ public class ScreenController : MonoBehaviour
         leftRgnCtrHghtScaler += 0.05f;
 
         PlayerPrefs.SetFloat("leftRgnCtrHghtScaler", leftRgnCtrHghtScaler);
+        PlayerPrefs.Save();
 
         assignDrawPoints();
         assignReadPoints();
-        Debug.Log("Controls Reassigned 8");
     }
 
     public void RaiseMaxMove()
@@ -378,10 +396,10 @@ public class ScreenController : MonoBehaviour
         distThresh += 0.05f;
 
         PlayerPrefs.SetFloat("distThresh", distThresh);
+        PlayerPrefs.Save();
 
         assignDrawPoints();
         assignReadPoints();
-        Debug.Log("Controls Reassigned 9");
     }
 
     public void LowerMaxMove()
@@ -389,10 +407,10 @@ public class ScreenController : MonoBehaviour
         distThresh -= 0.05f;
 
         PlayerPrefs.SetFloat("distThresh", distThresh);
+        PlayerPrefs.Save();
 
         assignDrawPoints();
         assignReadPoints();
-        Debug.Log("Controls Reassigned 10");
     }
 
     public void ResetControls()
@@ -405,6 +423,7 @@ public class ScreenController : MonoBehaviour
         PlayerPrefs.SetFloat("topLeftLimit", 135f);
         PlayerPrefs.SetFloat("topRightLimit", 45f);
         PlayerPrefs.SetFloat("bottomRightLimit", -45f);
+        PlayerPrefs.Save();
 
         leftRgnScaler = 0.5f;
         rightRgnScaler = 0.5f;

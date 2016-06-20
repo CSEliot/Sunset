@@ -6,21 +6,29 @@ Game Changes:
     / Character Select Scaling
     / How To Play Scaling
     + Sunrays in all Background  
+    
     + Tons more buttons
+    
     / Cloud character revision
+
 
     General:
     / Character select happens first, THEN map select.
 
+    
+
     Gameplay/Code:
+    
     + Framerate and Send Rate optimized.
     + Control display optimized hard.
 
     Fixes:
-    / Navigation order imagery up top
     / weird bug on controls, before editted per screen
+    
     / "Test Control" VS "Play Online" button alternates badly
+    
     / Clicking Play online from title screen should set character select to map select
+
 
 
  KEY: (/) Change, (+) Addition, (-) Removal
