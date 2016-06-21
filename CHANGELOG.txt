@@ -11,6 +11,8 @@ Game Changes:
     
     / Cloud character revision
 
+    + Retextured “Floating Pillar” stage
+
 
     General:
     / Character select happens first, THEN map select.
