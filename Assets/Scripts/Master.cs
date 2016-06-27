@@ -37,8 +37,14 @@ public class Master : MonoBehaviour
 
     private bool isControlsShown;
 
+    private string version;
+
     void Awake()
     {
+
+        version = Application.version;
+
+        RoomName = "Pillar";
 
         isTestMode = false;
         isEast = true;
@@ -47,7 +53,7 @@ public class Master : MonoBehaviour
 
         myMusicAudio = GetComponent<AudioSource>();
         mySFXAudio = transform.GetChild(0).GetComponent<AudioSource>();
-        PlayMSX(0);
+        PlayMSX(3);
         NameStrengthDict = new Dictionary<string, float>();
         foreach (NameToStrength character in StrengthsList)
         {
@@ -57,7 +63,9 @@ public class Master : MonoBehaviour
         if (GameObject.FindGameObjectsWithTag("Master").Length > 1)
         {
             Destroy(gameObject);
+            disableSplash();
         }
+
         DontDestroyOnLoad(gameObject);
         AssignClientCharacter(0);
         //Cursor.lockState = CursorLockMode.Confined;
@@ -241,5 +249,26 @@ public class Master : MonoBehaviour
             PlayerPrefs.SetInt("ShowControls", toShow);
             PlayerPrefs.Save();
         }
+    }
+
+    public string Version
+    {
+        get
+        {
+            return version;
+        }
+
+        set
+        {
+            version = value;
+        }
+    }
+
+    private void disableSplash()
+    {
+
+        GameObject.Find("IntroBG").SetActive(false);
+        myMusicAudio.time = 8;
+        //GameObject.Find("Canvas").transform.GetChild(3).gameObject.SetActive(true);
     }
 }

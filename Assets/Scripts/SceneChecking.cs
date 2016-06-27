@@ -24,14 +24,15 @@ public class SceneChecking : MonoBehaviour {
             SceneManager.LoadScene("GameScreen_Test");
             m.PlaySFX(0);
         }
+        else if (targetSceneName == "PlayOnline")
+        {
+            SceneManager.LoadScene("GameScreen_" + m.GetRoomName());
+        }
         else if (targetSceneName != "null")
         {
             SceneManager.LoadScene(targetSceneName);
             m.PlaySFX(0);
         }
-        if (m.Client_CharNum == 6)
-        { 
-            return;
-        }
+        
 	}
 }

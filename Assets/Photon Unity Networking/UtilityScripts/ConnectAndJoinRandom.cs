@@ -12,7 +12,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
     /// <summary>Connect automatically? If false you can set this to true later on or call ConnectUsingSettings in your own scripts.</summary>
     public bool AutoConnect = true;
 
-    public byte Version = 1;
+    private string version;
 
     /// <summary>if we don't want to connect in Start(), we have to "remember" if we called ConnectUsingSettings()</summary>
     private bool ConnectInUpdate = true;
@@ -33,6 +33,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
             PhotonNetwork.sendRate = SendRate;
             PhotonNetwork.sendRateOnSerialize = SendRate;
             m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
+            version = m.Version;
         }
     }
 
@@ -49,8 +50,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
             Debug.Log("Update() was called by Unity. Scene is loaded. Let's connect to the Photon Master Server. Calling: PhotonNetwork.ConnectUsingSettings();");
 
             ConnectInUpdate = false;
-            PhotonNetwork.ConnectUsingSettings(Version + "."+
-                SceneManager.GetActiveScene().buildIndex);
+            PhotonNetwork.ConnectUsingSettings(version);
             PhotonNetwork.sendRate = SendRate;
             PhotonNetwork.sendRateOnSerialize = SendRate;
         }else 
@@ -62,7 +62,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
             ConnectInUpdate = false;
             PhotonNetwork.ConnectToMaster("52.9.58.118", 5055,
                 "d4e9e94d-de9a-44ec-9668-5f1898d4e76c", 
-                Version + "." + SceneManager.GetActiveScene().buildIndex);
+                version);
             PhotonNetwork.sendRate = SendRate;
             PhotonNetwork.sendRateOnSerialize = SendRate;
         }
@@ -97,6 +97,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
     {
         Debug.Log("OnJoinedLobby(). This client is connected and does get a room-list, which gets stored as PhotonNetwork.GetRoomList(). This script now calls: PhotonNetwork.JoinRandomRoom();");
         PhotonNetwork.JoinOrCreateRoom(m.GetRoomName(), new RoomOptions() { maxPlayers = Convert.ToByte(m.Max_Players) }, null);
+        
     }
 
     public virtual void OnPhotonRandomJoinFailed()
