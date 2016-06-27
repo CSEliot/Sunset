@@ -4,6 +4,7 @@ using System.Collections;
 
 public class MapSelectUIController : MonoBehaviour {
 
+    public CallRoom CallRoomComp;
 
     public Text Name1;
     public Text Name2;
@@ -39,29 +40,26 @@ public class MapSelectUIController : MonoBehaviour {
         LeftFrame.sprite = AllSprites[currentSelector - 1];
         MidFrame.sprite = AllHDSprites[currentSelector];
         RightFrame.sprite = AllSprites[currentSelector + 1];
-        Name1.text = MapNames[currentSelector - 1];
-        Name2.text = MapNames[currentSelector - 1];
-        UpdateStats();
+        Name1.text = MapNames[currentSelector];
+        Name2.text = MapNames[currentSelector];
+        CallRoomComp.RoomName = MapNames[currentSelector];
+        CallRoomComp.AssignNewRoom();
         m.AssignClientCharacter(currentSelector - 1);   
     }
 
     public void ShiftSelectionRight()
     {
-        if (currentSelector == 6)
+        if (currentSelector == 3)
             return;
         m.PlaySFX(5);   
         currentSelector += 1;
         LeftFrame.sprite  = AllSprites[currentSelector - 1];
         MidFrame.sprite   = AllHDSprites[currentSelector];
         RightFrame.sprite = AllSprites[currentSelector + 1];
-        Name1.text = MapNames[currentSelector - 1];
-        Name2.text = MapNames[currentSelector - 1];
-        UpdateStats();
+        Name1.text = MapNames[currentSelector];
+        Name2.text = MapNames[currentSelector];
+        CallRoomComp.RoomName = MapNames[currentSelector];
+        CallRoomComp.AssignNewRoom();
         m.AssignClientCharacter(currentSelector-1);
-    }
-
-    private void UpdateStats()
-    {
-        
     }
 }

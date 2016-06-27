@@ -26,6 +26,7 @@ public class CharacterSelectUIController : MonoBehaviour {
 	void Start () {
         currentSelector = 1;
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
+        PhotonNetwork.Disconnect();
 	}
 	
 	// Update is called once per frame
