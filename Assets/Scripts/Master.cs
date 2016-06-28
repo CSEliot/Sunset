@@ -39,6 +39,8 @@ public class Master : MonoBehaviour
 
     private string version;
 
+	public GameObject[] CanvasScenes;
+
     void Awake()
     {
 
@@ -171,6 +173,7 @@ public class Master : MonoBehaviour
     public void PlayMSX(int num)
     {
         myMusicAudio.Stop();
+		myMusicAudio.time = 0;
         myMusicAudio.clip = MSX[num];
         myMusicAudio.Play();
     }
