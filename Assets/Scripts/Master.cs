@@ -39,10 +39,19 @@ public class Master : MonoBehaviour
 
     private string version;
 
-	public GameObject[] CanvasScenes;
+	private GameObject[] canvasScenes;
+	private int currentScene;
+
+	private int isNewScene;
+	private int targetScene;
 
     void Awake()
     {
+
+		canvasScenes = new GameObject[3];
+		canvasScenes [0] = GameObject.Find ("MenuCanvas");
+		canvasScenes [1] = GameObject.Find ("CharacterSelectCanvas");
+		canvasScenes [2] = GameObject.Find ("MapSelectCanvas");
 
         version = Application.version;
 
@@ -86,7 +95,7 @@ public class Master : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetKeyDown("escape"))
+        if (Input.GetKeyDown("escape") || isNewScene == 1)
         {
             if(SceneManager.GetActiveScene().name.Contains("Test"))
             {
