@@ -3,9 +3,15 @@ using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.Collections;
 
+/// <summary>
+/// Handles scene management and everything that's inter-scene. This includes:
+///  - Music
+///  - Background Animations
+///  - Menu SFX
+///  - gameplay/instance data
+/// </summary>
 public class Master : MonoBehaviour
 {
-
     [System.Serializable]
     public class NameToStrength
     {
@@ -39,21 +45,33 @@ public class Master : MonoBehaviour
 
     private string version;
 
-	private GameObject[] canvasScenes;
-	private int currentScene;
+	public GameObject[] MenuCanvasList;
+	// 0 = main
+	// 1 = map
+	// 2 = character select
+	
 
-	private int isNewScene;
-	private int targetScene;
+	private enum menu
+	{
+		main,
+		map,
+		chara,
+		options,
+		practice,
+		ingame // opens pause menu
+	};
+	private menu currentScene;
+
+
+	private bool isNewScene;
+	//	private  targetScene;
+
 
     void Awake()
     {
 
-		canvasScenes = new GameObject[3];
-		canvasScenes [0] = GameObject.Find ("MenuCanvas");
-		canvasScenes [1] = GameObject.Find ("CharacterSelectCanvas");
-		canvasScenes [2] = GameObject.Find ("MapSelectCanvas");
-
         version = Application.version;
+		currentScene = menu.main;
 
         RoomName = "Pillar";
 
@@ -94,28 +112,9 @@ public class Master : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if (Input.GetKeyDown("escape") || isNewScene == 1)
+        if (Input.GetKeyDown("escape"))
         {
-            if(SceneManager.GetActiveScene().name.Contains("Test"))
-            {
-                isTestMode = false;
-                SceneManager.LoadScene("TitleScreen");
-                PlayMSX(0);
-            }
-            else if (SceneManager.GetActiveScene().name.Contains("GameScreen"))
-            {
-                PhotonNetwork.Disconnect();
-                AssignClientCharacter(0);
-                SceneManager.LoadScene("CharacterSelect");
-                PlayMSX(0);
-            }
-            else if (SceneManager.GetActiveScene().name.Contains("MapSelect"))
-            {
-                AssignClientCharacter(0);
-                SceneManager.LoadScene("CharacterSelect");
-                PlayMSX(0);
-            }
+			GoBack ();
         }
         if (totalPlayers <= 1)
         {
@@ -127,6 +126,30 @@ public class Master : MonoBehaviour
             }
         }
     }
+
+	public void GoBack()
+	{
+		
+		if(currentScene == menu.practice)
+		{
+			isTestMode = false;
+			SceneManager.LoadScene("TitleScreen");
+			PlayMSX(0);
+		}
+		else if (SceneManager.GetActiveScene().name.Contains("GameScreen"))
+		{
+			PhotonNetwork.Disconnect();
+			AssignClientCharacter(0);
+			SceneManager.LoadScene("CharacterSelect");
+			PlayMSX(0);
+		}
+		else if (SceneManager.GetActiveScene().name.Contains("MapSelect"))
+		{
+			AssignClientCharacter(0);
+			SceneManager.LoadScene("CharacterSelect");
+			PlayMSX(0);
+		}
+	}
 
     public void AssignClientCharacter(int chosenChar)
     {
@@ -283,4 +306,6 @@ public class Master : MonoBehaviour
         myMusicAudio.time = 8;
         //GameObject.Find("Canvas").transform.GetChild(3).gameObject.SetActive(true);
     }
+
+
 }
