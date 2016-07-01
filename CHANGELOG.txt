@@ -43,6 +43,8 @@ Balance Changes Needed:
 Suggestions:
 
 To Be Made:
+ / move the win/loss detection out of the master file
+    and other things that don't need to be in the Master class
  / pixelated particle effect.
  / Back buttons go back 1 screen.
  / Toggle control lines in settings.
