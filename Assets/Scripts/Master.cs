@@ -49,7 +49,8 @@ public class Master : MonoBehaviour
 	// 0 = main
 	// 1 = map
 	// 2 = character select
-	
+	// 3 = Options
+
 
 	private enum menu
 	{
@@ -69,7 +70,6 @@ public class Master : MonoBehaviour
 
     void Awake()
     {
-
         version = Application.version;
 		currentScene = menu.main;
 
@@ -127,28 +127,70 @@ public class Master : MonoBehaviour
         }
     }
 
+	/// <summary>
+	/// The main menu, (title, character select and map select) is all one
+	/// scene but the master class doesn't discern between them.
+	/// 
+	/// This is for when hitting a phone's back button or in-game back
+	/// button. Going Back FROM in-game scene to menu or menu to menu.
+	/// </summary>
 	public void GoBack()
 	{
-		
-		if(currentScene == menu.practice)
-		{
+		switch (currentScene) {
+		case menu.main:
+			PlayerPrefs.Save ();
+			Application.Quit ();
+			break; 
+		case menu.chara:
+			currentScene = menu.map;
+			switchCanvas ((int)menu.map);
+			break;
+		case menu.map:
+			currentScene = menu.main;
+			switchCanvas ((int)menu.main);
+			break;
+		case menu.practice:
+			currentScene = menu.practice;
+			SceneManager.UnloadScene ("Gamescreen_Test");
+			SceneManager.LoadScene ("MainMenu");
 			isTestMode = false;
-			SceneManager.LoadScene("TitleScreen");
-			PlayMSX(0);
+			break;
+		case menu.ingame:
+			SceneManager.LoadScene ("MainMenu");
+			break;
+		default:
+			break;
 		}
-		else if (SceneManager.GetActiveScene().name.Contains("GameScreen"))
-		{
-			PhotonNetwork.Disconnect();
-			AssignClientCharacter(0);
-			SceneManager.LoadScene("CharacterSelect");
-			PlayMSX(0);
+	}
+
+	/// <summary>
+	/// To other Menu Canvas "Scenes" or to an in-game scene.
+	/// </summary>
+	/// <param name="to">To.</param>
+	public void GoTo(int to)
+	{
+		switch (to) {
+		case (int)menu.main:
+			isTestMode = false;
+			switchCanvas ((int)menu.main);
+			break;
+		case (int)menu.map:
+			AssignClientCharacter (0);
+			switchCanvas ((int)menu.map);
+			break;
+		case (int)menu.chara:
+			switchCanvas ((int)menu.chara);
+			break;
+		default:
+			break;
 		}
-		else if (SceneManager.GetActiveScene().name.Contains("MapSelect"))
-		{
-			AssignClientCharacter(0);
-			SceneManager.LoadScene("CharacterSelect");
-			PlayMSX(0);
-		}
+	}
+
+	private void switchCanvas( int switchTo){
+		currentScene = (menu)switchTo;
+		MenuCanvasList [0].SetActive (switchTo == 1 ? true : false); 	
+		MenuCanvasList [1].SetActive (switchTo == 2 ? true : false);
+		MenuCanvasList [2].SetActive (switchTo == 3 ? true : false);
 	}
 
     public void AssignClientCharacter(int chosenChar)
@@ -174,6 +216,7 @@ public class Master : MonoBehaviour
         PhotonNetwork.Disconnect();
         AssignClientCharacter(0);
         SceneManager.LoadScene("CharacterSelect");
+
     }
 
     public void GameStarts(int myTotalPlayers)
