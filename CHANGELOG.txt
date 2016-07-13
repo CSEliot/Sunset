@@ -1,4 +1,4 @@
-CHANGELOG - V0.55
+﻿CHANGELOG - V0.55
 Game Changes:
     
     Art:
@@ -95,3 +95,6 @@ Working Devices List:
  - iPhone 4s (Paul)
  - Nokia 635 W8.1 (Dobrynia)
  - Asus MeMO Pad 8 (Paul)
+
+Music Sources: 
+ - https://roboctopus.bandcamp.com/album/disco-txt-ep-version

@@ -44,7 +44,6 @@ public class MapSelectUIController : MonoBehaviour {
         Name2.text = MapNames[currentSelector];
         CallRoomComp.RoomName = MapNames[currentSelector];
         CallRoomComp.AssignNewRoom();
-        m.AssignClientCharacter(currentSelector - 1);   
     }
 
     public void ShiftSelectionRight()
@@ -60,6 +59,5 @@ public class MapSelectUIController : MonoBehaviour {
         Name2.text = MapNames[currentSelector];
         CallRoomComp.RoomName = MapNames[currentSelector];
         CallRoomComp.AssignNewRoom();
-        m.AssignClientCharacter(currentSelector-1);
     }
 }
