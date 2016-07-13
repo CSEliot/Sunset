@@ -149,8 +149,8 @@ public class ReadyUp : MonoBehaviour {
         readyUped = false;
         PhotonNetwork.Disconnect();
         m.AssignClientCharacter(0);
-        SceneManager.LoadScene("CharacterSelect");
-        m.PlayMSX(0);
+        m.GoBack();
+        m.PlayMSX(4);
     }
 
     //Need 2 things: Chosen CHaracter and Player Num

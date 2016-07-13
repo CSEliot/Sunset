@@ -39,8 +39,6 @@ public class Master : MonoBehaviour
 
     private bool isEast;
 
-    private bool isTestMode;
-
     private bool isControlsShown;
 
     private string version;
@@ -63,6 +61,14 @@ public class Master : MonoBehaviour
 	};
 	private menu currentScene;
 
+    private enum map
+    {
+        practice,
+        pillar,
+        _void,
+        hel
+    };
+    private map currentLevel;
 
 	private bool isNewScene;
 	//	private  targetScene;
@@ -72,10 +78,10 @@ public class Master : MonoBehaviour
     {
         version = Application.version;
 		currentScene = menu.main;
+        currentLevel = map.pillar;
 
         RoomName = "Pillar";
-
-        isTestMode = false;
+        
         isEast = true;
         bool tempControlsShown = PlayerPrefs.GetInt("isControlsShown", 1) == 1 ? true : false;
         isControlsShown = tempControlsShown;
@@ -137,29 +143,38 @@ public class Master : MonoBehaviour
 	public void GoBack()
 	{
 		switch (currentScene) {
-		case menu.main:
-			PlayerPrefs.Save ();
-			Application.Quit ();
-			break; 
-		case menu.chara:
-			currentScene = menu.map;
-			switchCanvas ((int)menu.map);
-			break;
-		case menu.map:
-			currentScene = menu.main;
-			switchCanvas ((int)menu.main);
-			break;
-		case menu.practice:
-			currentScene = menu.practice;
-			SceneManager.UnloadScene ("Gamescreen_Test");
-			SceneManager.LoadScene ("MainMenu");
-			isTestMode = false;
-			break;
-		case menu.ingame:
-			SceneManager.LoadScene ("MainMenu");
-			break;
-		default:
-			break;
+		    case menu.main:
+			    PlayerPrefs.Save ();
+			    Application.Quit ();
+			    break; 
+		    case menu.chara:
+                if (currentLevel == map.practice)
+                {
+                    GoTo(3);
+                    break;
+                }
+			    currentScene = menu.map;
+			    switchCanvas ((int)menu.map);
+			    break;
+		    case menu.map: 
+			    currentScene = menu.main;
+			    switchCanvas ((int)menu.main);
+			    break;
+		    case menu.practice:
+			    currentScene = menu.options;
+                loadMenu();
+			    break;
+		    case menu.ingame:
+                currentScene = menu.chara;
+                loadMenu();
+                SceneManager.UnloadScene(SceneManager.GetSceneAt(1));
+                break;
+            case menu.options:
+                currentScene = menu.main;
+                switchCanvas((int)menu.main);
+                break;
+            default:
+			    break;
 		}
 	}
 
@@ -170,28 +185,65 @@ public class Master : MonoBehaviour
 	public void GoTo(int to)
 	{
 		switch (to) {
-		case (int)menu.main:
-			isTestMode = false;
-			switchCanvas ((int)menu.main);
-			break;
-		case (int)menu.map:
-			AssignClientCharacter (0);
-			switchCanvas ((int)menu.map);
-			break;
-		case (int)menu.chara:
-			switchCanvas ((int)menu.chara);
-			break;
-		default:
-			break;
-		}
+		    case (int)menu.main:
+			    switchCanvas ((int)menu.main);
+			    break;
+		    case (int)menu.map:
+			    AssignClientCharacter (0);
+			    switchCanvas ((int)menu.map);
+			    break;
+		    case (int)menu.chara:
+			    switchCanvas ((int)menu.chara);
+			    break; 
+            case (int)menu.options:
+                switchCanvas((int)menu.options);
+                break;
+            case (int)menu.practice:
+                switchCanvas((int)menu.chara);
+                SetRoomName("Practice");
+                break;
+            case (int)menu.ingame:
+                switchCanvas((int)menu.ingame);
+                switchInGame();
+                break;
+            default:
+			    break;
+		    }
 	}
 
 	private void switchCanvas( int switchTo){
 		currentScene = (menu)switchTo;
-		MenuCanvasList [0].SetActive (switchTo == 1 ? true : false); 	
-		MenuCanvasList [1].SetActive (switchTo == 2 ? true : false);
-		MenuCanvasList [2].SetActive (switchTo == 3 ? true : false);
-	}
+		MenuCanvasList [0].SetActive (switchTo == 0 ? true : false); //main
+		MenuCanvasList [1].SetActive (switchTo == 1 ? true : false); //map select
+		MenuCanvasList [2].SetActive (switchTo == 2 ? true : false); //char select
+        MenuCanvasList [3].SetActive (switchTo == 3 ? true : false); //options
+    }
+
+    private void switchInGame()
+    {
+        SceneManager.LoadScene((int)currentLevel, LoadSceneMode.Additive);
+        unloadMenu();
+    }
+
+    private void unloadMenu()
+    {
+        GameObject[] menuObjs = SceneManager.GetSceneByName("MainMenu").GetRootGameObjects();
+        for (int i = 0; i < menuObjs.Length; i++)
+        {
+            menuObjs[i].SetActive(false);
+        }
+    }
+
+    private void loadMenu()
+    {
+        PlayMSX(0);
+        GameObject[] menuObjs = SceneManager.GetSceneByName("MainMenu").GetRootGameObjects();
+        for (int i = 0; i < menuObjs.Length; i++)
+        {
+            menuObjs[i].SetActive(true);
+        }
+        switchCanvas((int)currentScene);
+    }
 
     public void AssignClientCharacter(int chosenChar)
     {
@@ -292,24 +344,30 @@ public class Master : MonoBehaviour
     public void SetRoomName(string room_name)
     {
         RoomName = room_name;
+        switch (room_name)
+        {
+            case "Practice":
+                currentLevel = map.practice;
+                break;
+            case "Pillar":
+                currentLevel = map.pillar;
+                break;
+            case "Void":
+                currentLevel = map._void;
+                break;
+            case "Hel":
+                currentLevel = map.hel;
+                break;
+            default:
+                Debug.LogError("WRONG ROOMMNAME GIVEN.");
+                break;
+        }
+            
     }
 
     public string GetRoomName()
     {
         return RoomName;
-    }
-
-    public bool IsTestMode
-    {
-        get
-        {
-            return isTestMode;
-        }
-
-        set
-        {
-            isTestMode = value;
-        }
     }
 
     public bool IsControlsShown
@@ -339,6 +397,14 @@ public class Master : MonoBehaviour
         set
         {
             version = value;
+        }
+    }
+
+    public int CurrentLevel
+    {
+        get
+        {
+            return (int)currentLevel;
         }
     }
 

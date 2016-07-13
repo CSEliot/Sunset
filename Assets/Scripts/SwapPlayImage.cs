@@ -8,11 +8,12 @@ public class SwapPlayImage : MonoBehaviour {
     private int currentSprite;
     public Image img;
     private Master m;
+    private int practiceMapNum = 0;
 
 	// Use this for initialization
-	void Start () {
+	void OnEnable () {
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
-        if (m.IsTestMode)
+        if (m.CurrentLevel == practiceMapNum)
         {
             SetSprite(1);
         }

@@ -9,17 +9,32 @@ public class SpawnOfflineTest : MonoBehaviour {
 
     public Transform[] SpawnList;
 
+    private bool newSceneActive; //Characters should be spawned in the INGAME scene.
+
 	// Use this for initialization
 	void Start () {
+
+        newSceneActive = false;
+
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
 
-        //chosen character is stored by name, we don't know position number
+        UnityEngine.SceneManagement.SceneManager.SetActiveScene(
+            UnityEngine.SceneManagement.SceneManager.GetSceneByName("GameScreen_Test")
+            );
 
-        Instantiate(CharacterList[m.Client_CharNum], SpawnList[0].position, Quaternion.Euler(Vector3.zero));
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+
+        if (!newSceneActive)
+        {
+            //chosen character is stored by name, we don't know position number
+            Instantiate(CharacterList[m.Client_CharNum], SpawnList[0].position, Quaternion.Euler(Vector3.zero));
+
+            newSceneActive = true;
+        }
+
+
 	}
 }

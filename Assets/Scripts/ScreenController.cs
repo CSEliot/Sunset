@@ -158,7 +158,6 @@ public class ScreenController : MonoBehaviour
                 debugDisplayList[line1PointList[x]].x - (screenLength / 2f),
                 debugDisplayList[line1PointList[x]].y - (screenHeight / 2f),
                 LineZ));
-            Debug.Log("X is: " + x);
         }
         for (x = 0; x < 8; x++)
         {
@@ -302,7 +301,7 @@ public class ScreenController : MonoBehaviour
         assignDrawPoints();
         assignReadPoints();
 
-        Debug.Log("Controls Reassigned 1");
+        m.PlaySFX(1);
     }
 
     public void DownLeftHeight()
@@ -312,7 +311,7 @@ public class ScreenController : MonoBehaviour
         PlayerPrefs.Save();
         assignDrawPoints();
         assignReadPoints();
-        Debug.Log("Controls Reassigned 2");
+        m.PlaySFX(1);
     }
 
     public void UpRightHeight()
@@ -322,7 +321,7 @@ public class ScreenController : MonoBehaviour
         PlayerPrefs.Save();
         assignDrawPoints();
         assignReadPoints();
-        Debug.Log("Controls Reassigned 3");
+        m.PlaySFX(1);
     }
 
     public void DownRightHeight()
@@ -332,7 +331,7 @@ public class ScreenController : MonoBehaviour
         PlayerPrefs.Save();
         assignDrawPoints();
         assignReadPoints();
-        Debug.Log("Controls Reassigned 4");
+        m.PlaySFX(1);
     }
 
     public void WidenAttack()
@@ -350,6 +349,7 @@ public class ScreenController : MonoBehaviour
         PlayerPrefs.Save();
         assignDrawPoints();
         assignReadPoints();
+        m.PlaySFX(1);
     }
 
     public void TallenAttack()
@@ -368,6 +368,7 @@ public class ScreenController : MonoBehaviour
         PlayerPrefs.Save();
         assignDrawPoints();
         assignReadPoints();
+        m.PlaySFX(1);
     }
 
     public void LowerJumpBar()
@@ -378,6 +379,7 @@ public class ScreenController : MonoBehaviour
         PlayerPrefs.Save();
         assignDrawPoints();
         assignReadPoints();
+        m.PlaySFX(1);
     }
 
     public void RaiseJumpBar()
@@ -389,6 +391,7 @@ public class ScreenController : MonoBehaviour
 
         assignDrawPoints();
         assignReadPoints();
+        m.PlaySFX(1);
     }
 
     public void RaiseMaxMove()
@@ -400,6 +403,7 @@ public class ScreenController : MonoBehaviour
 
         assignDrawPoints();
         assignReadPoints();
+        m.PlaySFX(1);
     }
 
     public void LowerMaxMove()
@@ -411,6 +415,7 @@ public class ScreenController : MonoBehaviour
 
         assignDrawPoints();
         assignReadPoints();
+        m.PlaySFX(1);
     }
 
     public void ResetControls()
@@ -436,6 +441,7 @@ public class ScreenController : MonoBehaviour
 
         assignDrawPoints();
         assignReadPoints();
+        m.PlaySFX(0);
     }
 
 
