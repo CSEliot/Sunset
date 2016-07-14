@@ -23,12 +23,23 @@ public class MapSelectUIController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        currentSelector = 1;
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    void OnEnable()
+    {
+        currentSelector = 1;
+        LeftFrame.sprite = AllSprites[currentSelector - 1];
+        MidFrame.sprite = AllHDSprites[currentSelector];
+        RightFrame.sprite = AllSprites[currentSelector + 1];
+        Name1.text = MapNames[currentSelector];
+        Name2.text = MapNames[currentSelector];
+        CallRoomComp.RoomName = MapNames[currentSelector];
+        CallRoomComp.AssignNewRoom();
+    }
+
+    // Update is called once per frame
+    void Update () {
 	}
 
     public void ShiftSelectionLeft()

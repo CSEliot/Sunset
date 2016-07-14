@@ -96,5 +96,6 @@ Working Devices List:
  - Nokia 635 W8.1 (Dobrynia)
  - Asus MeMO Pad 8 (Paul)
 
-Music Sources: 
+Potential Music Sources: 
  - https://roboctopus.bandcamp.com/album/disco-txt-ep-version
+ - https://glenntai.bandcamp.com/album/3brk-heartbreak
