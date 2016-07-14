@@ -8,7 +8,7 @@ public class SwapPlayImage : MonoBehaviour {
     private int currentSprite;
     public Image img;
     private Master m;
-    private int practiceMapNum = 0;
+    private int practiceMapNum = 1;
     private int currentLevelNum;
 
 	// Use this for initialization
