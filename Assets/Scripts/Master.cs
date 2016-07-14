@@ -237,7 +237,7 @@ public class Master : MonoBehaviour
 
     private void loadMenu()
     {
-        PlayMSX(0);
+        PlayMSX(4);
         GameObject[] menuObjs = SceneManager.GetSceneByName("MainMenu").GetRootGameObjects();
         for (int i = 0; i < menuObjs.Length; i++)
         {
@@ -301,7 +301,7 @@ public class Master : MonoBehaviour
     public void PlayMSX(int num)
     {
         myMusicAudio.Stop();
-		myMusicAudio.time = 0;
+		myMusicAudio.time = num == 4? 8 : 0; //Song 4 starts at 8, post intro.
         myMusicAudio.clip = MSX[num];
         myMusicAudio.Play();
     }
