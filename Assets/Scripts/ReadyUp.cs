@@ -45,7 +45,7 @@ public class ReadyUp : MonoBehaviour {
     //private int[] SlotList;
 
     public Text roomName;
-
+    
 	// Use this for initialization
 	void Start () {
         readyUpBypassCount = 0;
@@ -67,7 +67,7 @@ public class ReadyUp : MonoBehaviour {
         headSprite = j.GetImageNum();
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
         
-	}
+    }
 	
 	// Update is called once per frame
 	void Update () {

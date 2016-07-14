@@ -9,11 +9,17 @@ public class SwapPlayImage : MonoBehaviour {
     public Image img;
     private Master m;
     private int practiceMapNum = 0;
+    private int currentLevelNum;
 
 	// Use this for initialization
 	void OnEnable () {
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
-        if (m.CurrentLevel == practiceMapNum)
+	}
+	
+	// Update is called once per frame
+	void Update () {
+        currentLevelNum = m.CurrentLevel;
+        if (currentLevelNum == practiceMapNum)
         {
             SetSprite(1);
         }
@@ -21,13 +27,7 @@ public class SwapPlayImage : MonoBehaviour {
         {
             SetSprite(0);
         }
-        
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    }
 
     public void SetSprite(int newNum)
     {
