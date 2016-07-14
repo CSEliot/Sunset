@@ -63,6 +63,7 @@ public class Master : MonoBehaviour
 
     private enum map
     {
+        inmenu, //NOT USED. 
         practice,
         pillar,
         _void,
