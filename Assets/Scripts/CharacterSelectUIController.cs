@@ -23,7 +23,7 @@ public class CharacterSelectUIController : MonoBehaviour {
     private int currentSelector;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
         currentSelector = 1;
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
         PhotonNetwork.Disconnect();

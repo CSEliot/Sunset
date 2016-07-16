@@ -4,7 +4,7 @@ using System.Collections;
 
 public class MapSelectUIController : MonoBehaviour {
 
-    public CallRoom CallRoomComp;
+    public CallRoom RoomNameHelper;
 
     public Text Name1;
     public Text Name2;
@@ -24,9 +24,10 @@ public class MapSelectUIController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
-	}
+        Reset();
+    }
 
-    void OnEnable()
+    public void Reset()
     {
         currentSelector = 1;
         LeftFrame.sprite = AllSprites[currentSelector - 1];
@@ -34,8 +35,12 @@ public class MapSelectUIController : MonoBehaviour {
         RightFrame.sprite = AllSprites[currentSelector + 1];
         Name1.text = MapNames[currentSelector];
         Name2.text = MapNames[currentSelector];
-        CallRoomComp.RoomName = MapNames[currentSelector];
-        CallRoomComp.AssignNewRoom();
+        RoomNameHelper.RoomName = MapNames[currentSelector];
+        RoomNameHelper.AssignNewRoom();
+    }
+
+    void OnEnable()
+    {
     }
 
     // Update is called once per frame
@@ -53,8 +58,8 @@ public class MapSelectUIController : MonoBehaviour {
         RightFrame.sprite = AllSprites[currentSelector + 1];
         Name1.text = MapNames[currentSelector];
         Name2.text = MapNames[currentSelector];
-        CallRoomComp.RoomName = MapNames[currentSelector];
-        CallRoomComp.AssignNewRoom();
+        RoomNameHelper.RoomName = MapNames[currentSelector];
+        RoomNameHelper.AssignNewRoom();
     }
 
     public void ShiftSelectionRight()
@@ -68,7 +73,7 @@ public class MapSelectUIController : MonoBehaviour {
         RightFrame.sprite = AllSprites[currentSelector + 1];
         Name1.text = MapNames[currentSelector];
         Name2.text = MapNames[currentSelector];
-        CallRoomComp.RoomName = MapNames[currentSelector];
-        CallRoomComp.AssignNewRoom();
+        RoomNameHelper.RoomName = MapNames[currentSelector];
+        RoomNameHelper.AssignNewRoom();
     }
 }

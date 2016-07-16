@@ -13,6 +13,7 @@ Game Changes:
 
     + Retextured “Floating Pillar” stage
 
+    / Skips vocals in menu music.
 
     General:
     / Character select happens first, THEN map select.
