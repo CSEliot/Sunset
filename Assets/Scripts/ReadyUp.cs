@@ -45,6 +45,8 @@ public class ReadyUp : MonoBehaviour {
     //private int[] SlotList;
 
     public Text roomName;
+
+    public GameObject Warning;
     
 	// Use this for initialization
 	void Start () {
@@ -132,6 +134,11 @@ public class ReadyUp : MonoBehaviour {
     {
         if (totalLoggedIn < 2)
         {
+            Warning.SetActive(true);
+            return;
+        }
+        if (isReady)
+        {
             return;
         }
         isReady = true;
@@ -148,9 +155,7 @@ public class ReadyUp : MonoBehaviour {
         isReady = false;
         readyUped = false;
         PhotonNetwork.Disconnect();
-        m.AssignClientCharacter(0);
         m.GoBack();
-        m.PlayMSX(4);
     }
 
     //Need 2 things: Chosen CHaracter and Player Num

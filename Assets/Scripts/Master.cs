@@ -18,6 +18,7 @@ public class Master : MonoBehaviour
         public string Name;
         public float Power;
     }
+
     public NameToStrength[] StrengthsList;
     private Dictionary<string, float> NameStrengthDict;
     public int Max_Players;
@@ -67,7 +68,7 @@ public class Master : MonoBehaviour
         practice,
         pillar,
         _void,
-        hel
+        heck
     };
     private map currentLevel;
 
@@ -77,6 +78,7 @@ public class Master : MonoBehaviour
 
     void Awake()
     {
+        
         version = Application.version;
 		currentScene = menu.main;
         currentLevel = map.pillar;
@@ -152,6 +154,7 @@ public class Master : MonoBehaviour
                 if (currentLevel == map.practice)
                 {
                     GoTo(3);
+                    SetRoomName("Pillar"); //reset level from practice level back to 0: Pillar.
                     break;
                 }
 			    currentScene = menu.map;
@@ -168,6 +171,8 @@ public class Master : MonoBehaviour
 		    case menu.ingame:
                 currentScene = menu.chara;
                 loadMenu();
+                PhotonNetwork.Disconnect();
+                PlayMSX(3);
                 SceneManager.UnloadScene(SceneManager.GetSceneAt(1));
                 break;
             case menu.options:
@@ -237,7 +242,7 @@ public class Master : MonoBehaviour
 
     private void loadMenu()
     {
-        PlayMSX(4);
+        PlayMSX(3);
         GameObject[] menuObjs = SceneManager.GetSceneByName("MainMenu").GetRootGameObjects();
         for (int i = 0; i < menuObjs.Length; i++)
         {
@@ -301,7 +306,7 @@ public class Master : MonoBehaviour
     public void PlayMSX(int num)
     {
         myMusicAudio.Stop();
-		myMusicAudio.time = num == 4? 8 : 0; //Song 4 starts at 8, post intro.
+		myMusicAudio.time = (num == 3) ? 8 : 0; //Song 4 starts at 8, post intro.
         myMusicAudio.clip = MSX[num];
         myMusicAudio.Play();
     }
@@ -356,8 +361,8 @@ public class Master : MonoBehaviour
             case "Void":
                 currentLevel = map._void;
                 break;
-            case "Hel":
-                currentLevel = map.hel;
+            case "Heck":
+                currentLevel = map.heck;
                 break;
             default:
                 Debug.LogError("WRONG ROOMMNAME GIVEN.");
