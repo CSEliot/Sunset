@@ -18,7 +18,7 @@ Game Changes:
     General:
     / Character select happens first, THEN map select.
 
-    
+    / Hel renamed to Lair.
 
     Gameplay/Code:
     

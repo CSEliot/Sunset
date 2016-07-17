@@ -68,7 +68,7 @@ public class Master : MonoBehaviour
         practice,
         pillar,
         _void,
-        heck
+        lair
     };
     private map currentLevel;
 
@@ -171,7 +171,8 @@ public class Master : MonoBehaviour
 		    case menu.ingame:
                 currentScene = menu.chara;
                 loadMenu();
-                PhotonNetwork.Disconnect();
+                PhotonNetwork.room.customProperties["GameStarted"] = false;
+                //PhotonNetwork.Disconnect();
                 PlayMSX(3);
                 SceneManager.UnloadScene(SceneManager.GetSceneAt(1));
                 break;
@@ -268,15 +269,6 @@ public class Master : MonoBehaviour
         return NameStrengthDict;
     }
 
-    public void endGame()
-    {
-        PlayMSX(0);
-        PhotonNetwork.Disconnect();
-        AssignClientCharacter(0);
-        SceneManager.LoadScene("CharacterSelect");
-
-    }
-
     public void GameStarts(int myTotalPlayers)
     {
         Debug.Log("Game Starting with " + myTotalPlayers + " players.");
@@ -361,8 +353,8 @@ public class Master : MonoBehaviour
             case "Void":
                 currentLevel = map._void;
                 break;
-            case "Heck":
-                currentLevel = map.heck;
+            case "Lair":
+                currentLevel = map.lair;
                 break;
             default:
                 Debug.LogError("WRONG ROOMMNAME GIVEN.");
