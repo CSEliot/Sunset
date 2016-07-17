@@ -226,6 +226,7 @@ public class JumpAndRunMovement : MonoBehaviour
     {
         if (!m_PhotonView.isMine)
             return;
+
         if (playersSpawned)
         {
             if (GameObject.FindGameObjectsWithTag("PlayerSelf").Length <= 1)
@@ -233,11 +234,6 @@ public class JumpAndRunMovement : MonoBehaviour
                 if (!isDead)
                 {
                     BattleUI.Won();
-                    StartCoroutine(WinWait());
-                }
-                else
-                {
-                    StartCoroutine(LoseWait());
                 }
             }
         }
@@ -255,22 +251,6 @@ public class JumpAndRunMovement : MonoBehaviour
         if(invincibilityCount>=0)
             invincibilityCount--;
     }
-
-    IEnumerator WinWait()
-    {
-        yield return new WaitForSeconds(2f);
-        readyGUI.transform.gameObject.SetActive(true);
-        readyGUI.EndGame();
-    }
-
-    IEnumerator LoseWait()
-    {
-        yield return new WaitForSeconds(1.9f);
-        readyGUI.transform.gameObject.SetActive(true);
-        readyGUI.EndGame(); 
-    }
-
-    //private void 
 
     private void updateSpecials()
     {

@@ -240,12 +240,6 @@ public class ReadyUp : MonoBehaviour {
         }
     }
 
-    public void EndGame()
-    {
-        PhotonNetwork.room.customProperties["GameStarted"] = false;
-        m.endGame();
-    }
-
     public void SetSpectating()
     {
         Yes.SetActive(false);
