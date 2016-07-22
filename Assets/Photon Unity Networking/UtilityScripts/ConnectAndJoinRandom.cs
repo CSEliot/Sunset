@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
@@ -9,75 +10,87 @@ using System.Collections;
 /// </summary>
 public class ConnectAndJoinRandom : Photon.MonoBehaviour
 {
-    /// <summary>Connect automatically? If false you can set this to true later on or call ConnectUsingSettings in your own scripts.</summary>
-    public bool AutoConnect = true;
-
     private string version;
 
     /// <summary>if we don't want to connect in Start(), we have to "remember" if we called ConnectUsingSettings()</summary>
-    private bool ConnectInUpdate = true;
+    private bool isConnect;
 
     public int SendRate;
 
     private Master m;
 
+    private bool isScannable = false;
+    private int totalFrames = 0;
+    private RoomInfo[] latestRooms;
+    public Text RoomPlayerCount;
+    public Text RoomPlayerCountBG;
+
+    private ShowStatusWhenConnecting netGUI;
+
+    private bool isFirstTime; //first connect should be from main -> map, then same state if reconnect.
+    private int savedState;
+    private string waitingRoomName;
+    private int serverPlayerMax;
+
+    TypedLobby defaultLobby;
+
     public void Awake()
     {
-        if (GameObject.FindGameObjectWithTag("Master") == null)
-        {
-            SceneManager.LoadScene("CharacterSelect");
-        }
-        else
-        {
-            Debug.Log("Setting Send Rate to: " + SendRate);
-            PhotonNetwork.sendRate = SendRate;
-            PhotonNetwork.sendRateOnSerialize = SendRate;
-            m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
-            version = m.Version;
-        }
+
+        defaultLobby = new TypedLobby("default", LobbyType.Default);
+
+        netGUI = GetComponent<ShowStatusWhenConnecting>();
+
+        Debug.Log("Setting Send Rate to: " + SendRate);
+        PhotonNetwork.sendRate = SendRate;
+        PhotonNetwork.sendRateOnSerialize = SendRate;
+        m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
+        version = m.Version;
     }
 
     public virtual void Start()
     {
+        serverPlayerMax = 100;
+        waitingRoomName = "Waiting"; 
+        isFirstTime = true;
+        IsConnect = false;
         PhotonNetwork.autoJoinLobby = false;    // we join randomly. always. no need to join a lobby to get the list of rooms.
     }
 
     public virtual void Update()
     {
-        if (ConnectInUpdate && AutoConnect && !PhotonNetwork.connected 
-            && m.GetServerIsEast())
+        if (isConnect && !PhotonNetwork.connected)
         {
             Debug.Log("Update() was called by Unity. Scene is loaded. Let's connect to the Photon Master Server. Calling: PhotonNetwork.ConnectUsingSettings();");
 
-            ConnectInUpdate = false;
+            isConnect = false;
             PhotonNetwork.ConnectUsingSettings(version);
             PhotonNetwork.sendRate = SendRate;
             PhotonNetwork.sendRateOnSerialize = SendRate;
-        }else 
-        if(ConnectInUpdate && AutoConnect && !PhotonNetwork.connected 
-           && !m.GetServerIsEast())
-        {
-            Debug.Log("Update() was called by Unity. Scene is loaded. Let's connect to the Photon Master Server. Calling: PhotonNetwork.ConnectToMaster(); This is WEST COAST Server!");
+            //PhotonNetwork.ConnectToMaster("52.9.58.118", 5055,
+            //    "d4e9e94d-de9a-44ec-9668-5f1898d4e76c",
+            //    version); FOR USING PERSONAL SERVER
 
-            ConnectInUpdate = false;
-            PhotonNetwork.ConnectToMaster("52.9.58.118", 5055,
-                "d4e9e94d-de9a-44ec-9668-5f1898d4e76c", 
-                version);
-            PhotonNetwork.sendRate = SendRate;
-            PhotonNetwork.sendRateOnSerialize = SendRate;
+            savedState = m.CurrentLevel;
+            m.GoTo(-1); //Disable menus while connecting is in progress.
+        }
+
+        if (!isScannable)
+            return;
+
+        totalFrames++;
+        if (totalFrames % 60 == 0)
+        {
+            totalFrames = 0;
+            CountTotalOnline();
         }
     }
 
-
-    // below, we implement some callbacks of PUN
-    // you can find PUN's callbacks in the class PunBehaviour or in enum PhotonNetworkingMessage
-
-    
-    public virtual void OnConnectedToMaster()
+    /// <summary>
+    /// All "InNet" for all public functions relating to networking, but not a 
+    /// </summary>
+    public void SetCharacterInNet()
     {
-        Debug.Log("OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room. Calling: PhotonNetwork.JoinRandomRoom();");
-        ////Get room properties, containing things such as player info and selected character.
-        
         Debug.Log("Adding player property");
         ExitGames.Client.Photon.Hashtable playerProperties = PhotonNetwork.player.customProperties;
         ////Track each player's chosen character.
@@ -85,20 +98,49 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
         {
             playerProperties["ChosenCharNum"] = m.Client_CharNum;
         }
-        else { 
+        else
+        {
             playerProperties.Add("ChosenCharNum", m.Client_CharNum);
         }
 
         PhotonNetwork.player.SetCustomProperties(playerProperties);
-        PhotonNetwork.JoinLobby();
+    }
+    // below, we implement some callbacks of PUN
+    // you can find PUN's callbacks in the class PunBehaviour or in enum PhotonNetworkingMessage
+
+    /// <summary>
+    /// Note: NEED GUI FOR IF ROOM IS FULL.
+    /// </summary>
+    public void JoinMatchInNet()
+    {
+        PhotonNetwork.JoinOrCreateRoom(m.GetRoomName(), 
+            new RoomOptions() { maxPlayers = Convert.ToByte(m.Max_Players) }, defaultLobby);
+    }
+
+    public virtual void OnConnectedToMaster()
+    {
+        Debug.Log("OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room. Calling: PhotonNetwork.JoinRandomRoom();");
+        ////Get room properties, containing things such as player info and selected character.
+
+        if (isFirstTime)
+        {
+            isFirstTime = false;
+            m.GoTo(1);
+        }else
+        {
+            m.GoTo(savedState);
+        }
+
+        PhotonNetwork.JoinLobby(defaultLobby);
+        
     }
 
     public virtual void OnJoinedLobby()
     {
         Debug.Log("OnJoinedLobby(). This client is connected and does get a room-list, which gets stored as PhotonNetwork.GetRoomList(). This script now calls: PhotonNetwork.JoinRandomRoom();");
-        PhotonNetwork.JoinOrCreateRoom(m.GetRoomName(), new RoomOptions() { maxPlayers = Convert.ToByte(m.Max_Players) }, null);
-        
-    }
+        PhotonNetwork.JoinOrCreateRoom("Waiting", new RoomOptions() { maxPlayers = Convert.ToByte(serverPlayerMax) }, defaultLobby);
+        isScannable = true;    
+   }
 
     public virtual void OnPhotonRandomJoinFailed()
     {
@@ -147,5 +189,38 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
     void OnPhotonPlayerDisconnected(PhotonPlayer player)
     {
         Debug.Log("OnPhotonPlayerDisconnected: " + player);
+
+        //attempt reconnection.
+        IsConnect = true;
+    }
+
+    private void CountTotalOnline()
+    {
+        int onlineCount = 0;
+        latestRooms = PhotonNetwork.GetRoomList();
+        Debug.Log("Inside Lobby? " + PhotonNetwork.insideLobby);
+        Debug.Log("Nums : " + PhotonNetwork.LobbyStatistics[0].PlayerCount);
+        for (int x = 0; x < latestRooms.Length; x++)
+        {
+            Debug.Log("Room " + latestRooms[x].name + " has " + latestRooms[x].playerCount + "players.");
+            onlineCount += latestRooms[x].playerCount;
+        }
+        Debug.Log("There are a total of " + onlineCount + " online.");
+        m.CurrentlyOnline = onlineCount;
+    }
+
+    public bool IsConnect
+    {
+        get
+        {
+            return isConnect;
+        }
+
+        set
+        {
+            isConnect = value;
+            if (isConnect)
+                netGUI.IsOnline = true;
+        }
     }
 }

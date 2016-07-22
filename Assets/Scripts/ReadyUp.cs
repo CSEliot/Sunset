@@ -86,10 +86,6 @@ public class ReadyUp : MonoBehaviour {
 
         if (waiting)
         {   
-            if (GameObject.FindGameObjectsWithTag("PlayerSelf").Length <= 1)
-            {
-                EndGame();
-            }
             if (!isSpectating)
             {
                 if (GameObject.FindGameObjectWithTag("PlayerSelf") != null)
@@ -152,9 +148,6 @@ public class ReadyUp : MonoBehaviour {
     }
 
     public void NotReady(){
-        isReady = false;
-        readyUped = false;
-        PhotonNetwork.Disconnect();
         m.GoBack();
     }
 

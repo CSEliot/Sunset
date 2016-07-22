@@ -5,8 +5,18 @@ public class ShowStatusWhenConnecting : MonoBehaviour
 {
     public GUISkin Skin;
 
+    private bool isGUIOn;
+
+    void Start()
+    {
+        isGUIOn = false;
+    }
+
     void OnGUI()
     {
+        if (!isGUIOn)
+            return;
+
         if( Skin != null )
         {
             GUI.skin = Skin;
@@ -24,9 +34,9 @@ public class ShowStatusWhenConnecting : MonoBehaviour
         }
         GUILayout.EndArea();
 
-        if( PhotonNetwork.connectionStateDetailed == PeerState.Joined )
+        if( PhotonNetwork.connectionStateDetailed == PeerState.JoinedLobby )
         {
-            enabled = false;
+            isGUIOn = false;
         }
     }
 
@@ -41,5 +51,18 @@ public class ShowStatusWhenConnecting : MonoBehaviour
         }
 
         return str;
+    }
+
+    public bool IsOnline
+    {
+        get
+        {
+            return isGUIOn;
+        }
+
+        set
+        {
+            isGUIOn = value;
+        }
     }
 }
