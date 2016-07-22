@@ -14,14 +14,7 @@ public class OnJoinedInstantiate : MonoBehaviour
 
     void Awake()
     {
-        if (GameObject.FindGameObjectWithTag("Master") == null)
-        {
-            SceneManager.LoadScene("CharacterSelect");
-        }
-        else
-        {
-            m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
-        }
+        m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
     }
 
     public void OnReadyUp(int myID)

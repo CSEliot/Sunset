@@ -36,7 +36,8 @@ public class Master : MonoBehaviour
     private AudioSource myMusicAudio;
     private AudioSource mySFXAudio;
 
-    private int totalPlayers;
+    private int maxPlayers;
+    private int currentlyOnline;
 
     private bool isEast;
 
@@ -104,7 +105,7 @@ public class Master : MonoBehaviour
             disableSplash();
         }
 
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject); Disabling, we never leave the scene Master is born in.
         AssignClientCharacter(0);
         //Cursor.lockState = CursorLockMode.Confined;
         //Cursor.visible = false;
@@ -113,7 +114,7 @@ public class Master : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        totalPlayers = 100;
+        maxPlayers = 100;
         SetMSXVolume(PlayerPrefs.GetFloat("MSXVol", 0.5f));
         SetSFXVolume(PlayerPrefs.GetFloat("SFXVol", 0.5f));
     }
@@ -125,13 +126,13 @@ public class Master : MonoBehaviour
         {
 			GoBack ();
         }
-        if (totalPlayers <= 1)
+        if (maxPlayers <= 1)
         {
             if (GameObject.FindGameObjectWithTag("PlayerSelf") != null)
             {
                 GameObject.FindGameObjectWithTag("PlayerSelf").GetComponent<JumpAndRunMovement>().CheckWon();
                 StartCoroutine(returnToSelect());
-                totalPlayers = 100;
+                maxPlayers = 100;
             }
         }
     }
@@ -196,6 +197,8 @@ public class Master : MonoBehaviour
 			    switchCanvas ((int)menu.main);
 			    break;
 		    case (int)menu.map:
+                if (currentScene == menu.main)
+                    break; //Networking Class will handle if we're connecting for first time.
 			    AssignClientCharacter (0);
 			    switchCanvas ((int)menu.map);
 			    break;
@@ -212,6 +215,9 @@ public class Master : MonoBehaviour
             case (int)menu.ingame:
                 switchCanvas((int)menu.ingame);
                 switchInGame();
+                break;
+            case -1:
+                switchCanvas(-1);
                 break;
             default:
 			    break;
@@ -239,6 +245,7 @@ public class Master : MonoBehaviour
         {
             menuObjs[i].SetActive(false);
         }
+        gameObject.SetActive(true); //Master gets disabled in this general sweep, we don't want that.
     }
 
     private void loadMenu()
@@ -269,15 +276,15 @@ public class Master : MonoBehaviour
         return NameStrengthDict;
     }
 
-    public void GameStarts(int myTotalPlayers)
+    public void GameStarts(int myMaxPlayers)
     {
-        Debug.Log("Game Starting with " + myTotalPlayers + " players.");
-        totalPlayers = myTotalPlayers;
+        Debug.Log("Game Starting with " + myMaxPlayers + " players.");
+        maxPlayers = myMaxPlayers;
     }
 
     public void Idied()
     {
-        totalPlayers--;
+        maxPlayers--;
     }
 
     IEnumerator returnToSelect()
@@ -403,6 +410,19 @@ public class Master : MonoBehaviour
         get
         {
             return (int)currentLevel;
+        }
+    }
+
+    public int CurrentlyOnline
+    {
+        get
+        {
+            return currentlyOnline;
+        }
+
+        set
+        {
+            currentlyOnline = value;
         }
     }
 

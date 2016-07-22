@@ -233,11 +233,6 @@ public class JumpAndRunMovement1 : MonoBehaviour
                 if (!isDead)
                 {
                     BattleUI.Won();
-                    StartCoroutine(WinWait());
-                }
-                else
-                {
-                    StartCoroutine(LoseWait());
                 }
             }
         }
@@ -255,22 +250,6 @@ public class JumpAndRunMovement1 : MonoBehaviour
         if(invincibilityCount>=0)
             invincibilityCount--;
     }
-
-    IEnumerator WinWait()
-    {
-        yield return new WaitForSeconds(2f);
-        readyGUI.transform.gameObject.SetActive(true);
-        readyGUI.EndGame();
-    }
-
-    IEnumerator LoseWait()
-    {
-        yield return new WaitForSeconds(1.9f);
-        readyGUI.transform.gameObject.SetActive(true);
-        readyGUI.EndGame(); 
-    }
-
-    //private void 
 
     private void updateSpecials()
     {
@@ -725,14 +704,6 @@ public class JumpAndRunMovement1 : MonoBehaviour
     public bool GetIsDead()
     {
         return isDead;
-    }
-
-    public void CheckWon()
-    {
-        if (m_PhotonView.isMine && !isDead)
-        {
-            BattleUI.Won();
-        }
     }
 
     public void PauseMvmnt()
