@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.Collections;
@@ -26,8 +27,8 @@ public class Master : MonoBehaviour
     public int PlayableCharacters;
 
     private GameObject clientCharacter;
-    public int Client_CharNum;
-    public int Player_Number;
+    public int PlayerCharNum;
+    public int InRoomNumber;
 
     private string RoomName;
 
@@ -45,7 +46,10 @@ public class Master : MonoBehaviour
 
     private string version;
 
-	public GameObject[] MenuCanvasList;
+    public Sprite[] UIHeads;
+    public Image PlayerHead;
+
+    public GameObject[] MenuCanvasList;
 	// 0 = main
 	// 1 = map
 	// 2 = character select
@@ -61,7 +65,7 @@ public class Master : MonoBehaviour
 		practice,
 		ingame // opens pause menu
 	};
-	private menu currentScene;
+	private menu currentMenu;
 
     private enum map
     {
@@ -71,18 +75,21 @@ public class Master : MonoBehaviour
         _void,
         lair
     };
-    private map currentLevel;
+    private map currentMap;
 
 	private bool isNewScene;
-	//	private  targetScene;
+    //	private  targetScene;
 
+    private ConnectAndJoinRandom n;
 
     void Awake()
     {
+
+        n = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
         
         version = Application.version;
-		currentScene = menu.main;
-        currentLevel = map.pillar;
+		currentMenu = menu.main;
+        currentMap = map.pillar;
 
         RoomName = "Pillar";
         
@@ -106,7 +113,7 @@ public class Master : MonoBehaviour
         }
 
         //DontDestroyOnLoad(gameObject); Disabling, we never leave the scene Master is born in.
-        AssignClientCharacter(0);
+        AssignPlayerCharacter(0);
         //Cursor.lockState = CursorLockMode.Confined;
         //Cursor.visible = false;
     }
@@ -146,31 +153,32 @@ public class Master : MonoBehaviour
 	/// </summary>
 	public void GoBack()
 	{
-		switch (currentScene) {
+		switch (currentMenu) {
 		    case menu.main:
 			    PlayerPrefs.Save ();
 			    Application.Quit ();
 			    break; 
 		    case menu.chara:
-                if (currentLevel == map.practice)
+                if (currentMap == map.practice)
                 {
                     GoTo(3);
                     SetRoomName("Pillar"); //reset level from practice level back to 0: Pillar.
                     break;
                 }
-			    currentScene = menu.map;
+			    currentMenu = menu.map;
 			    switchCanvas ((int)menu.map);
 			    break;
 		    case menu.map: 
-			    currentScene = menu.main;
+			    currentMenu = menu.main;
 			    switchCanvas ((int)menu.main);
+                n.LeaveServer();
 			    break;
 		    case menu.practice:
-			    currentScene = menu.options;
+			    currentMenu = menu.options;
                 loadMenu();
 			    break;
 		    case menu.ingame:
-                currentScene = menu.chara;
+                currentMenu = menu.chara;
                 loadMenu();
                 PhotonNetwork.room.customProperties["GameStarted"] = false;
                 //PhotonNetwork.Disconnect();
@@ -178,7 +186,7 @@ public class Master : MonoBehaviour
                 SceneManager.UnloadScene(SceneManager.GetSceneAt(1));
                 break;
             case menu.options:
-                currentScene = menu.main;
+                currentMenu = menu.main;
                 switchCanvas((int)menu.main);
                 break;
             default:
@@ -197,12 +205,17 @@ public class Master : MonoBehaviour
 			    switchCanvas ((int)menu.main);
 			    break;
 		    case (int)menu.map:
-                if (currentScene == menu.main)
-                    break; //Networking Class will handle if we're connecting for first time.
-			    AssignClientCharacter (0);
+                if (currentMenu == menu.main){
+                    //Scene management temporarily handed over to Networking during connecting
+                    // normally from the main menu.
+                    Debug.Log("Handing menu management over to Networking . . .");
+                    break; 
+                }
+			    AssignPlayerCharacter (0);
 			    switchCanvas ((int)menu.map);
 			    break;
 		    case (int)menu.chara:
+                n.JoinRoom();
 			    switchCanvas ((int)menu.chara);
 			    break; 
             case (int)menu.options:
@@ -215,6 +228,7 @@ public class Master : MonoBehaviour
             case (int)menu.ingame:
                 switchCanvas((int)menu.ingame);
                 switchInGame();
+                n.SetCharacterInNet();
                 break;
             case -1:
                 switchCanvas(-1);
@@ -225,7 +239,7 @@ public class Master : MonoBehaviour
 	}
 
 	private void switchCanvas( int switchTo){
-		currentScene = (menu)switchTo;
+		currentMenu = (menu)switchTo;
 		MenuCanvasList [0].SetActive (switchTo == 0 ? true : false); //main
 		MenuCanvasList [1].SetActive (switchTo == 1 ? true : false); //map select
 		MenuCanvasList [2].SetActive (switchTo == 2 ? true : false); //char select
@@ -234,7 +248,7 @@ public class Master : MonoBehaviour
 
     private void switchInGame()
     {
-        SceneManager.LoadScene((int)currentLevel, LoadSceneMode.Additive);
+        SceneManager.LoadScene((int)currentMap, LoadSceneMode.Additive);
         unloadMenu();
     }
 
@@ -246,6 +260,7 @@ public class Master : MonoBehaviour
             menuObjs[i].SetActive(false);
         }
         gameObject.SetActive(true); //Master gets disabled in this general sweep, we don't want that.
+        n.gameObject.SetActive(true); // Same w/ Networking.
     }
 
     private void loadMenu()
@@ -256,16 +271,16 @@ public class Master : MonoBehaviour
         {
             menuObjs[i].SetActive(true);
         }
-        switchCanvas((int)currentScene);
+        switchCanvas((int)currentMenu);
     }
 
-    public void AssignClientCharacter(int chosenChar)
+    public void AssignPlayerCharacter(int chosenChar)
     {
         clientCharacter = AllCharacters[chosenChar];
-        Client_CharNum = chosenChar;
+        PlayerCharNum = chosenChar;
     }
 
-    public string GetClientCharacter()
+    public string GetClientCharacterName()
     {
         Debug.Log("Sending: " + clientCharacter.name);
         return clientCharacter.name;
@@ -291,7 +306,7 @@ public class Master : MonoBehaviour
     {
         yield return new WaitForSeconds(6f);
         PhotonNetwork.Disconnect();
-        AssignClientCharacter(0);
+        AssignPlayerCharacter(0);
         SceneManager.LoadScene("CharacterSelect");
     }
 
@@ -334,34 +349,22 @@ public class Master : MonoBehaviour
         Debug.Log("MSXVolume Set");
     }
 
-    public void SetServer(bool isEast)
-    {
-        this.isEast = true;
-        //this.isEast = isEast;
-    }
-
-    public bool GetServerIsEast()
-    {
-        return true;
-        //return isEast;
-    }
-
     public void SetRoomName(string room_name)
     {
         RoomName = room_name;
         switch (room_name)
         {
             case "Practice":
-                currentLevel = map.practice;
+                currentMap = map.practice;
                 break;
             case "Pillar":
-                currentLevel = map.pillar;
+                currentMap = map.pillar;
                 break;
             case "Void":
-                currentLevel = map._void;
+                currentMap = map._void;
                 break;
             case "Lair":
-                currentLevel = map.lair;
+                currentMap = map.lair;
                 break;
             default:
                 Debug.LogError("WRONG ROOMMNAME GIVEN.");
@@ -405,24 +408,19 @@ public class Master : MonoBehaviour
         }
     }
 
-    public int CurrentLevel
+    public int CurrentMenu
     {
         get
         {
-            return (int)currentLevel;
+            return (int)currentMenu;
         }
     }
 
-    public int CurrentlyOnline
+    public int CurrentMap
     {
         get
         {
-            return currentlyOnline;
-        }
-
-        set
-        {
-            currentlyOnline = value;
+            return (int)currentMap;
         }
     }
 

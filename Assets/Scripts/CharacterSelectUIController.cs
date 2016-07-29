@@ -13,6 +13,7 @@ public class CharacterSelectUIController : MonoBehaviour {
     public Image StatFrame;
     public Sprite[] AllStatSprites;
 
+    private ConnectAndJoinRandom n;
     private Master m;
     public string[] CharNames;
 
@@ -25,6 +26,8 @@ public class CharacterSelectUIController : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
         currentSelector = 1;
+
+        n = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
         PhotonNetwork.Disconnect();
 	}
@@ -46,7 +49,8 @@ public class CharacterSelectUIController : MonoBehaviour {
         Name2.text = CharNames[currentSelector - 1];
         StatFrame.sprite = AllStatSprites[currentSelector - 1];
         UpdateStats();
-        m.AssignClientCharacter(currentSelector - 1);   
+        m.AssignPlayerCharacter(currentSelector - 1);
+        n.SetCharacterInNet(); 
     }
 
     public void ShiftSelectionRight()
@@ -62,7 +66,8 @@ public class CharacterSelectUIController : MonoBehaviour {
         Name2.text = CharNames[currentSelector - 1];
         StatFrame.sprite = AllStatSprites[currentSelector - 1];
         UpdateStats();
-        m.AssignClientCharacter(currentSelector-1);
+        m.AssignPlayerCharacter(currentSelector-1);
+        n.SetCharacterInNet();
     }
 
     private void UpdateStats()
