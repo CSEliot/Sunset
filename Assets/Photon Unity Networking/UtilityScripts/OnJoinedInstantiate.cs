@@ -9,8 +9,8 @@ public class OnJoinedInstantiate : MonoBehaviour
     public float PositionOffset = 2.0f;
     private Master m;
 
-    public Sprite[] UIHeads;
-    public Image PlayerHead; 
+    //public Sprite[] UIHeads;
+    //public Image PlayerHead; 
 
     void Awake()
     {
@@ -27,38 +27,6 @@ public class OnJoinedInstantiate : MonoBehaviour
         random.y = 0;
         random = random.normalized;
         Vector3 itempos = spawnPos;
-        PhotonNetwork.Instantiate(m.GetClientCharacter(), spawnPos, Quaternion.identity, 0);
-        PlayerHead.sprite = GetImage();
-    }
-
-    public Sprite GetImage()
-    {
-        for (int i = 0; i < UIHeads.Length; i++)
-        {
-            if (UIHeads[i].name == m.GetClientCharacter())
-            {
-                return UIHeads[i];
-            }
-        }
-        Debug.LogError("No Head Name Found!");
-        return null;
-    }
-
-    public int GetImageNum()
-    {
-        for (int i = 0; i < UIHeads.Length; i++)
-        {
-            if (UIHeads[i].name == m.GetClientCharacter())
-            {
-                return i;
-            }
-        }
-        Debug.LogError("No Head Name Found!");
-        return -1;
-    }
-
-    public Sprite GetImage(int num)
-    {
-        return UIHeads[num];
+        PhotonNetwork.Instantiate(m.GetClientCharacterName(), spawnPos, Quaternion.identity, 0);
     }
 }

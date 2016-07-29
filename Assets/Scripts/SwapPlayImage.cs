@@ -18,7 +18,7 @@ public class SwapPlayImage : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        currentLevelNum = m.CurrentLevel;
+        currentLevelNum = m.CurrentMap;
         if (currentLevelNum == practiceMapNum)
         {
             SetSprite(1);

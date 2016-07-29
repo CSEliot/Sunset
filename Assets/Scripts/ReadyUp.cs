@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
-public class ReadyUp : MonoBehaviour {
+public class ReadyUp : MonoBehaviour{
 
     public GameObject SelectorYes;
     public GameObject SelectorNo;
@@ -14,27 +14,21 @@ public class ReadyUp : MonoBehaviour {
 
     private PhotonView m_PhotonView;
     private Master m;
+    private ConnectAndJoinRandom n;
     private OnJoinedInstantiate j;
-
-    private int headSprite;
 
     public Sprite Empty;
 
     public Text PercentReady;
 
     public Image[] PlayerSlots;
-
-    private int totalLoggedIn;
+    
     private int totalReady;
-
-    private Dictionary<int, int> ID_to_SlotNum;
-    private Dictionary<int, int> ID_to_CharNum;
-    private Dictionary<int, bool>ID_to_IsReady;
 
     private int readyUpBypassCount;
     private int readyUpBypassTotal;
 
-    private int myLogInID;
+   
 
     public Text ReadyText;
     public GameObject Yes;
@@ -47,28 +41,28 @@ public class ReadyUp : MonoBehaviour {
     public Text roomName;
 
     public GameObject Warning;
-    
-	// Use this for initialization
-	void Start () {
+
+    private int headSprite;
+
+    // Use this for initialization
+    void Start () {
         readyUpBypassCount = 0;
         readyUpBypassTotal = 2;
         waiting = false;
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
+        n = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
+
         m.PlayMSX(1);
         j = GameObject.FindGameObjectWithTag("SpawnPoints")
             .GetComponent<OnJoinedInstantiate>();
-        ID_to_SlotNum = new Dictionary<int, int>();
-        ID_to_CharNum = new Dictionary<int, int>();
-        ID_to_IsReady = new Dictionary<int, bool>();
 
-        totalLoggedIn = 0;
         totalReady = 0;
         m_PhotonView = GetComponent<PhotonView>();
         isReady = false;
         readyUped = false;
-        headSprite = j.GetImageNum();
+        headSprite = getImageNum();
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
-        
+        n.ReadyInterface = GetComponent<ReadyUp>();
     }
 	
 	// Update is called once per frame
@@ -80,8 +74,8 @@ public class ReadyUp : MonoBehaviour {
         if (readyUpBypassTotal < readyUpBypassCount)
         {
             totalReady = 2;
-			j.OnReadyUp(ID_to_SlotNum[myLogInID]);
-            StartGame();
+			//j.OnReadyUp(ID_to_SlotNum[myLogInID]);
+            startGame();
         }
 
         if (waiting)
@@ -141,8 +135,8 @@ public class ReadyUp : MonoBehaviour {
         m_PhotonView.RPC("ShowReady", PhotonTargets.All, myLogInID);
         SelectorYes.SetActive(false);
         readyUped = true;
-        ExitGames.Client.Photon.Hashtable tempPlayerTable = PhotonNetwork
-        .player.customProperties;
+        ExitGames.Client.Photon.Hashtable tempPlayerTable = 
+            PhotonNetwork.player.customProperties;
         tempPlayerTable["IsReady"] = true;
         PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
     }
@@ -161,75 +155,16 @@ public class ReadyUp : MonoBehaviour {
         int readySlot = ID_to_SlotNum[LogInID];
         ID_to_IsReady[LogInID] = true;
 
-        PlayerSlots[readySlot].sprite = j.GetImage(readyChar);
-        
+        PlayerSlots[readySlot].sprite = getImage(readyChar);
+         
         
         if (totalReady == totalLoggedIn)
         {
-            StartGame();
+            startGame();
         }
         else 
         {
             Debug.Log("Not all Ready: " + totalReady + "/" + totalLoggedIn);
-        }
-    }
-
-    private void StartGame()
-    {
-        m.PlayMSX(2);
-        Debug.Log("Start Game!");
-        j.OnReadyUp(ID_to_SlotNum[myLogInID]);
-        ExitGames.Client.Photon.Hashtable tempRoomTable = PhotonNetwork
-            .room.customProperties;
-        tempRoomTable["GameStarted"] = true;
-        PhotonNetwork.room.SetCustomProperties(tempRoomTable);
-        m.GameStarts(totalReady);
-        gameObject.SetActive(false);
-    }
-
-    void OnJoinedRoom()
-    {
-        roomName.text = PhotonNetwork.room.name;    
-        if (PhotonNetwork.room.customProperties.ContainsKey("GameStarted")
-            && (bool)PhotonNetwork.room.customProperties["GameStarted"] == true)
-        {
-            SetSpectating();
-            return;
-        }
-
-        myLogInID = PhotonNetwork.player.ID;
-        ExitGames.Client.Photon.Hashtable tempTable = PhotonNetwork.player.customProperties;
-        if (!tempTable.ContainsKey("IsReady"))
-            tempTable.Add("IsReady", false);
-        else
-            tempTable["IsReady"] = false;
-
-        //Create IsReady state. Begins false.
-        PhotonNetwork.player.SetCustomProperties(tempTable);
-
-        //Add self to player info tracking.
-        ID_to_CharNum.Add(myLogInID, headSprite);
-        ID_to_SlotNum.Add(myLogInID, PhotonNetwork.playerList.Length - 1);
-        ID_to_IsReady.Add(myLogInID, false);
-
-        //Add info from others already logged in.
-        int otherLogInID = 0;
-        int otherSlotNum = 0;
-        int otherCharNum = 0;
-        for(int i = 0; i < PhotonNetwork.playerList.Length; i++){
-            PlayerSlots[i].transform.gameObject.SetActive(true);
-            otherLogInID = PhotonNetwork.playerList[i].ID;
-            if (myLogInID != otherLogInID)
-            {
-                otherSlotNum = i;
-                otherCharNum = (int)PhotonNetwork.playerList[i]
-                    .customProperties["ChosenCharNum"];
-                ID_to_CharNum.Add(otherLogInID, otherCharNum);
-                ID_to_SlotNum.Add(otherLogInID, otherSlotNum);
-                //Everyone Unreadies when someone new joins.
-                ID_to_IsReady.Add(otherLogInID, false);
-            }
-            totalLoggedIn++;
         }
     }
 
@@ -249,57 +184,10 @@ public class ReadyUp : MonoBehaviour {
         }
     }
 
-    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    { 
-    }
 
-    void OnPhotonPlayerConnected(PhotonPlayer player)
+    public void CheatGame()
     {
-        PlayerSlots[PhotonNetwork.playerList.Length - 1]
-            .transform.gameObject.SetActive(true);
-        int otherLogInID = player.ID;
-        //Debug.Log("Player Connected! ID: " + player.ID);
-        //foreach (object k in player.customProperties.Keys)
-        //{
-        //    Debug.Log("Key: " + (string)k);
-        //}
-         ID_to_CharNum.Add(otherLogInID
-            , (int)player.customProperties["ChosenCharNum"]);
-        ID_to_SlotNum.Add(otherLogInID, PhotonNetwork.playerList.Length - 1);
-        ID_to_IsReady.Add(otherLogInID, false);
-        totalLoggedIn++;
-
-        ///Reset GFX & Ready Status for new players.
-        totalReady = 0;
-        SelectorYes.SetActive(false);
-        SelectorNo.SetActive(true);
-        isReady = false;
-        readyUped = false;
-        fixReadyHeads();
-
-        ExitGames.Client.Photon.Hashtable tempPlayerTable = PhotonNetwork
-            .player.customProperties;
-        tempPlayerTable["IsReady"] = false;
-        PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
-    }
-
-    void OnPhotonPlayerDisconnected(PhotonPlayer player)
-    {
-        int otherID = player.ID;
-        ID_to_SlotNum.Remove(otherID);
-        ID_to_CharNum.Remove(otherID);
-        ID_to_IsReady.Remove(otherID);
-        totalLoggedIn--;
-        totalReady = 0;
-        SelectorYes.SetActive(false);
-        SelectorNo.SetActive(true);
-        isReady = false;
-        readyUped = false;
-        fixReadyHeads();
-        //ExitGames.Client.Photon.Hashtable tempPlayerTable = PhotonNetwork
-        //    .player.customProperties;
-        //tempPlayerTable["IsReady"] = false;
-        //player.SetCustomProperties(tempPlayerTable);
+        readyUpBypassCount = 3;
     }
 
     private void fixReadyHeads()
@@ -320,15 +208,41 @@ public class ReadyUp : MonoBehaviour {
     {
         Debug.Log("Testing Assign Camera.");
         if (myTransform == null)
-        {
+        { 
             return;
         }
         GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CamManager>()
             .SetTarget(myTransform);
     }
 
-    public void CheatGame()
+    private int getImageNum()
     {
-        readyUpBypassCount = 3;
+        for (int i = 0; i < UIHeads.Length; i++)
+        {
+            if (UIHeads[i].name == m.GetClientCharacterName())
+            {
+                return i;
+            }
+        }
+        Debug.LogError("No Head Name Found!");
+        return -1;
+    }
+
+    private void startGame()
+    {
+        m.PlayMSX(2);
+        Debug.Log("Start Game!");
+        j.OnReadyUp(ID_to_SlotNum[myLogInID]);
+        ExitGames.Client.Photon.Hashtable tempRoomTable = PhotonNetwork
+            .room.customProperties;
+        tempRoomTable["GameStarted"] = true;
+        PhotonNetwork.room.SetCustomProperties(tempRoomTable);
+        m.GameStarts(totalReady);
+        gameObject.SetActive(false);
+    }
+
+    private Sprite getImage(int num)
+    {
+        return UIHeads[num];
     }
 }

@@ -30,7 +30,7 @@ public class SpawnOfflineTest : MonoBehaviour {
         if (!isNewSceneActive)
         {
             //chosen character is stored by name, we don't know position number
-            Instantiate(CharacterList[m.Client_CharNum], SpawnList[0].position, Quaternion.Euler(Vector3.zero));
+            Instantiate(CharacterList[m.PlayerCharNum], SpawnList[0].position, Quaternion.Euler(Vector3.zero));
 
             isNewSceneActive = true;
         }
