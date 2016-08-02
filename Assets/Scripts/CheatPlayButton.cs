@@ -9,7 +9,7 @@ public class CheatPlayButton : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        rdyScript = GameObject.FindGameObjectWithTag("ReadyOBJ").GetComponent<ReadyUp>();
+        rdyScript = GameObject.FindGameObjectWithTag("GameHUD").GetComponent<ReadyUp>();
         totalPresses = 0;
 	}
 	

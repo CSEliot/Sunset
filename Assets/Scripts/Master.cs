@@ -462,7 +462,7 @@ public class Master : MonoBehaviour
 
     public void assignGameHUD()
     {
-        matchHUD = GameObject.FindGameObjectWithTag("ReadyOBJ").GetComponent<ReadyUp>();
+        matchHUD = GameObject.FindGameObjectWithTag("GameHUD").GetComponent<ReadyUp>();
     }
 
     private void ToggleConnectLoadScreen(bool isActive)

@@ -153,7 +153,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
     public void assignGameHUD()
     {
-        matchHUD = GameObject.FindGameObjectWithTag("gameHUD").GetComponent<ReadyUp>();
+        matchHUD = GameObject.FindGameObjectWithTag("GameHUD").GetComponent<ReadyUp>();
     }
 
     public virtual void OnConnectedToMaster()

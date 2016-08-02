@@ -14,4 +14,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameScreen_Void.unity
   - enabled: 1
-    path: Assets/Scenes/GameScreen_Test_Online.unity
+    path: Assets/Scenes/GameScreen_Lair.unity
