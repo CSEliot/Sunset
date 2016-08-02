@@ -207,9 +207,9 @@ public class Master : MonoBehaviour
                 StartCoroutine(gotoMapHelper());
 			    break;
 		    case (int)menu.chara:
-                n.JoinRoom();
 			    switchCanvas ((int)menu.chara);
                 switchInGame();
+                n.JoinRoom();
 			    break; 
             case (int)menu.options:
                 switchCanvas((int)menu.options);
