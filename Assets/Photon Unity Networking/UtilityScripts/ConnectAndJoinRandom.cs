@@ -212,7 +212,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     {
 
         // All callbacks are listed in enum: PhotonNetworkingMessage.
-
+        Debug.Log("On Joined Room.");
         //Get total number of players logged into room.
         int totalPlayersFound = PhotonNetwork.playerList.Length;
         PhotonNetwork.playerName = "Player " + totalPlayersFound;
