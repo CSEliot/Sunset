@@ -138,8 +138,14 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         PhotonNetwork.player.SetCustomProperties(playerProperties);
 
         //Add self to player info tracking.
-        ID_to_CharNum.Add(PhotonNetwork.player.ID, m.PlayerCharNum);
-        ID_to_SlotNum.Add(PhotonNetwork.player.ID, PhotonNetwork.playerList.Length - 1);
+        if(!ID_to_CharNum.ContainsKey(PhotonNetwork.player.ID))
+            ID_to_CharNum.Add(PhotonNetwork.player.ID, m.PlayerCharNum);
+        else
+            ID_to_CharNum[PhotonNetwork.player.ID] = m.PlayerCharNum;
+        if (!ID_to_SlotNum.ContainsKey(PhotonNetwork.player.ID))
+            ID_to_SlotNum.Add(PhotonNetwork.player.ID, PhotonNetwork.playerList.Length - 1);
+        else
+            ID_to_SlotNum[PhotonNetwork.player.ID] = PhotonNetwork.playerList.Length - 1;
     }
 
     /// <summary>
@@ -247,10 +253,15 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             //If ID doesn't match your local Client ID, then it's another Player.
             if (PhotonNetwork.player.ID != playerID)
             {
-                //Character Player i chose.
-                ID_to_CharNum.Add(playerID, (int)PhotonNetwork.playerList[i].customProperties["characterNum"]);
-                //Player i
-                ID_to_SlotNum.Add(playerID, i);
+                //Add other players to info tracking.
+                if (!ID_to_CharNum.ContainsKey(playerID))
+                    ID_to_CharNum.Add(playerID, (int)PhotonNetwork.playerList[i].customProperties["characterNum"]);
+                else
+                    ID_to_CharNum[playerID] = (int)PhotonNetwork.playerList[i].customProperties["characterNum"];
+                if (!ID_to_SlotNum.ContainsKey(playerID))
+                    ID_to_SlotNum.Add(playerID, i);
+                else
+                    ID_to_SlotNum[playerID] = i;
             }
             onlineRoomTotal++;
         }     
@@ -260,8 +271,16 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     {
         matchHUD.AddPlayer(player);
 
-        ID_to_CharNum.Add(player.ID, (int)player.customProperties["characterNum"]);
-        ID_to_SlotNum.Add(player.ID, PhotonNetwork.playerList.Length - 1);
+        //Add other players to info tracking.
+        if (!ID_to_CharNum.ContainsKey(player.ID))
+            ID_to_CharNum.Add(player.ID, (int)player.customProperties["characterNum"]);
+        else
+            ID_to_CharNum[player.ID] = (int)player.customProperties["characterNum"];
+        if (!ID_to_SlotNum.ContainsKey(player.ID))
+            ID_to_SlotNum.Add(player.ID, PhotonNetwork.playerList.Length - 1);
+        else
+            ID_to_SlotNum[player.ID] = PhotonNetwork.playerList.Length - 1;
+        
         onlineRoomTotal++;
 
         setReadyStatusInNet(false);
@@ -269,7 +288,6 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
     void OnPhotonPlayerDisconnected(PhotonPlayer player)
     {
-
         Debug.Log("OnPhotonPlayerDisconnected: " + player);
 
         //attempt reconnection.
