@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
-public class ReadyUp : MonoBehaviour{
+public class MatchHUD : MonoBehaviour{
 
     public GameObject SelectorYes;
     public GameObject SelectorNo;
@@ -63,8 +63,8 @@ public class ReadyUp : MonoBehaviour{
         readyUped = false;
         headSprite = getImageNum();
 
-        n.assignGameHUD();
-        m.assignGameHUD();
+        n.assignMatchHUD();
+        m.assignMatchHUD();
     }
 	
 	// Update is called once per frame

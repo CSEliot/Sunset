@@ -55,7 +55,7 @@ public class Master : MonoBehaviour
     // 2 = character select
     // 3 = Options
 
-    private ReadyUp matchHUD;
+    private MatchHUD matchHUD;
 
     public Text VersionUI;
     public GameObject LoadingUI;
@@ -139,15 +139,6 @@ public class Master : MonoBehaviour
         if (Input.GetKeyDown("escape"))
         {
 			GoBack ();
-        }
-        if (maxPlayers <= 1)
-        {
-            if (GameObject.FindGameObjectWithTag("PlayerSelf") != null)
-            {
-                GameObject.FindGameObjectWithTag("PlayerSelf").GetComponent<JumpAndRunMovement>().CheckWon();
-                StartCoroutine(returnToSelect());
-                maxPlayers = 100;
-            }
         }
     }
 
@@ -338,14 +329,6 @@ public class Master : MonoBehaviour
         maxPlayers--;
     }
 
-    IEnumerator returnToSelect()
-    {
-        yield return new WaitForSeconds(6f);
-        PhotonNetwork.Disconnect();
-        AssignPlayerCharacter(0);
-        SceneManager.LoadScene("CharacterSelect");
-    }
-
     public void PlaySFX(int num)
     {
         mySFXAudio.Stop();
@@ -460,9 +443,9 @@ public class Master : MonoBehaviour
         }
     }
 
-    public void assignGameHUD()
+    public void assignMatchHUD()
     {
-        matchHUD = GameObject.FindGameObjectWithTag("GameHUD").GetComponent<ReadyUp>();
+        matchHUD = GameObject.FindGameObjectWithTag("MatchHUD").GetComponent<MatchHUD>();
     }
 
     private void ToggleConnectLoadScreen(bool isActive)

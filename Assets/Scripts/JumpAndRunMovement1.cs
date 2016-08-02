@@ -94,8 +94,7 @@ public class JumpAndRunMovement1 : MonoBehaviour
 
     private bool playersSpawned;
 
-    private ReadyUp readyGUI;
-    private bool readyGUIFound;
+    private MatchHUD matchHUD;
 
     public AudioClip DeathNoise;
     private AudioSource myAudioSrc;
@@ -114,7 +113,6 @@ public class JumpAndRunMovement1 : MonoBehaviour
         controlsPaused = false;
         myAudioSrc = GetComponent<AudioSource>();
         myAudioSrc.clip = DeathNoise;
-        readyGUIFound = false;
         playersSpawned = false;
         punching = false;
         camShaker = GameObject.FindGameObjectWithTag("MainCamera")
@@ -165,13 +163,7 @@ public class JumpAndRunMovement1 : MonoBehaviour
         m_PhotonTransform.SetSynchronizedValues(m_Body.velocity, 0f);
         if(!m_PhotonView.isMine)
             return;
-
-        if (!readyGUIFound)
-        {
-            readyGUI = GameObject.FindGameObjectWithTag("MainCamera")
-                .GetComponent<ReadyUITracker>().rdyGUI;
-            readyGUIFound = true;
-        }
+        
         if (!cameraFollowAssigned)
             AssignCameraFollow(transform);
         if (!battleUIAssigned){
@@ -655,8 +647,8 @@ public class JumpAndRunMovement1 : MonoBehaviour
     IEnumerator Ghost()
     {
         BattleUI.Lost();
-        readyGUI.gameObject.SetActive(true);
-        readyGUI.ActivateSpectating();
+        matchHUD.gameObject.SetActive(true);
+        matchHUD.ActivateSpectating();
         m_PhotonView.RPC("OnGhost", PhotonTargets.Others);
         isDead = true;
         m_Body.velocity = Vector2.zero;
