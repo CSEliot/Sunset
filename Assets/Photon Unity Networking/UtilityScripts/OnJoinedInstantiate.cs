@@ -9,8 +9,7 @@ public class OnJoinedInstantiate : MonoBehaviour
     public float PositionOffset = 2.0f;
     private Master m;
 
-    //public Sprite[] UIHeads;
-    //public Image PlayerHead; 
+     
 
     void Awake()
     {

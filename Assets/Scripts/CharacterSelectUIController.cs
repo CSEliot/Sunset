@@ -22,6 +22,7 @@ public class CharacterSelectUIController : MonoBehaviour {
     public Image RightFrame;
 
     private int currentSelector;
+    private int chosenChar;
 
 	// Use this for initialization
 	void Awake () {
@@ -36,42 +37,29 @@ public class CharacterSelectUIController : MonoBehaviour {
 	void Update () {
 	}
 
-    public void ShiftSelectionLeft()
+    public void ShiftSelection(bool shiftLeft)
     {
-        if (currentSelector == 1)
+        if (shiftLeft && currentSelector == 1)
+            return;
+        if (!shiftLeft && currentSelector == 6)
             return;
         m.PlaySFX(5);
-        currentSelector += -1;
+
+        currentSelector += shiftLeft ? -1 : 1;
+
+        chosenChar = currentSelector - 1; //char num is 0 - 5, currentSelector is 1 - 6;
+
+        //Reassign sprite images.
         LeftFrame.sprite = AllSprites[currentSelector - 1];
         MidFrame.sprite = AllSprites[currentSelector];
         RightFrame.sprite = AllSprites[currentSelector + 1];
+        //Reassign text names.
         Name1.text = CharNames[currentSelector - 1];
         Name2.text = CharNames[currentSelector - 1];
+        //Reassign stat frame.
         StatFrame.sprite = AllStatSprites[currentSelector - 1];
-        UpdateStats();
-        m.AssignPlayerCharacter(currentSelector - 1);
-        n.SetCharacterInNet(); 
-    }
-
-    public void ShiftSelectionRight()
-    {
-        if (currentSelector == 6)
-            return;
-        m.PlaySFX(5);   
-        currentSelector += 1;
-        LeftFrame.sprite  = AllSprites[currentSelector - 1];
-        MidFrame.sprite   = AllSprites[currentSelector];
-        RightFrame.sprite = AllSprites[currentSelector + 1];
-        Name1.text = CharNames[currentSelector - 1];
-        Name2.text = CharNames[currentSelector - 1];
-        StatFrame.sprite = AllStatSprites[currentSelector - 1];
-        UpdateStats();
-        m.AssignPlayerCharacter(currentSelector-1);
-        n.SetCharacterInNet();
-    }
-
-    private void UpdateStats()
-    {
-        
+        //Tell Master (local) and Network (online) the character selection.
+        m.AssignPlayerCharacter(chosenChar);
+        n.SetCharacterInNet(chosenChar); 
     }
 }
