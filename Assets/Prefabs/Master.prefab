@@ -264,6 +264,9 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  VersionUI: {fileID: 0}
+  LoadingUI: {fileID: 0}
+  Rays: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

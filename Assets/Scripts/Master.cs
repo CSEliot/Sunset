@@ -59,6 +59,7 @@ public class Master : MonoBehaviour
 
     public Text VersionUI;
     public GameObject LoadingUI;
+    public GameObject Rays;
 
 	private enum menu
 	{
@@ -467,7 +468,7 @@ public class Master : MonoBehaviour
     private void ToggleConnectLoadScreen(bool isActive)
     {
         LoadingUI.SetActive(isActive);
-        GameObject.Find("IntroBG").SetActive(!isActive);
+        Rays.SetActive(!isActive);
         if (isActive)
             myMusicAudio.Pause();
         else
