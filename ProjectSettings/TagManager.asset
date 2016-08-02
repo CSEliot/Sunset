@@ -17,8 +17,7 @@ TagManager:
   - SpawnPoints
   - PlayerGhost
   - SFXPlayer
-  - ReadyOBJ
-  - 1
+  - GameHUD
   - 2
   - 3
   - 4
