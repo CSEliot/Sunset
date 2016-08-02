@@ -239,6 +239,7 @@ public class Master : MonoBehaviour
     private IEnumerator gotoMapHelper()
     {
         ToggleConnectLoadScreen(true);
+        GoTo(-1);
         while (!PhotonNetwork.connectedAndReady)
         {
             if (Time.time - timeConnecting > connectingWaitTime)

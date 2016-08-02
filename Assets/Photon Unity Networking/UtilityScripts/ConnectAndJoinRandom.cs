@@ -97,7 +97,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             //    version); FOR USING PERSONAL SERVER
 
             savedState = m.CurrentMenu;
-            m.GoTo(-1); //Disable menus while connecting is in progress.
+            //m.GoTo(-1); //Disable menus while connecting is in progress.
         }
 
         if (!PhotonNetwork.connectedAndReady && PhotonNetwork.connecting)
@@ -161,14 +161,13 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         Debug.Log("OnConnectedToMaster() was succesfull.");
         ////Get room properties, containing things such as player info and selected character.
 
-        if (isFirstTimeConnect)
-        {
-            isFirstTimeConnect = false;
-            m.GoTo(1); // go to map select on first game load.
-        }else
-        {
-            m.GoTo(savedState);
-        }
+        //if (isFirstTimeConnect)
+        //{
+        //    isFirstTimeConnect = false;
+        //}else
+        //{
+        //    m.GoTo(savedState);
+        //}
     }
 
     public virtual void OnJoinedLobby()
@@ -176,15 +175,15 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         Debug.Log("OnJoinedLobby() was a success.");
         //PhotonNetwork.JoinOrCreateRoom("Waiting", new RoomOptions() { maxPlayers = Convert.ToByte(serverPlayerMax) }, defaultLobby);
         inLobby = true;
-        if (isFirstTimeConnect)
-        {
-            isFirstTimeConnect = false;
-            m.GoTo(1); // go to map select on first game load.
-        }
-        else
-        {
-            m.GoTo(savedState);
-        }
+        //if (isFirstTimeConnect)
+        //{
+        //    isFirstTimeConnect = false;
+        //    m.GoTo(1); // go to map select on first game load.
+        //}
+        //else
+        //{
+        //    m.GoTo(savedState);
+        //}
     }
 
     public virtual void OnPhotonRandomJoinFailed()
