@@ -656,7 +656,7 @@ public class JumpAndRunMovement1 : MonoBehaviour
     {
         BattleUI.Lost();
         readyGUI.gameObject.SetActive(true);
-        readyGUI.SetSpectating();
+        readyGUI.ActivateSpectating();
         m_PhotonView.RPC("OnGhost", PhotonTargets.Others);
         isDead = true;
         m_Body.velocity = Vector2.zero;

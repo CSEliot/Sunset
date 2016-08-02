@@ -28,7 +28,7 @@ public class ReadyUp : MonoBehaviour{
     private int readyUpBypassCount;
     private int readyUpBypassTotal;
 
-   
+    public GameObject MatchCamera;
 
     public Text ReadyText;
     public GameObject Yes;
@@ -43,6 +43,8 @@ public class ReadyUp : MonoBehaviour{
     public GameObject Warning;
 
     private int headSprite;
+    public Sprite[] UIHeads;
+    public Image PlayerHead;
 
     // Use this for initialization
     void Start () {
@@ -51,8 +53,7 @@ public class ReadyUp : MonoBehaviour{
         waiting = false;
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
         n = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
-
-        m.PlayMSX(1);
+        
         j = GameObject.FindGameObjectWithTag("SpawnPoints")
             .GetComponent<OnJoinedInstantiate>();
 
@@ -61,8 +62,9 @@ public class ReadyUp : MonoBehaviour{
         isReady = false;
         readyUped = false;
         headSprite = getImageNum();
-        m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
-        n.ReadyInterface = GetComponent<ReadyUp>();
+
+        n.assignGameHUD();
+        m.assignGameHUD();
     }
 	
 	// Update is called once per frame
@@ -90,13 +92,8 @@ public class ReadyUp : MonoBehaviour{
             }
             return;
         }
-        
-        //SlotList = new int[6];
-        //for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
-        //{
-        //    SlotList[i] = PhotonNetwork.playerList[i].ID;
-        //}
-        PercentReady.text = "" + totalReady + "/" + totalLoggedIn;
+
+        PercentReady.text = "" + totalReady + "/" + n.GetInRoomTotal;
         if (!readyUped && Input.GetButtonDown("Left") && !isReady)
         {
             SelectorYes.SetActive(true);
@@ -110,7 +107,7 @@ public class ReadyUp : MonoBehaviour{
             isReady = false;
         }
         if (!readyUped && Input.GetButtonDown("Submit") && isReady
-            && totalLoggedIn > 1)
+            && n.GetInRoomTotal > 1)
         {
             Ready();
         }
@@ -120,10 +117,10 @@ public class ReadyUp : MonoBehaviour{
         }
 	}
 
-    public void Ready()
+    public void Ready() 
     {
-        if (totalLoggedIn < 2)
-        {
+        if (n.GetInRoomTotal < 2)
+        {   
             Warning.SetActive(true);
             return;
         }
@@ -132,7 +129,7 @@ public class ReadyUp : MonoBehaviour{
             return;
         }
         isReady = true;
-        m_PhotonView.RPC("ShowReady", PhotonTargets.All, myLogInID);
+        m_PhotonView.RPC("ShowReady", PhotonTargets.All, PhotonNetwork.player.ID);
         SelectorYes.SetActive(false);
         readyUped = true;
         ExitGames.Client.Photon.Hashtable tempPlayerTable = 
@@ -147,28 +144,37 @@ public class ReadyUp : MonoBehaviour{
 
     //Need 2 things: Chosen CHaracter and Player Num
     [PunRPC]
-    void ShowReady(int LogInID)
+    void ShowReady(int logInID)
     {
         m.PlaySFX(2);
         totalReady++;
-        int readyChar = ID_to_CharNum[LogInID];
-        int readySlot = ID_to_SlotNum[LogInID];
-        ID_to_IsReady[LogInID] = true;
+        int readyChar = n.GetCharNum(logInID);
+        int readySlot = n.GetSlotNum(logInID);
 
         PlayerSlots[readySlot].sprite = getImage(readyChar);
          
-        
-        if (totalReady == totalLoggedIn)
+        if (totalReady == n.GetInRoomTotal)
         {
             startGame();
         }
         else 
         {
-            Debug.Log("Not all Ready: " + totalReady + "/" + totalLoggedIn);
+            Debug.Log("Not all Ready: " + totalReady + "/" + n.GetInRoomTotal);
         }
     }
 
-    public void SetSpectating()
+    public void UpdateReadyHUD()
+    {
+        bool isActive = true;
+        for(int i = 0; i < 6; i++)
+        {
+            if (i == PhotonNetwork.playerList.Length)
+                isActive = false;
+            PlayerSlots[i].transform.gameObject.SetActive(isActive);
+        }
+    }
+
+    public void ActivateSpectating()
     {
         Yes.SetActive(false);
         SelectorYes.SetActive(false);
@@ -188,6 +194,37 @@ public class ReadyUp : MonoBehaviour{
     public void CheatGame()
     {
         readyUpBypassCount = 3;
+    }
+
+    /// <summary>
+    /// Does GUI related things in response to @player disconnecting.
+    /// </summary>
+    /// <param name="player">Disconnected PhotonPlayer</param>
+    public void RemovePlayer(PhotonPlayer player)
+    {
+
+        totalReady = 0;
+        SelectorYes.SetActive(false);
+        SelectorNo.SetActive(true);
+        isReady = false;
+        readyUped = false;
+        fixReadyHeads();
+    }
+
+    /// <summary>
+    /// Does GUI related things in response to @player connecting.
+    /// </summary>
+    /// <param name="player">Connected PhotonPlayer</param>
+    public void AddPlayer(PhotonPlayer player)
+    {
+        PlayerSlots[PhotonNetwork.playerList.Length - 1].transform.gameObject.SetActive(true);
+        ///Reset GFX & Ready Status for new players.
+        totalReady = 0;
+        SelectorYes.SetActive(false);
+        SelectorNo.SetActive(true);
+        isReady = false;
+        readyUped = false;
+        fixReadyHeads();
     }
 
     private void fixReadyHeads()
@@ -219,12 +256,12 @@ public class ReadyUp : MonoBehaviour{
     {
         for (int i = 0; i < UIHeads.Length; i++)
         {
-            if (UIHeads[i].name == m.GetClientCharacterName())
+            if (i == m.PlayerCharNum)
             {
                 return i;
             }
         }
-        Debug.LogError("No Head Name Found!");
+        Debug.LogError("No Head Found!");
         return -1;
     }
 
@@ -232,13 +269,14 @@ public class ReadyUp : MonoBehaviour{
     {
         m.PlayMSX(2);
         Debug.Log("Start Game!");
-        j.OnReadyUp(ID_to_SlotNum[myLogInID]);
+        j.OnReadyUp(n.GetSlotNum(PhotonNetwork.player.ID));
         ExitGames.Client.Photon.Hashtable tempRoomTable = PhotonNetwork
             .room.customProperties;
         tempRoomTable["GameStarted"] = true;
         PhotonNetwork.room.SetCustomProperties(tempRoomTable);
         m.GameStarts(totalReady);
         gameObject.SetActive(false);
+        PlayerHead.sprite = getImage(getImageNum());
     }
 
     private Sprite getImage(int num)

@@ -50,11 +50,15 @@ public class Master : MonoBehaviour
     public Image PlayerHead;
 
     public GameObject[] MenuCanvasList;
-	// 0 = main
-	// 1 = map
-	// 2 = character select
-	// 3 = Options
+    // 0 = main
+    // 1 = map
+    // 2 = character select
+    // 3 = Options
 
+    private ReadyUp matchHUD;
+
+    public Text VersionUI;
+    public GameObject LoadingUI;
 
 	private enum menu
 	{
@@ -82,12 +86,17 @@ public class Master : MonoBehaviour
 
     private ConnectAndJoinRandom n;
 
+    private float timeConnecting;
+    private float connectingWaitTime;
+
+
     void Awake()
     {
 
         n = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
         
         version = Application.version;
+        VersionUI.text = "BETA " + Application.version;
 		currentMenu = menu.main;
         currentMap = map.pillar;
 
@@ -106,16 +115,13 @@ public class Master : MonoBehaviour
             NameStrengthDict.Add(character.Name, character.Power);
         }
 
-        if (GameObject.FindGameObjectsWithTag("Master").Length > 1)
-        {
-            Destroy(gameObject);
-            disableSplash();
-        }
-
         //DontDestroyOnLoad(gameObject); Disabling, we never leave the scene Master is born in.
         AssignPlayerCharacter(0);
         //Cursor.lockState = CursorLockMode.Confined;
         //Cursor.visible = false;
+        
+
+        connectingWaitTime = 60; //Seconds
     }
 
     // Use this for initialization
@@ -165,9 +171,10 @@ public class Master : MonoBehaviour
                     SetRoomName("Pillar"); //reset level from practice level back to 0: Pillar.
                     break;
                 }
-			    currentMenu = menu.map;
-			    switchCanvas ((int)menu.map);
-			    break;
+                currentMenu = menu.map;
+                switchCanvas((int)menu.map);
+                switchOutGame();
+                break;
 		    case menu.map: 
 			    currentMenu = menu.main;
 			    switchCanvas ((int)menu.main);
@@ -180,10 +187,8 @@ public class Master : MonoBehaviour
 		    case menu.ingame:
                 currentMenu = menu.chara;
                 loadMenu();
-                PhotonNetwork.room.customProperties["GameStarted"] = false;
-                //PhotonNetwork.Disconnect();
-                PlayMSX(3);
-                SceneManager.UnloadScene(SceneManager.GetSceneAt(1));
+                //PhotonNetwork.room.customProperties["GameStarted"] = false;
+                GameObject.FindGameObjectWithTag("GameCam").SetActive(false);
                 break;
             case menu.options:
                 currentMenu = menu.main;
@@ -205,18 +210,14 @@ public class Master : MonoBehaviour
 			    switchCanvas ((int)menu.main);
 			    break;
 		    case (int)menu.map:
-                if (currentMenu == menu.main){
-                    //Scene management temporarily handed over to Networking during connecting
-                    // normally from the main menu.
-                    Debug.Log("Handing menu management over to Networking . . .");
-                    break; 
-                }
-			    AssignPlayerCharacter (0);
-			    switchCanvas ((int)menu.map);
+                n.JoinServer(true);
+                timeConnecting = Time.time;
+                StartCoroutine(gotoMapHelper());
 			    break;
 		    case (int)menu.chara:
                 n.JoinRoom();
 			    switchCanvas ((int)menu.chara);
+                switchInGame();
 			    break; 
             case (int)menu.options:
                 switchCanvas((int)menu.options);
@@ -227,8 +228,8 @@ public class Master : MonoBehaviour
                 break;
             case (int)menu.ingame:
                 switchCanvas((int)menu.ingame);
-                switchInGame();
-                n.SetCharacterInNet();
+                unloadMenu();
+                matchHUD.MatchCamera.SetActive(true);
                 break;
             case -1:
                 switchCanvas(-1);
@@ -237,6 +238,34 @@ public class Master : MonoBehaviour
 			    break;
 		    }
 	}
+    
+    /// <summary>
+    /// Waits for the connection to finish. If more than @connectingWaitTime passes
+    /// and there's no connection, we return to the previous screen.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator gotoMapHelper()
+    {
+        ToggleConnectLoadScreen(true);
+        while (!PhotonNetwork.connectedAndReady)
+        {
+            if (Time.time - timeConnecting > connectingWaitTime)
+            {
+                GoTo(0);
+                n.JoinServer(false);
+                break;
+            }else
+            {
+                yield return null;
+            }
+        }
+        if (PhotonNetwork.connectedAndReady)
+        {
+            AssignPlayerCharacter(0);
+            switchCanvas((int)menu.map);
+        }
+        ToggleConnectLoadScreen(false);
+    }
 
 	private void switchCanvas( int switchTo){
 		currentMenu = (menu)switchTo;
@@ -249,7 +278,13 @@ public class Master : MonoBehaviour
     private void switchInGame()
     {
         SceneManager.LoadScene((int)currentMap, LoadSceneMode.Additive);
-        unloadMenu();
+        PlayMSX(2);
+    }
+
+    private void switchOutGame()
+    {
+        SceneManager.UnloadScene(SceneManager.GetSceneAt(1));
+        PlayMSX(3);
     }
 
     private void unloadMenu()
@@ -424,12 +459,19 @@ public class Master : MonoBehaviour
         }
     }
 
-    private void disableSplash()
+    public void assignGameHUD()
     {
+        matchHUD = GameObject.FindGameObjectWithTag("ReadyOBJ").GetComponent<ReadyUp>();
+    }
 
-        GameObject.Find("IntroBG").SetActive(false);
-        myMusicAudio.time = 8;
-        //GameObject.Find("Canvas").transform.GetChild(3).gameObject.SetActive(true);
+    private void ToggleConnectLoadScreen(bool isActive)
+    {
+        LoadingUI.SetActive(isActive);
+        GameObject.Find("IntroBG").SetActive(!isActive);
+        if (isActive)
+            myMusicAudio.Pause();
+        else
+            myMusicAudio.Play();
     }
 
 
