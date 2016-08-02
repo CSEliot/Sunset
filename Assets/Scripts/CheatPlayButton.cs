@@ -5,11 +5,11 @@ public class CheatPlayButton : MonoBehaviour {
 
     private int totalPresses;
     public int CheatPressCount;
-    private ReadyUp rdyScript;
+    private MatchHUD matchHUD;
 
 	// Use this for initialization
 	void Start () {
-        rdyScript = GameObject.FindGameObjectWithTag("GameHUD").GetComponent<ReadyUp>();
+        matchHUD = GameObject.FindGameObjectWithTag("MatchHUD").GetComponent<MatchHUD>();
         totalPresses = 0;
 	}
 	
@@ -24,7 +24,7 @@ public class CheatPlayButton : MonoBehaviour {
         if(totalPresses > CheatPressCount)
         {
             totalPresses = 0;
-            rdyScript.CheatGame();
+            matchHUD.CheatGame();
         }
     }
 }

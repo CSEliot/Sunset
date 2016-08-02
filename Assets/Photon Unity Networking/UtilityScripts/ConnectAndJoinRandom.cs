@@ -18,7 +18,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     public int SendRate;
 
     private Master m;
-    private ReadyUp matchHUD;
+    private MatchHUD matchHUD;
     //private gameManager gameMan;
 
     private bool inLobby = false;
@@ -151,9 +151,9 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             new RoomOptions() { MaxPlayers = Convert.ToByte(m.Max_Players) }, null);
     }
 
-    public void assignGameHUD()
+    public void assignMatchHUD()
     {
-        matchHUD = GameObject.FindGameObjectWithTag("GameHUD").GetComponent<ReadyUp>();
+        matchHUD = GameObject.FindGameObjectWithTag("MatchHUD").GetComponent<MatchHUD>();
     }
 
     public virtual void OnConnectedToMaster()

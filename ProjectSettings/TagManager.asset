@@ -17,7 +17,7 @@ TagManager:
   - SpawnPoints
   - PlayerGhost
   - SFXPlayer
-  - GameHUD
+  - MatchHUD
   - 2
   - 3
   - 4
