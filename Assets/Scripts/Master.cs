@@ -179,8 +179,6 @@ public class Master : MonoBehaviour
 		    case menu.ingame:
                 currentMenu = menu.chara;
                 loadMenu();
-                //PhotonNetwork.room.customProperties["GameStarted"] = false;
-                GameObject.FindGameObjectWithTag("GameCam").SetActive(false);
                 break;
             case menu.options:
                 currentMenu = menu.main;
@@ -207,10 +205,10 @@ public class Master : MonoBehaviour
                 StartCoroutine(gotoMapHelper());
 			    break;
 		    case (int)menu.chara:
-			    switchCanvas ((int)menu.chara);
-                switchInGame();
+                switchCanvas((int)menu.chara);
+                switchInGame(); //the InGame map is loaded in the background.
                 n.JoinRoom();
-			    break; 
+                break; 
             case (int)menu.options:
                 switchCanvas((int)menu.options);
                 break;
@@ -261,11 +259,11 @@ public class Master : MonoBehaviour
     }
 
 	private void switchCanvas( int switchTo){
-		currentMenu = (menu)switchTo;
-		MenuCanvasList [0].SetActive (switchTo == 0 ? true : false); //main
-		MenuCanvasList [1].SetActive (switchTo == 1 ? true : false); //map select
-		MenuCanvasList [2].SetActive (switchTo == 2 ? true : false); //char select
-        MenuCanvasList [3].SetActive (switchTo == 3 ? true : false); //options
+        currentMenu = (menu)switchTo;
+        MenuCanvasList[0].SetActive(switchTo == 0 ? true : false); //main
+        MenuCanvasList[1].SetActive(switchTo == 1 ? true : false); //map select
+        MenuCanvasList[2].SetActive(switchTo == 2 ? true : false); //char select
+        MenuCanvasList[3].SetActive(switchTo == 3 ? true : false); //options
     }
 
     private void switchInGame()

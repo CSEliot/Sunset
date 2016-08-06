@@ -1437,11 +1437,6 @@ Prefab:
       propertyPath: TotalPlayerCountBG
       value: 
       objectReference: {fileID: 2037613192}
-    - target: {fileID: 114000013577397798, guid: cde12b7c2517d7e4ea8540800eae8729,
-        type: 2}
-      propertyPath: ServerUpdateLength
-      value: 5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: cde12b7c2517d7e4ea8540800eae8729, type: 2}
   m_IsPrefabParent: 0
