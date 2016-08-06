@@ -30,7 +30,6 @@ public class CharacterSelectUIController : MonoBehaviour {
 
         n = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
-        PhotonNetwork.Disconnect();
 	}
 	
 	// Update is called once per frame

@@ -15,6 +15,8 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     /// <summary>if we don't want to connect in Start(), we have to "remember" if we called ConnectUsingSettings()</summary>
     private bool isConnectAllowed;
 
+    private bool doConnect; // DELETE ME
+
     public int SendRate;
 
     private Master m;
@@ -47,6 +49,8 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
     void Start()
     {
+
+        doConnect = false;
         ID_to_SlotNum = new Dictionary<int, int>();
         ID_to_CharNum = new Dictionary<int, int>();
         
@@ -105,19 +109,33 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         if (!PhotonNetwork.connectedAndReady && PhotonNetwork.connecting)
             printStatus();
 
-        if(!inLobby)
-            return;
-        
+        //if(!inLobby)
+        //    return;
 
         if (Time.time - previousUpdateTime > ServerUpdateLength)
         {
             previousUpdateTime = Time.time;
-            CountTotalOnline();
+            countTotalOnline();
         }
 
         totalPlayerCountStr = "Players Online\n" + (onlineLobbyTotal);
         TotalPlayerCount.text = totalPlayerCountStr;
         TotalPlayerCountBG.text = totalPlayerCountStr;
+    }
+
+    public void DELETEME()
+    {
+        Debug.Log("SAVE ME");
+        PhotonNetwork.JoinOrCreateRoom(m.GetRoomName(), new RoomOptions() { MaxPlayers = Convert.ToByte(m.Max_Players) }, null);
+        //StartCoroutine(DELETEMETOO());
+    }
+
+    private IEnumerator DELETEMETOO()
+    {
+        Debug.Log("SAVE MEEEE");
+        yield return new WaitForSeconds(1f);
+        Debug.Log("SAVE MEEE222E");
+
     }
 
     /// <summary>
@@ -156,7 +174,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     public void JoinRoom()
     {
         Debug.Log("Attempt Lobbi con");
-        PhotonNetwork.JoinLobby(inMatchLobby);
+        DELETEME();
     }
 
     public void assignMatchHUD()
@@ -181,8 +199,9 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     public void OnJoinedLobby()
     {
         Debug.Log("OnJoinedLobby() was a success.");
-        if(PhotonNetwork.lobby.Name == "inMatch")
-            PhotonNetwork.JoinOrCreateRoom(m.GetRoomName(), new RoomOptions() { MaxPlayers = Convert.ToByte(m.Max_Players) }, null);
+        doConnect = true;
+        //if(PhotonNetwork.lobby.Name == "inMatch")
+            //PhotonNetwork.JoinOrCreateRoom(m.GetRoomName(), new RoomOptions() { MaxPlayers = Convert.ToByte(m.Max_Players) }, null);
         //else
         //    PhotonNetwork.JoinOrCreateRoom("Waiting", new RoomOptions() { MaxPlayers = Convert.ToByte(serverPlayerMax) }, null);
 
@@ -331,20 +350,27 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
     
 
-    private void CountTotalOnline()
+    private void countTotalOnline()
     {
         int tempOnlineCount = PhotonNetwork.countOfPlayers;
         latestRooms = PhotonNetwork.GetRoomList();
 
         Debug.Log("Is online? " + PhotonNetwork.connected);
-        Debug.Log("Inside Lobby? " + PhotonNetwork.insideLobby);
-        Debug.Log("Total Lobbies: " + PhotonNetwork.LobbyStatistics.Count);
-        Debug.Log("Lobby Name: " + PhotonNetwork.LobbyStatistics[PhotonNetwork.LobbyStatistics.Count-1].Name);
-        Debug.Log("Nums : " + PhotonNetwork.LobbyStatistics[PhotonNetwork.LobbyStatistics.Count - 1].PlayerCount);
-        tempOnlineCount = PhotonNetwork.LobbyStatistics[PhotonNetwork.LobbyStatistics.Count - 1].PlayerCount;
-        Debug.Log("Lobby Type: " + PhotonNetwork.LobbyStatistics[PhotonNetwork.LobbyStatistics.Count - 1].Type);
-        Debug.Log("Lobby Room Total: " + PhotonNetwork.LobbyStatistics[PhotonNetwork.LobbyStatistics.Count - 1].RoomCount);
-        Debug.Log("Lobby Default? " + PhotonNetwork.LobbyStatistics[PhotonNetwork.LobbyStatistics.Count - 1].IsDefault);
+        if (PhotonNetwork.insideLobby)
+        {
+            Debug.Log("Inside Lobby? " + PhotonNetwork.insideLobby);
+            Debug.Log("Total Lobbies: " + PhotonNetwork.LobbyStatistics.Count);
+            Debug.Log("Lobby Name: " + PhotonNetwork.LobbyStatistics[PhotonNetwork.LobbyStatistics.Count-1].Name);
+            Debug.Log("Nums : " + PhotonNetwork.LobbyStatistics[PhotonNetwork.LobbyStatistics.Count - 1].PlayerCount);
+            tempOnlineCount = PhotonNetwork.LobbyStatistics[PhotonNetwork.LobbyStatistics.Count - 1].PlayerCount;
+            Debug.Log("Lobby Type: " + PhotonNetwork.LobbyStatistics[PhotonNetwork.LobbyStatistics.Count - 1].Type);
+            Debug.Log("Lobby Room Total: " + PhotonNetwork.LobbyStatistics[PhotonNetwork.LobbyStatistics.Count - 1].RoomCount);
+            Debug.Log("Lobby Default? " + PhotonNetwork.LobbyStatistics[PhotonNetwork.LobbyStatistics.Count - 1].IsDefault);
+        }else
+        {
+            Debug.Log("Room Name: " + PhotonNetwork.room.name);
+            Debug.Log("Room Total Players: " + PhotonNetwork.room.playerCount + "/" + PhotonNetwork.room.maxPlayers);
+        }
 
 
         for (int x = 0; x < latestRooms.Length; x++)
@@ -395,6 +421,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
     public void LeaveServer()
     {
+        Debug.Log("Leaving server . . .");
         PhotonNetwork.Disconnect();
         isFirstTimeConnect = true;
         inLobby = false;
