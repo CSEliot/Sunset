@@ -56,4 +56,4 @@ MonoBehaviour:
   RoomPlayerCountBG: {fileID: 0}
   TotalPlayerCount: {fileID: 0}
   TotalPlayerCountBG: {fileID: 0}
-  ServerUpdateLength: 5
+  ServerUpdateLength: 3
