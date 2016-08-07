@@ -13,6 +13,7 @@ public class MapSelectUIController : MonoBehaviour {
     public Sprite[] AllHDSprites;
 
     private Master m;
+    private ConnectAndJoinRandom n;
     public string[] MapNames;
 
     public Image LeftFrame;
@@ -21,10 +22,27 @@ public class MapSelectUIController : MonoBehaviour {
 
     private int currentSelector;
 
-	// Use this for initialization
-	void Start () {
+    private string roomSizeText;
+    public Text RoomPlayerCount;
+    public Text RoomPlayerCountBG;
+    public Text TotalPlayerCount;
+    public Text TotalPlayerCountBG;
+    private string totalPlayerCountStr;
+    private string totalRoomCountStr;
+
+    private int roomNumber;
+    private int maxRooms;
+
+    // Use this for initialization
+    void Start () {
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
+        n = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
+
         Reset();
+
+        roomNumber = 0;
+        maxRooms = m.TotalUniqueArenas;
+        roomSizeText = " / 6\nMax Players";
     }
 
     public void Reset()
@@ -64,7 +82,7 @@ public class MapSelectUIController : MonoBehaviour {
 
     public void ShiftSelectionRight()
     {
-        if (currentSelector == 3)
+        if (currentSelector == maxRooms)
             return;
         m.PlaySFX(5);   
         currentSelector += 1;
@@ -76,4 +94,18 @@ public class MapSelectUIController : MonoBehaviour {
         RoomNameHelper.RoomName = MapNames[currentSelector];
         RoomNameHelper.AssignNewRoom();
     }
+
+    public void SetTotalOnline(int totalOnline)
+    {
+        totalPlayerCountStr = "Players Online\n" + (totalOnline);
+        TotalPlayerCount.text = totalPlayerCountStr;
+        TotalPlayerCountBG.text = totalPlayerCountStr;
+    }
+
+    private void setRoomsString()
+    {
+        if(n)
+    }
+
+
 }

@@ -17,22 +17,17 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     
     public int SendRate;
 
-    private Master m;
+    public Master m;
     private MatchHUD matchHUD;
+    public MapSelectUIController mapUI;
     //private gameManager gameMan;
 
     private bool inLobby = false;
     private RoomInfo[] latestRooms;
-    public Text RoomPlayerCount;
-    public Text RoomPlayerCountBG;
-    public Text TotalPlayerCount;
-    public Text TotalPlayerCountBG;
-    private string totalPlayerCountStr;
-    private string totalRoomCountStr;
-    private int onlineLobbyTotal;
-    private int onlineRoomTotal;
+    private int totalOnline;
+
+    private int clientRoomSize;
     
-    private string waitingRoomName;
     private int serverPlayerMax;
     private bool isEastServer;
 
@@ -44,6 +39,33 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
     private TypedLobby inMatchLobby;
 
+    /// <summary>
+    /// For storing online room data locally.
+    /// </summary>
+    private struct room
+    {
+        /// <summary>
+        /// Current number of players in room. Max: 6
+        /// </summary>
+        public int size;
+
+        /// <summary>
+        /// Unique identifier. 
+        /// </summary>
+        public string name;
+
+        public room(int size, string name)
+        {
+            this.size = size;
+            this.name = name;
+        }
+    }
+
+    /// <summary>
+    /// room[0] = Pillar, 1 = Void, 2 = Lair
+    /// </summary>
+    private List<List<room>> rooms;
+
     void Start()
     {
         ID_to_SlotNum = new Dictionary<int, int>();
@@ -53,8 +75,8 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         PhotonNetwork.sendRate = SendRate;
         
         PhotonNetwork.sendRateOnSerialize = SendRate;
-        m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
         
+
         version = m.Version; //Debug.isDebugBuild ? "test" : 
         isEastServer = PlayerPrefs.GetInt("Server", 0) == 1 ? true : false;
         //"Server" returns either 0=none, 1 = east, 2 = West
@@ -62,10 +84,15 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
   
         previousUpdateTime = Time.time;
 
-        serverPlayerMax = 100;
+        serverPlayerMax = 20;
         isConnectAllowed = false; //Enabled when server region given.
 
         PhotonNetwork.autoJoinLobby = false;
+
+        for(int x = 0; x < m.TotalUniqueArenas; x++)
+        {
+            rooms.Add(new List<room>());
+        }
     }
 
     public void Update()
@@ -94,15 +121,14 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         if (!PhotonNetwork.connectedAndReady && PhotonNetwork.connecting)
             printStatus();
 
-        if (m.CurrentMenu != 1) // 1 = Map Select
+        if (!(m.CurrentMenu == 1 && PhotonNetwork.connected)) // 1 = Map Select
             return;
 
         if (Time.time - previousUpdateTime > ServerUpdateLength)
         {
             previousUpdateTime = Time.time;
-            getServerStats();
-            setTotalPlayersString();
-            setTotalRoomsString();
+            setServerStats();
+            mapUI.SetTotalOnline(totalOnline);
         }
 
     }
@@ -251,7 +277,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
                 else
                     ID_to_SlotNum[playerID] = i;
             }
-            onlineRoomTotal++;
+            clientRoomSize++;
         }     
     }
 
@@ -269,7 +295,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         else
             ID_to_SlotNum[player.ID] = PhotonNetwork.playerList.Length - 1;
         
-        onlineRoomTotal++;
+        clientRoomSize++;
 
         setReadyStatusInNet(false);
     }
@@ -284,7 +310,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         int otherID = player.ID;
         ID_to_SlotNum.Remove(otherID);
         ID_to_CharNum.Remove(otherID);
-        onlineRoomTotal--;
+        clientRoomSize--;
 
         setReadyStatusInNet(false);
     }
@@ -302,28 +328,38 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
     
 
-    private void getServerStats()
+    private void setServerStats()
     {
-        Debug.Log("Is online? " + PhotonNetwork.connected);
-        if (PhotonNetwork.insideLobby)
+        totalOnline = PhotonNetwork.countOfPlayers;
+        latestRooms = PhotonNetwork.GetRoomList();
+
+        //empty out old rooms list
+        for(int x = 0; x < m.TotalUniqueArenas; x++)
         {
-            Debug.Log("Inside Lobby? " + PhotonNetwork.insideLobby);
-            Debug.Log("Total Lobbies: " + PhotonNetwork.LobbyStatistics.Count);
-            Debug.Log("Lobby Name: " + PhotonNetwork.LobbyStatistics[PhotonNetwork.LobbyStatistics.Count-1].Name);
-            Debug.Log("Nums : " + PhotonNetwork.LobbyStatistics[PhotonNetwork.LobbyStatistics.Count - 1].PlayerCount);
-            Debug.Log("Lobby Type: " + PhotonNetwork.LobbyStatistics[PhotonNetwork.LobbyStatistics.Count - 1].Type);
-            Debug.Log("Lobby Room Total: " + PhotonNetwork.LobbyStatistics[PhotonNetwork.LobbyStatistics.Count - 1].RoomCount);
-            Debug.Log("Lobby Default? " + PhotonNetwork.LobbyStatistics[PhotonNetwork.LobbyStatistics.Count - 1].IsDefault);
+            rooms[x].Clear();
         }
 
-        latestRooms = PhotonNetwork.GetRoomList();
+        string roomNameTemp;
+        RoomInfo roomInfoTemp;
+        int roomSizeTemp;
+        int[] totalRoomTypesTemp;
+        totalRoomTypesTemp = new int[m.TotalUniqueArenas];
         for (int x = 0; x < latestRooms.Length; x++)
         {
-            Debug.Log("Room " + latestRooms[x].name + " has " + latestRooms[x].playerCount + " players.");
-        }
+            roomInfoTemp = latestRooms[x];
+            roomNameTemp = roomInfoTemp.name;
+            roomSizeTemp = roomInfoTemp.playerCount;
 
-        onlineLobbyTotal = PhotonNetwork.countOfPlayers;
-        Debug.Log("There are a total of " + onlineLobbyTotal + " online.");
+            Debug.Log("Room " + roomNameTemp + " has " + roomSizeTemp + " players.");
+            for(int i = 0; i < m.TotalUniqueArenas; i++)
+            {
+                if (roomNameTemp.Contains(m.ArenaNames[i])){
+                    totalRoomTypesTemp[i]++;
+                    rooms[i].Add(new room(roomSizeTemp, roomNameTemp + totalRoomTypesTemp[i]));
+                }
+            }
+        }
+        Debug.Log("There are a total of " + totalOnline + " online.");
     }
 
     public bool IsEastServer
@@ -350,7 +386,15 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     {
         get
         {
-            return onlineRoomTotal;
+            return clientRoomSize;
+        }
+    }
+
+    public List<List<room>> Rooms
+    {
+        get
+        {
+            return rooms;
         }
     }
 
@@ -389,15 +433,4 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
     }
 
-    private void setTotalPlayersString()
-    {
-        totalPlayerCountStr = "Players Online\n" + (onlineLobbyTotal);
-        TotalPlayerCount.text = totalPlayerCountStr;
-        TotalPlayerCountBG.text = totalPlayerCountStr;
-    }
-
-    private void setTotalRoomsString()
-    {
-        //totalRoomCountStr = 
-    }
 }

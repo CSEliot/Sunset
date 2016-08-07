@@ -82,6 +82,12 @@ public class Master : MonoBehaviour
     };
     private map currentMap;
 
+    /// <summary>
+    /// Should go up whenever a new map is added. Currently there are: 3
+    /// </summary>
+    private const int totalUniqueArenas = 3;
+    private string[] arenaNames;
+
 	private bool isNewScene;
     //	private  targetScene;
 
@@ -121,6 +127,7 @@ public class Master : MonoBehaviour
         //Cursor.lockState = CursorLockMode.Confined;
         //Cursor.visible = false;
         
+        arenaNames = new string[totalUniqueArenas] { "Pillar", "Void", "Lair" };
 
         connectingWaitTime = 60; //Seconds
     }
@@ -441,6 +448,22 @@ public class Master : MonoBehaviour
         get
         {
             return (int)currentMap;
+        }
+    }
+
+    public int TotalUniqueArenas
+    {
+        get
+        {
+            return totalUniqueArenas;
+        }
+    }
+
+    public string[] ArenaNames
+    {
+        get
+        {
+            return arenaNames;
         }
     }
 
