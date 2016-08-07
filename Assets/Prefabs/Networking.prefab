@@ -52,8 +52,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SendRate: 24
-  RoomPlayerCount: {fileID: 0}
-  RoomPlayerCountBG: {fileID: 0}
-  TotalPlayerCount: {fileID: 0}
-  TotalPlayerCountBG: {fileID: 0}
+  m: {fileID: 0}
+  mapUI: {fileID: 0}
   ServerUpdateLength: 7
