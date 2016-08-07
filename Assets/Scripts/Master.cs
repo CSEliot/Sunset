@@ -166,6 +166,7 @@ public class Master : MonoBehaviour
                 currentMenu = menu.map;
                 switchCanvas((int)menu.map);
                 switchOutGame();
+                n.LeaveRoom();
                 break;
 		    case menu.map: 
 			    currentMenu = menu.main;
@@ -179,6 +180,7 @@ public class Master : MonoBehaviour
 		    case menu.ingame:
                 currentMenu = menu.chara;
                 loadMenu();
+                matchHUD.MatchCamera.SetActive(false);
                 break;
             case menu.options:
                 currentMenu = menu.main;
@@ -444,6 +446,7 @@ public class Master : MonoBehaviour
 
     public void assignMatchHUD()
     {
+        Debug.Log("Match HUD assigned.");
         matchHUD = GameObject.FindGameObjectWithTag("MatchHUD").GetComponent<MatchHUD>();
     }
 
