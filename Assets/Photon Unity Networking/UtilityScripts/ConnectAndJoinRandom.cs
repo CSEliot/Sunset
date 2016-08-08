@@ -42,7 +42,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     /// <summary>
     /// For storing online room data locally.
     /// </summary>
-    private struct room
+    public struct room
     {
         /// <summary>
         /// Current number of players in room. Max: 6
@@ -64,10 +64,11 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     /// <summary>
     /// room[0] = Pillar, 1 = Void, 2 = Lair
     /// </summary>
-    private List<List<room>> rooms;
+    public List<List<room>> Rooms;
 
     void Start()
     {
+
         ID_to_SlotNum = new Dictionary<int, int>();
         ID_to_CharNum = new Dictionary<int, int>();
         
@@ -89,9 +90,10 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
         PhotonNetwork.autoJoinLobby = false;
 
+		Rooms = new List<List<room>> ();
         for(int x = 0; x < m.TotalUniqueArenas; x++)
         {
-            rooms.Add(new List<room>());
+            Rooms.Add(new List<room>());
         }
     }
 
@@ -336,7 +338,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         //empty out old rooms list
         for(int x = 0; x < m.TotalUniqueArenas; x++)
         {
-            rooms[x].Clear();
+            Rooms[x].Clear();
         }
 
         string roomNameTemp;
@@ -355,7 +357,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             {
                 if (roomNameTemp.Contains(m.ArenaNames[i])){
                     totalRoomTypesTemp[i]++;
-                    rooms[i].Add(new room(roomSizeTemp, roomNameTemp + totalRoomTypesTemp[i]));
+                    Rooms[i].Add(new room(roomSizeTemp, roomNameTemp + totalRoomTypesTemp[i]));
                 }
             }
         }
@@ -390,14 +392,6 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         }
     }
 
-    public List<List<room>> Rooms
-    {
-        get
-        {
-            return rooms;
-        }
-    }
-
     public int GetCharNum(int logInID)
     {
         return ID_to_CharNum[logInID];
@@ -411,7 +405,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     public void LeaveServer()
     {
         Debug.Log("Leaving server . . .");
-        PhotonNetwork.Disconnect();
+        PhotonNetwork.Disconnect(); 
         inLobby = false;
     }
 
