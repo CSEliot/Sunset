@@ -18,9 +18,14 @@ public class MapSelectUIController : MonoBehaviour {
 
     public Image LeftFrame;
     public Image MidFrame;
-    public Image RightFrame;
+	public Image[] MidTopFrames;
+	public Image[] MidBottomFrames;
+	public Image RightFrame;
+	public Image DownArrow;
+	public Image UpArrow;
 
-    private int currentSelector;
+    private int currentHorizSelector;
+	private int currentVertSelector;
 
     private string roomSizeText;
     public Text RoomPlayerCount;
@@ -47,13 +52,14 @@ public class MapSelectUIController : MonoBehaviour {
 
     public void Reset()
     {
-        currentSelector = 1;
-        LeftFrame.sprite = AllSprites[currentSelector - 1];
-        MidFrame.sprite = AllHDSprites[currentSelector];
-        RightFrame.sprite = AllSprites[currentSelector + 1];
-        Name1.text = MapNames[currentSelector];
-        Name2.text = MapNames[currentSelector];
-        RoomNameHelper.RoomName = MapNames[currentSelector];
+        currentHorizSelector = 1;
+		currentVertSelector = 0;
+        LeftFrame.sprite = AllSprites[currentHorizSelector - 1];
+        MidFrame.sprite = AllHDSprites[currentHorizSelector];
+        RightFrame.sprite = AllSprites[currentHorizSelector + 1];
+        Name1.text = MapNames[currentHorizSelector];
+        Name2.text = MapNames[currentHorizSelector];
+        RoomNameHelper.RoomName = MapNames[currentHorizSelector];
         RoomNameHelper.AssignNewRoom();
     }
 
@@ -67,31 +73,47 @@ public class MapSelectUIController : MonoBehaviour {
 
     public void ShiftSelectionLeft()
     {
-        if (currentSelector == 1)
+        if (currentHorizSelector == 1)
             return;
         m.PlaySFX(5);
-        currentSelector += -1;
-        LeftFrame.sprite = AllSprites[currentSelector - 1];
-        MidFrame.sprite = AllHDSprites[currentSelector];
-        RightFrame.sprite = AllSprites[currentSelector + 1];
-        Name1.text = MapNames[currentSelector];
-        Name2.text = MapNames[currentSelector];
-        RoomNameHelper.RoomName = MapNames[currentSelector];
+        currentHorizSelector += -1;
+		currentVertSelector = 0;
+		setRoomsString ();
+        LeftFrame.sprite = AllSprites[currentHorizSelector - 1];
+		MidTopFrames[0].sprite = AllHDSprites[currentHorizSelector];
+		MidTopFrames[1].sprite = AllHDSprites[currentHorizSelector];
+		MidFrame.sprite = AllHDSprites[currentHorizSelector];
+		MidBottomFrames[0].sprite = AllHDSprites[currentHorizSelector];
+		MidBottomFrames[1].sprite = AllHDSprites[currentHorizSelector];
+        RightFrame.sprite = AllSprites[currentHorizSelector + 1];
+        Name1.text = MapNames[currentHorizSelector];
+        Name2.text = MapNames[currentHorizSelector];
+        RoomNameHelper.RoomName = MapNames[currentHorizSelector];
         RoomNameHelper.AssignNewRoom();
     }
 
+	public void ShiftSelectionUp(){
+
+	}
+
+	public void ShiftSelectionDown() {
+	
+	}
+
     public void ShiftSelectionRight()
     {
-        if (currentSelector == maxRooms)
+        if (currentHorizSelector == maxRooms)
             return;
         m.PlaySFX(5);   
-        currentSelector += 1;
-        LeftFrame.sprite  = AllSprites[currentSelector - 1];
-        MidFrame.sprite   = AllHDSprites[currentSelector];
-        RightFrame.sprite = AllSprites[currentSelector + 1];
-        Name1.text = MapNames[currentSelector];
-        Name2.text = MapNames[currentSelector];
-        RoomNameHelper.RoomName = MapNames[currentSelector];
+        currentHorizSelector += 1;
+		currentVertSelector = 0;
+		setRoomsString ();
+        LeftFrame.sprite  = AllSprites[currentHorizSelector - 1];
+        MidFrame.sprite   = AllHDSprites[currentHorizSelector];
+        RightFrame.sprite = AllSprites[currentHorizSelector + 1];
+        Name1.text = MapNames[currentHorizSelector];
+        Name2.text = MapNames[currentHorizSelector];
+        RoomNameHelper.RoomName = MapNames[currentHorizSelector];
         RoomNameHelper.AssignNewRoom();
     }
 
@@ -104,7 +126,19 @@ public class MapSelectUIController : MonoBehaviour {
 
     private void setRoomsString()
     {
-        if(n)
+		int tempRoomsAvailable = n.Rooms [currentHorizSelector - 1].Count;
+
+		MidTopFrames [0].enabled = tempRoomsAvailable > 1;
+		MidTopFrames [1].enabled = tempRoomsAvailable > 2;
+		MidBottomFrames [0].enabled = currentVertSelector > 0;
+		MidBottomFrames [1].enabled = currentVertSelector > 1;
+		UpArrow.enabled = tempRoomsAvailable > 1;
+		DownArrow.enabled = currentVertSelector > 0;
+
+		if (tempRoomsAvailable != 0) {
+			RoomPlayerCount.text = n.Rooms [currentHorizSelector] [currentVertSelector].size + roomSizeText;
+			RoomPlayerCountBG.text = n.Rooms [currentHorizSelector] [currentVertSelector].size + roomSizeText;
+		}
     }
 
 
