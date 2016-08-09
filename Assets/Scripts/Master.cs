@@ -61,7 +61,7 @@ public class Master : MonoBehaviour
     public GameObject LoadingUI;
     public GameObject Rays;
 
-	private enum menu
+	public enum Menu
 	{
 		main,
 		map,
@@ -70,9 +70,9 @@ public class Master : MonoBehaviour
 		practice,
 		ingame // opens pause menu
 	};
-	private menu currentMenu;
+	private Menu currentMenu;
 
-    private enum map
+    public enum Map
     {
         inmenu, //NOT USED. 
         practice,
@@ -80,7 +80,15 @@ public class Master : MonoBehaviour
         _void,
         lair
     };
-    private map currentMap;
+    private Map currentMap;
+
+    public enum RoomAction
+    {
+        unset,
+        join,
+        create
+    };
+    private RoomAction rmAction;
 
     /// <summary>
     /// Should go up whenever a new map is added. Currently there are: 3
@@ -96,7 +104,6 @@ public class Master : MonoBehaviour
     private float timeConnecting;
     private float connectingWaitTime;
 
-
     void Awake()
     {
 
@@ -104,8 +111,9 @@ public class Master : MonoBehaviour
         
         version = Application.version;
         VersionUI.text = "BETA " + Application.version;
-		currentMenu = menu.main;
-        currentMap = map.pillar;
+		currentMenu = Menu.main;
+        currentMap = Map.pillar;
+        rmAction = RoomAction.unset;
 
         RoomName = "Pillar";
         
@@ -159,39 +167,39 @@ public class Master : MonoBehaviour
 	public void GoBack()
 	{
 		switch (currentMenu) {
-		    case menu.main:
+		    case Menu.main:
 			    PlayerPrefs.Save ();
 			    Application.Quit ();
 			    break; 
-		    case menu.chara:
-                if (currentMap == map.practice)
+		    case Menu.chara:
+                if (currentMap == Map.practice)
                 {
                     GoTo(3);
                     SetRoomName("Pillar"); //reset level from practice level back to 0: Pillar.
                     break;
                 }
-                currentMenu = menu.map;
-                switchCanvas((int)menu.map);
+                currentMenu = Menu.map;
+                switchCanvas((int)Menu.map);
                 switchOutGame();
                 n.LeaveRoom();
                 break;
-		    case menu.map: 
-			    currentMenu = menu.main;
-			    switchCanvas ((int)menu.main);
+		    case Menu.map: 
+			    currentMenu = Menu.main;
+			    switchCanvas ((int)Menu.main);
                 n.LeaveServer();
 			    break;
-		    case menu.practice:
-			    currentMenu = menu.options;
+		    case Menu.practice:
+			    currentMenu = Menu.options;
                 loadMenu();
 			    break;
-		    case menu.ingame:
-                currentMenu = menu.chara;
+		    case Menu.ingame:
+                currentMenu = Menu.chara;
                 loadMenu();
                 matchHUD.MatchCamera.SetActive(false);
                 break;
-            case menu.options:
-                currentMenu = menu.main;
-                switchCanvas((int)menu.main);
+            case Menu.options:
+                currentMenu = Menu.main;
+                switchCanvas((int)Menu.main);
                 break;
             default:
 			    break;
@@ -205,28 +213,37 @@ public class Master : MonoBehaviour
 	public void GoTo(int to)
 	{
 		switch (to) {
-		    case (int)menu.main:
-			    switchCanvas ((int)menu.main);
+		    case (int)Menu.main:
+			    switchCanvas ((int)Menu.main);
 			    break;
-		    case (int)menu.map:
+		    case (int)Menu.map:
                 n.JoinServer(true);
                 timeConnecting = Time.time;
                 StartCoroutine(gotoMapHelper());
 			    break;
-		    case (int)menu.chara:
-                switchCanvas((int)menu.chara);
+		    case (int)Menu.chara:
+                if(rmAction == RoomAction.unset)
+                {
+                    Debug.LogError("No room action given! Create or Join?");
+                }else if(rmAction == RoomAction.join)
+                {
+                    n.JoinRoom();
+                }else
+                {
+                    n.CreateRoom();
+                }
+                switchCanvas((int)Menu.chara);
                 switchInGame(); //the InGame map is loaded in the background.
-                n.JoinRoom();
                 break; 
-            case (int)menu.options:
-                switchCanvas((int)menu.options);
+            case (int)Menu.options:
+                switchCanvas((int)Menu.options);
                 break;
-            case (int)menu.practice:
-                switchCanvas((int)menu.chara);
+            case (int)Menu.practice:
+                switchCanvas((int)Menu.chara);
                 SetRoomName("Practice");
                 break;
-            case (int)menu.ingame:
-                switchCanvas((int)menu.ingame);
+            case (int)Menu.ingame:
+                switchCanvas((int)Menu.ingame);
                 unloadMenu();
                 matchHUD.MatchCamera.SetActive(true);
                 break;
@@ -262,13 +279,13 @@ public class Master : MonoBehaviour
         if (PhotonNetwork.connectedAndReady)
         {
             AssignPlayerCharacter(0);
-            switchCanvas((int)menu.map);
+            switchCanvas((int)Menu.map);
         }
         ToggleConnectLoadScreen(false);
     }
 
 	private void switchCanvas( int switchTo){
-        currentMenu = (menu)switchTo;
+        currentMenu = (Menu)switchTo;
         MenuCanvasList[0].SetActive(switchTo == 0 ? true : false); //main
         MenuCanvasList[1].SetActive(switchTo == 1 ? true : false); //map select
         MenuCanvasList[2].SetActive(switchTo == 2 ? true : false); //char select
@@ -382,16 +399,16 @@ public class Master : MonoBehaviour
         switch (room_name)
         {
             case "Practice":
-                currentMap = map.practice;
+                currentMap = Map.practice;
                 break;
             case "Pillar":
-                currentMap = map.pillar;
+                currentMap = Map.pillar;
                 break;
             case "Void":
-                currentMap = map._void;
+                currentMap = Map._void;
                 break;
             case "Lair":
-                currentMap = map.lair;
+                currentMap = Map.lair;
                 break;
             default:
                 Debug.LogError("WRONG ROOMMNAME GIVEN.");
@@ -465,6 +482,24 @@ public class Master : MonoBehaviour
         {
             return arenaNames;
         }
+    }
+
+    public RoomAction RmAction
+    {
+        get
+        {
+            return rmAction;
+        }
+
+        set
+        {
+            rmAction = value;
+        }
+    }
+
+    public void SetRoomAction(int action)
+    {
+        rmAction = (RoomAction)action;
     }
 
     public void assignMatchHUD()

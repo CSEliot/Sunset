@@ -17,12 +17,15 @@ public class MapSelectUIController : MonoBehaviour {
     public string[] MapNames;
 
     public Button LeftFrame;
+    public Button LeftArrow;
     public Image MidFrame;
 	public Image[] MidTopFrames;
 	public Image[] MidBottomFrames;
 	public Button RightFrame;
-	public Image DownArrow;
-	public Image UpArrow;
+    public Button RightArrow;
+    public Button DownArrow;
+	public Button UpArrow;
+    public Button Join;
 
     private int currentHorizSelector;
 	private int currentVertSelector;
@@ -38,12 +41,11 @@ public class MapSelectUIController : MonoBehaviour {
     private int roomNumber;
     private int maxArenas;
 	private int latestRoomTotal;
+    private int roomsAvailable;
 
     // Use this for initialization
     void Start () {
-        m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
-        n = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
-
+        
         Reset();
 
         roomNumber = 0;
@@ -51,21 +53,32 @@ public class MapSelectUIController : MonoBehaviour {
         roomSizeText = " / 6\nMax Players";
     }
 
+    public void Awake()
+    {
+        m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
+        n = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
+    }
+
     public void Reset()
     {
-        currentHorizSelector = 1;
+        currentHorizSelector = 0;
 		currentVertSelector = 0;
 		LeftFrame.interactable = false;
+        LeftArrow.interactable = false;
+        RightFrame.interactable = true;
+        RightArrow.interactable = true;
         MidFrame.sprite = AllHDSprites[currentHorizSelector];
         RightFrame.image.sprite = AllSprites[currentHorizSelector + 1];
         Name1.text = MapNames[currentHorizSelector];
         Name2.text = MapNames[currentHorizSelector];
         RoomNameHelper.RoomName = MapNames[currentHorizSelector];
         RoomNameHelper.AssignNewRoom();
+        setRoomsUI();
     }
 
     void OnEnable()
     {
+        Reset();
     }
 
     // Update is called once per frame
@@ -77,20 +90,20 @@ public class MapSelectUIController : MonoBehaviour {
         if (currentHorizSelector == 0)
             return;
 		currentHorizSelector--;
-		if (currentHorizSelector == 0) {
-			LeftFrame.interactable = false;
-		} else {
-			LeftFrame.interactable = true;
-			LeftFrame.image.sprite = AllSprites[currentHorizSelector - 1];
-		}
 		m.PlaySFX(5);
 		currentVertSelector = 0;
 		setRoomsUI ();
-		MidTopFrames[0].sprite = AllHDSprites[currentHorizSelector];
-		MidTopFrames[1].sprite = AllHDSprites[currentHorizSelector];
+		if (currentHorizSelector == 0) {
+			LeftFrame.interactable = false;
+            LeftArrow.interactable = false;
+        } else {
+			LeftFrame.interactable = true;
+            LeftArrow.interactable = true;
+            LeftFrame.image.sprite = AllSprites[currentHorizSelector - 1];
+		}
 		MidFrame.sprite = AllHDSprites[currentHorizSelector];
-		MidBottomFrames[0].sprite = AllHDSprites[currentHorizSelector];
-		MidBottomFrames[1].sprite = AllHDSprites[currentHorizSelector];
+        RightFrame.interactable = true;
+        RightArrow.interactable = true;
         RightFrame.image.sprite = AllSprites[currentHorizSelector + 1];
         Name1.text = MapNames[currentHorizSelector];
         Name2.text = MapNames[currentHorizSelector];
@@ -115,20 +128,24 @@ public class MapSelectUIController : MonoBehaviour {
 
     public void ShiftSelectionRight()
     {
-        if (currentHorizSelector == maxArenas)
+        if (currentHorizSelector == maxArenas-1)
             return;
 		currentHorizSelector++;
         m.PlaySFX(5);   
 		currentVertSelector = 0;
-		if (currentHorizSelector == maxArenas) {
-			RightFrame.interactable = false;
-		} else {
-			RightFrame.interactable = true;
-			RightFrame.image.sprite = AllSprites[currentHorizSelector + 1];
-		}
 		setRoomsUI ();
-        LeftFrame.image.sprite  = AllSprites[currentHorizSelector - 1];
+        LeftFrame.interactable = true;
+        LeftArrow.interactable = true;
+        LeftFrame.image.sprite = AllSprites[currentHorizSelector - 1];
         MidFrame.sprite   = AllHDSprites[currentHorizSelector];
+		if (currentHorizSelector == maxArenas-1) {
+			RightFrame.interactable = false;
+            RightArrow.interactable = false;
+        } else {
+			RightFrame.interactable = true;
+            RightArrow.interactable = true;
+            RightFrame.image.sprite = AllSprites[currentHorizSelector + 1];
+		}
         Name1.text = MapNames[currentHorizSelector];
         Name2.text = MapNames[currentHorizSelector];
         RoomNameHelper.RoomName = MapNames[currentHorizSelector];
@@ -137,7 +154,7 @@ public class MapSelectUIController : MonoBehaviour {
 
     public void SetTotalOnline(int totalOnline)
     {
-        totalPlayerCountStr = "Players Online\n" + (totalOnline);
+        totalPlayerCountStr = "Players Online: " + (totalOnline);
         TotalPlayerCount.text = totalPlayerCountStr;
         TotalPlayerCountBG.text = totalPlayerCountStr;
     }
@@ -147,13 +164,15 @@ public class MapSelectUIController : MonoBehaviour {
 	/// </summary>
     private void setRoomsUI()
     {
-		int roomsAvailable = n.Rooms [currentHorizSelector - 1].Count;
+
+        roomsAvailable = n.Rooms [currentHorizSelector].Count;
+        Join.interactable = roomsAvailable != 0;
 		MidTopFrames [0].enabled = roomsAvailable > 1;
 		MidTopFrames [1].enabled = roomsAvailable > 2;
 		MidBottomFrames [0].enabled = currentVertSelector > 0;
 		MidBottomFrames [1].enabled = currentVertSelector > 1;
-		UpArrow.enabled = roomsAvailable > 1;
-		DownArrow.enabled = currentVertSelector > 0;
+        UpArrow.interactable = roomsAvailable > 1;
+		DownArrow.interactable = currentVertSelector > 0;
 
 		if (roomsAvailable != 0) {
 			RoomPlayerCount.text = n.Rooms [currentHorizSelector] [currentVertSelector].size + roomSizeText;
@@ -161,5 +180,13 @@ public class MapSelectUIController : MonoBehaviour {
 		}
     }
 
+    public int getTargetRoom()
+    {
+        return currentVertSelector;
+    }
 
+    public int getTargetArena()
+    {
+        return currentHorizSelector;
+    }
 }

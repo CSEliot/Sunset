@@ -68,7 +68,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
     void Start()
     {
-
+        
         ID_to_SlotNum = new Dictionary<int, int>();
         ID_to_CharNum = new Dictionary<int, int>();
         
@@ -94,6 +94,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         for(int x = 0; x < m.TotalUniqueArenas; x++)
         {
             Rooms.Add(new List<room>());
+            Rooms[x].Clear();
         }
     }
 
@@ -170,7 +171,12 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     /// </summary>
     public void JoinRoom()
     {
-        PhotonNetwork.JoinOrCreateRoom(m.GetRoomName(), new RoomOptions() { MaxPlayers = Convert.ToByte(m.Max_Players) }, null);
+        PhotonNetwork.JoinOrCreateRoom(m.GetRoomName()+mapUI.getTargetRoom(), new RoomOptions() { MaxPlayers = Convert.ToByte(m.Max_Players) }, null);
+    }
+
+    public void CreateRoom()
+    {
+        PhotonNetwork.JoinOrCreateRoom(m.GetRoomName()+(Rooms[mapUI.getTargetArena()].Count), new RoomOptions() { MaxPlayers = Convert.ToByte(m.Max_Players) }, null);
     }
 
     public void assignMatchHUD()
