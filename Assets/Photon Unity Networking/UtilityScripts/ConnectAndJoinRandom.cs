@@ -136,7 +136,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     /// <summary>
     /// All "InNet" for all public functions relating to networking, but not a Photon function.
     /// </summary>
-    public void SetCharacterInNet(int chosenChar)
+    public void SetCharacterInNet()
     {
         Debug.Log("Adding player property");
         ExitGames.Client.Photon.Hashtable playerProperties = PhotonNetwork.player.customProperties;
@@ -221,17 +221,15 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     {
         // All callbacks are listed in enum: PhotonNetworkingMessage.
         Debug.Log("On Joined Room: " + PhotonNetwork.room.name);
-        if (PhotonNetwork.room.name == "Waiting")
-        {
-            PhotonNetwork.LeaveRoom();
-            return;
-        }
         inLobby = false;
+
+        //As a new player, we must assign default player properties.
+        SetCharacterInNet();
 
         //Get total number of players logged into room.
         int totalPlayersFound = PhotonNetwork.playerList.Length;
         PhotonNetwork.playerName = "Player " + totalPlayersFound;
-        m.InRoomNumber = totalPlayersFound--;
+        m.InRoomNumber = totalPlayersFound - 1;
 
         // If it's a new room, create descriptor keys
         ExitGames.Client.Photon.Hashtable tempTable;
@@ -277,10 +275,6 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
                     ID_to_SlotNum.Add(playerID, i);
                 else
                     ID_to_SlotNum[playerID] = i;
-            }else
-            {
-                ID_to_CharNum.Add(PhotonNetwork.player.ID, m.PlayerCharNum);
-                ID_to_SlotNum.Add(PhotonNetwork.player.ID, PhotonNetwork.playerList.Length - 1);
             }
             clientRoomSize++;
         }     
