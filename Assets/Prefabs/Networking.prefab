@@ -54,4 +54,4 @@ MonoBehaviour:
   SendRate: 24
   m: {fileID: 0}
   mapUI: {fileID: 0}
-  ServerUpdateLength: 7
+  ServerUpdateLength: 10

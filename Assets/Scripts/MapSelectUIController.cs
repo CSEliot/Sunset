@@ -43,21 +43,39 @@ public class MapSelectUIController : MonoBehaviour {
 	private int latestRoomTotal;
     private int roomsAvailable;
 
-    // Use this for initialization
-    void Start () {
-        
-        Reset();
+    private float timeSinceLastUpdate;
 
-        roomNumber = 0;
-        maxArenas = m.TotalUniqueArenas;
-        roomSizeText = " / 6\nMax Players";
-    }
+    public GameObject LoadingUI;
+    public float LoadingAnimSec;
 
     public void Awake()
     {
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
         n = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
     }
+
+    // Use this for initialization
+    void Start () {
+        Reset();
+        maxArenas = m.TotalUniqueArenas;
+        roomSizeText = " / 6\nMax Players";
+    }
+
+    void OnEnable()
+    {
+        Reset();
+    }
+
+    // Update is called once per frame
+    void Update () {
+         if(Time.time - timeSinceLastUpdate > n.ServerUpdateLength)
+        {
+            timeSinceLastUpdate = Time.time;
+            SetTotalOnline(n.TotalOnline);
+            setRoomsUI();
+            StartCoroutine(PlayLoadingUI());   
+        }
+	}
 
     public void Reset()
     {
@@ -73,17 +91,8 @@ public class MapSelectUIController : MonoBehaviour {
         Name2.text = MapNames[currentHorizSelector];
         RoomNameHelper.RoomName = MapNames[currentHorizSelector];
         RoomNameHelper.AssignNewRoom();
-        setRoomsUI();
     }
 
-    void OnEnable()
-    {
-        Reset();
-    }
-
-    // Update is called once per frame
-    void Update () {
-	}
 
     public void ShiftSelectionLeft()
     {
@@ -92,7 +101,6 @@ public class MapSelectUIController : MonoBehaviour {
 		currentHorizSelector--;
 		m.PlaySFX(5);
 		currentVertSelector = 0;
-		setRoomsUI ();
 		if (currentHorizSelector == 0) {
 			LeftFrame.interactable = false;
             LeftArrow.interactable = false;
@@ -116,14 +124,12 @@ public class MapSelectUIController : MonoBehaviour {
 		if (currentVertSelector == n.Rooms [currentHorizSelector - 1].Count + 1)
 			return;
 		currentVertSelector++;
-		setRoomsUI ();
 	}
 
 	public void ShiftSelectionDown() {
 		if (currentVertSelector == 0)
 			return;
 		currentVertSelector--;
-		setRoomsUI ();
 	}
 
     public void ShiftSelectionRight()
@@ -133,7 +139,6 @@ public class MapSelectUIController : MonoBehaviour {
 		currentHorizSelector++;
         m.PlaySFX(5);   
 		currentVertSelector = 0;
-		setRoomsUI ();
         LeftFrame.interactable = true;
         LeftArrow.interactable = true;
         LeftFrame.image.sprite = AllSprites[currentHorizSelector - 1];
@@ -177,7 +182,12 @@ public class MapSelectUIController : MonoBehaviour {
 		if (roomsAvailable != 0) {
 			RoomPlayerCount.text = n.Rooms [currentHorizSelector] [currentVertSelector].size + roomSizeText;
 			RoomPlayerCountBG.text = n.Rooms [currentHorizSelector] [currentVertSelector].size + roomSizeText;
-		}
+        }
+        else
+        {
+            RoomPlayerCount.text = "0" + roomSizeText;
+            RoomPlayerCountBG.text = "0" + roomSizeText;
+        }
     }
 
     public int getTargetRoom()
@@ -188,5 +198,14 @@ public class MapSelectUIController : MonoBehaviour {
     public int getTargetArena()
     {
         return currentHorizSelector;
+    }
+    
+    private IEnumerator PlayLoadingUI()
+    {
+        LoadingUI.SetActive(true);
+        Debug.Log("tUE");
+        yield return new WaitForSeconds(LoadingAnimSec);
+        Debug.Log("WED");
+        LoadingUI.SetActive(false);
     }
 }

@@ -88,8 +88,6 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         serverPlayerMax = 20;
         isConnectAllowed = false; //Enabled when server region given.
 
-        PhotonNetwork.autoJoinLobby = false;
-
 		Rooms = new List<List<room>> ();
         for(int x = 0; x < m.TotalUniqueArenas; x++)
         {
@@ -124,14 +122,13 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         if (!PhotonNetwork.connectedAndReady && PhotonNetwork.connecting)
             printStatus();
 
-        if (!(m.CurrentMenu == 1 && PhotonNetwork.connected)) // 1 = Map Select
+        if (!PhotonNetwork.connected) 
             return;
 
         if (Time.time - previousUpdateTime > ServerUpdateLength)
         {
             previousUpdateTime = Time.time;
             setServerStats();
-            mapUI.SetTotalOnline(totalOnline);
         }
 
     }
@@ -155,15 +152,11 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
         PhotonNetwork.player.SetCustomProperties(playerProperties);
 
-        //Add self to player info tracking.
+        //Update self info tracking.
         if(!ID_to_CharNum.ContainsKey(PhotonNetwork.player.ID))
             ID_to_CharNum.Add(PhotonNetwork.player.ID, m.PlayerCharNum);
         else
             ID_to_CharNum[PhotonNetwork.player.ID] = m.PlayerCharNum;
-        if (!ID_to_SlotNum.ContainsKey(PhotonNetwork.player.ID))
-            ID_to_SlotNum.Add(PhotonNetwork.player.ID, PhotonNetwork.playerList.Length - 1);
-        else
-            ID_to_SlotNum[PhotonNetwork.player.ID] = PhotonNetwork.playerList.Length - 1;
     }
 
     /// <summary>
@@ -264,10 +257,10 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         else
             tempTable["IsReady"] = false;
 
-        //Create IsReady state. Begins false.
+        //Apply IsReady state. Begins false.
         PhotonNetwork.player.SetCustomProperties(tempTable);
 
-        //Add info from others already logged in.
+        //Add info from players already logged in, including self.
         int playerID;
         for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
         {
@@ -284,6 +277,10 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
                     ID_to_SlotNum.Add(playerID, i);
                 else
                     ID_to_SlotNum[playerID] = i;
+            }else
+            {
+                ID_to_CharNum.Add(PhotonNetwork.player.ID, m.PlayerCharNum);
+                ID_to_SlotNum.Add(PhotonNetwork.player.ID, PhotonNetwork.playerList.Length - 1);
             }
             clientRoomSize++;
         }     
@@ -395,6 +392,14 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         get
         {
             return clientRoomSize;
+        }
+    }
+
+    public int TotalOnline
+    {
+        get
+        {
+            return totalOnline;
         }
     }
 

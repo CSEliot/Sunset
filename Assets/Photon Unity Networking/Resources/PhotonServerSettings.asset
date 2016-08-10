@@ -18,7 +18,7 @@ MonoBehaviour:
   AppID: d4e9e94d-de9a-44ec-9668-5f1898d4e76c
   PreferredRegion: 1
   EnabledRegions: -1
-  JoinLobby: 0
+  JoinLobby: 1
   EnableLobbyStatistics: 1
   RpcList:
   - Chat
