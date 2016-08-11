@@ -208,9 +208,7 @@ public class MapSelectUIController : MonoBehaviour {
     private IEnumerator PlayLoadingUI()
     {
         LoadingUI.SetActive(true);
-        Debug.Log("tUE");
         yield return new WaitForSeconds(LoadingAnimSec);
-        Debug.Log("WED");
         LoadingUI.SetActive(false);
     }
 }
