@@ -7,6 +7,10 @@ public class CharacterSelectUIController : MonoBehaviour {
     public Text Name1;
     public Text Name2;
 
+    public Text Desc1;
+    public Text Desc2;
+    private string[] charDesc;
+
     public Sprite[] AllSprites;
 
     public Image StatFrame;
@@ -34,6 +38,7 @@ public class CharacterSelectUIController : MonoBehaviour {
 	void Awake () {
         n = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
+        setDesc();
 	}
     
     void OnEnable ()
@@ -68,6 +73,9 @@ public class CharacterSelectUIController : MonoBehaviour {
         LeftFrame_I.sprite = AllSprites[ isLeftActive ? currentSelector - 1 : currentSelector];
         MidFrame_I.sprite = AllSprites[currentSelector];
         RightFrame_I.sprite = AllSprites[ isRightActive ? currentSelector + 1: currentSelector];
+        //Reassign description info.
+        Desc1.text = charDesc[currentSelector];
+        Desc2.text = charDesc[currentSelector];
 
         //Reassign text names.
         Name1.text = CharNames[currentSelector];
@@ -94,6 +102,9 @@ public class CharacterSelectUIController : MonoBehaviour {
         LeftFrame_I.sprite = AllSprites[currentSelector == 0 ? currentSelector : currentSelector - 1];
         MidFrame_I.sprite = AllSprites[currentSelector];
         RightFrame_I.sprite = AllSprites[currentSelector + 1];
+        //Reassign description text.
+        Desc1.text = charDesc[currentSelector];
+        Desc2.text = charDesc[currentSelector];
 
         //Reassign text names.
         Name1.text = CharNames[currentSelector];
@@ -103,5 +114,18 @@ public class CharacterSelectUIController : MonoBehaviour {
         //Tell Master (local) and Network (online) the character selection.
         m.AssignPlayerCharacter(chosenChar);
         n.SetCharacterInNet();
+    }
+
+    private void setDesc()
+    {
+        charDesc = new string[7]{
+            "A disgruntled student, Fang compensates his terrible grades with blingy fashion.  Except, he compensates his lack of fashion money... by smashing things to destress.",
+            "Paramedic by day. Medicinal supplier by night. Dire contemplates what is actually \"good\" and \"evil\" in this world when his head isn't in the clouds. He also likes blackberries.",
+            "After reading an old book, Lore became a wizard. The book was about architecture and the timing was coincidental. The magic is real, though, so now he fights stuff with the power of wizardry.",
+            "The great and the good are separated by their willingness to sacrifice. I've given up my legs to smash them with my arms!",
+            "One day, Sarchy falls asleep. Upon waking up, Sarchy becomes trapped in a familiar video game world! Stuck in 2D, Sarchy fights to be 3D once again. There's anime to watch!",
+            "A cybernetic wolf created by an extremely lonely weaboo who only wanted to have a friend to talk to about the latest anime.",
+            "???"
+        };
     }
 }
