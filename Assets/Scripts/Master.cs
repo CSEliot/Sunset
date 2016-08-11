@@ -220,7 +220,6 @@ public class Master : MonoBehaviour
 			    break;
 		    case (int)Menu.map:
                 N.JoinServer(true);
-                timeConnecting = Time.time;
                 StartCoroutine(gotoMapHelper());
 			    break;
 		    case (int)Menu.chara:
@@ -263,6 +262,7 @@ public class Master : MonoBehaviour
     /// <returns></returns>
     private IEnumerator gotoMapHelper()
     {
+        timeConnecting = Time.time;
         ToggleConnectLoadScreen(true);
         GoTo(-1);
         while (!PhotonNetwork.connectedAndReady)
@@ -287,13 +287,14 @@ public class Master : MonoBehaviour
 
     private IEnumerator gotoCharHelper()
     {
+        timeConnecting = Time.time;
         ToggleConnectLoadScreen(true);
         GoTo(-1);
         while (!PhotonNetwork.inRoom)
         {
             if (Time.time - timeConnecting > connectingWaitTime)
             {
-                GoTo(0);
+                GoTo(1);
                 MapUI.FullRoomWarning.SetActive(true);
                 break;
             }
