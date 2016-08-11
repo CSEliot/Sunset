@@ -163,7 +163,9 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     /// </summary>
     public void JoinRoom()
     {
-        PhotonNetwork.JoinRoom(Rooms[MapUI.getTargetArena()][MapUI.getTargetRoom()].name);
+        string roomNameTemp = Rooms[MapUI.getTargetArena()][MapUI.getTargetRoom()].name;
+        Debug.Log("Joining room named: " + roomNameTemp);
+        PhotonNetwork.JoinRoom(roomNameTemp);
     }
 
     public void OnPhotonJoinRoomFailed()
@@ -346,8 +348,6 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         string roomNameTemp;
         RoomInfo roomInfoTemp;
         int roomSizeTemp;
-        int[] totalRoomTypesTemp;
-        totalRoomTypesTemp = new int[M.TotalUniqueArenas];
         for (int x = 0; x < latestRooms.Length; x++)
         {
             roomInfoTemp = latestRooms[x];
@@ -358,8 +358,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             for(int i = 0; i < M.TotalUniqueArenas; i++)
             {
                 if (roomNameTemp.Contains(M.ArenaNames[i])){
-                    totalRoomTypesTemp[i]++;
-                    Rooms[i].Add(new room(roomSizeTemp, roomNameTemp + totalRoomTypesTemp[i]));
+                    Rooms[i].Add(new room(roomSizeTemp, roomNameTemp));
                 }
             }
         }
