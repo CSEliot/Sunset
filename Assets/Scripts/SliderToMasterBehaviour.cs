@@ -16,15 +16,14 @@ public class SliderToMasterBehaviour : MonoBehaviour {
         s = GetComponent<Slider>();
         
         s.onValueChanged.AddListener(v);
-	}
+        s.value = PlayerPrefs.GetFloat(Is_SFX ? "SFXVol" : "MSXVol", 0.5f);
+    }
 	
 	// Update is called once per frame
 	void Update () {
 	
 	}
-
-    //private delegate void VolumeListener(float x);
-
+ 
     private void SetVolume(float setAmt)
     {
         Debug.Log("Setting Volume via Delegate.");
