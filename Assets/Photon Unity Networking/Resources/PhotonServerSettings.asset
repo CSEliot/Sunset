@@ -46,4 +46,5 @@ MonoBehaviour:
   - AssignPlayerTag
   - HurtAnim
   - RequestForPickupItems
+  - ShowNotReady
   DisableAutoOpenWizard: 1

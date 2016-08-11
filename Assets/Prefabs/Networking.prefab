@@ -36,10 +36,10 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &114000013577397798
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -52,6 +52,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SendRate: 24
-  m: {fileID: 0}
-  mapUI: {fileID: 0}
-  ServerUpdateLength: 10
+  M: {fileID: 0}
+  MapUI: {fileID: 0}
+  ServerUpdateLength: 5

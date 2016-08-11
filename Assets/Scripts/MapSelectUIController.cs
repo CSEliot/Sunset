@@ -48,6 +48,9 @@ public class MapSelectUIController : MonoBehaviour {
     public GameObject LoadingUI;
     public float LoadingAnimSec;
 
+    public GameObject FullRoomWarning;
+
+
     public void Awake()
     {
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
@@ -101,7 +104,8 @@ public class MapSelectUIController : MonoBehaviour {
 		currentHorizSelector--;
 		m.PlaySFX(5);
 		currentVertSelector = 0;
-		if (currentHorizSelector == 0) {
+        setRoomsUI();
+        if (currentHorizSelector == 0) {
 			LeftFrame.interactable = false;
             LeftArrow.interactable = false;
         } else {
@@ -139,6 +143,7 @@ public class MapSelectUIController : MonoBehaviour {
 		currentHorizSelector++;
         m.PlaySFX(5);   
 		currentVertSelector = 0;
+        setRoomsUI();
         LeftFrame.interactable = true;
         LeftArrow.interactable = true;
         LeftFrame.image.sprite = AllSprites[currentHorizSelector - 1];
@@ -185,8 +190,8 @@ public class MapSelectUIController : MonoBehaviour {
         }
         else
         {
-            RoomPlayerCount.text = "0" + roomSizeText;
-            RoomPlayerCountBG.text = "0" + roomSizeText;
+            RoomPlayerCount.text = "Create a game!";
+            RoomPlayerCountBG.text = "Create a game!";
         }
     }
 

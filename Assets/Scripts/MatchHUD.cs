@@ -139,10 +139,22 @@ public class MatchHUD : MonoBehaviour{
     }
 
     public void NotReady(){
-        m.GoBack();
+        if (!isReady)
+        {
+            m.GoBack();
+            return;
+        }
+        isReady = false;
+        m_PhotonView.RPC("ShowNotReady", PhotonTargets.All, PhotonNetwork.player.ID);
+        SelectorYes.SetActive(true);
+        readyUped = false;
+        ExitGames.Client.Photon.Hashtable tempPlayerTable =
+            PhotonNetwork.player.customProperties;
+        tempPlayerTable["IsReady"] = false;
+        PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
     }
 
-    //Need 2 things: Chosen CHaracter and Player Num
+    //Need 2 things: Chosen Character and Player Num
     [PunRPC]
     void ShowReady(int logInID)
     {
@@ -162,6 +174,27 @@ public class MatchHUD : MonoBehaviour{
             Debug.Log("Not all Ready: " + totalReady + "/" + n.GetInRoomTotal);
         }
     }
+
+    [PunRPC]
+    void ShowNotReady(int logInID)
+    {
+        m.PlaySFX(6);
+        totalReady--;
+        int readyChar = n.GetCharNum(logInID);
+        int readySlot = n.GetSlotNum(logInID);
+
+        PlayerSlots[readySlot].sprite = Empty;
+
+        if (totalReady == n.GetInRoomTotal)
+        {
+            startGame();
+        }
+        else
+        {
+            Debug.Log("Not all Ready: " + totalReady + "/" + n.GetInRoomTotal);
+        }
+    }
+
 
     public void UpdateReadyHUD()
     {

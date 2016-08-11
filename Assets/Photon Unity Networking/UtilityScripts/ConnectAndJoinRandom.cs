@@ -17,10 +17,9 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     
     public int SendRate;
 
-    public Master m;
+    public Master M;
+    public MapSelectUIController MapUI;
     private MatchHUD matchHUD;
-    public MapSelectUIController mapUI;
-    //private gameManager gameMan;
 
     private bool inLobby = false;
     private RoomInfo[] latestRooms;
@@ -78,7 +77,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         PhotonNetwork.sendRateOnSerialize = SendRate;
         
 
-        version = m.Version; //Debug.isDebugBuild ? "test" : 
+        version = M.Version; //Debug.isDebugBuild ? "test" : 
         isEastServer = PlayerPrefs.GetInt("Server", 0) == 1 ? true : false;
         //"Server" returns either 0=none, 1 = east, 2 = West
         //isEastServer won't be used if 0, and instead 'best' region is used.
@@ -89,7 +88,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         isConnectAllowed = false; //Enabled when server region given.
 
 		Rooms = new List<List<room>> ();
-        for(int x = 0; x < m.TotalUniqueArenas; x++)
+        for(int x = 0; x < M.TotalUniqueArenas; x++)
         {
             Rooms.Add(new List<room>());
             Rooms[x].Clear();
@@ -143,20 +142,20 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         ////Track each player's chosen character.
         if (playerProperties.ContainsKey("characterNum"))
         {
-            playerProperties["characterNum"] = m.PlayerCharNum;
+            playerProperties["characterNum"] = M.PlayerCharNum;
         }
         else
         {
-            playerProperties.Add("characterNum", m.PlayerCharNum);
+            playerProperties.Add("characterNum", M.PlayerCharNum);
         }
 
         PhotonNetwork.player.SetCustomProperties(playerProperties);
 
         //Update self info tracking.
         if(!ID_to_CharNum.ContainsKey(PhotonNetwork.player.ID))
-            ID_to_CharNum.Add(PhotonNetwork.player.ID, m.PlayerCharNum);
+            ID_to_CharNum.Add(PhotonNetwork.player.ID, M.PlayerCharNum);
         else
-            ID_to_CharNum[PhotonNetwork.player.ID] = m.PlayerCharNum;
+            ID_to_CharNum[PhotonNetwork.player.ID] = M.PlayerCharNum;
     }
 
     /// <summary>
@@ -164,12 +163,18 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     /// </summary>
     public void JoinRoom()
     {
-        PhotonNetwork.JoinOrCreateRoom(m.GetRoomName()+mapUI.getTargetRoom(), new RoomOptions() { MaxPlayers = Convert.ToByte(m.Max_Players) }, null);
+        PhotonNetwork.JoinRoom(Rooms[MapUI.getTargetArena()][MapUI.getTargetRoom()].name);
+    }
+
+    public void OnPhotonJoinRoomFailed()
+    {
+        MapUI.FullRoomWarning.SetActive(true);
     }
 
     public void CreateRoom()
     {
-        PhotonNetwork.JoinOrCreateRoom(m.GetRoomName()+(Rooms[mapUI.getTargetArena()].Count), new RoomOptions() { MaxPlayers = Convert.ToByte(m.Max_Players) }, null);
+        string roomName = M.GetRoomName() + (Rooms[MapUI.getTargetArena()].Count + 1);
+        PhotonNetwork.JoinOrCreateRoom(roomName, new RoomOptions() { MaxPlayers = Convert.ToByte(M.Max_Players) }, null);
     }
 
     public void assignMatchHUD()
@@ -209,7 +214,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
         Debug.LogError("Failed to Connect!");
         Debug.LogError("Cause: " + cause);
-        m.GoBack();
+        M.GoBack();
     }
 
     public void OnLeftRoom()
@@ -229,7 +234,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         //Get total number of players logged into room.
         int totalPlayersFound = PhotonNetwork.playerList.Length;
         PhotonNetwork.playerName = "Player " + totalPlayersFound;
-        m.InRoomNumber = totalPlayersFound - 1;
+        M.InRoomNumber = totalPlayersFound - 1;
 
         // If it's a new room, create descriptor keys
         ExitGames.Client.Photon.Hashtable tempTable;
@@ -333,7 +338,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         latestRooms = PhotonNetwork.GetRoomList();
 
         //empty out old rooms list
-        for(int x = 0; x < m.TotalUniqueArenas; x++)
+        for(int x = 0; x < M.TotalUniqueArenas; x++)
         {
             Rooms[x].Clear();
         }
@@ -342,7 +347,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         RoomInfo roomInfoTemp;
         int roomSizeTemp;
         int[] totalRoomTypesTemp;
-        totalRoomTypesTemp = new int[m.TotalUniqueArenas];
+        totalRoomTypesTemp = new int[M.TotalUniqueArenas];
         for (int x = 0; x < latestRooms.Length; x++)
         {
             roomInfoTemp = latestRooms[x];
@@ -350,9 +355,9 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             roomSizeTemp = roomInfoTemp.playerCount;
 
             Debug.Log("Room " + roomNameTemp + " has " + roomSizeTemp + " players.");
-            for(int i = 0; i < m.TotalUniqueArenas; i++)
+            for(int i = 0; i < M.TotalUniqueArenas; i++)
             {
-                if (roomNameTemp.Contains(m.ArenaNames[i])){
+                if (roomNameTemp.Contains(M.ArenaNames[i])){
                     totalRoomTypesTemp[i]++;
                     Rooms[i].Add(new room(roomSizeTemp, roomNameTemp + totalRoomTypesTemp[i]));
                 }

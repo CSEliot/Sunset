@@ -99,7 +99,8 @@ public class Master : MonoBehaviour
 	private bool isNewScene;
     //	private  targetScene;
 
-    private ConnectAndJoinRandom n;
+    public ConnectAndJoinRandom N;
+    public MapSelectUIController MapUI;
 
     private float timeConnecting;
     private float connectingWaitTime;
@@ -107,7 +108,7 @@ public class Master : MonoBehaviour
     void Awake()
     {
 
-        n = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
+        N = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
         
         version = Application.version;
         VersionUI.text = "BETA " + Application.version;
@@ -137,7 +138,7 @@ public class Master : MonoBehaviour
         
         arenaNames = new string[totalUniqueArenas] { "Pillar", "Void", "Lair" };
 
-        connectingWaitTime = 60; //Seconds
+        connectingWaitTime = 7; //Seconds
     }
 
     // Use this for initialization
@@ -180,13 +181,13 @@ public class Master : MonoBehaviour
                 }
                 currentMenu = Menu.map;
                 switchCanvas((int)Menu.map);
-                switchOutGame();
-                n.LeaveRoom();
+                unloadArena();
+                N.LeaveRoom();
                 break;
 		    case Menu.map: 
 			    currentMenu = Menu.main;
 			    switchCanvas ((int)Menu.main);
-                n.LeaveServer();
+                N.LeaveServer();
 			    break;
 		    case Menu.practice:
 			    currentMenu = Menu.options;
@@ -194,6 +195,7 @@ public class Master : MonoBehaviour
 			    break;
 		    case Menu.ingame:
                 currentMenu = Menu.chara;
+                PlayMSX(0);
                 loadMenu();
                 matchHUD.MatchCamera.SetActive(false);
                 break;
@@ -217,7 +219,7 @@ public class Master : MonoBehaviour
 			    switchCanvas ((int)Menu.main);
 			    break;
 		    case (int)Menu.map:
-                n.JoinServer(true);
+                N.JoinServer(true);
                 timeConnecting = Time.time;
                 StartCoroutine(gotoMapHelper());
 			    break;
@@ -227,13 +229,12 @@ public class Master : MonoBehaviour
                     Debug.LogError("No room action given! Create or Join?");
                 }else if(rmAction == RoomAction.join)
                 {
-                    n.JoinRoom();
+                    N.JoinRoom();
                 }else
                 {
-                    n.CreateRoom();
+                    N.CreateRoom();
                 }
-                switchCanvas((int)Menu.chara);
-                switchInGame(); //the InGame map is loaded in the background.
+                StartCoroutine(gotoCharHelper());
                 break; 
             case (int)Menu.options:
                 switchCanvas((int)Menu.options);
@@ -269,7 +270,7 @@ public class Master : MonoBehaviour
             if (Time.time - timeConnecting > connectingWaitTime)
             {
                 GoTo(0);
-                n.JoinServer(false);
+                N.JoinServer(false);
                 break;
             }else
             {
@@ -284,7 +285,34 @@ public class Master : MonoBehaviour
         ToggleConnectLoadScreen(false);
     }
 
-	private void switchCanvas( int switchTo){
+    private IEnumerator gotoCharHelper()
+    {
+        ToggleConnectLoadScreen(true);
+        GoTo(-1);
+        while (!PhotonNetwork.inRoom)
+        {
+            if (Time.time - timeConnecting > connectingWaitTime)
+            {
+                GoTo(0);
+                MapUI.FullRoomWarning.SetActive(true);
+                break;
+            }
+            else
+            {
+                yield return null;
+            }
+        }
+        if (PhotonNetwork.inRoom)
+        {
+            switchCanvas((int)Menu.chara);
+            loadArena(); //the InGame map is loaded in the background.
+        }
+        ToggleConnectLoadScreen(false);
+    }
+
+
+
+    private void switchCanvas( int switchTo){
         currentMenu = (Menu)switchTo;
         MenuCanvasList[0].SetActive(switchTo == 0 ? true : false); //main
         MenuCanvasList[1].SetActive(switchTo == 1 ? true : false); //map select
@@ -292,16 +320,14 @@ public class Master : MonoBehaviour
         MenuCanvasList[3].SetActive(switchTo == 3 ? true : false); //options
     }
 
-    private void switchInGame()
+    private void loadArena()
     {
         SceneManager.LoadScene((int)currentMap, LoadSceneMode.Additive);
-        PlayMSX(2);
     }
 
-    private void switchOutGame()
+    private void unloadArena()
     {
         SceneManager.UnloadScene(SceneManager.GetSceneAt(1));
-        PlayMSX(3);
     }
 
     private void unloadMenu()
@@ -312,7 +338,7 @@ public class Master : MonoBehaviour
             menuObjs[i].SetActive(false);
         }
         gameObject.SetActive(true); //Master gets disabled in this general sweep, we don't want that.
-        n.gameObject.SetActive(true); // Same w/ Networking.
+        N.gameObject.SetActive(true); // Same w/ Networking.
     }
 
     private void loadMenu()
