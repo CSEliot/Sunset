@@ -54,6 +54,11 @@ TextureImporter:
     textureFormat: -3
     compressionQuality: 50
     allowsAlphaSplitting: 1
+  - buildTarget: Standalone
+    maxTextureSize: 128
+    textureFormat: -3
+    compressionQuality: 50
+    allowsAlphaSplitting: 1
   spriteSheet:
     serializedVersion: 2
     sprites: []
