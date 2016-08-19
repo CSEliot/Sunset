@@ -114,6 +114,7 @@ public class MatchHUD : MonoBehaviour{
         if (!readyUped && Input.GetButtonDown("Submit") && !isReady)
         {
             NotReady();
+
         }
 	}
 
@@ -199,7 +200,8 @@ public class MatchHUD : MonoBehaviour{
     public void UpdateReadyHUD()
     {
         bool isActive = true;
-        for(int i = 0; i < 6; i++)
+        
+        for(int i = 0; i < m.Max_Players; i++)
         {
             if (i == PhotonNetwork.playerList.Length)
                 isActive = false;

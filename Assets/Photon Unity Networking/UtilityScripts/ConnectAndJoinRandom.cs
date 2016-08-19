@@ -274,15 +274,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             //If ID doesn't match your local Client ID, then it's another Player.
             if (PhotonNetwork.player.ID != playerID)
             {
-                //Add other players to info tracking.
-                if (!ID_to_CharNum.ContainsKey(playerID))
-                    ID_to_CharNum.Add(playerID, (int)PhotonNetwork.playerList[i].customProperties["characterNum"]);
-                else
-                    ID_to_CharNum[playerID] = (int)PhotonNetwork.playerList[i].customProperties["characterNum"];
-                if (!ID_to_SlotNum.ContainsKey(playerID))
-                    ID_to_SlotNum.Add(playerID, i);
-                else
-                    ID_to_SlotNum[playerID] = i;
+                assignPlayerTracking(playerID, i);
             }
             clientRoomSize++;
         }     
@@ -292,16 +284,8 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     {
         matchHUD.AddPlayer(player);
 
-        //Add other players to info tracking.
-        if (!ID_to_CharNum.ContainsKey(player.ID))
-            ID_to_CharNum.Add(player.ID, (int)player.customProperties["characterNum"]);
-        else
-            ID_to_CharNum[player.ID] = (int)player.customProperties["characterNum"];
-        if (!ID_to_SlotNum.ContainsKey(player.ID))
-            ID_to_SlotNum.Add(player.ID, PhotonNetwork.playerList.Length - 1);
-        else
-            ID_to_SlotNum[player.ID] = PhotonNetwork.playerList.Length - 1;
-        
+        //Add new player info tracking.
+        assignPlayerTracking(player);
         clientRoomSize++;
 
         setReadyStatusInNet(false);
@@ -318,7 +302,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         ID_to_SlotNum.Remove(otherID);
         ID_to_CharNum.Remove(otherID);
         clientRoomSize--;
-
+        matchHUD.RemovePlayer(player);
         setReadyStatusInNet(false);
     }
 
@@ -432,9 +416,57 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
     private void setReadyStatusInNet(bool isReady)
     {
+        if (!isReady)
+            matchHUD.NotReady();
+
+        /*SO. 2 DIFFERENT WAYS OF UNREADYING: MANUALLY OR FORCIBLY. WE CANT USE "NOTREADY" FOR BOTH.
+         * CURRENTLY. IF NOTREADY IS CALLED FORCIBLY WHILE YOU'RE IN CHAR SELECT,
+         * THE GAME WILL "GOBACK", FORCING YOU OUT OF CHARACTER SELECT.
+         * i FEEL THAT A "IF IN-READYMATCHUP" IS LAZY AND NOT GOOD PRACTICE.
+         * LETS FIND SOMETHING ELSE
+         */
+
         ExitGames.Client.Photon.Hashtable tempPlayerTable = PhotonNetwork.player.customProperties;
         tempPlayerTable["IsReady"] = isReady;
         PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
+    }
+
+    private void assignPlayerTracking(int playerID, int i)
+    {
+        int playerChar;
+        if (PhotonNetwork.playerList[i].customProperties.ContainsKey("characterNum"))
+            playerChar = (int)PhotonNetwork.playerList[i].customProperties["characterNum"];
+        else
+            playerChar = 0;
+        //Add other players to info tracking.
+        if (!ID_to_CharNum.ContainsKey(playerID))
+            ID_to_CharNum.Add(playerID, playerChar);
+        else
+            ID_to_CharNum[playerID] = playerChar;
+        if (!ID_to_SlotNum.ContainsKey(playerID))
+            ID_to_SlotNum.Add(playerID, i);
+        else
+            ID_to_SlotNum[playerID] = i;
+    }
+
+    private void assignPlayerTracking(PhotonPlayer player)
+    {
+        int playerChar;
+        int playerID = player.ID;
+        if (player.customProperties.ContainsKey("characterNum"))
+            playerChar = (int)player.customProperties["characterNum"];
+        else
+            playerChar = 0;
+        //Add other players to info tracking.
+        if (!ID_to_CharNum.ContainsKey(playerID))
+            ID_to_CharNum.Add(playerID, playerChar);
+        else
+            ID_to_CharNum[playerID] = playerChar;
+        if (!ID_to_SlotNum.ContainsKey(playerID))
+            ID_to_SlotNum.Add(playerID, PhotonNetwork.playerList.Length - 1);
+        else
+            ID_to_SlotNum[playerID] = PhotonNetwork.playerList.Length - 1;
+
     }
 
 }
