@@ -175,7 +175,8 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
     public void CreateRoom()
     {
-        string roomName = M.GetRoomName() + (Rooms[MapUI.getTargetArena()].Count + 1);
+        int randInt = UnityEngine.Random.Range(0, 10000);
+        string roomName = M.GetArenaName() + (Rooms[MapUI.getTargetArena()].Count + randInt);
         PhotonNetwork.JoinOrCreateRoom(roomName, new RoomOptions() { MaxPlayers = Convert.ToByte(M.Max_Players) }, null);
     }
 
