@@ -245,11 +245,11 @@ MonoBehaviour:
   SFX:
   - {fileID: 8300000, guid: 81b785f9d9c1d4fa782d238424990d83, type: 3}
   - {fileID: 8300000, guid: 05929a34a4eaf4e1b99da072671e1851, type: 3}
-  - {fileID: 8300000, guid: 5af15b01d76f94f709f6ac7c81427cde, type: 3}
+  - {fileID: 8300000, guid: b2179d7a0a9faec4ea1fcea18cff9dc0, type: 3}
   - {fileID: 8300000, guid: 1d96fbe15c38041e28fa4aeb01a65d21, type: 3}
   - {fileID: 8300000, guid: 7ce71fed9a1a6482183eafda6acc9f07, type: 3}
   - {fileID: 8300000, guid: 78308d5d44df14e32913603ee3b4de6d, type: 3}
-  - {fileID: 0}
+  - {fileID: 8300000, guid: 3b5de01f0504080479affe8ec3f4dd5a, type: 3}
   - {fileID: 0}
   MSX:
   - {fileID: 8300000, guid: 0b06de17858b94edfb8f855701064572, type: 3}

@@ -113,7 +113,13 @@ public class MapSelectUIController : MonoBehaviour {
             LeftArrow.interactable = true;
             LeftFrame.image.sprite = AllSprites[currentHorizSelector - 1];
 		}
-		MidFrame.sprite = AllHDSprites[currentHorizSelector];
+
+        MidTopFrames[0].sprite = AllHDSprites[currentHorizSelector];
+        MidTopFrames[1].sprite = AllHDSprites[currentHorizSelector];
+        MidFrame.sprite = AllHDSprites[currentHorizSelector];
+        MidBottomFrames[0].sprite = AllHDSprites[currentHorizSelector];
+        MidBottomFrames[1].sprite = AllHDSprites[currentHorizSelector];
+
         RightFrame.interactable = true;
         RightArrow.interactable = true;
         RightFrame.image.sprite = AllSprites[currentHorizSelector + 1];
@@ -125,16 +131,20 @@ public class MapSelectUIController : MonoBehaviour {
 
 	public void ShiftSelectionUp(){
 
-		if (currentVertSelector == n.Rooms [currentHorizSelector - 1].Count + 1)
+		if (currentVertSelector == n.Rooms [currentHorizSelector].Count - 1 )
 			return;
+        m.PlaySFX(7);
 		currentVertSelector++;
+        setRoomsUI();
 	}
 
 	public void ShiftSelectionDown() {
 		if (currentVertSelector == 0)
 			return;
-		currentVertSelector--;
-	}
+        m.PlaySFX(8);
+        currentVertSelector--;
+        setRoomsUI();
+    }
 
     public void ShiftSelectionRight()
     {
@@ -147,8 +157,14 @@ public class MapSelectUIController : MonoBehaviour {
         LeftFrame.interactable = true;
         LeftArrow.interactable = true;
         LeftFrame.image.sprite = AllSprites[currentHorizSelector - 1];
-        MidFrame.sprite   = AllHDSprites[currentHorizSelector];
-		if (currentHorizSelector == maxArenas-1) {
+
+        MidTopFrames[0].sprite = AllHDSprites[currentHorizSelector];
+        MidTopFrames[1].sprite = AllHDSprites[currentHorizSelector];
+        MidFrame.sprite = AllHDSprites[currentHorizSelector];
+        MidBottomFrames[0].sprite = AllHDSprites[currentHorizSelector];
+        MidBottomFrames[1].sprite = AllHDSprites[currentHorizSelector];
+
+        if (currentHorizSelector == maxArenas-1) {
 			RightFrame.interactable = false;
             RightArrow.interactable = false;
         } else {
@@ -177,16 +193,19 @@ public class MapSelectUIController : MonoBehaviour {
 
         roomsAvailable = n.Rooms [currentHorizSelector].Count;
         Join.interactable = roomsAvailable != 0;
-		MidTopFrames [0].enabled = roomsAvailable > 1;
-		MidTopFrames [1].enabled = roomsAvailable > 2;
+		MidTopFrames [0].enabled = roomsAvailable > 1 && currentVertSelector < n.Rooms[currentHorizSelector].Count - 1;
+		MidTopFrames [1].enabled = roomsAvailable > 2 && currentVertSelector < n.Rooms[currentHorizSelector].Count - 2;
 		MidBottomFrames [0].enabled = currentVertSelector > 0;
 		MidBottomFrames [1].enabled = currentVertSelector > 1;
-        UpArrow.interactable = roomsAvailable > 1;
+        UpArrow.interactable = roomsAvailable > 1 && currentVertSelector != n.Rooms[currentHorizSelector].Count - 1; ;
 		DownArrow.interactable = currentVertSelector > 0;
 
 		if (roomsAvailable != 0) {
-			RoomPlayerCount.text = n.Rooms [currentHorizSelector] [currentVertSelector].size + roomSizeText;
-			RoomPlayerCountBG.text = n.Rooms [currentHorizSelector] [currentVertSelector].size + roomSizeText;
+            RoomPlayerCount.text = n.Rooms[currentHorizSelector][currentVertSelector].size + "/6 Players\n" +
+                n.Rooms[currentHorizSelector][currentVertSelector].name;//roomSizeText;
+
+            RoomPlayerCountBG.text = n.Rooms[currentHorizSelector][currentVertSelector].size + "/6 Players\n" +
+                n.Rooms[currentHorizSelector][currentVertSelector].name;//roomSizeText;
         }
         else
         {

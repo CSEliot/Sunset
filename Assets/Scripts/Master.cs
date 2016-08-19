@@ -30,7 +30,7 @@ public class Master : MonoBehaviour
     public int PlayerCharNum;
     public int InRoomNumber;
 
-    private string RoomName;
+    private string ArenaName;
 
     public AudioClip[] SFX;
     public AudioClip[] MSX;
@@ -116,7 +116,7 @@ public class Master : MonoBehaviour
         currentMap = Map.pillar;
         rmAction = RoomAction.unset;
 
-        RoomName = "Pillar";
+        ArenaName = "Pillar";
         
         isEast = true;
         bool tempControlsShown = PlayerPrefs.GetInt("isControlsShown", 1) == 1 ? true : false;
@@ -176,7 +176,7 @@ public class Master : MonoBehaviour
                 if (currentMap == Map.practice)
                 {
                     GoTo(3);
-                    SetRoomName("Pillar"); //reset level from practice level back to 0: Pillar.
+                    SetArenaName("Pillar"); //reset level from practice level back to 0: Pillar.
                     break;
                 }
                 currentMenu = Menu.map;
@@ -240,7 +240,7 @@ public class Master : MonoBehaviour
                 break;
             case (int)Menu.practice:
                 switchCanvas((int)Menu.chara);
-                SetRoomName("Practice");
+                SetArenaName("Practice");
                 break;
             case (int)Menu.ingame:
                 switchCanvas((int)Menu.ingame);
@@ -420,10 +420,10 @@ public class Master : MonoBehaviour
         Debug.Log("MSXVolume Set");
     }
 
-    public void SetRoomName(string room_name)
+    public void SetArenaName(string arena_name)
     {
-        RoomName = room_name;
-        switch (room_name)
+        ArenaName = arena_name;
+        switch (arena_name)
         {
             case "Practice":
                 currentMap = Map.practice;
@@ -444,9 +444,9 @@ public class Master : MonoBehaviour
             
     }
 
-    public string GetRoomName()
+    public string GetArenaName()
     {
-        return RoomName;
+        return ArenaName;
     }
 
     public bool IsControlsShown
