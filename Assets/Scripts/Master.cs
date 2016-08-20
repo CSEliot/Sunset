@@ -54,9 +54,7 @@ public class Master : MonoBehaviour
     // 1 = map
     // 2 = character select
     // 3 = Options
-
-    private MatchHUD matchHUD;
-
+    
     public Text VersionUI;
     public GameObject LoadingUI;
     public GameObject Rays;
@@ -197,7 +195,6 @@ public class Master : MonoBehaviour
                 currentMenu = Menu.chara;
                 PlayMSX(0);
                 loadMenu();
-                matchHUD.MatchCamera.SetActive(false);
                 break;
             case Menu.options:
                 currentMenu = Menu.main;
@@ -245,7 +242,6 @@ public class Master : MonoBehaviour
             case (int)Menu.ingame:
                 switchCanvas((int)Menu.ingame);
                 unloadMenu();
-                matchHUD.MatchCamera.SetActive(true);
                 break;
             case -1:
                 switchCanvas(-1);
@@ -527,12 +523,6 @@ public class Master : MonoBehaviour
     public void SetRoomAction(int action)
     {
         rmAction = (RoomAction)action;
-    }
-
-    public void assignMatchHUD()
-    {
-        Debug.Log("Match HUD assigned.");
-        matchHUD = GameObject.FindGameObjectWithTag("MatchHUD").GetComponent<MatchHUD>();
     }
 
     private void ToggleConnectLoadScreen(bool isActive)

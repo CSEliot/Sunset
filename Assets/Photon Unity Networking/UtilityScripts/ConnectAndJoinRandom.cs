@@ -20,13 +20,10 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     public Master M;
     public MapSelectUIController MapUI;
     public PhotonView M_PhotonView;
-    private MatchHUD matchHUD;
 
     private bool inLobby = false;
     private RoomInfo[] latestRooms;
     private int totalOnline;
-
-    private int clientRoomSize;
     
     private int serverPlayerMax;
     private bool isEastServer;
@@ -36,9 +33,15 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     
     private Dictionary<int, int> ID_to_SlotNum;
     private Dictionary<int, int> ID_to_CharNum;
+    private Dictionary<int, bool> ID_to_RdyNum;
 
     private TypedLobby inMatchLobby;
 
+    #region Room State Tracking
+    private int readyTotal;
+    private bool gameStarted;
+    private bool rdyStateChange;
+    #endregion
     /// <summary>
     /// For storing online room data locally.
     /// </summary>
@@ -71,6 +74,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         
         ID_to_SlotNum = new Dictionary<int, int>();
         ID_to_CharNum = new Dictionary<int, int>();
+        ID_to_RdyNum = new Dictionary<int, bool>();
         
         Debug.Log("Setting Send Rate to: " + SendRate);
         PhotonNetwork.sendRate = SendRate;
@@ -140,7 +144,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     {
         Debug.Log("Adding player property");
         ExitGames.Client.Photon.Hashtable playerProperties = PhotonNetwork.player.customProperties;
-        ////Track each player's chosen character.
+        //Update local player's chosen character online.
         if (playerProperties.ContainsKey("characterNum"))
         {
             playerProperties["characterNum"] = M.PlayerCharNum;
@@ -152,7 +156,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
         PhotonNetwork.player.SetCustomProperties(playerProperties);
 
-        //Update self info tracking.
+        //Update local player's chosen character locally.
         if(!ID_to_CharNum.ContainsKey(PhotonNetwork.player.ID))
             ID_to_CharNum.Add(PhotonNetwork.player.ID, M.PlayerCharNum);
         else
@@ -179,11 +183,6 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         int randInt = UnityEngine.Random.Range(0, 10000);
         string roomName = M.GetArenaName() + (Rooms[MapUI.getTargetArena()].Count + randInt);
         PhotonNetwork.JoinOrCreateRoom(roomName, new RoomOptions() { MaxPlayers = Convert.ToByte(M.Max_Players) }, null);
-    }
-
-    public void assignMatchHUD()
-    {
-        matchHUD = GameObject.FindGameObjectWithTag("MatchHUD").GetComponent<MatchHUD>();
     }
 
     public void OnConnectedToMaster()
@@ -226,11 +225,17 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         Debug.Log("Left Room.");
     }
 
+    public void OnDisconnectedFromPhoton()
+    {
+        
+    }
+
     public void OnJoinedRoom()
     {
         // All callbacks are listed in enum: PhotonNetworkingMessage.
         Debug.Log("On Joined Room: " + PhotonNetwork.room.name);
         inLobby = false;
+        readyTotal = 0;
 
         //As a new player, we must assign default player properties.
         SetCharacterInNet();
@@ -252,7 +257,6 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         // if room is already made AND the game started . . .
         if ((bool)PhotonNetwork.room.customProperties["GameStarted"] == true)
         {
-            matchHUD.ActivateSpectating();
             return;
         }
         
@@ -267,6 +271,8 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         //Apply IsReady state. Begins false.
         PhotonNetwork.player.SetCustomProperties(tempTable);
 
+        clearAssignedPlayerTracking();
+
         //Add info from players already logged in, including self.
         int playerID;
         for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
@@ -277,20 +283,17 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             {
                 assignPlayerTracking(playerID, i);
             }
-            clientRoomSize++;
         }
-
+        
         //Finally, tell everyone to reset their ready status.
-        ResetReadyStatus();
+        SetReadyStatus(PhotonTargets.Others, false);
     }
 
     void OnPhotonPlayerConnected(PhotonPlayer player)
     {
-        matchHUD.AddPlayer(player);
-
         //Add new player info tracking.
         assignPlayerTracking(player);
-        clientRoomSize++;
+        readyTotal = 0;
     }
 
     void OnPhotonPlayerDisconnected(PhotonPlayer player)
@@ -301,11 +304,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         isConnectAllowed = true;
         
         int otherID = player.ID;
-        ID_to_SlotNum.Remove(otherID);
-        ID_to_CharNum.Remove(otherID);
-        clientRoomSize--;
-        matchHUD.RemovePlayer(player);
-        ResetReadyStatus();
+        unassignPlayerTracking(player);
     }
 
     public void JoinServer(bool attempt)
@@ -376,7 +375,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     {
         get
         {
-            return clientRoomSize;
+            return PhotonNetwork.room.playerCount;
         }
     }
 
@@ -388,16 +387,22 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         }
     }
 
-    [PunRPC]
-    private void ShowReady(int logInID)
+    public bool GameStarted
     {
-        matchHUD.ShowPlayerReady(logInID);
+        get
+        {
+            return gameStarted;
+        }
     }
 
-    [PunRPC]
-    private void ShowNotReady(int logInID)
+    public bool GetRdyStateChange()
     {
-        matchHUD.ShowPlayerNotReady(logInID);
+        if (rdyStateChange)
+        {
+            rdyStateChange = false;
+            return true;
+        }
+        return rdyStateChange;
     }
 
     public int GetCharNum(int logInID)
@@ -410,6 +415,11 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
        return ID_to_SlotNum[logInID];
     }
 
+    public bool GetRdyStatus(int logInID)
+    {
+        return ID_to_RdyNum[logInID];
+    }
+
     public void LeaveServer()
     {
         Debug.Log("Leaving server . . .");
@@ -420,37 +430,49 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     public void LeaveRoom()
     {
         Debug.Log("Leaving Room.");
+        unassignPlayerTracking(PhotonNetwork.player);
         PhotonNetwork.LeaveRoom();
     }
 
+    public void SetReadyStatus(PhotonTargets tellWho, bool readyStatus)
+    {
+        M_PhotonView.RPC("ShowReadyStatus", tellWho, PhotonNetwork.player.ID, readyStatus);
+    }
+
+    public void ReadyButton()
+    {
+        ExitGames.Client.Photon.Hashtable tempPlayerTable = PhotonNetwork.player.customProperties;
+        tempPlayerTable["IsReady"] = true;
+        PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
+        SetReadyStatus(PhotonTargets.All, true);
+    }
+
+    public void UnreadyButton()
+    {
+        ExitGames.Client.Photon.Hashtable tempPlayerTable = PhotonNetwork.player.customProperties;
+        tempPlayerTable["IsReady"] = false;
+        PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
+        SetReadyStatus(PhotonTargets.All, false);
+    }
+
+    [PunRPC]
+    private void ShowReadyStatus(int playerNum, bool readyStatus)
+    {
+        ID_to_RdyNum[playerNum] = readyStatus;
+        rdyStateChange = true;
+    }
+    
     private void printStatus()
     {
         Debug.Log("Connection Status: " + PhotonNetwork.connectionStateDetailed);
     }
 
-    public void ResetReadyStatus()
-    {
-        /*SO. 2 DIFFERENT WAYS OF UNREADYING: MANUALLY OR FORCIBLY. WE CANT USE "NOTREADY" FOR BOTH.
-         * CURRENTLY. IF NOTREADY IS CALLED FORCIBLY WHILE YOU'RE IN CHAR SELECT,
-         * THE GAME WILL "GOBACK", FORCING YOU OUT OF CHARACTER SELECT.
-         * i FEEL THAT A "IF IN-READYMATCHUP" IS LAZY AND NOT GOOD PRACTICE.
-         * LETS FIND SOMETHING ELSE
-         */
-        M_PhotonView.RPC("ShowNotReady", PhotonTargets.All, PhotonNetwork.player.ID);
-        ExitGames.Client.Photon.Hashtable tempPlayerTable = PhotonNetwork.player.customProperties;
-        tempPlayerTable["IsReady"] = false;
-        PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
-    }
-
-    public void SetReadyStatus()
-    {
-        M_PhotonView.RPC("ShowReady", PhotonTargets.All, PhotonNetwork.player.ID);
-        ExitGames.Client.Photon.Hashtable tempPlayerTable =
-            PhotonNetwork.player.customProperties;
-        tempPlayerTable["IsReady"] = true;
-        PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
-    }
-
+    /// <summary>
+    /// Helper function for OnJoinedRoom. Called while iterating through current list of players
+    /// in the room.
+    /// </summary>
+    /// <param name="playerID">Unique Player ID</param>
+    /// <param name="playerNum">i'th player in room</param>
     private void assignPlayerTracking(int playerID, int playerNum)
     {
         int playerChar;
@@ -469,8 +491,18 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             ID_to_SlotNum.Add(playerID, playerNum);
         else
             ID_to_SlotNum[playerID] = playerNum;
+
+        if (!ID_to_RdyNum.ContainsKey(playerID))
+            ID_to_RdyNum.Add(playerID, false);
+        else
+            ID_to_RdyNum[playerID] = false;
+
     }
 
+    /// <summary>
+    /// Helper function called when a new player joins after you.
+    /// </summary>
+    /// <param name="player">New player that connected.</param>
     private void assignPlayerTracking(PhotonPlayer player)
     {
         int playerChar;
@@ -490,6 +522,25 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         else
             ID_to_SlotNum[playerID] = PhotonNetwork.playerList.Length - 1;
 
+    }
+
+    /// <summary>
+    /// Helper function called when a player leaves.
+    /// </summary>
+    /// <param name="player">player that disconnected.</param>
+    private void unassignPlayerTracking(PhotonPlayer player)
+    {
+        int playerID = player.ID;
+        ID_to_CharNum.Remove(playerID);
+        ID_to_RdyNum.Remove(playerID);
+        ID_to_SlotNum.Remove(playerID);
+    }
+
+    private void clearAssignedPlayerTracking( )
+    {
+        ID_to_CharNum.Clear();
+        ID_to_RdyNum.Clear();
+        ID_to_SlotNum.Clear();
     }
 
 }
