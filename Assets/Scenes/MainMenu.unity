@@ -1447,6 +1447,16 @@ Prefab:
       propertyPath: MapUI
       value: 
       objectReference: {fileID: 948514863}
+    - target: {fileID: 114000012754642432, guid: cde12b7c2517d7e4ea8540800eae8729,
+        type: 2}
+      propertyPath: viewIdField
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012754642432, guid: cde12b7c2517d7e4ea8540800eae8729,
+        type: 2}
+      propertyPath: instantiationId
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: cde12b7c2517d7e4ea8540800eae8729, type: 2}
   m_IsPrefabParent: 0
