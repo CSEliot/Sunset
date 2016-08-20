@@ -141,14 +141,14 @@ public class MatchHUD : MonoBehaviour{
         n.ResetReadyStatus();
     }
 
-    //Need 2 things: Chosen Character and Player Num
-    [PunRPC]
-    void ShowReady(int logInID)
+
+
+    public void ShowPlayerReady(int playerID)
     {
         m.PlaySFX(2);
         totalReady++;
-        int readyChar = n.GetCharNum(logInID);
-        int readySlot = n.GetSlotNum(logInID);
+        int readyChar = n.GetCharNum(playerID);
+        int readySlot = n.GetSlotNum(playerID);
 
         PlayerSlots[readySlot].sprite = getImage(readyChar);
          
@@ -161,25 +161,17 @@ public class MatchHUD : MonoBehaviour{
             Debug.Log("Not all Ready: " + totalReady + "/" + n.GetInRoomTotal);
         }
     }
-
-    [PunRPC]
-    void ShowNotReady(int logInID)
+    
+    public void ShowPlayerNotReady(int playerID)
     {
         m.PlaySFX(6);
         totalReady--;
-        int readyChar = n.GetCharNum(logInID);
-        int readySlot = n.GetSlotNum(logInID);
+        int playerNum = n.GetSlotNum(playerID);
 
-        PlayerSlots[readySlot].sprite = Empty;
+        PlayerSlots[playerNum].sprite = Empty;
 
-        if (totalReady == n.GetInRoomTotal)
-        {
-            startGame();
-        }
-        else
-        {
-            Debug.Log("Not all Ready: " + totalReady + "/" + n.GetInRoomTotal);
-        }
+        Debug.Log("Not all Ready: " + totalReady + "/" + n.GetInRoomTotal);
+        
     }
 
 

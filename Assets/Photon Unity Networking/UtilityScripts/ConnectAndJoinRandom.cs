@@ -278,7 +278,10 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
                 assignPlayerTracking(playerID, i);
             }
             clientRoomSize++;
-        }     
+        }
+
+        //Finally, tell everyone to reset their ready status.
+        ResetReadyStatus();
     }
 
     void OnPhotonPlayerConnected(PhotonPlayer player)
@@ -288,8 +291,6 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         //Add new player info tracking.
         assignPlayerTracking(player);
         clientRoomSize++;
-
-        ResetReadyStatus();
     }
 
     void OnPhotonPlayerDisconnected(PhotonPlayer player)
@@ -298,7 +299,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
         //attempt reconnection.
         isConnectAllowed = true;
-
+        
         int otherID = player.ID;
         ID_to_SlotNum.Remove(otherID);
         ID_to_CharNum.Remove(otherID);
@@ -387,6 +388,18 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         }
     }
 
+    [PunRPC]
+    private void ShowReady(int logInID)
+    {
+        matchHUD.ShowPlayerReady(logInID);
+    }
+
+    [PunRPC]
+    private void ShowNotReady(int logInID)
+    {
+        matchHUD.ShowPlayerNotReady(logInID);
+    }
+
     public int GetCharNum(int logInID)
     {
         return ID_to_CharNum[logInID];
@@ -394,7 +407,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
     public int GetSlotNum(int logInID)
     {
-       return ID_to_SlotNum[logInID]; ;
+       return ID_to_SlotNum[logInID];
     }
 
     public void LeaveServer()
@@ -438,22 +451,24 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
     }
 
-    private void assignPlayerTracking(int playerID, int i)
+    private void assignPlayerTracking(int playerID, int playerNum)
     {
         int playerChar;
-        if (PhotonNetwork.playerList[i].customProperties.ContainsKey("characterNum"))
-            playerChar = (int)PhotonNetwork.playerList[i].customProperties["characterNum"];
+        if (PhotonNetwork.playerList[playerNum].customProperties.ContainsKey("characterNum"))
+            playerChar = (int)PhotonNetwork.playerList[playerNum].customProperties["characterNum"];
         else
             playerChar = 0;
+
         //Add other players to info tracking.
         if (!ID_to_CharNum.ContainsKey(playerID))
             ID_to_CharNum.Add(playerID, playerChar);
         else
             ID_to_CharNum[playerID] = playerChar;
+
         if (!ID_to_SlotNum.ContainsKey(playerID))
-            ID_to_SlotNum.Add(playerID, i);
+            ID_to_SlotNum.Add(playerID, playerNum);
         else
-            ID_to_SlotNum[playerID] = i;
+            ID_to_SlotNum[playerID] = playerNum;
     }
 
     private void assignPlayerTracking(PhotonPlayer player)
@@ -464,11 +479,12 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             playerChar = (int)player.customProperties["characterNum"];
         else
             playerChar = 0;
-        //Add other players to info tracking.
+        //Add player to info tracking.
         if (!ID_to_CharNum.ContainsKey(playerID))
             ID_to_CharNum.Add(playerID, playerChar);
         else
             ID_to_CharNum[playerID] = playerChar;
+
         if (!ID_to_SlotNum.ContainsKey(playerID))
             ID_to_SlotNum.Add(playerID, PhotonNetwork.playerList.Length - 1);
         else
