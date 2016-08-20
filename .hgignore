@@ -18,6 +18,10 @@ build_info.txt
 *orig.meta
 Photon-Unity-Win81.unitypackage.meta
 *.psd
+Assets/ArtistAssets/AppStores
+Assets/ArtistAssets/Masters
+AppStores.meta
+Masters.meta
 syntax: regexp
 ^Library/.*
 ^Temp/.*
