@@ -19,6 +19,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
     public Master M;
     public MapSelectUIController MapUI;
+    public PhotonView M_PhotonView;
     private MatchHUD matchHUD;
 
     private bool inLobby = false;
@@ -288,7 +289,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         assignPlayerTracking(player);
         clientRoomSize++;
 
-        setReadyStatusInNet(false);
+        ResetReadyStatus();
     }
 
     void OnPhotonPlayerDisconnected(PhotonPlayer player)
@@ -303,7 +304,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         ID_to_CharNum.Remove(otherID);
         clientRoomSize--;
         matchHUD.RemovePlayer(player);
-        setReadyStatusInNet(false);
+        ResetReadyStatus();
     }
 
     public void JoinServer(bool attempt)
@@ -414,20 +415,26 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         Debug.Log("Connection Status: " + PhotonNetwork.connectionStateDetailed);
     }
 
-    private void setReadyStatusInNet(bool isReady)
+    public void ResetReadyStatus()
     {
-        if (!isReady)
-            matchHUD.NotReady();
-
         /*SO. 2 DIFFERENT WAYS OF UNREADYING: MANUALLY OR FORCIBLY. WE CANT USE "NOTREADY" FOR BOTH.
          * CURRENTLY. IF NOTREADY IS CALLED FORCIBLY WHILE YOU'RE IN CHAR SELECT,
          * THE GAME WILL "GOBACK", FORCING YOU OUT OF CHARACTER SELECT.
          * i FEEL THAT A "IF IN-READYMATCHUP" IS LAZY AND NOT GOOD PRACTICE.
          * LETS FIND SOMETHING ELSE
          */
-
+        M_PhotonView.RPC("ShowNotReady", PhotonTargets.All, PhotonNetwork.player.ID);
         ExitGames.Client.Photon.Hashtable tempPlayerTable = PhotonNetwork.player.customProperties;
-        tempPlayerTable["IsReady"] = isReady;
+        tempPlayerTable["IsReady"] = false;
+        PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
+    }
+
+    public void SetReadyStatus()
+    {
+        M_PhotonView.RPC("ShowReady", PhotonTargets.All, PhotonNetwork.player.ID);
+        ExitGames.Client.Photon.Hashtable tempPlayerTable =
+            PhotonNetwork.player.customProperties;
+        tempPlayerTable["IsReady"] = true;
         PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
     }
 

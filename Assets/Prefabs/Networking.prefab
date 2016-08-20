@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000013116061414}
   - 114: {fileID: 114000013577397798}
+  - 114: {fileID: 114000012754642432}
   m_Layer: 0
   m_Name: Networking
   m_TagString: Networking
@@ -40,6 +41,31 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!114 &114000012754642432
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011587021312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownerId: 0
+  group: 0
+  prefixBackup: -1
+  observed: {fileID: 0}
+  synchronization: 1
+  onSerializeTransformOption: 3
+  onSerializeRigidBodyOption: 2
+  ownershipTransfer: 1
+  ObservedComponents:
+  - {fileID: 114000013577397798}
+  ObservedComponentsFoldoutOpen: 1
+  viewIdField: 0
+  instantiationId: -1
+  isRuntimeInstantiated: 0
 --- !u!114 &114000013577397798
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -54,4 +80,5 @@ MonoBehaviour:
   SendRate: 24
   M: {fileID: 0}
   MapUI: {fileID: 0}
+  M_PhotonView: {fileID: 114000012754642432}
   ServerUpdateLength: 5

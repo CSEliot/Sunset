@@ -12,7 +12,6 @@ public class MatchHUD : MonoBehaviour{
     private bool isReady;
     private bool readyUped;
 
-    private PhotonView m_PhotonView;
     private Master m;
     private ConnectAndJoinRandom n;
     private OnJoinedInstantiate j;
@@ -58,7 +57,6 @@ public class MatchHUD : MonoBehaviour{
             .GetComponent<OnJoinedInstantiate>();
 
         totalReady = 0;
-        m_PhotonView = GetComponent<PhotonView>();
         isReady = false;
         readyUped = false;
         headSprite = getImageNum();
@@ -86,7 +84,7 @@ public class MatchHUD : MonoBehaviour{
             {
                 if (GameObject.FindGameObjectWithTag("PlayerSelf") != null)
                 {
-                    AssignCameraFollow(GameObject.FindGameObjectWithTag("PlayerSelf").transform);
+                    assignCameraFollow(GameObject.FindGameObjectWithTag("PlayerSelf").transform);
                     isSpectating = true;
                 }
             }
@@ -106,7 +104,7 @@ public class MatchHUD : MonoBehaviour{
             SelectorNo.SetActive(true);
             isReady = false;
         }
-        if (!readyUped && Input.GetButtonDown("Submit") && isReady
+        if ( !readyUped && Input.GetButtonDown("Submit") && isReady
             && n.GetInRoomTotal > 1)
         {
             Ready();
@@ -130,29 +128,17 @@ public class MatchHUD : MonoBehaviour{
             return;
         }
         isReady = true;
-        m_PhotonView.RPC("ShowReady", PhotonTargets.All, PhotonNetwork.player.ID);
         SelectorYes.SetActive(false);
         readyUped = true;
-        ExitGames.Client.Photon.Hashtable tempPlayerTable = 
-            PhotonNetwork.player.customProperties;
-        tempPlayerTable["IsReady"] = true;
-        PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
+        n.SetReadyStatus();
     }
 
-    public void NotReady(){
-        if (!isReady)
-        {
-            m.GoBack();
-            return;
-        }
+    public void NotReady(){            
         isReady = false;
-        m_PhotonView.RPC("ShowNotReady", PhotonTargets.All, PhotonNetwork.player.ID);
+        
         SelectorYes.SetActive(true);
         readyUped = false;
-        ExitGames.Client.Photon.Hashtable tempPlayerTable =
-            PhotonNetwork.player.customProperties;
-        tempPlayerTable["IsReady"] = false;
-        PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
+        n.ResetReadyStatus();
     }
 
     //Need 2 things: Chosen Character and Player Num
@@ -276,7 +262,7 @@ public class MatchHUD : MonoBehaviour{
         }
     }
 
-    private void AssignCameraFollow(Transform myTransform)
+    private void assignCameraFollow(Transform myTransform)
     {
         Debug.Log("Testing Assign Camera.");
         if (myTransform == null)
