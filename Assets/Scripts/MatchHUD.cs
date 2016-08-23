@@ -4,6 +4,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// All Pre-game, Post-Character Select UI code. 
+/// Dependency on net code and Photon minimized room size calls.
+/// </summary>
 public class MatchHUD : MonoBehaviour{
 
     public GameObject SelectorYes;
@@ -12,8 +16,8 @@ public class MatchHUD : MonoBehaviour{
     private bool isReady;
     private bool readyUped;
 
-    private Master m;
-    private ConnectAndJoinRandom n;
+    private Master M;
+    private ConnectAndJoinRandom N;
     private OnJoinedInstantiate j;
 
     public Sprite Empty;
@@ -43,8 +47,8 @@ public class MatchHUD : MonoBehaviour{
     void Start () {
         readyUpBypassCount = 0;
         readyUpBypassTotal = 2;
-        m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
-        n = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
+        M = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
+        N = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
         
         j = GameObject.FindGameObjectWithTag("SpawnPoints")
             .GetComponent<OnJoinedInstantiate>();
@@ -52,10 +56,14 @@ public class MatchHUD : MonoBehaviour{
         isReady = false;
         readyUped = false;
         headSprite = getImageNum();
-        
-        
-        if(n.GameStarted)
+
+
+        PercentReady.text = "" + N.ReadyTotal + "/" + N.GetInRoomTotal;
+
+        if (N.GameStarted)
             ActivateSpectating();
+
+
     }
 	
 	// Update is called once per frame
@@ -70,10 +78,12 @@ public class MatchHUD : MonoBehaviour{
             startGame();
         }
 
-        if (n.GameStarted)
+        if (N.GameStarted)
             return;
 
-        PercentReady.text = "" + N+ "/" + n.GetInRoomTotal;
+        if (N.GetRdyStateChange())
+            updatePlayerReadyStatus();
+
         if (!readyUped && Input.GetButtonDown("Left") && !isReady)
         {
             SelectorYes.SetActive(true);
@@ -87,7 +97,7 @@ public class MatchHUD : MonoBehaviour{
             isReady = false;
         }
         if ( !readyUped && Input.GetButtonDown("Submit") && isReady
-            && n.GetInRoomTotal > 1)
+            && N.GetInRoomTotal > 1)
         {
             ReadyUp();
         }
@@ -100,7 +110,7 @@ public class MatchHUD : MonoBehaviour{
 
     public void ReadyUp() 
     {
-        if (n.GetInRoomTotal < 2)
+        if (N.GetInRoomTotal < 2)
         {   
             Warning.SetActive(true);
             return;
@@ -122,45 +132,29 @@ public class MatchHUD : MonoBehaviour{
         readyUped = false;
     }
 
-
-
-    public void ShowPlayerReadyStatus(int playerID, bool readyStatus)
+    private void updatePlayerReadyStatus()
     {
-        m.PlaySFX(2);
-        int readyChar = n.GetCharNum(playerID);
-        int readySlot = n.GetSlotNum(playerID);
+        PercentReady.text = "" + N.ReadyTotal + "/" + N.GetInRoomTotal;
 
-        PlayerSlots[readySlot].sprite = getImage(readyChar);
-         
+        M.PlaySFX(2);
 
-        if (totalReady == n.GetInRoomTotal)
-        {
-            startGame();
-        }
-        else 
-        {
-            Debug.Log("Not all Ready: " + totalReady + "/" + n.GetInRoomTotal);
-        }
-    }
-    
-    public void ShowPlayerNotReady(int playerID)
-    {
-        m.PlaySFX(6);
+        //int readyChar; = N.GetCharNum(playerID);
+        //int readySlot;
+        //for(int x = 0; x < PhotonNetwork.room.playerCount; x++)
+        //{
+        //    readyChar = N.GetSlotNum(PhotonNetwork.room.expectedUsers);
+        //    PlayerSlots[N.GetSlotNum(].sprite = getImage(readyChar);
 
-        int playerNum = n.GetSlotNum(playerID);
+        //}
 
-        PlayerSlots[playerNum].sprite = Empty;
-
-        Debug.Log("Not all Ready: " + totalReady + "/" + n.GetInRoomTotal);
-        
+        updateReadyHUD();
     }
 
-
-    public void UpdateReadyHUD()
+    private void updateReadyHUD()
     {
         bool isActive = true;
         
-        for(int i = 0; i < m.Max_Players; i++)
+        for(int i = 0; i < M.Max_Players; i++)
         {
             if (i == PhotonNetwork.playerList.Length)
                 isActive = false;
@@ -177,7 +171,6 @@ public class MatchHUD : MonoBehaviour{
 
         ReadyText.text = "Spectating . . .";
         PercentReady.text = "";
-         = true;
         for (int i = 0; i < PlayerSlots.Length; i++)
         {
             PlayerSlots[i].transform.gameObject.SetActive(false);
@@ -188,21 +181,6 @@ public class MatchHUD : MonoBehaviour{
     public void CheatGame()
     {
         readyUpBypassCount = 3;
-    }
-
-    /// <summary>
-    /// Does GUI related things in response to @player connecting.
-    /// </summary>
-    /// <param name="player">Connected PhotonPlayer</param>
-    public void AddPlayer(PhotonPlayer player)
-    {
-        PlayerSlots[PhotonNetwork.playerList.Length - 1].transform.gameObject.SetActive(true);
-        ///Reset GFX & Ready Status for new players.
-        totalReady = 0;
-        SelectorYes.SetActive(false);
-        SelectorNo.SetActive(true);
-        isReady = false;
-        readyUped = false;
     }
     
     private void assignCameraFollow(Transform myTransform)
@@ -220,7 +198,7 @@ public class MatchHUD : MonoBehaviour{
     {
         for (int i = 0; i < UIHeads.Length; i++)
         {
-            if (i == m.PlayerCharNum)
+            if (i == M.PlayerCharNum)
             {
                 return i;
             }
@@ -231,14 +209,14 @@ public class MatchHUD : MonoBehaviour{
 
     private void startGame()
     {
-        m.PlayMSX(2);
+        M.PlayMSX(2);
         Debug.Log("Start Game!");
-        j.OnReadyUp(n.GetSlotNum(PhotonNetwork.player.ID));
+        j.OnReadyUp(N.GetSlotNum(PhotonNetwork.player.ID));
         ExitGames.Client.Photon.Hashtable tempRoomTable = PhotonNetwork
             .room.customProperties;
         tempRoomTable["GameStarted"] = true;
         PhotonNetwork.room.SetCustomProperties(tempRoomTable);
-        m.GameStarts(totalReady);
+        //M.GameStarts(totalReady);
         gameObject.SetActive(false);
         PlayerHead.sprite = getImage(getImageNum());
     }
