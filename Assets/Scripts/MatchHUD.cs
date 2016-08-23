@@ -230,5 +230,6 @@ public class MatchHUD : MonoBehaviour{
         j.GameStarted(N.GetSlotNum(PhotonNetwork.player.ID));
         gameObject.SetActive(false);
         PlayerHead.sprite = getImage(getImageNum());
+        MatchCamera.SetActive(true);
     }
 }
