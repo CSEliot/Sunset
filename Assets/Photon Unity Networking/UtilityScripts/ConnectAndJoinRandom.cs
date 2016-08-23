@@ -38,8 +38,8 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     private TypedLobby inMatchLobby;
 
     #region Room State Tracking
-    private int readyTotal;
     private bool gameStarted;
+    private int readyTotal;
     private bool rdyStateChange;
     #endregion
     /// <summary>
@@ -98,6 +98,8 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             Rooms.Add(new List<room>());
             Rooms[x].Clear();
         }
+
+        readyTotal = 0;
     }
 
     public void Update()
@@ -235,8 +237,6 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         // All callbacks are listed in enum: PhotonNetworkingMessage.
         Debug.Log("On Joined Room: " + PhotonNetwork.room.name);
         inLobby = false;
-        readyTotal = 0;
-
         //As a new player, we must assign default player properties.
         SetCharacterInNet();
 
@@ -271,8 +271,8 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         //Apply IsReady state. Begins false.
         PhotonNetwork.player.SetCustomProperties(tempTable);
 
-        clearAssignedPlayerTracking();
 
+        clearLocalTracking();
         //Add info from players already logged in, including self.
         int playerID;
         for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
@@ -281,25 +281,28 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             //If ID doesn't match your local Client ID, then it's another Player.
             if (PhotonNetwork.player.ID != playerID)
             {
-                assignPlayerTracking(playerID, i);
+                assignLocalTracking(playerID, i);
             }
         }
-        
-        //Finally, tell everyone to reset their ready status.
-        SetReadyStatus(PhotonTargets.Others, false);
+
+        //Tell everyone to reset their ready status.
+        SetReadyStatus(PhotonTargets.MasterClient, false);
+        readyTotal = 0;
     }
 
     void OnPhotonPlayerConnected(PhotonPlayer player)
     {
         //Add new player info tracking.
         assignPlayerTracking(player);
-        readyTotal = 0;
+        //Tell everyone to reset their ready status.
+        SetReadyStatus(PhotonTargets.Others, false);
     }
 
     void OnPhotonPlayerDisconnected(PhotonPlayer player)
     {
         Debug.Log("OnPhotonPlayerDisconnected: " + player);
-
+        //Tell everyone to reset their ready status.
+        SetReadyStatus(PhotonTargets.Others, false);
         //attempt reconnection.
         isConnectAllowed = true;
         
@@ -395,6 +398,14 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         }
     }
 
+    public int ReadyTotal
+    {
+        get
+        {
+            return readyTotal;
+        }
+    }
+
     public bool GetRdyStateChange()
     {
         if (rdyStateChange)
@@ -458,6 +469,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     [PunRPC]
     private void ShowReadyStatus(int playerNum, bool readyStatus)
     {
+        readyTotal = readyStatus ? ++readyTotal : --readyTotal;
         ID_to_RdyNum[playerNum] = readyStatus;
         rdyStateChange = true;
     }
@@ -473,7 +485,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     /// </summary>
     /// <param name="playerID">Unique Player ID</param>
     /// <param name="playerNum">i'th player in room</param>
-    private void assignPlayerTracking(int playerID, int playerNum)
+    private void assignLocalTracking(int playerID, int playerNum)
     {
         int playerChar;
         if (PhotonNetwork.playerList[playerNum].customProperties.ContainsKey("characterNum"))
@@ -536,7 +548,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         ID_to_SlotNum.Remove(playerID);
     }
 
-    private void clearAssignedPlayerTracking( )
+    private void clearLocalTracking( )
     {
         ID_to_CharNum.Clear();
         ID_to_RdyNum.Clear();
