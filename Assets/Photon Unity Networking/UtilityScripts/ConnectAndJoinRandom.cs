@@ -287,11 +287,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
         {
             playerID = PhotonNetwork.playerList[i].ID;
-            //If ID doesn't match your local Client ID, then it's another Player.
-            if (PhotonNetwork.player.ID != playerID)
-            {
-                assignLocalTracking(playerID, i);
-            }
+            assignLocalTracking(playerID, i);
         }
 
         //Tell everyone to reset their ready status.
