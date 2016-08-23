@@ -48,4 +48,5 @@ MonoBehaviour:
   - RequestForPickupItems
   - ShowNotReady
   - ShowReadyStatus
+  - ShowNewChar
   DisableAutoOpenWizard: 1

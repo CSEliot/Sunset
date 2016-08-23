@@ -87,7 +87,7 @@ public class CharacterSelectUIController : MonoBehaviour {
         Select.interactable = isRightActive;
         
         m.AssignPlayerCharacter(chosenChar);
-        n.SetCharacterInNet(); 
+        n.SetCharacter(); 
     }
 
     private void resetUI()
@@ -113,7 +113,7 @@ public class CharacterSelectUIController : MonoBehaviour {
         StatFrame.sprite = AllStatSprites[currentSelector];
         //Tell Master (local) and Network (online) the character selection.
         m.AssignPlayerCharacter(chosenChar);
-        n.SetCharacterInNet();
+        n.SetCharacter();
     }
 
     private void setDesc()

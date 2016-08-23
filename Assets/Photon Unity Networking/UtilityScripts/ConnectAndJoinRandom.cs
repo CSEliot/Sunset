@@ -41,7 +41,10 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     private bool gameStarted;
     private int readyTotal;
     private bool rdyStateChange;
+    private bool charStateChange;
+    private bool startMatch;
     #endregion
+
     /// <summary>
     /// For storing online room data locally.
     /// </summary>
@@ -137,12 +140,22 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             setServerStats();
         }
 
+        #region Match Tracking
+        if (readyTotal >= PhotonNetwork.playerList.Length)
+        {
+            ExitGames.Client.Photon.Hashtable tempRoomTable = PhotonNetwork.room.customProperties;
+            tempRoomTable["GameStarted"] = true;
+            PhotonNetwork.room.SetCustomProperties(tempRoomTable);
+            startMatch = true;
+            M.GameStarts(readyTotal);
+        }
+        #endregion
     }
 
     /// <summary>
-    /// All "InNet" for all public functions relating to networking, but not a Photon function.
+    /// Shows character a player is hovering over.
     /// </summary>
-    public void SetCharacterInNet()
+    public void SetCharacter()
     {
         Debug.Log("Adding player property");
         ExitGames.Client.Photon.Hashtable playerProperties = PhotonNetwork.player.customProperties;
@@ -157,12 +170,8 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         }
 
         PhotonNetwork.player.SetCustomProperties(playerProperties);
+        SetCharDisplay(PhotonTargets.All, M.PlayerCharNum);
 
-        //Update local player's chosen character locally.
-        if(!ID_to_CharNum.ContainsKey(PhotonNetwork.player.ID))
-            ID_to_CharNum.Add(PhotonNetwork.player.ID, M.PlayerCharNum);
-        else
-            ID_to_CharNum[PhotonNetwork.player.ID] = M.PlayerCharNum;
     }
 
     /// <summary>
@@ -238,7 +247,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         Debug.Log("On Joined Room: " + PhotonNetwork.room.name);
         inLobby = false;
         //As a new player, we must assign default player properties.
-        SetCharacterInNet();
+        SetCharacter();
 
         //Get total number of players logged into room.
         int totalPlayersFound = PhotonNetwork.playerList.Length;
@@ -294,8 +303,6 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     {
         //Add new player info tracking.
         assignPlayerTracking(player);
-        //Tell everyone to reset their ready status.
-        SetReadyStatus(PhotonTargets.Others, false);
     }
 
     void OnPhotonPlayerDisconnected(PhotonPlayer player)
@@ -321,7 +328,6 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         }
     }
 
-    
 
     private void setServerStats()
     {
@@ -406,6 +412,30 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         }
     }
 
+    public bool StartMatch
+    {
+        get
+        {
+            if (startMatch)
+            {
+                startMatch = false;
+                return true;
+            }
+            else
+                return false;
+        }
+    }
+
+    public bool GetCharStateChange()
+    { 
+        if (charStateChange)
+        {
+            charStateChange = false;
+            return true;
+        }
+        return charStateChange;    
+    }
+
     public bool GetRdyStateChange()
     {
         if (rdyStateChange)
@@ -450,6 +480,11 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         M_PhotonView.RPC("ShowReadyStatus", tellWho, PhotonNetwork.player.ID, readyStatus);
     }
 
+    public void SetCharDisplay(PhotonTargets tellWho, int newChar)
+    {
+        M_PhotonView.RPC("ShowNewChar", tellWho, PhotonNetwork.player.ID, newChar);
+    }
+
     public void ReadyButton()
     {
         ExitGames.Client.Photon.Hashtable tempPlayerTable = PhotonNetwork.player.customProperties;
@@ -473,7 +508,18 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         ID_to_RdyNum[playerNum] = readyStatus;
         rdyStateChange = true;
     }
-    
+
+    [PunRPC]
+    private void ShowNewChar(int playerNum, int newChar)
+    {
+        //Update local player's chosen character locally.
+        if (!ID_to_CharNum.ContainsKey(playerNum))
+            ID_to_CharNum.Add(PhotonNetwork.player.ID, newChar);
+        else
+            ID_to_CharNum[PhotonNetwork.player.ID] = newChar;
+        charStateChange = true;
+    }
+
     private void printStatus()
     {
         Debug.Log("Connection Status: " + PhotonNetwork.connectionStateDetailed);
@@ -523,6 +569,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             playerChar = (int)player.customProperties["characterNum"];
         else
             playerChar = 0;
+
         //Add player to info tracking.
         if (!ID_to_CharNum.ContainsKey(playerID))
             ID_to_CharNum.Add(playerID, playerChar);
@@ -533,6 +580,11 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             ID_to_SlotNum.Add(playerID, PhotonNetwork.playerList.Length - 1);
         else
             ID_to_SlotNum[playerID] = PhotonNetwork.playerList.Length - 1;
+
+        if (!ID_to_RdyNum.ContainsKey(playerID))
+            ID_to_RdyNum.Add(playerID, false);
+        else
+            ID_to_RdyNum[playerID] = false;
 
     }
 
