@@ -47,4 +47,5 @@ MonoBehaviour:
   - HurtAnim
   - RequestForPickupItems
   - ShowNotReady
+  - ShowReadyStatus
   DisableAutoOpenWizard: 1
