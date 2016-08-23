@@ -16,7 +16,7 @@ public class OnJoinedInstantiate : MonoBehaviour
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
     }
 
-    public void OnReadyUp(int myID)
+    public void GameStarted(int myID)
     {
         Vector3 spawnPos;
         int totalPlayersFound = PhotonNetwork.playerList.Length;

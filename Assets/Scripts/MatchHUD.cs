@@ -15,6 +15,8 @@ public class MatchHUD : MonoBehaviour{
 
     private bool isReady;
     private bool readyUped;
+    private Color rdyColor; //Unfaded
+    private Color unRdyColor; //Faded
 
     private Master M;
     private ConnectAndJoinRandom N;
@@ -63,7 +65,8 @@ public class MatchHUD : MonoBehaviour{
         if (N.GameStarted)
             ActivateSpectating();
 
-
+        rdyColor = new Color(1f, 1f, 1f, 1f);
+        unRdyColor = new Color(1f, 1f, 1f, 0.5f);
     }
 	
 	// Update is called once per frame
@@ -72,17 +75,20 @@ public class MatchHUD : MonoBehaviour{
         {
             readyUpBypassCount++;
         }
-        if (readyUpBypassTotal < readyUpBypassCount)
+        if (readyUpBypassTotal < readyUpBypassCount || N.StartMatch)
         {
-			//j.OnReadyUp(ID_to_SlotNum[myLogInID]);
-            startGame();
+            startMatch();   
         }
+
 
         if (N.GameStarted)
             return;
 
         if (N.GetRdyStateChange())
             updatePlayerReadyStatus();
+
+        if (N.GetCharStateChange())
+            updatePlayerCharDisplay();
 
         if (!readyUped && Input.GetButtonDown("Left") && !isReady)
         {
@@ -137,17 +143,24 @@ public class MatchHUD : MonoBehaviour{
         PercentReady.text = "" + N.ReadyTotal + "/" + N.GetInRoomTotal;
 
         M.PlaySFX(2);
-
-        //int readyChar; = N.GetCharNum(playerID);
-        //int readySlot;
-        //for(int x = 0; x < PhotonNetwork.room.playerCount; x++)
-        //{
-        //    readyChar = N.GetSlotNum(PhotonNetwork.room.expectedUsers);
-        //    PlayerSlots[N.GetSlotNum(].sprite = getImage(readyChar);
-
-        //}
+        int playerSlot;
+        for (int x = 0; x < PhotonNetwork.room.playerCount; x++)
+        {
+            playerSlot = N.GetSlotNum(PhotonNetwork.playerList[x].ID);
+            PlayerSlots[x].color = N.GetRdyStatus(PhotonNetwork.playerList[x].ID) ? rdyColor : unRdyColor;
+        }
 
         updateReadyHUD();
+    }
+
+    private void updatePlayerCharDisplay()
+    {
+        int playerSlot;
+        for (int x = 0; x < PhotonNetwork.room.playerCount; x++)
+        {
+            playerSlot = N.GetSlotNum(PhotonNetwork.playerList[x].ID);
+            PlayerSlots[x].sprite = UIHeads[N.GetCharNum(PhotonNetwork.playerList[x].ID)];
+        }
     }
 
     private void updateReadyHUD()
@@ -207,22 +220,15 @@ public class MatchHUD : MonoBehaviour{
         return -1;
     }
 
-    private void startGame()
-    {
-        M.PlayMSX(2);
-        Debug.Log("Start Game!");
-        j.OnReadyUp(N.GetSlotNum(PhotonNetwork.player.ID));
-        ExitGames.Client.Photon.Hashtable tempRoomTable = PhotonNetwork
-            .room.customProperties;
-        tempRoomTable["GameStarted"] = true;
-        PhotonNetwork.room.SetCustomProperties(tempRoomTable);
-        //M.GameStarts(totalReady);
-        gameObject.SetActive(false);
-        PlayerHead.sprite = getImage(getImageNum());
-    }
-
     private Sprite getImage(int num)
     {
         return UIHeads[num];
+    }
+
+    private void startMatch()
+    {
+        j.GameStarted(N.GetSlotNum(PhotonNetwork.player.ID));
+        gameObject.SetActive(false);
+        PlayerHead.sprite = getImage(getImageNum());
     }
 }
