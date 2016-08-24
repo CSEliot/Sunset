@@ -15,7 +15,7 @@ public class MatchHUD : MonoBehaviour{
 
     private bool isReady;
     private bool readyUped;
-    private Color rdyColor; //Unfaded
+    public Color rdyColor; //Unfaded
     private Color unRdyColor; //Faded
 
     private Master M;
@@ -126,16 +126,14 @@ public class MatchHUD : MonoBehaviour{
             return;
         }
         isReady = true;
-        SelectorYes.SetActive(false);
         readyUped = true;
+        N.ReadyButton();
     }
 
     public void UnReady(){            
         isReady = false;
         readyUped = false;
-        SelectorNo.SetActive(false);
-        SelectorYes.SetActive(true);
-        readyUped = false;
+        N.UnreadyButton();
     }
 
     private void updatePlayerReadyStatus()

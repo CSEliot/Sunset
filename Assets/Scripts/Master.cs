@@ -59,6 +59,9 @@ public class Master : MonoBehaviour
     public GameObject LoadingUI;
     public GameObject Rays;
 
+    private int charactersUnlockedTotal;
+    private int defaultUnlocked = 6;
+
 	public enum Menu
 	{
 		main,
@@ -143,6 +146,7 @@ public class Master : MonoBehaviour
     void Start()
     {
         maxPlayers = 100;
+        charactersUnlockedTotal = PlayerPrefs.GetInt("UnlockedChars", defaultUnlocked); // 6 = Default usable characters.
         SetMSXVolume(PlayerPrefs.GetFloat("MSXVol", 0.5f));
         SetSFXVolume(PlayerPrefs.GetFloat("SFXVol", 0.5f));
     }
@@ -517,6 +521,14 @@ public class Master : MonoBehaviour
         set
         {
             rmAction = value;
+        }
+    }
+
+    public int CharactersUnlockedTotal
+    {
+        get
+        {
+            return charactersUnlockedTotal;
         }
     }
 
