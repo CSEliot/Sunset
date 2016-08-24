@@ -33,7 +33,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     
     private Dictionary<int, int> ID_to_SlotNum;
     private Dictionary<int, int> ID_to_CharNum;
-    private Dictionary<int, bool> ID_to_RdyNum;
+    private Dictionary<int, bool> ID_to_IsRdy;
 
     private TypedLobby inMatchLobby;
 
@@ -44,6 +44,13 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     private bool charStateChange;
     private bool startMatch;
     #endregion
+
+    public enum ReadyCount
+    {
+        Add,
+        Subtract,
+        Reset
+    };
 
     /// <summary>
     /// For storing online room data locally.
@@ -77,7 +84,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         
         ID_to_SlotNum = new Dictionary<int, int>();
         ID_to_CharNum = new Dictionary<int, int>();
-        ID_to_RdyNum = new Dictionary<int, bool>();
+        ID_to_IsRdy = new Dictionary<int, bool>();
         
         Debug.Log("Setting Send Rate to: " + SendRate);
         PhotonNetwork.sendRate = SendRate;
@@ -101,8 +108,6 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             Rooms.Add(new List<room>());
             Rooms[x].Clear();
         }
-
-        readyTotal = 0;
     }
 
     public void Update()
@@ -291,7 +296,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         }
 
         //Tell everyone to reset their ready status.
-        SetReadyStatus(PhotonTargets.MasterClient, false);
+        SetReadyStatus(PhotonTargets.MasterClient, ReadyCount.Reset);
         readyTotal = 0;
     }
 
@@ -305,7 +310,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     {
         Debug.Log("OnPhotonPlayerDisconnected: " + player);
         //Tell everyone to reset their ready status.
-        SetReadyStatus(PhotonTargets.Others, false);
+        SetReadyStatus(PhotonTargets.Others, ReadyCount.Reset);
         //attempt reconnection.
         isConnectAllowed = true;
         
@@ -454,7 +459,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
     public bool GetRdyStatus(int logInID)
     {
-        return ID_to_RdyNum[logInID];
+        return ID_to_IsRdy[logInID];
     }
 
     public void LeaveServer()
@@ -471,9 +476,9 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         PhotonNetwork.LeaveRoom();
     }
 
-    public void SetReadyStatus(PhotonTargets tellWho, bool readyStatus)
+    public void SetReadyStatus(PhotonTargets tellWho, ReadyCount action)
     {
-        M_PhotonView.RPC("ShowReadyStatus", tellWho, PhotonNetwork.player.ID, readyStatus);
+        M_PhotonView.RPC("ShowReadyStatus", tellWho, PhotonNetwork.player.ID, action);
     }
 
     public void SetCharDisplay(PhotonTargets tellWho, int newChar)
@@ -486,7 +491,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         ExitGames.Client.Photon.Hashtable tempPlayerTable = PhotonNetwork.player.customProperties;
         tempPlayerTable["IsReady"] = true;
         PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
-        SetReadyStatus(PhotonTargets.All, true);
+        SetReadyStatus(PhotonTargets.All, ReadyCount.Add);
     }
 
     public void UnreadyButton()
@@ -494,14 +499,17 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         ExitGames.Client.Photon.Hashtable tempPlayerTable = PhotonNetwork.player.customProperties;
         tempPlayerTable["IsReady"] = false;
         PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
-        SetReadyStatus(PhotonTargets.All, false);
+        SetReadyStatus(PhotonTargets.All, ReadyCount.Subtract);
     }
 
     [PunRPC]
-    private void ShowReadyStatus(int playerNum, bool readyStatus)
+    private void ShowReadyStatus(int playerNum, ReadyCount action)
     {
-        readyTotal = readyStatus ? ++readyTotal : --readyTotal;
-        ID_to_RdyNum[playerNum] = readyStatus;
+
+        readyTotal = action == ReadyCount.Add ? ++readyTotal : --readyTotal;
+        readyTotal = action == ReadyCount.Reset ? 0 : readyTotal;
+
+        ID_to_IsRdy[playerNum] = action == ReadyCount.Add;
         rdyStateChange = true;
     }
 
@@ -546,10 +554,10 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         else
             ID_to_SlotNum[playerID] = playerNum;
 
-        if (!ID_to_RdyNum.ContainsKey(playerID))
-            ID_to_RdyNum.Add(playerID, false);
+        if (!ID_to_IsRdy.ContainsKey(playerID))
+            ID_to_IsRdy.Add(playerID, false);
         else
-            ID_to_RdyNum[playerID] = false;
+            ID_to_IsRdy[playerID] = false;
 
     }
 
@@ -577,10 +585,10 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         else
             ID_to_SlotNum[playerID] = PhotonNetwork.playerList.Length - 1;
 
-        if (!ID_to_RdyNum.ContainsKey(playerID))
-            ID_to_RdyNum.Add(playerID, false);
+        if (!ID_to_IsRdy.ContainsKey(playerID))
+            ID_to_IsRdy.Add(playerID, false);
         else
-            ID_to_RdyNum[playerID] = false;
+            ID_to_IsRdy[playerID] = false;
 
     }
 
@@ -592,14 +600,14 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     {
         int playerID = player.ID;
         ID_to_CharNum.Remove(playerID);
-        ID_to_RdyNum.Remove(playerID);
+        ID_to_IsRdy.Remove(playerID);
         ID_to_SlotNum.Remove(playerID);
     }
 
     private void clearLocalTracking( )
     {
         ID_to_CharNum.Clear();
-        ID_to_RdyNum.Clear();
+        ID_to_IsRdy.Clear();
         ID_to_SlotNum.Clear();
     }
 

@@ -1626,6 +1626,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SelectorYes: {fileID: 2038570598}
   SelectorNo: {fileID: 1155638531}
+  rdyColor: {r: 1, g: 1, b: 1, a: 0.516}
   Empty: {fileID: 21300000, guid: 422272bff9ee0b84b8964876cbf06c4e, type: 3}
   PercentReady: {fileID: 1123746550}
   PlayerSlots:
@@ -2374,7 +2375,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 520264837}
-        m_MethodName: NotReady
+        m_MethodName: UnReady
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4747,7 +4748,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 520264837}
-        m_MethodName: Ready
+        m_MethodName: ReadyUp
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

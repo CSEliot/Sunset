@@ -85,7 +85,10 @@ public class CharacterSelectUIController : MonoBehaviour {
         //Tell Master (local) and Network (online) the character selection.
 
         Select.interactable = isRightActive;
-        
+
+        if (chosenChar >= m.CharactersUnlockedTotal)
+            return;
+
         m.AssignPlayerCharacter(chosenChar);
         n.SetCharacter(); 
     }
