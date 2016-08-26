@@ -273,8 +273,8 @@ public class Master : MonoBehaviour
         PlayMSX(0);
         PhotonNetwork.Disconnect();
         AssignClientCharacter(0);
-        SceneManager.LoadScene("CharacterSelect");
-
+        //SceneManager.LoadScene("CharacterSelect");
+        GoBack();
     }
 
     public void GameStarts(int myTotalPlayers)

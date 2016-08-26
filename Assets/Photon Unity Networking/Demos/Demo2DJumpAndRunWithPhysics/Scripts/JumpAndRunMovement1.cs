@@ -263,7 +263,7 @@ public class JumpAndRunMovement1 : MonoBehaviour
         readyGUI.EndGame();
     }
 
-    IEnumerator LoseWait()
+    public IEnumerator LoseWait()
     {
         yield return new WaitForSeconds(1.9f);
         readyGUI.transform.gameObject.SetActive(true);
