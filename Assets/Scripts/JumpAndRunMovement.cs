@@ -115,7 +115,7 @@ public class JumpAndRunMovement : MonoBehaviour
         myAudioSrc.clip = DeathNoise;
         playersSpawned = false;
         punching = false;
-        camShaker = GameObject.FindGameObjectWithTag("MainCamera")
+        camShaker = GameObject.FindGameObjectWithTag("StageCamera")
             .GetComponent<CamManager>();
         m = GameObject.FindGameObjectWithTag("Master")
             .GetComponent<Master>();

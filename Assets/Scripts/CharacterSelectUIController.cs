@@ -116,7 +116,7 @@ public class CharacterSelectUIController : MonoBehaviour {
         StatFrame.sprite = AllStatSprites[currentSelector];
         //Tell Master (local) and Network (online) the character selection.
         m.AssignPlayerCharacter(chosenChar);
-        n.SetCharacter();
+        //n.SetCharacter();
     }
 
     private void setDesc()
