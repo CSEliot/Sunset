@@ -88,7 +88,7 @@ public class ReadyUp : MonoBehaviour {
         {   
             if (GameObject.FindGameObjectsWithTag("PlayerSelf").Length <= 1)
             {
-                EndGame();
+                
             }
             if (!isSpectating)
             {
