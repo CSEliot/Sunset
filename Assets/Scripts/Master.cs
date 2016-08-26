@@ -13,6 +13,8 @@ using System.Collections;
 /// </summary>
 public class Master : MonoBehaviour
 {
+    public static bool DEBUG_ON = true;
+
     [System.Serializable]
     public class NameToStrength
     {

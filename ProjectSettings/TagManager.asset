@@ -27,6 +27,7 @@ TagManager:
   - Networking
   - StageCamera
   - MapUIController
+  - 1
   layers:
   - Default
   - TransparentFX
