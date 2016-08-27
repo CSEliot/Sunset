@@ -81,6 +81,7 @@ public class JumpAndRunMovement : MonoBehaviour
 
     private bool cameraFollowAssigned;
     private bool battleUIAssigned;
+    private bool matchHUDAssigned;
     private CamManager camShaker;
 
     private float damage;
@@ -122,6 +123,7 @@ public class JumpAndRunMovement : MonoBehaviour
 
         isDead = false;
         battleUIAssigned = false;
+        matchHUDAssigned = false;
         SpawnPoints = GameObject.FindGameObjectWithTag
             ("SpawnPoints").GetComponent<OnJoinedInstantiate>().SpawnPosition;
         StrengthsList = GameObject.FindGameObjectWithTag("Master").
@@ -166,12 +168,19 @@ public class JumpAndRunMovement : MonoBehaviour
         
         if (!cameraFollowAssigned)
             AssignCameraFollow(transform);
-        if (!battleUIAssigned){
+        if (!battleUIAssigned)
+        {
             BattleUI = GameObject.FindGameObjectWithTag("BattleUI")
                 .GetComponent<DamageTracker>();
             battleUIAssigned = true;
         }
-        
+        if (!matchHUDAssigned)
+        {
+            matchHUD = GameObject.FindGameObjectWithTag ("BattleUI")
+                .GetComponent<DamageTracker>().MatchHudComp;
+            matchHUDAssigned = true;
+        }
+
 
         //Jump Detection Only, no physics handling.
         if (controlsPaused)
@@ -647,6 +656,8 @@ public class JumpAndRunMovement : MonoBehaviour
 
     IEnumerator Ghost()
     {
+        if (Master.DEBUG_ON)
+            Debug.Log(gameObject.name + " is ghosting! + ");
         BattleUI.Lost();
         matchHUD.gameObject.SetActive(true);
         matchHUD.ActivateSpectating();
@@ -664,6 +675,8 @@ public class JumpAndRunMovement : MonoBehaviour
 
     IEnumerator respawn()
     {
+        if (Master.DEBUG_ON)
+            Debug.Log("Respawning with: " + BattleUI.GetLives() + " lives left.");
         m_PhotonView.RPC("OnDeath", PhotonTargets.Others);
         isDead = true;
         m_Body.velocity = Vector2.zero;

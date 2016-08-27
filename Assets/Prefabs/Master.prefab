@@ -250,7 +250,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 7ce71fed9a1a6482183eafda6acc9f07, type: 3}
   - {fileID: 8300000, guid: 78308d5d44df14e32913603ee3b4de6d, type: 3}
   - {fileID: 8300000, guid: 3b5de01f0504080479affe8ec3f4dd5a, type: 3}
-  - {fileID: 0}
+  - {fileID: 8300000, guid: b6c43bebd9157ca438e8df6262dc281b, type: 3}
+  - {fileID: 8300000, guid: 8b6fa95c6c63cfd4c82452c798bb0f64, type: 3}
   MSX:
   - {fileID: 8300000, guid: 0b06de17858b94edfb8f855701064572, type: 3}
   - {fileID: 8300000, guid: 6e37a5174b26ab146a086ed86fc467e8, type: 3}

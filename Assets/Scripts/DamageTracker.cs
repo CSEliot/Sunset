@@ -15,6 +15,8 @@ public class DamageTracker : MonoBehaviour {
     private int lives;
     private int damage;
 
+    public MatchHUD MatchHudComp;
+
 	// Use this for initialization
 	void Start () {
         lives = StartingLives;
