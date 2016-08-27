@@ -142,8 +142,7 @@ public class MatchHUD : MonoBehaviour{
     private void updateHUDStatusDisplay()
     {
         PercentReady.text = "" + N.ReadyTotal + "/" + N.GetInRoomTotal;
-
-        M.PlaySFX(2);
+        
         int playerSlot;
         for (int x = 0; x < PhotonNetwork.room.playerCount; x++)
         {

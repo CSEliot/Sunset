@@ -311,6 +311,9 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         //Tell everyone to reset their ready status.
         SetReadyStatus(PhotonTargets.Others, ReadyCount.Reset);
 
+
+        plrStateChange = true;
+        rdyStateChange = true;
     }
 
     void OnPhotonPlayerDisconnected(PhotonPlayer player)
@@ -521,6 +524,9 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     [PunRPC]
     private void ShowReadyStatus(int playerNum, ReadyCount action)
     {
+
+        int readySFX = action == ReadyCount.Add ? 2 : 6;
+        M.PlaySFX(readySFX); // 2: ReadySFX | 6: UnreadySFX
 
         readyTotal = action == ReadyCount.Add ? ++readyTotal : --readyTotal;
         readyTotal = action == ReadyCount.Reset ? 0 : readyTotal;

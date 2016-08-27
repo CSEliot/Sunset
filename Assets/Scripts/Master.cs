@@ -443,7 +443,6 @@ public class Master : MonoBehaviour
                 Debug.LogError("WRONG ROOMMNAME GIVEN.");
                 break;
         }
-            
     }
 
     public string GetArenaName()
@@ -481,11 +480,11 @@ public class Master : MonoBehaviour
         }
     }
 
-    public int CurrentMenu
+    public Menu CurrentMenu
     {
         get
         {
-            return (int)currentMenu;
+            return currentMenu;
         }
     }
 

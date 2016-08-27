@@ -7490,7 +7490,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
       propertyPath: SFX.Array.size
-      value: 9
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 475854, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
       propertyPath: m_LocalPosition.x
@@ -7566,13 +7566,9 @@ Prefab:
       value: 
       objectReference: {fileID: 948514863}
     - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
-      propertyPath: SFX.Array.data[7]
+      propertyPath: SFX.Array.data[9]
       value: 
-      objectReference: {fileID: 8300000, guid: b6c43bebd9157ca438e8df6262dc281b, type: 3}
-    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
-      propertyPath: SFX.Array.data[8]
-      value: 
-      objectReference: {fileID: 8300000, guid: 8b6fa95c6c63cfd4c82452c798bb0f64, type: 3}
+      objectReference: {fileID: 8300000, guid: 89a24fcce7f874a2b8e7dae03bd74c8a, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
   m_IsPrefabParent: 0

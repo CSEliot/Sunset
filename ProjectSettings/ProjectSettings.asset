@@ -11,7 +11,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: Kitelion / btong.me
-  productName: Sunset Project
+  productName: Sunset Brawlers
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenStyle: 0
@@ -94,13 +94,13 @@ PlayerSettings:
     16:9: 1
     Others: 1
   bundleIdentifier: com.KiteLion.Sunset
-  bundleVersion: 0.56
+  bundleVersion: 0.6beta1
   preloadedAssets: []
   metroEnableIndependentInputSource: 0
   xboxOneDisableKinectGpuReservation: 0
   singlePassStereoRendering: 0
   protectGraphicsMemory: 0
-  AndroidBundleVersionCode: 19
+  AndroidBundleVersionCode: 20
   AndroidMinSdkVersion: 19
   AndroidPreferredInstallLocation: 0
   aotOptions: 
