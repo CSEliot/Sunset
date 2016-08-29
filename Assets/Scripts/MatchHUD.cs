@@ -68,6 +68,7 @@ public class MatchHUD : MonoBehaviour{
         unRdyColor = new Color(1f, 1f, 1f, 0.5f);
 
         stageListener = GameObject.FindGameObjectWithTag("StageCamera").GetComponent<AudioListener>();
+        roomName.text = N.CurrentRoom.name;
     }
 	
 	// Update is called once per frame
