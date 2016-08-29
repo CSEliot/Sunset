@@ -199,7 +199,6 @@ public class Master : MonoBehaviour
 			    break;
 		    case Menu.ingame:
                 currentMenu = Menu.chara;
-                PlayMSX(0);
                 loadMenu();
                 break;
             case Menu.options:
@@ -248,6 +247,7 @@ public class Master : MonoBehaviour
             case (int)Menu.ingame:
                 switchCanvas((int)Menu.ingame);
                 unloadMenu();
+                PlayMSX(1);
                 break;
             case -1:
                 switchCanvas(-1);

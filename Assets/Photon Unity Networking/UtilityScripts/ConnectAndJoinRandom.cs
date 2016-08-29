@@ -74,7 +74,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             this.name = name;
         }
     }
-
+    private Room currentRoom;
     /// <summary>
     /// room[0] = Pillar, 1 = Void, 2 = Lair
     /// </summary>
@@ -82,7 +82,6 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
     void Start()
     {
-        
         ID_to_SlotNum = new Dictionary<int, int>();
         ID_to_CharNum = new Dictionary<int, int>();
         ID_to_IsRdy = new Dictionary<int, bool>();
@@ -251,6 +250,9 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
     public void OnJoinedRoom()
     {
+
+        currentRoom = PhotonNetwork.room;
+
         // All callbacks are listed in enum: PhotonNetworkingMessage.
         Debug.Log("On Joined Room: " + PhotonNetwork.room.name);
         inLobby = false;
@@ -433,6 +435,14 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             }
             else
                 return false;
+        }
+    }
+
+    public room CurrentRoom
+    {
+        get
+        {
+            return currentRoom;
         }
     }
 

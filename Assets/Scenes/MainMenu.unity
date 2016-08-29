@@ -7488,10 +7488,6 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
-      propertyPath: SFX.Array.size
-      value: 10
-      objectReference: {fileID: 0}
     - target: {fileID: 475854, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -7524,11 +7520,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 7
       objectReference: {fileID: 0}
-    - target: {fileID: 114000012855790926, guid: aa40ced3b2f8cb54dbd667820987631b,
-        type: 2}
-      propertyPath: m_FirstSelected
-      value: 
-      objectReference: {fileID: 1761011798}
     - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
       propertyPath: MenuCanvasList.Array.data[0]
       value: 
@@ -7565,10 +7556,11 @@ Prefab:
       propertyPath: MapUI
       value: 
       objectReference: {fileID: 948514863}
-    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
-      propertyPath: SFX.Array.data[9]
+    - target: {fileID: 114000012855790926, guid: aa40ced3b2f8cb54dbd667820987631b,
+        type: 2}
+      propertyPath: m_FirstSelected
       value: 
-      objectReference: {fileID: 8300000, guid: 89a24fcce7f874a2b8e7dae03bd74c8a, type: 3}
+      objectReference: {fileID: 1761011798}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
   m_IsPrefabParent: 0
