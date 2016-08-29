@@ -6,13 +6,12 @@ using System.Collections.Generic;
 using System.Collections;
 
 /// <summary>
-/// This script automatically connects to Photon (using the settings file),
-/// tries to join a random room and creates one if none was found (which is ok).
+/// Handles all major networking aside from player controls. Also bridges
+/// gaps between UI and Networking.
 /// </summary>
 public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     private string version;
-
-    /// <summary>if we don't want to connect in Start(), we have to "remember" if we called ConnectUsingSettings()</summary>
+    
     private bool isConnectAllowed;
     
     public int SendRate;
@@ -43,7 +42,10 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     private bool rdyStateChange = true;
     private bool charStateChange = true;
     private bool plrStateChange = true;
-    private bool startMatch;
+    private bool matchStart;
+    private int startTimer;
+    private bool startCountdown;
+    public int CountdownLength;
     #endregion
 
     public enum ReadyCount
@@ -148,13 +150,15 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         //Debug.Log("CHAR NUM: " + ID_to_CharNum[1]);
 
         #region Match Tracking
-        if (readyTotal >= PhotonNetwork.playerList.Length && !startMatch)
+        if (readyTotal >= PhotonNetwork.playerList.Length && !matchStart && !startCountdown )
         {
-            ExitGames.Client.Photon.Hashtable tempRoomTable = PhotonNetwork.room.customProperties;
-            tempRoomTable["GameStarted"] = true;
-            PhotonNetwork.room.SetCustomProperties(tempRoomTable);
-            startMatch = true;
-            M.GameStarts(readyTotal);
+            startTimer = CountdownLength;
+            startCountdown = true;
+            StartCoroutine(GameCountdown());
+        }
+        else if( startCountdown == true && readyTotal < PhotonNetwork.playerList.Length)
+        {
+            startCountdown = false;
         }
         #endregion
     }
@@ -252,7 +256,8 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     {
 
         currentRoom = PhotonNetwork.room;
-
+        startTimer = CountdownLength;
+        
         // All callbacks are listed in enum: PhotonNetworkingMessage.
         Debug.Log("On Joined Room: " + PhotonNetwork.room.name);
         inLobby = false;
@@ -428,21 +433,37 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     {
         get
         {
-            if (startMatch)
+            if (matchStart)
             {
-                startMatch = false;
+                matchStart = false;
                 return true;
             }
             else
-                return false;
+                return matchStart;
         }
     }
 
-    public room CurrentRoom
+    public Room CurrentRoom
     {
         get
         {
             return currentRoom;
+        }
+    }
+
+    public int StartTimer
+    {
+        get
+        {
+            return startTimer;
+        }
+    }
+
+    public bool StartCountdown
+    {
+        get
+        {
+            return startCountdown;
         }
     }
 
@@ -648,6 +669,23 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         ID_to_CharNum.Clear();
         ID_to_IsRdy.Clear();
         ID_to_SlotNum.Clear();
+    }
+
+    private IEnumerator GameCountdown()
+    {   
+        while(startCountdown == true && startTimer >= 0)
+        {
+            yield return new WaitForSeconds(1f);
+            startTimer--;
+        }
+        if (startCountdown == true)
+        {
+            ExitGames.Client.Photon.Hashtable tempRoomTable = PhotonNetwork.room.customProperties;
+            tempRoomTable["GameStarted"] = true;
+            PhotonNetwork.room.SetCustomProperties(tempRoomTable);
+            matchStart = true; // used by MatchHud
+            M.GameStarts(readyTotal);
+        }
     }
 
 }

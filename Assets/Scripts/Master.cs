@@ -108,6 +108,8 @@ public class Master : MonoBehaviour
     private float timeConnecting;
     private float connectingWaitTime;
 
+    private bool escapeEnabled; //disabled during a match.
+
     void Awake()
     {
 
@@ -151,12 +153,14 @@ public class Master : MonoBehaviour
         charactersUnlockedTotal = PlayerPrefs.GetInt("UnlockedChars", defaultUnlocked); // 6 = Default usable characters.
         SetMSXVolume(PlayerPrefs.GetFloat("MSXVol", 0.5f));
         SetSFXVolume(PlayerPrefs.GetFloat("SFXVol", 0.5f));
+
+        escapeEnabled = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("escape"))
+        if (Input.GetKeyDown("escape") && escapeEnabled)
         {
 			GoBack ();
         }
@@ -200,6 +204,7 @@ public class Master : MonoBehaviour
 		    case Menu.ingame:
                 currentMenu = Menu.chara;
                 loadMenu();
+                escapeEnabled = true;
                 break;
             case Menu.options:
                 currentMenu = Menu.main;
@@ -530,6 +535,19 @@ public class Master : MonoBehaviour
         get
         {
             return charactersUnlockedTotal;
+        }
+    }
+
+    public bool EscapeEnabled
+    {
+        get
+        {
+            return escapeEnabled;
+        }
+
+        set
+        {
+            escapeEnabled = value;
         }
     }
 

@@ -59,7 +59,7 @@ MonoBehaviour:
   synchronization: 1
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
-  ownershipTransfer: 1
+  ownershipTransfer: 0
   ObservedComponents:
   - {fileID: 114000013577397798}
   ObservedComponentsFoldoutOpen: 1
@@ -82,3 +82,4 @@ MonoBehaviour:
   MapUI: {fileID: 0}
   M_PhotonView: {fileID: 114000012754642432}
   ServerUpdateLength: 5
+  CountdownLength: 4
