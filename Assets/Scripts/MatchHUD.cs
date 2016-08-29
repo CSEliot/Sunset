@@ -10,11 +10,7 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class MatchHUD : MonoBehaviour{
 
-    public GameObject SelectorYes;
-    public GameObject SelectorNo;
-
     private bool isReady;
-    private bool readyUped;
     public Color rdyColor; //Unfaded
     public Color unRdyColor; //Faded
 
@@ -45,6 +41,10 @@ public class MatchHUD : MonoBehaviour{
     public Sprite[] UIHeads;
     public Image PlayerHead;
 
+    public GameObject CountdownObj;
+    public Text countdownTextTop;
+    public Text countdownTextBottom;
+
     // Use this for initialization
     void Start () {
         readyUpBypassCount = 0;
@@ -56,7 +56,6 @@ public class MatchHUD : MonoBehaviour{
             .GetComponent<OnJoinedInstantiate>();
 
         isReady = false;
-        readyUped = false;
         headSprite = getImageNum();
 
         PercentReady.text = "" + N.ReadyTotal + "/" + N.GetInRoomTotal;
@@ -95,27 +94,7 @@ public class MatchHUD : MonoBehaviour{
         if (N.GetCharStateChange())
             updateHUDCharDisplay();
 
-        if (!readyUped && Input.GetButtonDown("Left") && !isReady)
-        {
-            SelectorYes.SetActive(true);
-            SelectorNo.SetActive(false);
-            isReady = true;
-        }
-        if (!readyUped && Input.GetButtonDown("Right") && isReady)
-        {
-            SelectorYes.SetActive(false);
-            SelectorNo.SetActive(true);
-            isReady = false;
-        }
-        if ( !readyUped && Input.GetButtonDown("Submit") && isReady
-            && N.GetInRoomTotal > 1)
-        {
-            ReadyUp();
-        }
-        if (!readyUped && Input.GetButtonDown("Submit") && !isReady)
-        {
-            UnReady();
-        }
+        updateCountdownDisplay(N.StartCountdown, N.StartTimer);
 	}
 
     public void ReadyUp() 
@@ -130,13 +109,13 @@ public class MatchHUD : MonoBehaviour{
             return;
         }
         isReady = true;
-        readyUped = true;
         N.ReadyButton();
     }
 
-    public void UnReady(){            
+    public void UnReady() {
+        if (!isReady)
+            return;        
         isReady = false;
-        readyUped = false;
         N.UnreadyButton();
     }
 
@@ -148,7 +127,7 @@ public class MatchHUD : MonoBehaviour{
         for (int x = 0; x < PhotonNetwork.room.playerCount; x++)
         {
             playerSlot = N.GetSlotNum(PhotonNetwork.playerList[x].ID);
-            PlayerSlots[x].color = N.GetRdyStatus(PhotonNetwork.playerList[x].ID) ? rdyColor : unRdyColor;
+            PlayerSlots[playerSlot].color = N.GetRdyStatus(PhotonNetwork.playerList[x].ID) ? rdyColor : unRdyColor;
         }
     }
 
@@ -180,12 +159,25 @@ public class MatchHUD : MonoBehaviour{
         }
     }
 
+    private void updateCountdownDisplay(bool isActive, int secRemaining)
+    {
+        string timeString = secRemaining.ToString();
+        CountdownObj.SetActive(isActive);
+        countdownTextBottom.text = timeString;
+        countdownTextTop.text = timeString;
+
+        if(secRemaining == 1)
+        {
+            M.EscapeEnabled = false;
+            //on the last second, disable the ability to leave
+            No.SetActive(false);
+        }
+    }
+
     public void ActivateSpectating()
     {
         Yes.SetActive(false);
-        SelectorYes.SetActive(false);
         No.SetActive(false);
-        SelectorNo.SetActive(false);
 
         ReadyText.text = "Spectating . . .";
         PercentReady.text = "";

@@ -1109,6 +1109,14 @@ Prefab:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 240343948}
+    - target: {fileID: 1000010394853664, guid: 801395890f63ca1439e5d96ff6a563db, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000010751397720, guid: 801395890f63ca1439e5d96ff6a563db, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 801395890f63ca1439e5d96ff6a563db, type: 2}
   m_IsPrefabParent: 0
@@ -1212,7 +1220,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 1268527890}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: 8be6341e1ce3f4cec9902bc34f72d20a, type: 2}
+  m_Material: {fileID: 6200000, guid: 3626fe8e008014f6bbd19bb72937b311, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 1
   m_Offset: {x: -0.47847915, y: 0.7469674}
@@ -1276,7 +1284,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 1268527890}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: 5655d3beb0cbd324682a07c9f6ab7a6b, type: 2}
+  m_Material: {fileID: 6200000, guid: 3626fe8e008014f6bbd19bb72937b311, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 1
   m_Offset: {x: 0.4798974, y: -0.21098198}
@@ -1290,7 +1298,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 1268527890}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: 5655d3beb0cbd324682a07c9f6ab7a6b, type: 2}
+  m_Material: {fileID: 6200000, guid: 3626fe8e008014f6bbd19bb72937b311, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 1
   m_Offset: {x: -0.48065835, y: 0.26869285}
@@ -1304,7 +1312,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 1268527890}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: 5655d3beb0cbd324682a07c9f6ab7a6b, type: 2}
+  m_Material: {fileID: 6200000, guid: 3626fe8e008014f6bbd19bb72937b311, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 1
   m_Offset: {x: 0.4805893, y: 0.73900336}
@@ -1318,7 +1326,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 1268527890}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: 5655d3beb0cbd324682a07c9f6ab7a6b, type: 2}
+  m_Material: {fileID: 6200000, guid: 3626fe8e008014f6bbd19bb72937b311, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 1
   m_Offset: {x: 0.0012137512, y: -0.7489195}
