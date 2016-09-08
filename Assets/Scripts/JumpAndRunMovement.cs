@@ -87,7 +87,7 @@ public class JumpAndRunMovement : MonoBehaviour
     private float damage;
     private bool isDead;
 
-    private DamageTracker BattleUI;
+    private LifeMaster BattleUI;
 
     private Transform[] SpawnPoints;
 
@@ -171,13 +171,13 @@ public class JumpAndRunMovement : MonoBehaviour
         if (!battleUIAssigned)
         {
             BattleUI = GameObject.FindGameObjectWithTag("BattleUI")
-                .GetComponent<DamageTracker>();
+                .GetComponent<LifeMaster>();
             battleUIAssigned = true;
         }
         if (!matchHUDAssigned)
         {
             matchHUD = GameObject.FindGameObjectWithTag ("BattleUI")
-                .GetComponent<DamageTracker>().MatchHudComp;
+                .GetComponent<LifeMaster>().MatchHudComp;
             matchHUDAssigned = true;
         }
 

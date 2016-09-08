@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// Handles Visuals AND stats.
 /// </summary>
-public class DamageTracker : MonoBehaviour {
+public class LifeMaster : MonoBehaviour {
 
     public Text Lives_Text;
     public Text Damage_Text;

@@ -84,7 +84,7 @@ public class JumpAndRunMovementOffline : MonoBehaviour
     private float damage;
     private bool isDead;
 
-    private DamageTracker BattleUI;
+    private LifeMaster BattleUI;
 
     private Transform[] SpawnPoints;
 
@@ -165,7 +165,7 @@ public class JumpAndRunMovementOffline : MonoBehaviour
             AssignCameraFollow(transform);
         //if (!battleUIAssigned){
         //    BattleUI = GameObject.FindGameObjectWithTag("BattleUI")
-        //        .GetComponent<DamageTracker>();
+        //        .GetComponent<LifeMaster>();
         //    battleUIAssigned = true;
         //}
         
