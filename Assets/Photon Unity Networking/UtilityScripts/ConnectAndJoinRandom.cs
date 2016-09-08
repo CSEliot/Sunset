@@ -42,7 +42,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     private bool rdyStateChange = true;
     private bool charStateChange = true;
     private bool plrStateChange = true;
-    private bool matchStart;
+    private bool startTheMatch;
     private int startTimer;
     private bool startCountdown;
     public int CountdownLength;
@@ -150,7 +150,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         //Debug.Log("CHAR NUM: " + ID_to_CharNum[1]);
 
         #region Match Tracking
-        if (readyTotal >= PhotonNetwork.playerList.Length && !matchStart && !startCountdown )
+        if (readyTotal >= PhotonNetwork.playerList.Length && !startTheMatch && !startCountdown )
         {
             startTimer = CountdownLength;
             startCountdown = true;
@@ -429,17 +429,18 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         }
     }
 
-    public bool StartMatch
+    public bool StartTheMatch
     {
         get
         {
-            if (matchStart)
+            if (startTheMatch)
             {
-                matchStart = false;
+                startTheMatch = false;
+                gameStarted = true;
                 return true;
             }
             else
-                return matchStart;
+                return startTheMatch;
         }
     }
 
@@ -683,7 +684,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             ExitGames.Client.Photon.Hashtable tempRoomTable = PhotonNetwork.room.customProperties;
             tempRoomTable["GameStarted"] = true;
             PhotonNetwork.room.SetCustomProperties(tempRoomTable);
-            matchStart = true; // used by MatchHud
+            startTheMatch = true; // used by MatchHud
             M.GameStarts(readyTotal);
         }
     }

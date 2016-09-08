@@ -76,7 +76,7 @@ public class MatchHUD : MonoBehaviour{
         {
             readyUpBypassCount++;
         }
-        if (readyUpBypassTotal < readyUpBypassCount || N.StartMatch)
+        if (readyUpBypassTotal < readyUpBypassCount || N.StartTheMatch)
         {
             startMatch();   
         }
