@@ -4139,7 +4139,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &948514858
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5826,7 +5826,6 @@ GameObject:
   - 222: {fileID: 1327473058}
   - 114: {fileID: 1327473057}
   - 114: {fileID: 1327473056}
-  - 114: {fileID: 1327473055}
   m_Layer: 5
   m_Name: Play
   m_TagString: Untagged
@@ -5852,21 +5851,6 @@ RectTransform:
   m_AnchoredPosition: {x: 259.05, y: -32.679993}
   m_SizeDelta: {x: 141.9, y: 44}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1327473055
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1327473053}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f142b28ad16d13408d26da6ac0e9591, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SpriteSwaps:
-  - {fileID: 21300000, guid: e36b5ab9d10284495bfff57755684b64, type: 3}
-  - {fileID: 21300000, guid: 4e1ea46e0034e4deb83a07c5b945114e, type: 3}
-  img: {fileID: 1327473057}
 --- !u!114 &1327473056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5913,7 +5897,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 5
+          m_IntArgument: 4
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -7745,12 +7729,23 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 1674059609}
+        m_MethodName: SetArenaName
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Practice
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1674059609}
         m_MethodName: GoTo
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 4
+          m_IntArgument: 5
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -8375,7 +8370,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1714345779}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
@@ -8415,7 +8410,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 5
+          m_IntArgument: 4
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -8539,7 +8534,6 @@ GameObject:
   - 222: {fileID: 1720677166}
   - 114: {fileID: 1720677165}
   - 114: {fileID: 1720677164}
-  - 114: {fileID: 1720677167}
   m_Layer: 5
   m_Name: Play
   m_TagString: Untagged
@@ -8611,7 +8605,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 5
+          m_IntArgument: 4
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -8662,21 +8656,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1720677160}
---- !u!114 &1720677167
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1720677160}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f142b28ad16d13408d26da6ac0e9591, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SpriteSwaps:
-  - {fileID: 21300000, guid: e36b5ab9d10284495bfff57755684b64, type: 3}
-  - {fileID: 21300000, guid: 4e1ea46e0034e4deb83a07c5b945114e, type: 3}
-  img: {fileID: 1720677165}
 --- !u!1 &1736264465
 GameObject:
   m_ObjectHideFlags: 0

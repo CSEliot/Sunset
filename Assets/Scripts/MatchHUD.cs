@@ -86,13 +86,13 @@ public class MatchHUD : MonoBehaviour{
             return;
 
         if(N.GetPlayerStateChange())
-            updateHUDPlayerDisplay();
+            updatePlayerLoginDisplay();
 
         if (N.GetRdyStateChange())
-            updateHUDStatusDisplay();
+            updateReadyStatusDisplay();
 
         if (N.GetCharStateChange())
-            updateHUDCharDisplay();
+            updatePlayerCharDisplay();
 
         updateCountdownDisplay(N.StartCountdown, N.StartTimer);
 	}
@@ -119,10 +119,15 @@ public class MatchHUD : MonoBehaviour{
         N.UnreadyButton();
     }
 
-    private void updateHUDStatusDisplay()
+    #region Network Activity Sensitive
+    private void updateReadyStatusDisplay()
     {
         PercentReady.text = "" + N.ReadyTotal + "/" + N.GetInRoomTotal;
-        
+
+        //Any change to the ready status requires everyone to re-ready up.
+        Yes.SetActive(true);
+        No.SetActive(false);
+
         int playerSlot;
         for (int x = 0; x < PhotonNetwork.room.playerCount; x++)
         {
@@ -131,7 +136,7 @@ public class MatchHUD : MonoBehaviour{
         }
     }
 
-    private void updateHUDCharDisplay()
+    private void updatePlayerCharDisplay()
     {
         int slotNum;
         int playerID;
@@ -147,7 +152,7 @@ public class MatchHUD : MonoBehaviour{
         }
     }
 
-    private void updateHUDPlayerDisplay()
+    private void updatePlayerLoginDisplay()
     {
         bool isActive = true;
         
@@ -173,6 +178,7 @@ public class MatchHUD : MonoBehaviour{
             No.SetActive(false);
         }
     }
+    #endregion
 
     public void ActivateSpectating()
     {

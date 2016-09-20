@@ -32,7 +32,7 @@ public class Master : MonoBehaviour
     public int PlayerCharNum;
     public int InRoomNumber;
 
-    private string ArenaName;
+    private string arenaName;
 
     public AudioClip[] SFX;
     public AudioClip[] MSX;
@@ -70,8 +70,8 @@ public class Master : MonoBehaviour
 		map,
 		chara,
 		options,
-		practice,
-		ingame // opens pause menu
+		ingame,
+        practice
 	};
 	private Menu currentMenu;
 
@@ -121,7 +121,7 @@ public class Master : MonoBehaviour
         currentMap = Map.pillar;
         rmAction = RoomAction.unset;
 
-        ArenaName = "Pillar";
+        arenaName = "Pillar";
         
         isEast = true;
         bool tempControlsShown = PlayerPrefs.GetInt("isControlsShown", 1) == 1 ? true : false;
@@ -197,10 +197,6 @@ public class Master : MonoBehaviour
 			    switchCanvas ((int)Menu.main);
                 N.LeaveServer();
 			    break;
-		    case Menu.practice:
-			    currentMenu = Menu.options;
-                loadMenu();
-			    break;
 		    case Menu.ingame:
                 currentMenu = Menu.chara;
                 loadMenu();
@@ -230,34 +226,28 @@ public class Master : MonoBehaviour
                 StartCoroutine(gotoMapHelper());
 			    break;
 		    case (int)Menu.chara:
-                if(rmAction == RoomAction.unset)
-                {
-                    Debug.LogError("No room action given! Create or Join?");
-                }else if(rmAction == RoomAction.join)
-                {
-                    N.JoinRoom();
-                }else
-                {
-                    N.CreateRoom();
-                }
                 StartCoroutine(gotoCharHelper());
                 break; 
             case (int)Menu.options:
                 switchCanvas((int)Menu.options);
                 break;
-            case (int)Menu.practice:
-                switchCanvas((int)Menu.chara);
-                SetArenaName("Practice");
-                break;
-            case (int)Menu.ingame:
+            case (int)Menu.ingame: //game is actually loaded up from map -> chara.
+                //This just disables the main menu.
                 switchCanvas((int)Menu.ingame);
                 unloadMenu();
                 PlayMSX(1);
                 break;
-            case -1:
+            case (int)Menu.practice:
+                loadArena();
+                switchCanvas((int)Menu.ingame);
+                unloadMenu();
+                PlayMSX(1);
+                break;
+            case -1: //Disabling all UI
                 switchCanvas(-1);
                 break;
             default:
+                Debug.LogError("BAD MENU SCENE GIVEN!! :: " + to);
 			    break;
 		    }
 	}
@@ -294,6 +284,18 @@ public class Master : MonoBehaviour
 
     private IEnumerator gotoCharHelper()
     {
+        if (rmAction == RoomAction.unset)
+        {
+            Debug.LogError("No room action given! Create or Join?");
+        }
+        else if (rmAction == RoomAction.join)
+        {
+            N.JoinRoom();
+        }
+        else
+        {
+            N.CreateRoom();
+        }
         timeConnecting = Time.time;
         ToggleConnectLoadScreen(true);
         GoTo(-1);
@@ -427,9 +429,14 @@ public class Master : MonoBehaviour
         Debug.Log("MSXVolume Set");
     }
 
+    public static float GetSFXVolume()
+    {
+        return GameObject.FindGameObjectWithTag("Master").transform.GetChild(0).GetComponent<AudioSource>().volume;
+    }
+
     public void SetArenaName(string arena_name)
     {
-        ArenaName = arena_name;
+        arenaName = arena_name;
         switch (arena_name)
         {
             case "Practice":
@@ -452,7 +459,7 @@ public class Master : MonoBehaviour
 
     public string GetArenaName()
     {
-        return ArenaName;
+        return arenaName;
     }
 
     public bool IsControlsShown

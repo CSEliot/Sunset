@@ -88,8 +88,6 @@ public class JumpAndRunMovementOffline : MonoBehaviour
 
     private Transform[] SpawnPoints;
 
-    private Master m;
-
     private bool playersSpawned;
     
     private bool readyGUIFound;
@@ -117,10 +115,8 @@ public class JumpAndRunMovementOffline : MonoBehaviour
         readyGUIFound = false;
         playersSpawned = false;
         punching = false;
-        camShaker = GameObject.FindGameObjectWithTag("MainCamera")
+        camShaker = GameObject.FindGameObjectWithTag("StageCamera")
             .GetComponent<CamManager>();
-        m = GameObject.FindGameObjectWithTag("Master")
-            .GetComponent<Master>();
 
         isDead = false;
         battleUIAssigned = false;

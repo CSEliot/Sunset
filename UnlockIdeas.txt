@@ -1,0 +1,7 @@
+ - Spell a word out with the characters in practice.
+ - Win while players are in X condition / location.
+ - Win only using X.
+ - Wait for X time in gamemode, event occurs, complete event.
+ - Hold device upside down while playing. (Gyroscope-based unlock).
+ - QPU ALTERNATE UNIVERSE HACK.
+ - Go without touching a cloud as Cloud.
