@@ -562,6 +562,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
         readyTotal = action == ReadyCount.Add ? ++readyTotal : --readyTotal;
         readyTotal = action == ReadyCount.Reset ? 0 : readyTotal;
+        readyTotal = action < 0 ? 0 : readyTotal;
 
         ID_to_IsRdy[playerNum] = action == ReadyCount.Add;
         rdyStateChange = true;

@@ -5,11 +5,15 @@ public class RandomlyPitchAudio : MonoBehaviour {
 
     private AudioSource myAudioSource;
     float originalPitch;
-    public float VaryPitchBy = 0.5f;
+    private float varyPitchBy;
 
 	// Use this for initialization
 	void Start () {
-	    
+        varyPitchBy = 0.6f;
+        myAudioSource = GetComponent<AudioSource>();
+        originalPitch = myAudioSource.pitch;
+
+        myAudioSource.volume = Master.GetSFXVolume();
 	}
 	
 	// Update is called once per frame
@@ -19,13 +23,11 @@ public class RandomlyPitchAudio : MonoBehaviour {
 
     void Awake()
     {
-        myAudioSource = GetComponent<AudioSource>();
-        originalPitch = myAudioSource.pitch;
     }
 
     void OnEnable()
     {
-        myAudioSource.pitch = Random.Range(-VaryPitchBy, VaryPitchBy) + originalPitch;
+        myAudioSource.pitch = Random.Range(-varyPitchBy, varyPitchBy) + originalPitch;
         myAudioSource.Play();
     }
 }
