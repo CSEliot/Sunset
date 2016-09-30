@@ -279,7 +279,6 @@ public class Master : MonoBehaviour
             AssignPlayerCharacter(0);
             switchCanvas((int)Menu.map);
         }
-        ToggleConnectLoadScreen(false);
     }
 
     private IEnumerator gotoCharHelper()
@@ -563,7 +562,7 @@ public class Master : MonoBehaviour
         rmAction = (RoomAction)action;
     }
 
-    private void ToggleConnectLoadScreen(bool isActive)
+    public void ToggleConnectLoadScreen(bool isActive)
     {
         LoadingUI.SetActive(isActive);
         Rays.SetActive(!isActive);

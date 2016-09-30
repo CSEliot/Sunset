@@ -26,6 +26,7 @@ public class MapSelectUIController : MonoBehaviour {
     public Button DownArrow;
 	public Button UpArrow;
     public Button Join;
+    public GameObject JoinMapButton;
 
     private int currentHorizSelector;
 	private int currentVertSelector;
@@ -42,6 +43,7 @@ public class MapSelectUIController : MonoBehaviour {
     private int maxArenas;
 	private int latestRoomTotal;
     private int roomsAvailable;
+    private bool isServerWoke; //Woke Status = Server can tell us total connected > 0.
 
     private float timeSinceLastUpdate;
 
@@ -49,7 +51,7 @@ public class MapSelectUIController : MonoBehaviour {
     public float LoadingAnimSec;
 
     public GameObject FullRoomWarning;
-
+    
 
     public void Awake()
     {
@@ -62,22 +64,32 @@ public class MapSelectUIController : MonoBehaviour {
         Reset();
         maxArenas = m.TotalUniqueArenas;
         roomSizeText = " / 6\nMax Players";
+        isServerWoke = false;
     }
 
     void OnEnable()
     {
-        Reset();
+        SetTotalOnline(n.TotalOnline);
+        setRoomsUI();
+        StartCoroutine(PlayLoadingUI());
     }
 
     // Update is called once per frame
     void Update () {
+
+        if(!isServerWoke && n.TotalOnline > 0) {
+            m.ToggleConnectLoadScreen(false);
+            isServerWoke = true;
+        }
+
          if(Time.time - timeSinceLastUpdate > n.ServerUpdateLength)
         {
             timeSinceLastUpdate = Time.time;
             SetTotalOnline(n.TotalOnline);
             setRoomsUI();
-            StartCoroutine(PlayLoadingUI());   
+            StartCoroutine(PlayLoadingUI());
         }
+
 	}
 
     public void Reset()
@@ -193,6 +205,7 @@ public class MapSelectUIController : MonoBehaviour {
 
         roomsAvailable = n.Rooms [currentHorizSelector].Count;
         Join.interactable = roomsAvailable != 0;
+        JoinMapButton.SetActive(roomsAvailable != 0);
 		MidTopFrames [0].enabled = roomsAvailable > 1 && currentVertSelector < n.Rooms[currentHorizSelector].Count - 1;
 		MidTopFrames [1].enabled = roomsAvailable > 2 && currentVertSelector < n.Rooms[currentHorizSelector].Count - 2;
 		MidBottomFrames [0].enabled = currentVertSelector > 0;

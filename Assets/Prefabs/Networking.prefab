@@ -81,5 +81,5 @@ MonoBehaviour:
   M: {fileID: 0}
   MapUI: {fileID: 0}
   M_PhotonView: {fileID: 114000012754642432}
-  ServerUpdateLength: 5
+  ServerUpdateLength: 6
   CountdownLength: 4
