@@ -64,11 +64,11 @@ public class MapSelectUIController : MonoBehaviour {
         Reset();
         maxArenas = m.TotalUniqueArenas;
         roomSizeText = " / 6\nMax Players";
-        isServerWoke = false;
     }
 
     void OnEnable()
     {
+        isServerWoke = false;
         SetTotalOnline(n.TotalOnline);
         setRoomsUI();
         StartCoroutine(PlayLoadingUI());

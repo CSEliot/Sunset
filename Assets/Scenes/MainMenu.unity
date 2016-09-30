@@ -8254,9 +8254,9 @@ MonoBehaviour:
   - Sarchy
   - Cloud
   - Locked
-  LeftFrame_B: {fileID: 0}
-  MidFrame_B: {fileID: 0}
-  RightFrame_B: {fileID: 0}
+  LeftFrame_B: {fileID: 1795876830}
+  MidFrame_B: {fileID: 1730110095}
+  RightFrame_B: {fileID: 2106877600}
   LeftFrame_I: {fileID: 1474902081}
   MidFrame_I: {fileID: 1714345781}
   RightFrame_I: {fileID: 519616767}
@@ -8572,6 +8572,7 @@ GameObject:
   - 224: {fileID: 1730110094}
   - 222: {fileID: 1730110096}
   - 114: {fileID: 1730110095}
+  - 114: {fileID: 1730110097}
   m_Layer: 0
   m_Name: MidButton
   m_TagString: Untagged
@@ -8667,6 +8668,33 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1730110093}
+--- !u!114 &1730110097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1730110093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
 --- !u!1 &1736264465
 GameObject:
   m_ObjectHideFlags: 0
@@ -8890,6 +8918,7 @@ GameObject:
   - 224: {fileID: 1795876829}
   - 222: {fileID: 1795876831}
   - 114: {fileID: 1795876830}
+  - 114: {fileID: 1795876832}
   m_Layer: 0
   m_Name: LeftButton
   m_TagString: Untagged
@@ -8950,7 +8979,7 @@ MonoBehaviour:
     m_HighlightedTrigger: Highlighted
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1474902081}
   m_OnClick:
     m_PersistentCalls:
@@ -8974,6 +9003,33 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1795876828}
+--- !u!114 &1795876832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1795876828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
 --- !u!1 &1801335392
 GameObject:
   m_ObjectHideFlags: 0
@@ -10899,6 +10955,7 @@ GameObject:
   - 224: {fileID: 2106877599}
   - 222: {fileID: 2106877601}
   - 114: {fileID: 2106877600}
+  - 114: {fileID: 2106877602}
   m_Layer: 0
   m_Name: RightButton
   m_TagString: Untagged
@@ -10983,6 +11040,33 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2106877598}
+--- !u!114 &2106877602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2106877598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
 --- !u!1 &2108463560
 GameObject:
   m_ObjectHideFlags: 0
