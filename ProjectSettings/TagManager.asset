@@ -28,6 +28,7 @@ TagManager:
   - StageCamera
   - MapUIController
   - 1
+  - StageAnim
   layers:
   - Default
   - TransparentFX
