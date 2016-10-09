@@ -51,14 +51,7 @@ public class CamManager : MonoBehaviour
     {
         if (target == null)
             return;
-
-        if (target.tag == "PlayerGhost")
-        {
-            if (GameObject.FindGameObjectWithTag("PlayerSelf") != null)
-            {
-                SetTarget(GameObject.FindGameObjectWithTag("PlayerSelf").transform);
-            }
-        }
+        
         // only update lookahead pos if accelerating or changed direction
         float xMoveDelta = (target.position - m_LastTargetPosition).x;
 
@@ -82,7 +75,12 @@ public class CamManager : MonoBehaviour
         m_LastTargetPosition = target.position;
     }
 
-    public void SetTarget(Transform newTarget)
+    public static void SetTarget(Transform newTarget)
+    {
+        getRef()._SetTarget(newTarget);
+    }
+
+    public void _SetTarget(Transform newTarget)
     {
         target = newTarget;
         m_LastTargetPosition = target.position;
@@ -110,20 +108,31 @@ public class CamManager : MonoBehaviour
     /// </summary>
     /// <param name="BodyVelocityMag">Moving force player is feeling.</param>
     /// <param name="playerLoc"> player location in WORLD space.</param>
-    public void DeathShake(bool isMyDeath)
+    public static void DeathShake(bool isMyDeath)
     {
-        float shakeAmt = DeathShakeMod * (isMyDeath? 2f: 1f);
-        StartCoroutine(CameraShake(OnDeathWaitTicks, shakeAmt));
+        getRef()._DeathShake(isMyDeath);
     }
+
+    public void _DeathShake(bool isMyDeath)
+    {
+        float shakeAmt = DeathShakeMod * (isMyDeath ? 2f : 1f);
+        StartCoroutine(cameraShake(OnDeathWaitTicks, shakeAmt));
+    }
+
 
     //Called for Punches, only client 
-    public void PunchShake(float BodyVelocityMag)
+    public static void PunchShake(float BodyVelocityMag)
     {
-        float shakeAmt = BodyVelocityMag * PunchShakeMod;
-        StartCoroutine(CameraShake(PunchWaitTicks, shakeAmt));
+        getRef()._PunchShake(BodyVelocityMag);
     }
 
-    IEnumerator CameraShake(int ticks, float shakeAmt)
+    public void _PunchShake(float BodyVelocityMag)
+    {
+        float shakeAmt = BodyVelocityMag * PunchShakeMod;
+        StartCoroutine(cameraShake(PunchWaitTicks, shakeAmt));
+    }
+
+    private IEnumerator cameraShake(int ticks, float shakeAmt)
     {
         float x_totalAdded = 0f;
         float y_totalAdded = 0f;
@@ -144,5 +153,11 @@ public class CamManager : MonoBehaviour
         CancelInvoke("CameraShake");
         transform.GetComponent<UnityStandardAssets._2D.Camera2DFollow>()
             .enabled = true;
+    }
+
+    private static CamManager getRef()
+    {
+        return GameObject.FindGameObjectWithTag("StageCamera")
+            .GetComponent<CamManager>();
     }
 }

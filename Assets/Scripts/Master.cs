@@ -24,22 +24,23 @@ public class Master : MonoBehaviour
 
     public NameToStrength[] StrengthsList;
     private Dictionary<string, float> NameStrengthDict;
-    public int Max_Players;
+    public static int MaxRoomSize = 6;
     public GameObject[] AllCharacters;
     public int PlayableCharacters;
+
+    public GameObject[] DontUnloadObjs;
 
     private GameObject clientCharacter;
     public int PlayerCharNum;
     public int InRoomNumber;
 
-    private string arenaName;
+    private string stageName;
 
     public AudioClip[] SFX;
     public AudioClip[] MSX;
     private AudioSource myMusicAudio;
     private AudioSource mySFXAudio;
 
-    private int maxPlayers;
     private int currentlyOnline;
 
     private bool isEast;
@@ -96,32 +97,35 @@ public class Master : MonoBehaviour
     /// <summary>
     /// Should go up whenever a new map is added. Currently there are: 3
     /// </summary>
-    private const int totalUniqueArenas = 3;
-    private string[] arenaNames;
+    private const int totalUniqueStages = 3;
+    private string[] stageNames;
 
 	private bool isNewScene;
     //	private  targetScene;
 
-    public ConnectAndJoinRandom N;
+    public NetworkManager N;
     public MapSelectUIController MapUI;
 
     private float timeConnecting;
     private float connectingWaitTime;
 
-    private bool escapeEnabled; //disabled during a match.
+    private bool escapeHardened; //A hardened escape requires 3 presses.
+    private bool escapeDisabled;
+    private int escapePresses;
 
     void Awake()
     {
 
-        N = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
+        N = GameObject.FindGameObjectWithTag("Networking").GetComponent<NetworkManager>();
         
         version = Application.version;
         VersionUI.text = "BETA " + Application.version;
+        
 		currentMenu = Menu.main;
         currentMap = Map.pillar;
         rmAction = RoomAction.unset;
 
-        arenaName = "Pillar";
+        stageName = "Pillar";
         
         isEast = true;
         bool tempControlsShown = PlayerPrefs.GetInt("isControlsShown", 1) == 1 ? true : false;
@@ -141,7 +145,7 @@ public class Master : MonoBehaviour
         //Cursor.lockState = CursorLockMode.Confined;
         //Cursor.visible = false;
         
-        arenaNames = new string[totalUniqueArenas] { "Pillar", "Void", "Lair" };
+        stageNames = new string[totalUniqueStages] { "Pillar", "Void", "Lair" };
 
         connectingWaitTime = 7; //Seconds
     }
@@ -149,20 +153,33 @@ public class Master : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        maxPlayers = 100;
         charactersUnlockedTotal = PlayerPrefs.GetInt("UnlockedChars", defaultUnlocked); // 6 = Default usable characters.
         SetMSXVolume(PlayerPrefs.GetFloat("MSXVol", 0.5f));
         SetSFXVolume(PlayerPrefs.GetFloat("SFXVol", 0.5f));
 
-        escapeEnabled = true;
+        escapeHardened = false;
+        escapeDisabled = false;
+        CBUG.Print(VersionUI.text);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("escape") && escapeEnabled)
+        if (Input.GetKeyDown("escape")) {
+            escapePresses++;
+        }
+
+        if (escapeDisabled)
+            return;
+
+        if(escapePresses == 1 && !escapeHardened)
         {
 			GoBack ();
+            escapePresses = 0;
+        }else if(escapePresses == 3) {
+            GoBack();
+            escapePresses = 0;
+            //ACTIVATE "ARE YOU SURE YOU WANT TO QUIT?"
         }
     }
 
@@ -184,12 +201,12 @@ public class Master : MonoBehaviour
                 if (currentMap == Map.practice)
                 {
                     GoTo(3);
-                    SetArenaName("Pillar"); //reset level from practice level back to 0: Pillar.
+                    SetStageName("Pillar"); //reset level from practice level back to 0: Pillar.
                     break;
                 }
                 currentMenu = Menu.map;
                 switchCanvas((int)Menu.map);
-                unloadArena();
+                unloadStage();
                 N.LeaveRoom();
                 break;
 		    case Menu.map: 
@@ -200,7 +217,7 @@ public class Master : MonoBehaviour
 		    case Menu.ingame:
                 currentMenu = Menu.chara;
                 loadMenu();
-                escapeEnabled = true;
+                escapeHardened = false;
                 break;
             case Menu.options:
                 currentMenu = Menu.main;
@@ -238,7 +255,7 @@ public class Master : MonoBehaviour
                 PlayMSX(1);
                 break;
             case (int)Menu.practice:
-                loadArena();
+                loadStage();
                 switchCanvas((int)Menu.ingame);
                 unloadMenu();
                 PlayMSX(1);
@@ -247,7 +264,7 @@ public class Master : MonoBehaviour
                 switchCanvas(-1);
                 break;
             default:
-                Debug.LogError("BAD MENU SCENE GIVEN!! :: " + to);
+                CBUG.Error("BAD MENU SCENE GIVEN!! :: " + to);
 			    break;
 		    }
 	}
@@ -285,7 +302,7 @@ public class Master : MonoBehaviour
     {
         if (rmAction == RoomAction.unset)
         {
-            Debug.LogError("No room action given! Create or Join?");
+            CBUG.Error("No room action given! Create or Join?");
         }
         else if (rmAction == RoomAction.join)
         {
@@ -314,7 +331,7 @@ public class Master : MonoBehaviour
         if (PhotonNetwork.inRoom)
         {
             switchCanvas((int)Menu.chara);
-            loadArena(); //the InGame map is loaded in the background.
+            loadStage(); //the InGame map is loaded in the background.
         }
         ToggleConnectLoadScreen(false);
     }
@@ -329,12 +346,12 @@ public class Master : MonoBehaviour
         MenuCanvasList[3].SetActive(switchTo == 3 ? true : false); //options
     }
 
-    private void loadArena()
+    private void loadStage()
     {
         SceneManager.LoadScene((int)currentMap, LoadSceneMode.Additive);
     }
 
-    private void unloadArena()
+    private void unloadStage()
     {
         SceneManager.UnloadScene(SceneManager.GetSceneAt(1));
     }
@@ -346,8 +363,10 @@ public class Master : MonoBehaviour
         {
             menuObjs[i].SetActive(false);
         }
-        gameObject.SetActive(true); //Master gets disabled in this general sweep, we don't want that.
-        N.gameObject.SetActive(true); // Same w/ Networking.
+        //Certain OBJs must never be set inactive.
+        for(int i = 0; i < DontUnloadObjs.Length; i++){
+            DontUnloadObjs[i].SetActive(true);
+        }
     }
 
     private void loadMenu()
@@ -369,7 +388,7 @@ public class Master : MonoBehaviour
 
     public string GetClientCharacterName()
     {
-        Debug.Log("Sending: " + clientCharacter.name);
+        CBUG.Log("Sending: " + clientCharacter.name);
         return clientCharacter.name;
     }
 
@@ -378,15 +397,10 @@ public class Master : MonoBehaviour
         return NameStrengthDict;
     }
 
-    public void GameStarts(int myMaxPlayers)
+    public void GameStarts(int roomSize)
     {
-        Debug.Log("Game Starting with " + myMaxPlayers + " players.");
-        maxPlayers = myMaxPlayers;
-    }
-
-    public void Idied()
-    {
-        maxPlayers--;
+       CBUG.Log("Game Starting with " + roomSize + " players.");
+        escapeDisabled = false;
     }
 
     public void PlaySFX(int num)
@@ -404,28 +418,29 @@ public class Master : MonoBehaviour
         myMusicAudio.Play();
     }
 
+    #region Getters and Setters
     public void SetSFXVolume(float amt)
     {
         if (amt < 0f || amt > 1f)
         {
-            Debug.LogError("Volume amount must be betweeen 0 and 1.");
+            CBUG.Error("Volume amount must be betweeen 0 and 1.");
         }
         mySFXAudio.volume = amt;
         PlayerPrefs.SetFloat("SFXVol", amt);
         PlayerPrefs.Save();
-        Debug.Log("SFXVolume Set");
+        CBUG.Log("SFXVolume Set");
     }
 
     public void SetMSXVolume(float amt)
     {
         if (amt < 0f || amt > 1f)
         {
-            Debug.LogError("Volume amount must be betweeen 0 and 1.");
+            CBUG.Error("Volume amount must be betweeen 0 and 1.");
         }
         myMusicAudio.volume = amt;
         PlayerPrefs.SetFloat("MSXVol", amt);
         PlayerPrefs.Save();
-        Debug.Log("MSXVolume Set");
+        CBUG.Log("MSXVolume Set");
     }
 
     public static float GetSFXVolume()
@@ -433,10 +448,10 @@ public class Master : MonoBehaviour
         return GameObject.FindGameObjectWithTag("Master").transform.GetChild(0).GetComponent<AudioSource>().volume;
     }
 
-    public void SetArenaName(string arena_name)
+    public void SetStageName(string stage_name)
     {
-        arenaName = arena_name;
-        switch (arena_name)
+        stageName = stage_name;
+        switch (stage_name)
         {
             case "Practice":
                 currentMap = Map.practice;
@@ -451,14 +466,14 @@ public class Master : MonoBehaviour
                 currentMap = Map.lair;
                 break;
             default:
-                Debug.LogError("WRONG ROOMMNAME GIVEN.");
+                CBUG.Error("WRONG ROOMMNAME GIVEN.");
                 break;
         }
     }
 
-    public string GetArenaName()
+    public string GetStageName()
     {
-        return arenaName;
+        return stageName;
     }
 
     public bool IsControlsShown
@@ -507,19 +522,19 @@ public class Master : MonoBehaviour
         }
     }
 
-    public int TotalUniqueArenas
+    public int TotalUniqueStages
     {
         get
         {
-            return totalUniqueArenas;
+            return totalUniqueStages;
         }
     }
 
-    public string[] ArenaNames
+    public string[] StageNames
     {
         get
         {
-            return arenaNames;
+            return stageNames;
         }
     }
 
@@ -544,16 +559,26 @@ public class Master : MonoBehaviour
         }
     }
 
-    public bool EscapeEnabled
+    public bool EscapeHardened
     {
         get
         {
-            return escapeEnabled;
+            return escapeHardened;
         }
 
         set
         {
-            escapeEnabled = value;
+            escapeHardened = value;
+        }
+    }
+
+    public bool EscapeDisabled {
+        get {
+            return escapeDisabled;
+        }
+
+        set {
+            escapeDisabled = value;
         }
     }
 
@@ -561,6 +586,7 @@ public class Master : MonoBehaviour
     {
         rmAction = (RoomAction)action;
     }
+    #endregion
 
     public void ToggleConnectLoadScreen(bool isActive)
     {

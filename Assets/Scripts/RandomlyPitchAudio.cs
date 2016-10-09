@@ -27,6 +27,7 @@ public class RandomlyPitchAudio : MonoBehaviour {
 
     void OnEnable()
     {
+        Start();
         myAudioSource.pitch = Random.Range(-varyPitchBy, varyPitchBy) + originalPitch;
         myAudioSource.Play();
     }

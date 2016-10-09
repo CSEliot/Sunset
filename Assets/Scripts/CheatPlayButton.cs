@@ -5,11 +5,11 @@ public class CheatPlayButton : MonoBehaviour {
 
     private int totalPresses;
     public int CheatPressCount;
-    private MatchHUD matchHUD;
+    private WaitUIController gameHUD;
 
 	// Use this for initialization
 	void Start () {
-        matchHUD = GameObject.FindGameObjectWithTag("MatchHUD").GetComponent<MatchHUD>();
+        gameHUD = GameObject.FindGameObjectWithTag("MatchHUD").GetComponent<WaitUIController>();
         totalPresses = 0;
 	}
 	
@@ -24,7 +24,7 @@ public class CheatPlayButton : MonoBehaviour {
         if(totalPresses > CheatPressCount)
         {
             totalPresses = 0;
-            matchHUD.CheatGame();
+            gameHUD.CheatGame();
         }
     }
 }

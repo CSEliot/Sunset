@@ -8,12 +8,12 @@ public class ServerSwitchLabelEnabler : MonoBehaviour {
     public GameObject EastArrow;
 
     private int server;
-    private ConnectAndJoinRandom n;
+    private NetworkManager N;
 
 	// Use this for initialization
 	void Awake () {
 
-        n = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
+        N = GameObject.FindGameObjectWithTag("Networking").GetComponent<NetworkManager>();
 
         server = PlayerPrefs.GetInt("Server", 0);
         if (server == 0)

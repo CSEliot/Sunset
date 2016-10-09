@@ -12,8 +12,8 @@ public class MapSelectUIController : MonoBehaviour {
     public Sprite[] AllSprites;
     public Sprite[] AllHDSprites;
 
-    private Master m;
-    private ConnectAndJoinRandom n;
+    private Master M;
+    private NetworkManager N;
     public string[] MapNames;
 
     public Button LeftFrame;
@@ -40,7 +40,7 @@ public class MapSelectUIController : MonoBehaviour {
     private string totalRoomCountStr;
 
     private int roomNumber;
-    private int maxArenas;
+    private int maxStages;
 	private int latestRoomTotal;
     private int roomsAvailable;
     private bool isServerWoke; //Woke Status = Server can tell us total connected > 0.
@@ -55,21 +55,21 @@ public class MapSelectUIController : MonoBehaviour {
 
     public void Awake()
     {
-        m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
-        n = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
+        M = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
+        N = GameObject.FindGameObjectWithTag("Networking").GetComponent<NetworkManager>();
     }
 
     // Use this for initialization
     void Start () {
         Reset();
-        maxArenas = m.TotalUniqueArenas;
+        maxStages = M.TotalUniqueStages;
         roomSizeText = " / 6\nMax Players";
     }
 
     void OnEnable()
     {
         isServerWoke = false;
-        SetTotalOnline(n.TotalOnline);
+        SetTotalOnline(N.TotalOnline);
         setRoomsUI();
         StartCoroutine(PlayLoadingUI());
     }
@@ -77,15 +77,15 @@ public class MapSelectUIController : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
-        if(!isServerWoke && n.TotalOnline > 0) {
-            m.ToggleConnectLoadScreen(false);
+        if(!isServerWoke && N.TotalOnline > 0) {
+            M.ToggleConnectLoadScreen(false);
             isServerWoke = true;
         }
 
-         if(Time.time - timeSinceLastUpdate > n.ServerUpdateLength)
+         if(Time.time - timeSinceLastUpdate > N.ServerUpdateLength)
         {
             timeSinceLastUpdate = Time.time;
-            SetTotalOnline(n.TotalOnline);
+            SetTotalOnline(N.TotalOnline);
             setRoomsUI();
             StartCoroutine(PlayLoadingUI());
         }
@@ -114,7 +114,7 @@ public class MapSelectUIController : MonoBehaviour {
         if (currentHorizSelector == 0)
             return;
 		currentHorizSelector--;
-		m.PlaySFX(5);
+		M.PlaySFX(5);
 		currentVertSelector = 0;
         setRoomsUI();
         if (currentHorizSelector == 0) {
@@ -143,9 +143,9 @@ public class MapSelectUIController : MonoBehaviour {
 
 	public void ShiftSelectionUp(){
 
-		if (currentVertSelector == n.Rooms [currentHorizSelector].Count - 1 )
+		if (currentVertSelector == N.Rooms [currentHorizSelector].Count - 1 )
 			return;
-        m.PlaySFX(7);
+        M.PlaySFX(7);
 		currentVertSelector++;
         setRoomsUI();
 	}
@@ -153,17 +153,17 @@ public class MapSelectUIController : MonoBehaviour {
 	public void ShiftSelectionDown() {
 		if (currentVertSelector == 0)
 			return;
-        m.PlaySFX(8);
+        M.PlaySFX(8);
         currentVertSelector--;
         setRoomsUI();
     }
 
     public void ShiftSelectionRight()
     {
-        if (currentHorizSelector == maxArenas-1)
+        if (currentHorizSelector == maxStages-1)
             return;
 		currentHorizSelector++;
-        m.PlaySFX(5);   
+        M.PlaySFX(5);   
 		currentVertSelector = 0;
         setRoomsUI();
         LeftFrame.interactable = true;
@@ -176,7 +176,7 @@ public class MapSelectUIController : MonoBehaviour {
         MidBottomFrames[0].sprite = AllHDSprites[currentHorizSelector];
         MidBottomFrames[1].sprite = AllHDSprites[currentHorizSelector];
 
-        if (currentHorizSelector == maxArenas-1) {
+        if (currentHorizSelector == maxStages-1) {
 			RightFrame.interactable = false;
             RightArrow.interactable = false;
         } else {
@@ -203,22 +203,22 @@ public class MapSelectUIController : MonoBehaviour {
     private void setRoomsUI()
     {
 
-        roomsAvailable = n.Rooms [currentHorizSelector].Count;
+        roomsAvailable = N.Rooms [currentHorizSelector].Count;
         Join.interactable = roomsAvailable != 0;
         JoinMapButton.SetActive(roomsAvailable != 0);
-		MidTopFrames [0].enabled = roomsAvailable > 1 && currentVertSelector < n.Rooms[currentHorizSelector].Count - 1;
-		MidTopFrames [1].enabled = roomsAvailable > 2 && currentVertSelector < n.Rooms[currentHorizSelector].Count - 2;
+		MidTopFrames [0].enabled = roomsAvailable > 1 && currentVertSelector < N.Rooms[currentHorizSelector].Count - 1;
+		MidTopFrames [1].enabled = roomsAvailable > 2 && currentVertSelector < N.Rooms[currentHorizSelector].Count - 2;
 		MidBottomFrames [0].enabled = currentVertSelector > 0;
 		MidBottomFrames [1].enabled = currentVertSelector > 1;
-        UpArrow.interactable = roomsAvailable > 1 && currentVertSelector != n.Rooms[currentHorizSelector].Count - 1; ;
+        UpArrow.interactable = roomsAvailable > 1 && currentVertSelector != N.Rooms[currentHorizSelector].Count - 1; ;
 		DownArrow.interactable = currentVertSelector > 0;
 
 		if (roomsAvailable != 0) {
-            RoomPlayerCount.text = n.Rooms[currentHorizSelector][currentVertSelector].size + "/6 Players\n" +
-                n.Rooms[currentHorizSelector][currentVertSelector].name;//roomSizeText;
+            RoomPlayerCount.text = N.Rooms[currentHorizSelector][currentVertSelector].size + "/6 Players\n" +
+                N.Rooms[currentHorizSelector][currentVertSelector].name;//roomSizeText;
 
-            RoomPlayerCountBG.text = n.Rooms[currentHorizSelector][currentVertSelector].size + "/6 Players\n" +
-                n.Rooms[currentHorizSelector][currentVertSelector].name;//roomSizeText;
+            RoomPlayerCountBG.text = N.Rooms[currentHorizSelector][currentVertSelector].size + "/6 Players\n" +
+                N.Rooms[currentHorizSelector][currentVertSelector].name;//roomSizeText;
         }
         else
         {
@@ -232,7 +232,7 @@ public class MapSelectUIController : MonoBehaviour {
         return currentVertSelector;
     }
 
-    public int getTargetArena()
+    public int getTargetStage()
     {
         return currentHorizSelector;
     }

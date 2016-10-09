@@ -8,15 +8,14 @@ using UnityEngine.SceneManagement;
 /// All Pre-game, Post-Character Select UI code. 
 /// Dependency on net code and Photon minimized room size calls.
 /// </summary>
-public class MatchHUD : MonoBehaviour{
+public class WaitUIController : MonoBehaviour{
 
     private bool isReady;
     public Color rdyColor; //Unfaded
     public Color unRdyColor; //Faded
 
     private Master M;
-    private ConnectAndJoinRandom N;
-    private OnJoinedInstantiate j;
+    private NetworkManager N;
 
     public Sprite Empty;
 
@@ -50,10 +49,7 @@ public class MatchHUD : MonoBehaviour{
         readyUpBypassCount = 0;
         readyUpBypassTotal = 2;
         M = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
-        N = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
-        
-        j = GameObject.FindGameObjectWithTag("SpawnPoints")
-            .GetComponent<OnJoinedInstantiate>();
+        N = GameObject.FindGameObjectWithTag("Networking").GetComponent<NetworkManager>();
 
         isReady = false;
         headSprite = getImageNum();
@@ -61,7 +57,7 @@ public class MatchHUD : MonoBehaviour{
         PercentReady.text = "" + N.ReadyTotal + "/" + N.GetInRoomTotal;
 
         if (N.GameStarted)
-            ActivateSpectating();
+            activateSpectatingMode();
 
         rdyColor = new Color(1f, 1f, 1f, 1f);
         unRdyColor = new Color(1f, 1f, 1f, 0.5f);
@@ -125,8 +121,8 @@ public class MatchHUD : MonoBehaviour{
         PercentReady.text = "" + N.ReadyTotal + "/" + N.GetInRoomTotal;
 
         //Any change to the ready status requires everyone to re-ready up.
-        Yes.SetActive(true);
-        No.SetActive(false);
+        //Yes.SetActive(true);
+        //No.SetActive(false);
 
         int playerSlot;
         for (int x = 0; x < PhotonNetwork.room.playerCount; x++)
@@ -147,8 +143,7 @@ public class MatchHUD : MonoBehaviour{
             slotNum = N.GetSlotNum(playerID);
             charNum = N.GetCharNum(playerID);
             PlayerSlots[slotNum].sprite = UIHeads[charNum];
-            if(Master.DEBUG_ON)
-                Debug.Log(string.Format("UpdateHUDCharDisplay playerID: {0} slotNum: {1} charNum: {2}", playerID, slotNum, charNum));
+            CBUG.Log(string.Format("UpdateHUDCharDisplay playerID: {0} slotNum: {1} charNum: {2}", playerID, slotNum, charNum));
         }
     }
 
@@ -156,7 +151,7 @@ public class MatchHUD : MonoBehaviour{
     {
         bool isActive = true;
         
-        for(int i = 0; i < M.Max_Players; i++)
+        for(int i = 0; i < Master.MaxRoomSize; i++)
         {
             if (i == PhotonNetwork.playerList.Length)
                 isActive = false;
@@ -173,14 +168,14 @@ public class MatchHUD : MonoBehaviour{
 
         if(secRemaining == 1)
         {
-            M.EscapeEnabled = false;
+            M.EscapeDisabled = true;
             //on the last second, disable the ability to leave
             No.SetActive(false);
         }
     }
     #endregion
 
-    public void ActivateSpectating()
+    private void activateSpectatingMode()
     {
         Yes.SetActive(false);
         No.SetActive(false);
@@ -198,17 +193,6 @@ public class MatchHUD : MonoBehaviour{
     {
         readyUpBypassCount = 3;
     }
-    
-    private void assignCameraFollow(Transform myTransform)
-    {
-        Debug.Log("Testing Assign Camera.");
-        if (myTransform == null)
-        { 
-            return;
-        }
-        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CamManager>()
-            .SetTarget(myTransform);
-    }
 
     private int getImageNum()
     {
@@ -219,7 +203,7 @@ public class MatchHUD : MonoBehaviour{
                 return i;
             }
         }
-        Debug.LogError("No Head Found!");
+        CBUG.Error("No Head Found!");
         return -1;
     }
 
@@ -230,7 +214,7 @@ public class MatchHUD : MonoBehaviour{
 
     private void startMatch()
     {
-        j.GameStarted(N.GetSlotNum(PhotonNetwork.player.ID));
+        //j.GameStarted(N.GetSlotNum(PhotonNetwork.player.ID));
         gameObject.SetActive(false);
         PlayerHead.sprite = getImage(getImageNum());
         stageListener.enabled = true;
