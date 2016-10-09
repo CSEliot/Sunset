@@ -49,4 +49,6 @@ MonoBehaviour:
   - ShowNotReady
   - ShowReadyStatus
   - ShowNewChar
+  - OnRespawn
+  - SetID
   DisableAutoOpenWizard: 1

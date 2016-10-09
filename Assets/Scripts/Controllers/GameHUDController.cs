@@ -4,22 +4,19 @@ using UnityEngine.UI;
 /// <summary>
 /// Handles Visuals AND stats.
 /// </summary>
-public class LifeMaster : MonoBehaviour {
+public class GameHUDController : MonoBehaviour {
 
     public Text Lives_Text;
     public Text Damage_Text;
     public GameObject YouLoseText;
     public GameObject YouWinText;
-
-    public int StartingLives;
+    
     private int lives;
     private int damage;
 
-    public MatchHUD MatchHudComp;
-
 	// Use this for initialization
 	void Start () {
-        lives = StartingLives;
+        lives = SettingsManager.StartLives;
         damage = 0;
 	}
 	
@@ -40,27 +37,12 @@ public class LifeMaster : MonoBehaviour {
         Damage_Text.text = "" + damage + "%";
     }
 
-    public int GetDamage()
-    {
-        return damage;
-    }
-
-    public int GetLives()
-    {
-        return lives;
-    }
-
-    public void ResetLives()
-    {
-        lives = StartingLives;
-        Lives_Text.text = "" + lives; 
-    }
-
     public void ResetDamage()
     {
         damage = 0;
         Damage_Text.text = "000%";
     }
+
     public void LoseALife()
     {
         lives--;

@@ -4,7 +4,7 @@ using System.Collections;
 public class SpecialsController : MonoBehaviour {
 
     private int specialsNum;
-    private JumpAndRunMovement j;
+    private PlayerController2D j;
     private Animator anim;
 
     public GameObject Book;
@@ -14,7 +14,7 @@ public class SpecialsController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         anim = GetComponent<Animator>();
-        j = GetComponentInParent<JumpAndRunMovement>();
+        j = GetComponentInParent<PlayerController2D>();
         if (transform.parent.name == "Lore(Clone)")
         {
             specialsNum = 2;

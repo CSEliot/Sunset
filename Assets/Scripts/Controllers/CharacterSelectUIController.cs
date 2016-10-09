@@ -16,8 +16,8 @@ public class CharacterSelectUIController : MonoBehaviour {
     public Image StatFrame;
     public Sprite[] AllStatSprites;
 
-    private ConnectAndJoinRandom n;
-    private Master m;
+    private NetworkManager N;
+    private Master M;
     public string[] CharNames;
 
     public Button LeftFrame_B;
@@ -36,8 +36,8 @@ public class CharacterSelectUIController : MonoBehaviour {
 
 	// Use this for initialization
 	void Awake () {
-        n = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
-        m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
+        N = GameObject.FindGameObjectWithTag("Networking").GetComponent<NetworkManager>();
+        M = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
         setDesc();
 	}
     
@@ -57,7 +57,7 @@ public class CharacterSelectUIController : MonoBehaviour {
             return;
         if (!shiftLeft && currentSelector == AllSprites.Length - 1)
             return;
-        m.PlaySFX(5);
+        M.PlaySFX(5);
 
         currentSelector += shiftLeft ? -1 : 1;
 
@@ -86,11 +86,11 @@ public class CharacterSelectUIController : MonoBehaviour {
 
         Select.interactable = isRightActive;
 
-        if (chosenChar >= m.CharactersUnlockedTotal)
+        if (chosenChar >= M.CharactersUnlockedTotal)
             return;
 
-        m.AssignPlayerCharacter(chosenChar);
-        n.SetCharacter(); 
+        M.AssignPlayerCharacter(chosenChar);
+        N.SetCharacter(); 
     }
 
     private void resetUI()
@@ -115,7 +115,7 @@ public class CharacterSelectUIController : MonoBehaviour {
         //Reassign stat frame.
         StatFrame.sprite = AllStatSprites[currentSelector];
         //Tell Master (local) and Network (online) the character selection.
-        m.AssignPlayerCharacter(chosenChar);
+        M.AssignPlayerCharacter(chosenChar);
         //n.SetCharacter();
     }
 

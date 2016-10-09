@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class JumpAndRunMovementOffline : MonoBehaviour 
+public class PlayerController2D : MonoBehaviour 
 {
     public float Defense;
     public float Speed;
@@ -22,11 +22,15 @@ public class JumpAndRunMovementOffline : MonoBehaviour
 
     public LayerMask mask = -1;
 
-    Rigidbody2D m_Body;
-    private MobileController Input_M;
+    public int ID;
 
-    private bool m_IsGrounded;
-    private bool m_wasGrounded;
+    private Rigidbody2D _Rigibody2D;
+    private PhotonView _PhotonView;
+    private PhotonTransformView _PhotonTransform;
+    private MobileController _MobileInput;
+
+    private bool isGrounded;
+    private bool wasGrounded;
     private int jumpsRemaining;
     private bool jumped;
     private bool canDownJump;
@@ -71,26 +75,12 @@ public class JumpAndRunMovementOffline : MonoBehaviour
     private Dictionary<string, float> StrengthsList;
 	private bool punchForceApplied;
     public float PunchDisablePerc;
-
-    //private bool PunchUp;
-    //private bool PunchLeft;
-    //private bool PunchRight;
-    //private bool PunchDown;
-
-    private bool cameraFollowAssigned;
-    private bool battleUIAssigned;
-    private CamManager camShaker;
-
+    
     private float damage;
     private bool isDead;
+    private int lastHitBy;
 
-    private LifeMaster BattleUI;
-
-    private Transform[] SpawnPoints;
-
-    private bool playersSpawned;
-    
-    private bool readyGUIFound;
+    private GameHUDController GameUI;
 
     public AudioClip DeathNoise;
     private AudioSource myAudioSrc;
@@ -101,9 +91,6 @@ public class JumpAndRunMovementOffline : MonoBehaviour
 
     public float BoxPunch;
 
-    public bool IsDummy;
-    public int DummySpawn;
-
     void Awake() 
     {
         anim = GetComponentInChildren<Animator>();
@@ -112,59 +99,40 @@ public class JumpAndRunMovementOffline : MonoBehaviour
         controlsPaused = false;
         myAudioSrc = GetComponent<AudioSource>();
         myAudioSrc.clip = DeathNoise;
-        readyGUIFound = false;
-        playersSpawned = false;
         punching = false;
-        camShaker = GameObject.FindGameObjectWithTag("StageCamera")
-            .GetComponent<CamManager>();
 
         isDead = false;
-        battleUIAssigned = false;
-        SpawnPoints = GameObject.FindGameObjectWithTag
-            ("SpawnPoints").GetComponent<SpawnOfflineTest>().SpawnList;
         StrengthsList = GameObject.FindGameObjectWithTag("Master").
             GetComponent<Master>().GetStrengthList();
 
-        Debug.Log("Str List: " + StrengthsList.ToStringFull());
+        CBUG.Log("Str List: " + StrengthsList.ToStringFull());
         jumpForceTemp = 0f;
         SpeedTemp = 0f;
-        cameraFollowAssigned = false;
         attackDisableDelay = new WaitForSeconds(AttackLife);
         facingRight = true;
         position = new Vector2();
-        m_Body = GetComponent<Rigidbody2D>();
+        _Rigibody2D = GetComponent<Rigidbody2D>();
         jumpsRemaining = TotalJumpsAllowed;
+        _PhotonView = GetComponent<PhotonView>();
+        _PhotonTransform = GetComponent<PhotonTransformView>();
 
         AttackObjs = new GameObject[3];
         AttackObjs[0] = transform.GetChild(3).gameObject;
         AttackObjs[1] = transform.GetChild(1).gameObject;
         AttackObjs[2] = transform.GetChild(2).gameObject;
 
-        Input_M = GameObject.FindGameObjectWithTag("MobileController").GetComponent<MobileController>();
-    }
+        _MobileInput = GameObject.FindGameObjectWithTag("MobileController").GetComponent<MobileController>();
 
-    [PunRPC]
-    void AssignPlayerTag(int ID)
-    {
-        transform.GetChild(0).tag = "" + ID;
+        if(_PhotonView.isMine)
+            _PhotonView.RPC("SetID", PhotonTargets.All, PhotonNetwork.player.ID);
     }
+ 
 
     void Update() 
     {
-        //OFFLINE MODE <<FOR NOW>> ASSUMES SINGLEPLAYER ONLY
-
-        if (!readyGUIFound)
-        {
-            readyGUIFound = true;
-        }
-        if (!cameraFollowAssigned)
-            AssignCameraFollow(transform);
-        //if (!battleUIAssigned){
-        //    BattleUI = GameObject.FindGameObjectWithTag("BattleUI")
-        //        .GetComponent<LifeMaster>();
-        //    battleUIAssigned = true;
-        //}
-        
+        _PhotonTransform.SetSynchronizedValues(_Rigibody2D.velocity, 0f);
+        if(!_PhotonView.isMine)
+            return;
 
         //Jump Detection Only, no physics handling.
         if (controlsPaused)
@@ -175,22 +143,19 @@ public class JumpAndRunMovementOffline : MonoBehaviour
         }
 
         updateSpecials();
-        if (!IsDummy)
-        {
-            updateJumping();
-            updateDownJumping();    
-        }
+        updateJumping();
+        updateDownJumping();    
         updateAttacks();
-        if(!IsDummy)
-            updateMovement();
+        updateMovement();
         UpdateHurt();
     }
 
     void FixedUpdate()
     {
         updateFacingDirection();
-
-        if (m_wasGrounded && m_IsGrounded)
+        if(!_PhotonView.isMine)
+            return;
+        if (wasGrounded && isGrounded)
         {
             canDownJump = true;
         }
@@ -199,41 +164,21 @@ public class JumpAndRunMovementOffline : MonoBehaviour
         updateDownJumpingPhysics();
         updateMovementPhysics();
         ////limit max velocity.
-        ////Debug.Log("R Velocity: " + m_Body.velocity.magnitude);
+        ////CBUG.Log("R Velocity: " + m_Body.velocity.magnitude);
         ////if (m_Body.velocity.magnitude >= MaxVelocityMag)
         ////{
         ////}
 
         velocity += Vector2.down * GravityForce;
         if(!isDead)
-            m_Body.velocity = velocity;
+            _Rigibody2D.velocity = velocity;
         velocity = Vector3.zero;
     }
 
     void LateUpdate()
     {
-        if (playersSpawned)
-        {
-            if (GameObject.FindGameObjectsWithTag("PlayerSelf").Length <= 1)
-            {
-                if (!isDead)
-                {
-                    BattleUI.Won();
-                    StartCoroutine(WinWait());
-                }
-                else
-                {
-                    StartCoroutine(LoseWait());
-                }
-            }
-        }
-        else
-        {
-            if (GameObject.FindGameObjectsWithTag("PlayerSelf").Length > 1)
-            {
-                playersSpawned  = true;
-            }
-        }
+        if (!_PhotonView.isMine)
+            return;
     }
 
     private void UpdateHurt()
@@ -242,34 +187,23 @@ public class JumpAndRunMovementOffline : MonoBehaviour
             invincibilityCount--;
     }
 
-    IEnumerator WinWait()
-    {
-        yield return new WaitForSeconds(2f);
-    }
-
-    IEnumerator LoseWait()
-    {
-        yield return new WaitForSeconds(1.9f);
-    }
-
-    //private void 
-
     private void updateSpecials()
     {
         if (Input.GetButtonDown("Special") && invincibilityCount < 0)
         {
+            _PhotonView.RPC("SpecialActivate", PhotonTargets.All);
             PauseMvmnt();
         }
     }
 
     private void updateFacingDirection()
     {
-        if( !facingRight && m_Body.velocity.x > 0.2f )
+        if( !facingRight && _Rigibody2D.velocity.x > 0.2f )
         {
             facingRight = true;
             transform.localScale = new Vector3( 1, 1, 1 );
         }
-        else if( facingRight && m_Body.velocity.x < -0.2f )
+        else if( facingRight && _Rigibody2D.velocity.x < -0.2f )
         {
             facingRight = false;
             transform.localScale = new Vector3( -1, 1, 1 );
@@ -279,11 +213,11 @@ public class JumpAndRunMovementOffline : MonoBehaviour
     private void updateJumping()
     {
         if ((Input.GetButtonDown("Jump") == true
-            || Input_M.GetButtonDown("Jump"))
+            || _MobileInput.GetButtonDown("Jump"))
             && jumpsRemaining > 0 && totalJumpFrames < 0)
         {
             jumped = true;
-            Debug.Log("Jumped is true!");
+            CBUG.Log("Jumped is true!");
             jumpsRemaining -= 1;
             totalJumpFrames = jumpLag;
         }
@@ -293,7 +227,7 @@ public class JumpAndRunMovementOffline : MonoBehaviour
     private void updateDownJumping()
     {
         if ((Input.GetButtonDown("DownJump") == true
-            || Input_M.GetButtonDown("DownJump"))
+            || _MobileInput.GetButtonDown("DownJump"))
             && canDownJump)
         {
             downJumped = true;
@@ -305,9 +239,10 @@ public class JumpAndRunMovementOffline : MonoBehaviour
     {
         //tempAxis left n right, keyboar axis left n right, or no input
         tempAxisKey = Input.GetAxis("MoveHorizontal");
-        tempAxisTouch = Input_M.GetAxis("MoveHorizontal");
+        tempAxisTouch = _MobileInput.GetAxis("MoveHorizontal");
         if ( tempAxisKey > 0 || tempAxisTouch > 0)
         {
+            CBUG.Log("Move axis: " + tempAxisTouch);
             moveLeft = 0;
             moveRight = tempAxisTouch > tempAxisKey ? tempAxisTouch : tempAxisKey;
         }
@@ -327,7 +262,7 @@ public class JumpAndRunMovementOffline : MonoBehaviour
     {
         if (downJumped)
         {
-            Debug.Log("DownJumped");
+            CBUG.Log("DownJumped");
             jumpForceTemp = DownJumpForce;
             downJumped = false;
         }
@@ -341,7 +276,7 @@ public class JumpAndRunMovementOffline : MonoBehaviour
         {
             jumpForceTemp = JumpForce;
             jumped = false;
-            Debug.Log("Jumped is false!");
+            CBUG.Log("Jumped is false!");
         } 
         velocity.y += jumpForceTemp;
         jumpForceTemp = Mathf.Lerp(jumpForceTemp, 0f, JumpDecel);
@@ -360,7 +295,7 @@ public class JumpAndRunMovementOffline : MonoBehaviour
         {
             SpeedTemp = Mathf.Lerp(SpeedTemp, Speed*moveLeft, SpeedAccel);
         }
-        else if(m_IsGrounded)
+        else if(isGrounded)
         {
             SpeedTemp = Mathf.Lerp(SpeedTemp, 0f, SpeedDecel);
         }
@@ -386,22 +321,22 @@ public class JumpAndRunMovementOffline : MonoBehaviour
         //               position + (-Vector2.up * GroundCheckEndPoint),
         //               Color.red,
         //               0.01f);
-        m_wasGrounded = m_IsGrounded;
-        m_IsGrounded = hit.collider != null;
+        wasGrounded = isGrounded;
+        isGrounded = hit.collider != null;
         //hit.collider.gameObject.layer
         ///Can't regain jumpcounts before jump force is applied.
-        if (m_IsGrounded && !jumped)
+        if (isGrounded && !jumped)
         {
-            //Debug.Log("Grounded on: " + (hit.collider.name));
+            //CBUG.Log("Grounded on: " + (hit.collider.name));
             jumpsRemaining = TotalJumpsAllowed;
         }
-        else if (m_IsGrounded)
+        else if (isGrounded)
         {
-            //Debug.Log("Grounded on: " + (hit.collider.name));
+            //CBUG.Log("Grounded on: " + (hit.collider.name));
         }
         else
         {
-            //Debug.Log("No Raycast Contact.");
+            //CBUG.Log("No Raycast Contact.");
         }
         //if(!m_IsGrounded && down)
     }
@@ -415,58 +350,72 @@ public class JumpAndRunMovementOffline : MonoBehaviour
     private void updateAttacks()
     {
         if(totalAttackFrames < 0 ){
-            if ((Input.GetButtonDown("Up") || Input_M.GetButtonDown("Up")) && !punching)
+            if ((Input.GetButtonDown("Up") || _MobileInput.GetButtonDown("Up")) && !punching)
             {
                 punching = true;
                 AttackObjs[0].SetActive(true);
-                StartCoroutine(DisableDelay(AttackObjs[0]));
+                StartCoroutine(disableDelay(AttackObjs[0]));
                 totalAttackFrames = AttackLag;
+                _PhotonView.RPC("UpAttack", PhotonTargets.Others);
             }
-            if ((Input.GetButtonDown("Down") || Input_M.GetButtonDown("Down")) && !punching)
+            if ((Input.GetButtonDown("Down") || _MobileInput.GetButtonDown("Down")) && !punching)
             {
                 punching = true;
                 AttackObjs[2].SetActive(true);
-                StartCoroutine(DisableDelay(AttackObjs[2]));
+                StartCoroutine(disableDelay(AttackObjs[2]));
                 totalAttackFrames = AttackLag;
+                _PhotonView.RPC("DownAttack", PhotonTargets.Others);
             }
-            if (facingRight && (Input.GetButtonDown("Right") || Input_M.GetButtonDown("Right")) && !punching)
+            if (facingRight && (Input.GetButtonDown("Right") || _MobileInput.GetButtonDown("Right")) && !punching)
             {
                 punching = true;
                 AttackObjs[1].SetActive(true);
-                StartCoroutine(DisableDelay(AttackObjs[1]));
+                StartCoroutine(disableDelay(AttackObjs[1]));
                 totalAttackFrames = AttackLag;
+                _PhotonView.RPC("ForwardAttack", PhotonTargets.Others);
             }
-            if (!facingRight && (Input.GetButtonDown("Left") || Input_M.GetButtonDown("Left")) && !punching)
+            if (!facingRight && (Input.GetButtonDown("Left") || _MobileInput.GetButtonDown("Left")) && !punching)
             {
                 punching = true;
                 AttackObjs[1].SetActive(true);
-                StartCoroutine(DisableDelay(AttackObjs[1]));
+                StartCoroutine(disableDelay(AttackObjs[1]));
                 totalAttackFrames = AttackLag;
+                _PhotonView.RPC("ForwardAttack", PhotonTargets.Others);
             }
         }
         totalAttackFrames -= 1;
     }
 
+    #region RPC Functions.
+    //TODO: Determine allowed scope of RPC functions.
+    [PunRPC]
+    void SetID(int ID)
+    {
+        this.ID = ID;
+        CBUG.Do("Recording ID " + ID + "with Gamemaster.");
+        CBUG.Do("Character is: " + gameObject.name);
+        GameManager.Players.Add(ID, gameObject);
+    }
 
     [PunRPC]
     void UpAttack()
     {
         AttackObjs[0].SetActive(true);
-        StartCoroutine(DisableDelay(AttackObjs[0]));
+        StartCoroutine(disableDelay(AttackObjs[0]));
     }
 
     [PunRPC]
     void ForwardAttack()
     {
         AttackObjs[1].SetActive(true);
-        StartCoroutine(DisableDelay(AttackObjs[1]));
+        StartCoroutine(disableDelay(AttackObjs[1]));
     }
 
     [PunRPC]
     void DownAttack()
     {
         AttackObjs[2].SetActive(true);
-        StartCoroutine(DisableDelay(AttackObjs[2]));
+        StartCoroutine(disableDelay(AttackObjs[2]));
     }
 
     [PunRPC]
@@ -490,17 +439,34 @@ public class JumpAndRunMovementOffline : MonoBehaviour
                 anim.SetBool("HurtBig", true);
                 break;
             default:
-                Debug.LogError("BAD ANIM NUMBER GIVEN");
+                CBUG.Error("BAD ANIM NUMBER GIVEN");
                 break;
         }
     }
+
+
+    [PunRPC]
+    private void OnDeath(int killer, int killed)
+    {
+        GameManager.RecordDeath(killer, killed);
+        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+        transform.tag = "PlayerGhost";
+    }
+
+    [PunRPC]
+    void OnRespawn()
+    {
+        transform.tag = "PlayerSelf";
+        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
+    }
+    #endregion
 
 
     void OnTriggerEnter2D(Collider2D col)
     {
         if (col.name == "Physics Box(Clone)")
         {
-            Debug.Log("PUNCH");
+            CBUG.Log("PUNCH");
             if(transform.localScale.x > 0){
                 col.GetComponent<Rigidbody2D>().AddForce(new Vector2(BoxPunch, BoxPunch), ForceMode2D.Impulse);
             }else{
@@ -508,13 +474,15 @@ public class JumpAndRunMovementOffline : MonoBehaviour
             }
         }
 
-        if (col == null)
+        if (col == null || !_PhotonView.isMine)
             return;
 
 
         //apply force . . .
         else if (col.name.Contains("Punch"))
         {
+            //Get name of puncher
+            lastHitBy = col.GetComponentInParent<PlayerController2D>().ID;
             if (invincibilityCount > 0)
             {
                 return;
@@ -523,23 +491,21 @@ public class JumpAndRunMovementOffline : MonoBehaviour
             {
                 invincibilityCount = InvicibilityFrames;
             }
-
             damage += PunchPercentAdd;
-
             if (damage < 30)
             {
-                HurtAnim(1);
+                _PhotonView.RPC("HurtAnim", PhotonTargets.All, 1);
             }
             else if (damage < 60)
             {
-                HurtAnim(2);
+                _PhotonView.RPC("HurtAnim", PhotonTargets.All, 2);
             }
             else
             {
-                HurtAnim(3);
+                _PhotonView.RPC("HurtAnim", PhotonTargets.All, 3);
             }
-            //BattleUI.SetDamageTo(damage);
-            if (col.name.Contains("PunchForward"))
+            GameUI.SetDamageTo(damage);
+            if (col.name == "PunchForward")
             {
                 //velocity += Vector2.right * PunchForceForward_Forward;
                 if (col.transform.parent.localScale.x > 0)
@@ -547,7 +513,7 @@ public class JumpAndRunMovementOffline : MonoBehaviour
                     Vector2 temp = Vector2.right * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name] - Defense);
                     temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name] - Defense);
                     StartCoroutine(
-                        ApplyPunchForce(temp * (damage/100f))
+                        applyPunchForce(temp * (damage/100f))
                     );
                 }
                 else
@@ -555,24 +521,24 @@ public class JumpAndRunMovementOffline : MonoBehaviour
                     Vector2 temp = Vector2.left * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name] - Defense);
                     temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name] - Defense);
                     StartCoroutine(
-                        ApplyPunchForce(temp * (damage / 100f))
+                        applyPunchForce(temp * (damage / 100f))
                     );
                 }
             }
             else if (col.name == "PunchUp")
             {
                 StartCoroutine(
-                    ApplyPunchForce(
+                    applyPunchForce(
                         (Vector2.up * (PunchForceUp + StrengthsList[col.transform.parent.name] - Defense) * (damage / 100f))
                     )
                 );
             }
             else
             {
-                if (!m_IsGrounded)
+                if (!isGrounded)
                 {
                     StartCoroutine(
-                        ApplyPunchForce(
+                        applyPunchForce(
                             (Vector2.down * (PunchForceDown + StrengthsList[col.transform.parent.name] - Defense) * (damage / 100f))
                         )
                     );
@@ -580,7 +546,7 @@ public class JumpAndRunMovementOffline : MonoBehaviour
                 else
                 {
                     StartCoroutine(
-                        ApplyPunchForce(
+                        applyPunchForce(
                             (Vector2.up * (PunchForceDown + StrengthsList[col.transform.parent.name] - Defense) * (damage / 200f))
                         )
                     );
@@ -589,28 +555,18 @@ public class JumpAndRunMovementOffline : MonoBehaviour
         }
     }
 
-    IEnumerator DisableDelay(GameObject dis)
+    private IEnumerator disableDelay(GameObject dis)
     {
         yield return attackDisableDelay;
         dis.SetActive(false);
         punching = false;
     }
 
-    private void AssignCameraFollow(Transform myTransform)
-    {
-        if (myTransform == null)
-        {
-            return;
-        }
-        camShaker.SetTarget(myTransform);  
-        cameraFollowAssigned = true;
-    }
-
-    IEnumerator ApplyPunchForce(Vector2 punchForce)
+    private IEnumerator applyPunchForce(Vector2 punchForce)
     {
         Vector2 tempPunchForce = punchForce;
         bool isTempForceLow = false;
-        camShaker.PunchShake(tempPunchForce.magnitude);
+        CamManager.PunchShake(tempPunchForce.magnitude);
         while (tempPunchForce.magnitude > 0.01f)
         {
             velocity += tempPunchForce;
@@ -636,69 +592,38 @@ public class JumpAndRunMovementOffline : MonoBehaviour
         if (col.tag != "DeathWall")
             return;
         myAudioSrc.Play();
-        camShaker.DeathShake(true);
+        CamManager.DeathShake(_PhotonView.isMine);
 
+        if (!_PhotonView.isMine)
+            return;
+        isDead = true;
 
-        StartCoroutine(respawn());
+        GameManager.RecordDeath(lastHitBy, ID);
+        _PhotonView.RPC("OnDeath", PhotonTargets.Others, lastHitBy, ID);
         
+        //Freeze and Clear motion
+        _Rigibody2D.velocity = Vector2.zero;
+        velocity = Vector2.zero;
     }	  	
 
-    IEnumerator Ghost()
+    public void Ghost()
     {
-        BattleUI.Lost();
-        isDead = true;
-        m_Body.velocity = Vector2.zero;
-        velocity = Vector2.zero;
-        m_Body.isKinematic = true;
         transform.tag = "PlayerGhost";
-        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-        yield return new WaitForSeconds(3f);
-        if (GameObject.FindGameObjectWithTag("PlayerSelf") != null)
-            AssignCameraFollow(GameObject.FindGameObjectWithTag("PlayerSelf").transform);
     }
 
-    IEnumerator respawn()
+    public void Respawn()
     {
-        isDead = true;
-        m_Body.velocity = Vector2.zero;
-        velocity = Vector2.zero;
-        m_Body.isKinematic = true;
-        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-        yield return new WaitForSeconds(3f);
         damage = 0;
-        //BattleUI.ResetDamage();
-        transform.position = SpawnPoints[0].position;
-        m_Body.isKinematic = false; 
+        GameUI.ResetDamage();
+        //transform.position = SpawnPoints[Random.Range(0, 6)].position;
+        _Rigibody2D.isKinematic = false; 
         transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
         isDead = false;
-    }
-
-    [PunRPC]
-    IEnumerator OnDeath()
-    {
-        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-        yield return new WaitForSeconds(3f);
-        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
-    }
-
-    [PunRPC]
-    void OnGhost()
-    {
-        transform.tag = "PlayerGhost";
-        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
     }
 
     public bool GetIsDead()
     {
         return isDead;
-    }
-
-    public void CheckWon()
-    {
-        if (!isDead)
-        {
-            BattleUI.Won();
-        }
     }
 
     public void PauseMvmnt()
@@ -711,3 +636,10 @@ public class JumpAndRunMovementOffline : MonoBehaviour
         controlsPaused = false;
     }
 }
+//public void CheckWon()
+//{
+//    if (m_PhotonView.isMine && !isDead)
+//    {
+//        BattleUI.Won();
+//    }
+//}

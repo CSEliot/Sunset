@@ -4,7 +4,7 @@ using System.Collections;
 public class FadeOnPlayerPos : MonoBehaviour {
 
     private _2dxFX_Offset fadeObj;
-    private ConnectAndJoinRandom N;
+    private NetworkManager N;
 
 
     public float MaxDistance;
@@ -20,7 +20,7 @@ public class FadeOnPlayerPos : MonoBehaviour {
 	void Start () {
 
         fadeObj = GetComponent<_2dxFX_Offset>();
-        N = GameObject.FindGameObjectWithTag("Networking").GetComponent<ConnectAndJoinRandom>();
+        N = GameObject.FindGameObjectWithTag("Networking").GetComponent<NetworkManager>();
         gotPlayerRef = false;
         pTransform = null;
         myLocation = new Vector3(transform.position.x, transform.position.y, transform.position.z);

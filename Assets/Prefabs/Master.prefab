@@ -240,6 +240,10 @@ MonoBehaviour:
   - {fileID: 100000, guid: 3f7362e0efbe4b44b8ee23d1134c0046, type: 2}
   - {fileID: 100000, guid: e26a85ed9c704e64e9ee730009908dd9, type: 2}
   PlayableCharacters: 7
+  DontUnloadObjs:
+  - {fileID: 0}
+  - {fileID: 157284}
+  - {fileID: 0}
   PlayerCharNum: 0
   InRoomNumber: 0
   SFX:

@@ -17,6 +17,6 @@ public class CallRoom : MonoBehaviour {
 
     public void AssignNewRoom()
     {
-        GameObject.Find("Master").GetComponent<Master>().SetArenaName(RoomName);
+        GameObject.Find("Master").GetComponent<Master>().SetStageName(RoomName);
     }
 }

@@ -13,11 +13,10 @@ TagManager:
   - PlayerOther
   - NoCollide
   - DeathWall
-  - BattleUI
+  - GameUI
   - SpawnPoints
   - PlayerGhost
   - SFXPlayer
-  - MatchHUD
   - 2
   - 3
   - 4
@@ -29,6 +28,9 @@ TagManager:
   - MapUIController
   - 1
   - StageAnim
+  - Animated
+  - GameHUD
+  - CBUG
   layers:
   - Default
   - TransparentFX

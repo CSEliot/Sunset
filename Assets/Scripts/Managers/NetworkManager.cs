@@ -9,7 +9,7 @@ using System.Collections;
 /// Handles all major networking aside from player controls. Also bridges
 /// gaps between UI and Networking.
 /// </summary>
-public class ConnectAndJoinRandom : Photon.MonoBehaviour{
+public class NetworkManager : Photon.MonoBehaviour{
     private string version;
     
     private bool isConnectAllowed;
@@ -37,6 +37,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     private TypedLobby inMatchLobby;
 
     #region Room State Tracking
+    private GameManager gameMan;
     private bool gameStarted;
     private int readyTotal;
     private bool rdyStateChange = true;
@@ -51,8 +52,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     public enum ReadyCount
     {
         Add,
-        Subtract,
-        Reset
+        Subtract
     };
 
     /// <summary>
@@ -88,7 +88,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         ID_to_CharNum = new Dictionary<int, int>();
         ID_to_IsRdy = new Dictionary<int, bool>();
         
-        Debug.Log("Setting Send Rate to: " + SendRate);
+        CBUG.Log("Setting Send Rate to: " + SendRate);
         PhotonNetwork.sendRate = SendRate;
         
         PhotonNetwork.sendRateOnSerialize = SendRate;
@@ -105,7 +105,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         isConnectAllowed = false; //Enabled when server region given.
 
 		Rooms = new List<List<room>> ();
-        for(int x = 0; x < M.TotalUniqueArenas; x++)
+        for(int x = 0; x < M.TotalUniqueStages; x++)
         {
             Rooms.Add(new List<room>());
             Rooms[x].Clear();
@@ -116,21 +116,21 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     {
         if (isConnectAllowed && !PhotonNetwork.connected)
         {
-            Debug.Log("Beginning Connection . . .");
+            CBUG.Log("Beginning Connection . . .");
 
             isConnectAllowed = false;
             if(PlayerPrefs.GetInt("Server", 0) == 0)
             {
                 PhotonNetwork.ConnectToBestCloudServer(version);
-                Debug.Log("Connecting to Best Region.");
+                CBUG.Log("Connecting to Best Region.");
             }
             else
             {
                 PhotonNetwork.ConnectToRegion(isEastServer ? CloudRegionCode.us : CloudRegionCode.usw, version);
-                Debug.Log("Connecting to Chosen Region.");
+                CBUG.Log("Connecting to Chosen Region.");
             }
 
-            Debug.Log("Version Number is: " + version);
+            CBUG.Log("Version Number is: " + version);
             PhotonNetwork.sendRate = SendRate;
             PhotonNetwork.sendRateOnSerialize = SendRate;
         }
@@ -147,7 +147,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             setServerStats();
         }
 
-        //Debug.Log("CHAR NUM: " + ID_to_CharNum[1]);
+        //CBUG.Log("CHAR NUM: " + ID_to_CharNum[1]);
 
         #region Match Tracking
         if (readyTotal >= PhotonNetwork.playerList.Length && !startTheMatch && !startCountdown )
@@ -168,7 +168,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     /// </summary>
     public void SetCharacter()
     {
-        Debug.Log("Adding player property");
+        CBUG.Log("Adding player property");
         ExitGames.Client.Photon.Hashtable playerProperties = PhotonNetwork.player.customProperties;
         //Update local player's chosen character online.
         if (playerProperties.ContainsKey("characterNum"))
@@ -190,8 +190,8 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     /// </summary>
     public void JoinRoom()
     {
-        string roomNameTemp = Rooms[MapUI.getTargetArena()][MapUI.getTargetRoom()].name;
-        Debug.Log("Joining room named: " + roomNameTemp);
+        string roomNameTemp = Rooms[MapUI.getTargetStage()][MapUI.getTargetRoom()].name;
+        CBUG.Log("Joining room named: " + roomNameTemp);
         PhotonNetwork.JoinRoom(roomNameTemp);
     }
 
@@ -203,18 +203,18 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     public void CreateRoom()
     {
         int randInt = UnityEngine.Random.Range(0, 10000);
-        string roomName = M.GetArenaName() + (Rooms[MapUI.getTargetArena()].Count + randInt);
-        PhotonNetwork.JoinOrCreateRoom(roomName, new RoomOptions() { MaxPlayers = Convert.ToByte(M.Max_Players) }, null);
+        string roomName = M.GetStageName() + (Rooms[MapUI.getTargetStage()].Count + randInt);
+        PhotonNetwork.JoinOrCreateRoom(roomName, new RoomOptions() { MaxPlayers = Convert.ToByte(Master.MaxRoomSize) }, null);
     }
 
     public void OnConnectedToMaster()
     {
-        Debug.Log("OnConnectedToMaster() was succesfull.");
+        CBUG.Log("OnConnectedToMaster() was succesfull.");
     }
 
     public void OnJoinedLobby()
     {
-        Debug.Log("OnJoinedLobby() was a success.");
+        CBUG.Log("OnJoinedLobby() was a success.");
         //PhotonNetwork.JoinOrCreateRoom("Waiting", new RoomOptions() { MaxPlayers = Convert.ToByte(serverPlayerMax) }, null);
 
         inLobby = true;
@@ -222,14 +222,14 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
     public void OnLeftLobby()
     {
-        Debug.Log("Left lobby.");
+        CBUG.Log("Left lobby.");
         inLobby = true;
     }
 
     public virtual void OnPhotonRandomJoinFailed()
     {
         
-        Debug.Log("OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one. Calling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 6}, null);");
+        CBUG.Log("OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one. Calling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 6}, null);");
     }
 
     // the following methods are implemented to give you some context. re-implement them as needed.
@@ -237,19 +237,23 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
     public virtual void OnFailedToConnectToPhoton(DisconnectCause cause)
     {
 
-        Debug.LogError("Failed to Connect!");
-        Debug.LogError("Cause: " + cause);
+        CBUG.Error("Failed to Connect!");
+        CBUG.Error("Cause: " + cause);
         M.GoBack();
     }
 
     public void OnLeftRoom()
     {
-        Debug.Log("Left Room.");
+        CBUG.Log("Left Room.");
     }
 
     public void OnDisconnectedFromPhoton()
     {
-        
+        //TODO: MIGHT NOT WORK!!
+        for(int x = (int)M.CurrentMenu - 1; x > 0; x--) {
+            M.GoBack();
+        }
+        //TODO: ACTIVATE "YOU D/C'ed"
     }
 
     public void OnJoinedRoom()
@@ -259,7 +263,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         startTimer = CountdownLength;
         
         // All callbacks are listed in enum: PhotonNetworkingMessage.
-        Debug.Log("On Joined Room: " + PhotonNetwork.room.name);
+        CBUG.Log("On Joined Room: " + PhotonNetwork.room.name);
         inLobby = false;
         //As a new player, we must assign default player properties.
         //SetCharacter();
@@ -305,19 +309,17 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             storeLocalData(playerID, i);
         }
 
-        //Tell everyone to reset their ready status.
-        SetReadyStatus(PhotonTargets.MasterClient, ReadyCount.Reset);
-        readyTotal = 0;
+        //clear ready info from last game.
+        ResetReadyStatus();
     }
 
     void OnPhotonPlayerConnected(PhotonPlayer player)
     {
         //Add new player info tracking.
         storeRemoteData(player);
-        Debug.Log("OnPhotonPlayerConnected: " + player);
+        CBUG.Log("OnPhotonPlayerConnected: " + player);
         //Tell everyone to reset their ready status.
-        SetReadyStatus(PhotonTargets.Others, ReadyCount.Reset);
-
+        ResetReadyStatus();
 
         plrStateChange = true;
         rdyStateChange = true;
@@ -325,10 +327,9 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
     void OnPhotonPlayerDisconnected(PhotonPlayer player)
     {
-        Debug.Log("OnPhotonPlayerDisconnected: " + player);
+        CBUG.Log("OnPhotonPlayerDisconnected: " + player);
         //Tell everyone to reset their ready status.
-        SetReadyStatus(PhotonTargets.Others, ReadyCount.Reset);
-        
+        ResetReadyStatus();
         unassignPlayerTracking(player);
         plrStateChange = true;
         rdyStateChange = true;
@@ -352,7 +353,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         latestRooms = PhotonNetwork.GetRoomList();
 
         //empty out old rooms list
-        for(int x = 0; x < M.TotalUniqueArenas; x++)
+        for(int x = 0; x < M.TotalUniqueStages; x++)
         {
             Rooms[x].Clear();
         }
@@ -366,15 +367,15 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             roomNameTemp = roomInfoTemp.name;
             roomSizeTemp = roomInfoTemp.playerCount;
 
-            Debug.Log("Room " + roomNameTemp + " has " + roomSizeTemp + " players.");
-            for(int i = 0; i < M.TotalUniqueArenas; i++)
+            CBUG.Log("Room " + roomNameTemp + " has " + roomSizeTemp + " players.");
+            for(int i = 0; i < M.TotalUniqueStages; i++)
             {
-                if (roomNameTemp.Contains(M.ArenaNames[i])){
+                if (roomNameTemp.Contains(M.StageNames[i])){
                     Rooms[i].Add(new room(roomSizeTemp, roomNameTemp));
                 }
             }
         }
-        //Debug.Log("There are a total of " + totalOnline + " online.");
+        //CBUG.Log("There are a total of " + totalOnline + " online.");
     }
 
     public bool IsEastServer
@@ -515,14 +516,14 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
 
     public void LeaveServer()
     {
-        Debug.Log("Leaving server . . .");
+        CBUG.Log("Leaving server . . .");
         PhotonNetwork.Disconnect(); 
         inLobby = false;
     }
 
     public void LeaveRoom()
     {
-        Debug.Log("Leaving Room.");
+        CBUG.Log("Leaving Room.");
         unassignPlayerTracking(PhotonNetwork.player);
         PhotonNetwork.LeaveRoom();
     }
@@ -553,18 +554,37 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         SetReadyStatus(PhotonTargets.All, ReadyCount.Subtract);
     }
 
-    [PunRPC]
-    private void ShowReadyStatus(int playerNum, ReadyCount action)
+    public static void SetGameStateMan(out NetworkManager netMan, GameManager newGameStateMan)
     {
+        netMan = GameObject.FindGameObjectWithTag("Networking").GetComponent<NetworkManager>();
+        GameObject.FindGameObjectWithTag("Networking").GetComponent<NetworkManager>().gameMan = newGameStateMan;
+    }
 
+    [PunRPC]
+    private void ShowReadyStatus(int playerID, ReadyCount action)
+    {
         int readySFX = action == ReadyCount.Add ? 2 : 6;
         M.PlaySFX(readySFX); // 2: ReadySFX | 6: UnreadySFX
 
-        readyTotal = action == ReadyCount.Add ? ++readyTotal : --readyTotal;
-        readyTotal = action == ReadyCount.Reset ? 0 : readyTotal;
-        readyTotal = action < 0 ? 0 : readyTotal;
+        if(action == ReadyCount.Add) {
+            readyTotal++;
+            ID_to_IsRdy[playerID] = true;
+        }else { //action == ReadyCount.Subtract
+            readyTotal--;
+            ID_to_IsRdy[playerID] = false;
+        }
+        rdyStateChange = true;
+    }
 
-        ID_to_IsRdy[playerNum] = action == ReadyCount.Add;
+    private void ResetReadyStatus()
+    {
+        int readySFX = 6;
+        M.PlaySFX(readySFX); // 2: ReadySFX | 6: UnreadySFX
+
+        for (int x = 0; x < PhotonNetwork.playerList.Length; x++) {
+            ID_to_IsRdy[PhotonNetwork.playerList[x].ID] = false;
+        }
+        readyTotal = 0;
         rdyStateChange = true;
     }
 
@@ -574,13 +594,12 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         //Update local player's chosen character locally.
         ID_to_CharNum[playerID] = newChar;
         charStateChange = true;
-        if (Master.DEBUG_ON)
-            Debug.Log(string.Format("Received PlayerID: {0} to Char: {1}", playerID, newChar));
+        CBUG.Log(string.Format("Received PlayerID: {0} to Char: {1}", playerID, newChar));
     }
 
     private void printStatus()
     {
-        Debug.Log("Connection Status: " + PhotonNetwork.connectionStateDetailed);
+        CBUG.Log("Connection Status: " + PhotonNetwork.connectionStateDetailed);
     }
 
     /// <summary>
@@ -616,10 +635,8 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         plrStateChange = true;
         rdyStateChange = true;
         charStateChange = true;
-
-        if (Master.DEBUG_ON)
-            Debug.Log(string.Format("Assigning Local Data. ID: {0} Slot: {1}", playerID, playerNum));
-
+        CBUG.Log(string.Format("Assigning Local Data. ID: {0} Slot: {1}", playerID, playerNum));
+        //TODO: playerID is just playerNum - 1. Merge the two.
     }
 
     /// <summary>
@@ -650,8 +667,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
             ID_to_IsRdy.Add(playerID, false);
         else
             ID_to_IsRdy[playerID] = false;
-        if (Master.DEBUG_ON)
-            Debug.Log(string.Format("New Player Connected! ID: {0} Char: {1}", playerID, playerChar));
+        CBUG.Log(string.Format("New Player Connected! ID: {0} Char: {1}", playerID, playerChar));
     }
 
     /// <summary>
@@ -673,6 +689,10 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         ID_to_SlotNum.Clear();
     }
 
+    /// <summary>
+    /// All games start from here.
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator GameCountdown()
     {   
         while(startCountdown == true && startTimer >= 0)
@@ -682,11 +702,29 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour{
         }
         if (startCountdown == true)
         {
+            //BOTTLENECK AND HOOK TO START A GAME
+            // Mark room as "GameStarted"
             ExitGames.Client.Photon.Hashtable tempRoomTable = PhotonNetwork.room.customProperties;
             tempRoomTable["GameStarted"] = true;
             PhotonNetwork.room.SetCustomProperties(tempRoomTable);
             startTheMatch = true; // used by MatchHud
+            //Does the following:
+            //set "gameStarted" as true.
+            //GameStarted:
+            // - Triggers WaitUI to go into SpectateMode
+            //   if GameStarted is caught in Start()
+            // - Disables WaitUI's polling if GameStarted
+            // - Activates the Fade Effect on the Border Images
             M.GameStarts(readyTotal);
+            //Does the following:
+            // - Reenabled escape function (disabled during spawn)
+            // TODO: Find use for room size?
+            StageAnimations.Activate();
+            //Does the following:
+            // - Activates animations for things that need to be in sync Network-wise.
+            GameManager.GameStart(PhotonNetwork.player.ID, M.GetClientCharacterName());
+            //Does the following:
+            // - Spawns local player over network.
         }
     }
 
