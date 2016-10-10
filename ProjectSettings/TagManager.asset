@@ -13,7 +13,7 @@ TagManager:
   - PlayerOther
   - NoCollide
   - DeathWall
-  - GameUI
+  - WaitGUI
   - SpawnPoints
   - PlayerGhost
   - SFXPlayer

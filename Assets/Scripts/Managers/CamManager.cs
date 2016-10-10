@@ -77,6 +77,14 @@ public class CamManager : MonoBehaviour
 
     public static void SetTarget(Transform newTarget)
     {
+        if(newTarget == null) {
+            GameObject temp = GameObject.FindGameObjectWithTag("PlayerOther");
+            if (temp == null)
+                return;
+            newTarget = temp.transform;
+            //If no playerOthers are found, then everyone dead and the game
+            //will be ending, no reason to set new target, so return;.
+        }
         getRef()._SetTarget(newTarget);
     }
 
@@ -88,18 +96,6 @@ public class CamManager : MonoBehaviour
         transform.parent = null;
         target_IsNew = true;
     }
-
-    public bool HasNewTarget()
-    {
-        if (target_IsNew)
-        {
-            target_IsNew = false;
-            return true;
-        }
-        return target_IsNew;
-    }
-
-
     /// <summary>
     /// Amount of screenshake is variable on character distance to camera.
     /// Coded with assumption opponents are not dieing near you, and that
@@ -112,7 +108,7 @@ public class CamManager : MonoBehaviour
     {
         getRef()._DeathShake(isMyDeath);
     }
-
+    
     public void _DeathShake(bool isMyDeath)
     {
         float shakeAmt = DeathShakeMod * (isMyDeath ? 2f : 1f);

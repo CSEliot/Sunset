@@ -212,28 +212,6 @@ public class PlayerController2DOffline : MonoBehaviour
 
     void LateUpdate()
     {
-        if (playersSpawned)
-        {
-            if (GameObject.FindGameObjectsWithTag("PlayerSelf").Length <= 1)
-            {
-                if (!isDead)
-                {
-                    GameUI.Won();
-                    StartCoroutine(WinWait());
-                }
-                else
-                {
-                    StartCoroutine(LoseWait());
-                }
-            }
-        }
-        else
-        {
-            if (GameObject.FindGameObjectsWithTag("PlayerSelf").Length > 1)
-            {
-                playersSpawned  = true;
-            }
-        }
     }
 
     private void UpdateHurt()
@@ -643,18 +621,15 @@ public class PlayerController2DOffline : MonoBehaviour
         
     }	  	
 
-    IEnumerator Ghost()
+    public void Ghost()
     {
-        GameUI.Lost();
-        isDead = true;
-        m_Body.velocity = Vector2.zero;
-        velocity = Vector2.zero;
-        m_Body.isKinematic = true;
-        transform.tag = "PlayerGhost";
-        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-        yield return new WaitForSeconds(3f);
-        if (GameObject.FindGameObjectWithTag("PlayerSelf") != null)
-            AssignCameraFollow(GameObject.FindGameObjectWithTag("PlayerSelf").transform);
+        //GameUI.Lost();
+        //isDead = true;
+        //m_Body.velocity = Vector2.zero;
+        //velocity = Vector2.zero;
+        //m_Body.isKinematic = true;
+        //transform.tag = "PlayerGhost";
+        //transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
     }
 
     IEnumerator respawn()

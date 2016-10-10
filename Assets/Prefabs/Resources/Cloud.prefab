@@ -16,7 +16,7 @@ GameObject:
   - 82: {fileID: 8281004}
   m_Layer: 10
   m_Name: Cloud
-  m_TagString: PlayerSelf
+  m_TagString: PlayerOther
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

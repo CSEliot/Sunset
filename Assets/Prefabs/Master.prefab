@@ -230,7 +230,6 @@ MonoBehaviour:
     Power: 0
   - Name: Locked(Clone)
     Power: 0
-  Max_Players: 6
   AllCharacters:
   - {fileID: 100000, guid: 990c60a26623bb44ea70ff9870d5f6d0, type: 2}
   - {fileID: 100000, guid: e179c2cb4df2fbc48a51cfad09780b9c, type: 2}
@@ -243,6 +242,7 @@ MonoBehaviour:
   DontUnloadObjs:
   - {fileID: 0}
   - {fileID: 157284}
+  - {fileID: 0}
   - {fileID: 0}
   PlayerCharNum: 0
   InRoomNumber: 0

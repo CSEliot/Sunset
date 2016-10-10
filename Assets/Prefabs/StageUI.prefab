@@ -37,9 +37,10 @@ GameObject:
   m_Component:
   - 224: {fileID: 224000010681021786}
   - 114: {fileID: 114000011581235320}
+  - 114: {fileID: 114000012277810714}
   m_Layer: 5
   m_Name: WaitGUI
-  m_TagString: Untagged
+  m_TagString: WaitGUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -207,9 +208,10 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 224: {fileID: 224000011533799296}
+  - 114: {fileID: 114000011424927050}
   m_Layer: 5
   m_Name: GameHUD
-  m_TagString: MatchHUD
+  m_TagString: GameHUD
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -563,7 +565,6 @@ GameObject:
   - 223: {fileID: 223000013289645740}
   - 114: {fileID: 114000010716871166}
   - 114: {fileID: 114000012981218168}
-  - 114: {fileID: 114000012699893432}
   m_Layer: 5
   m_Name: StageUI
   m_TagString: GameUI
@@ -879,11 +880,10 @@ GameObject:
   - 224: {fileID: 224000012462650246}
   - 222: {fileID: 222000012989964714}
   - 114: {fileID: 114000013408760024}
-  - 114: {fileID: 114000011986034410}
   - 95: {fileID: 95000010281685348}
   m_Layer: 5
   m_Name: ReadyText
-  m_TagString: GameHUD
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1880,8 +1880,8 @@ MonoBehaviour:
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 900, y: 600}
-  m_ScreenMatchMode: 1
-  m_MatchWidthOrHeight: 0
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 1
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -2227,6 +2227,21 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114000011424927050
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010838061470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2146a8979ed011441aa78dde1bf84c37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Lives_Text: {fileID: 114000012667290394}
+  Damage_Text: {fileID: 114000014126562096}
+  YouLoseText: {fileID: 1000010233327906}
+  YouWinText: {fileID: 1000011855130298}
 --- !u!114 &114000011479517762
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2785,44 +2800,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114000011986034410
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000013527521158}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d0a36bc030c78b41b912a1bb2080176, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rdyColor: {r: 1, g: 1, b: 1, a: 1}
-  unRdyColor: {r: 0.2205882, g: 0.2205882, b: 0.2205882, a: 1}
-  Empty: {fileID: 21300000, guid: 422272bff9ee0b84b8964876cbf06c4e, type: 3}
-  PercentReady: {fileID: 114000014108437656}
-  PlayerSlots:
-  - {fileID: 114000012464018408}
-  - {fileID: 114000011963734664}
-  - {fileID: 114000013521442462}
-  - {fileID: 114000010902078506}
-  - {fileID: 114000012360179344}
-  - {fileID: 114000011853632252}
-  ReadyText: {fileID: 114000013408760024}
-  Yes: {fileID: 1000011216649084}
-  No: {fileID: 1000011318386158}
-  roomName: {fileID: 114000011929584858}
-  Warning: {fileID: 1000012013515660}
-  UIHeads:
-  - {fileID: 21300000, guid: b9bce454e8a9d411bb666f74024c8a3d, type: 3}
-  - {fileID: 21300000, guid: 49083a0a38625412583932de993b144d, type: 3}
-  - {fileID: 21300000, guid: af1faad35e4ae4dc5aad214d42cd1c44, type: 3}
-  - {fileID: 21300000, guid: 92f346c14fd4e4a379ed51ece80e96a0, type: 3}
-  - {fileID: 21300000, guid: 13960585d97364dc197478e2bb4059de, type: 3}
-  - {fileID: 21300000, guid: c3c064ab7e36f4a79a5538ea7cfc9dfb, type: 3}
-  PlayerHead: {fileID: 114000013066100220}
-  CountdownObj: {fileID: 1000010394853664}
-  countdownTextTop: {fileID: 114000011582701458}
-  countdownTextBottom: {fileID: 114000012391246392}
 --- !u!114 &114000012100033632
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2928,7 +2905,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114000011986034410}
+      - m_Target: {fileID: 114000012277810714}
         m_MethodName: UnReady
         m_Mode: 1
         m_Arguments:
@@ -2972,8 +2949,57 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 114000012277810714}
+        m_MethodName: Back
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &114000012277810714
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010153306666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d0a36bc030c78b41b912a1bb2080176, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rdyColor: {r: 1, g: 1, b: 1, a: 1}
+  unRdyColor: {r: 0.2205882, g: 0.2205882, b: 0.2205882, a: 1}
+  Empty: {fileID: 21300000, guid: 422272bff9ee0b84b8964876cbf06c4e, type: 3}
+  PercentReady: {fileID: 114000014108437656}
+  PlayerSlots:
+  - {fileID: 114000012464018408}
+  - {fileID: 114000011963734664}
+  - {fileID: 114000013521442462}
+  - {fileID: 114000010902078506}
+  - {fileID: 114000012360179344}
+  - {fileID: 114000011853632252}
+  ReadyText: {fileID: 114000013408760024}
+  Yes: {fileID: 1000011216649084}
+  No: {fileID: 1000011318386158}
+  roomName: {fileID: 114000011929584858}
+  Warning: {fileID: 1000012013515660}
+  UIHeads:
+  - {fileID: 21300000, guid: b9bce454e8a9d411bb666f74024c8a3d, type: 3}
+  - {fileID: 21300000, guid: 49083a0a38625412583932de993b144d, type: 3}
+  - {fileID: 21300000, guid: af1faad35e4ae4dc5aad214d42cd1c44, type: 3}
+  - {fileID: 21300000, guid: 92f346c14fd4e4a379ed51ece80e96a0, type: 3}
+  - {fileID: 21300000, guid: 13960585d97364dc197478e2bb4059de, type: 3}
+  - {fileID: 21300000, guid: c3c064ab7e36f4a79a5538ea7cfc9dfb, type: 3}
+  PlayerHead: {fileID: 114000013066100220}
+  CountdownObj: {fileID: 1000010394853664}
+  countdownTextTop: {fileID: 114000011582701458}
+  countdownTextBottom: {fileID: 114000012391246392}
 --- !u!114 &114000012360179344
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3184,23 +3210,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 2
---- !u!114 &114000012699893432
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000011845601806}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2146a8979ed011441aa78dde1bf84c37, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Lives_Text: {fileID: 114000012667290394}
-  Damage_Text: {fileID: 114000014126562096}
-  YouLoseText: {fileID: 1000010233327906}
-  YouWinText: {fileID: 1000011855130298}
-  StartingLives: 2
+  m_Text: N
 --- !u!114 &114000012774286138
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3402,7 +3412,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 21300000, guid: 0ea96e312476ed24991f3d5eb213b121, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -3480,7 +3490,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114000011986034410}
+      - m_Target: {fileID: 114000012277810714}
         m_MethodName: ReadyUp
         m_Mode: 1
         m_Arguments:
@@ -3876,7 +3886,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114000011986034410}
+      - m_Target: {fileID: 114000012277810714}
         m_MethodName: UnReady
         m_Mode: 1
         m_Arguments:
@@ -4959,7 +4969,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 224000012462650246}
-  - {fileID: 224000010795305270}
   - {fileID: 224000011088446536}
   m_Father: {fileID: 224000010222501478}
   m_RootOrder: 0
@@ -5039,8 +5048,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
-  m_Father: {fileID: 224000010681021786}
-  m_RootOrder: 1
+  m_Father: {fileID: 224000011533799296}
+  m_RootOrder: 3
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 46.890625, y: -36.126556}
@@ -5132,7 +5141,7 @@ RectTransform:
   m_Children:
   - {fileID: 224000012586791026}
   m_Father: {fileID: 224000010681021786}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -2.0632324}
@@ -5225,12 +5234,13 @@ RectTransform:
   - {fileID: 224000012149001534}
   - {fileID: 224000013494512200}
   - {fileID: 224000013706553862}
+  - {fileID: 224000010795305270}
   m_Father: {fileID: 224000010222501478}
   m_RootOrder: 4
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1066, y: 600}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000011536495590
 RectTransform:

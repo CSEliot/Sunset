@@ -21,34 +21,24 @@ public class GameManager : MonoBehaviour {
     private int totalGhosts;
     public static Dictionary<int, GameObject> Players;
     public static int[,] KillsMatrix; //x -> y // X killed Y
-
+    
     private Transform[] SpawnPositions;
+
     //public int TotalSpawns;
 
-    public WaitUIController waitScreen;
+    //private enum GameState
+    //{
+    //    Waiting,
+    //    Playing,
+    //    Spectating
+    //}
 
-
-
-    private enum GameState
-    {
-        Waiting,
-        Playing,
-        Spectating
-    }
-
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
+        startingLives = 2;
         respawnWait = new WaitForSeconds(RespawnTime);
-        KillsMatrix = new int[Master.MaxRoomSize,Master.MaxRoomSize];
         Players = new Dictionary<int, GameObject>();
 	    NetworkManager.SetGameStateMan(out N, this);
-
-        SpawnPositions = new Transform[Master.MaxRoomSize];
-
-        for(int x = 0; x < Master.MaxRoomSize; x++) {
-            SpawnPositions[x] = GameObject.FindGameObjectWithTag("SpawnPoints").transform.GetChild(x);
-        }
-        startingLives = SettingsManager.StartLives;
 	}
 	
 	// Update is called once per frame
@@ -57,10 +47,12 @@ public class GameManager : MonoBehaviour {
         if(startingPlayers - 1 == totalGhosts || 
             Time.time > startTime + GameLength) {
             //END GAME SEQUENCE
+            CBUG.Do("GAME ENDS BRUH ");
         }
 
 	}
 
+    #region Public Static Functions
     /// <summary>
     /// Records death and
     /// </summary>
@@ -71,15 +63,20 @@ public class GameManager : MonoBehaviour {
         getRef()._RecordDeath(killer, killed);
     }
 
-
-    public void Respawn(int playerNum)
+    public static void GameStart(int myID, string charName)
     {
-
+        getRef()._GameStart(myID, charName);   
     }
+
+    public static void HandleDeath(int killed)
+    {
+        getRef()._HandleDeath(killed);
+    }
+    #endregion
 
     public bool IsGhost(int playerNum)
     {
-        return (playerLives[playerNum] <= 0);
+        return (playerLives[playerNum] < 0);
     }
 
     private void checkForWinner()
@@ -89,42 +86,70 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-
-    public static void GameStart(int myID, string charName)
-    {
-        getRef()._GameStart(myID, charName);   
-    }
-
-    public void Spectate()
-    {
-
-    }
-
     #region Helper Functions
     private void _GameStart(int myID, string charName)
     {
+
+        startingPlayers = N.ReadyTotal;
+
+        KillsMatrix = new int[N.ReadyTotal, N.ReadyTotal];
+        SettingsManager.SetGameInfo(startingLives);
+
+        SpawnPositions = new Transform[N.ReadyTotal];
+        for (int x = 0; x < N.ReadyTotal; x++) {
+            SpawnPositions[x] = GameObject.FindGameObjectWithTag("SpawnPoints").transform.GetChild(x);
+        }
+
         CBUG.Do("Player " + myID + " Spawning " + charName);
         Vector3 spawnPos;
         spawnPos = SpawnPositions[myID].position;
 
         PhotonNetwork.Instantiate(charName, spawnPos, Quaternion.identity, 0);
+
+        playerLives = new int[N.ReadyTotal];
+        for (int x = 0; x < N.ReadyTotal; x++) {
+            playerLives[x] = SettingsManager.StartLives;
+        }
+        GameHUDController.SetLives(SettingsManager.StartLives);
     }
 
     private void _RecordDeath(int killer, int killed)
     {
+        /*
+         * Players know when they've killed someone, but they think they
+         * suicided when someone kills them.
+         */
+
+        //Note: Killer=0 means player suicided.
+        if(killer != -1) {
+            KillsMatrix[killer, killed]++;
+            CBUG.Do("Player " + (killer+1) + 
+                    " knocked out Player " + (killed+1));
+        } else {
+            CBUG.Do("Player " + (killed+1) + " Suicided!");
+        }
         playerLives[killed]--;
-        KillsMatrix[killer, killed]++;
-        StartCoroutine(onDeath(killed));
     }
 
-    private IEnumerator onDeath(int deadPlayerNum)
+    private void _HandleDeath(int killed)
+    {
+        StartCoroutine(doRespawnOrGhost(killed));
+    }
+
+    private IEnumerator doRespawnOrGhost(int deadPlayerNum)
     {
         yield return respawnWait;
         if (playerLives[deadPlayerNum] == -1) {
             totalGhosts++;
             Players[deadPlayerNum].GetComponent<PlayerController2D>().Ghost();
-        }else {
-            Players[deadPlayerNum].GetComponent<PlayerController2D>().Respawn();
+            WaitUIController.ActivateSpectatingMode();
+        } else {
+            //Player spawn position is controlled by Game Manager.
+            //But we only wanna reposition OUR player's position.
+            //BUT ALSO
+            Players[deadPlayerNum].GetComponent<PlayerController2D>().Respawn(
+                SpawnPositions[Random.Range(0, SpawnPositions.Length - 1)].position
+            );
         }
     }
 

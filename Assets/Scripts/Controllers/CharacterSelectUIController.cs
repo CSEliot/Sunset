@@ -44,6 +44,7 @@ public class CharacterSelectUIController : MonoBehaviour {
     void OnEnable ()
     {
         resetUI();
+        N.SetCharacter();
     }
 	
 	// Update is called once per frame

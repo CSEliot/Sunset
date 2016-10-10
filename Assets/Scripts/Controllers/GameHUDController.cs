@@ -18,6 +18,7 @@ public class GameHUDController : MonoBehaviour {
 	void Start () {
         lives = SettingsManager.StartLives;
         damage = 0;
+        tag = "GameHUD";
 	}
 	
 	// Update is called once per frame
@@ -25,37 +26,88 @@ public class GameHUDController : MonoBehaviour {
 	
 	}
 
-    public void IncreaseDamageBy(float increase)
+    #region Static Reference Functions
+    private static GameHUDController getRef()
     {
-        damage += (int)increase;
-        Damage_Text.text = ""+ damage + "%";
+        return GameObject.FindGameObjectWithTag("GameHUD").GetComponent<GameHUDController>();
     }
 
-    public void SetDamageTo(float amount)
+    public static void SetLives(int startingLives)
+    {
+        getRef()._SetLives(startingLives);
+    }
+
+    public static void Won()
+    {
+        getRef()._Won();
+    }
+
+    public static void Lost()
+    {
+        getRef()._Lost();
+    }
+
+    public static void IncreaseDamageBy(float increase)
+    {
+        getRef()._IncreaseDamageBy(increase);
+    }
+
+    public static void SetDamageTo(float amount)
+    {
+        getRef()._SetDamageTo(amount);
+    }
+
+    public static void ResetDamage()
+    {
+        getRef()._ResetDamage();
+    }
+
+    public static void LoseALife()
+    {
+        getRef()._LoseALife();
+    }
+    #endregion
+
+    #region Private Helper Functions
+    private void _SetLives(int startingLives)
+    {
+        Lives_Text.text = "" + startingLives;
+        lives = startingLives;
+    }
+
+    private void _Won()
+    {
+        YouWinText.SetActive(true);
+    }
+
+    private void _Lost()
+    {
+        YouLoseText.SetActive(true);
+    }
+
+    private void _IncreaseDamageBy(float increase)
+    {
+        damage += (int)increase;
+        Damage_Text.text = "" + damage + "%";
+    }
+
+    private void _SetDamageTo(float amount)
     {
         damage = (int)amount;
         Damage_Text.text = "" + damage + "%";
     }
 
-    public void ResetDamage()
+    private void _ResetDamage()
     {
         damage = 0;
         Damage_Text.text = "000%";
     }
 
-    public void LoseALife()
+    private void _LoseALife()
     {
         lives--;
-        Lives_Text.text = "" + lives; 
+        Lives_Text.text = "" + lives;
     }
+    #endregion
 
-    public void Lost()
-    {
-        YouLoseText.SetActive(true);
-    }
-
-    public void Won()
-    {
-        YouWinText.SetActive(true);
-    }
 }
