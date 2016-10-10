@@ -14,7 +14,7 @@ GameObject:
   - 114: {fileID: 114000012583775832}
   m_Layer: 10
   m_Name: Fang
-  m_TagString: PlayerSelf
+  m_TagString: PlayerOther
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -637,7 +637,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VaryPitchBy: 0.5
 --- !u!114 &11425888
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -649,7 +648,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VaryPitchBy: 0.5
 --- !u!114 &11426438
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -672,7 +670,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VaryPitchBy: 0.5
 --- !u!212 &21232500
 SpriteRenderer:
   m_ObjectHideFlags: 1

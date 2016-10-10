@@ -5282,7 +5282,7 @@ MonoBehaviour:
   ALL_DEBUG_TOGGLE: 1
   SendToConsole: 1
   DisableOnScreen: 0
-  ClearTime: 1
+  ClearTime: 3.5
   Clear: 0
   ClearAmount: 2
   ClearAll: 0
@@ -7603,6 +7603,10 @@ Prefab:
       value: 
       objectReference: {fileID: 1665531014}
     - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: DontUnloadObjs.Array.data[3]
+      value: 
+      objectReference: {fileID: 870291968}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
       propertyPath: MenuCanvasList.Array.data[0]
       value: 
       objectReference: {fileID: 948514857}
@@ -8019,7 +8023,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96

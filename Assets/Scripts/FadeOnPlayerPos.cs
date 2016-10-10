@@ -31,9 +31,10 @@ public class FadeOnPlayerPos : MonoBehaviour {
 	
         if(!gotPlayerRef && N.GameStarted)
         {
-            pTransform = GameObject.FindGameObjectWithTag("PlayerSelf").GetComponent<Transform>();
+            GameObject temp = GameObject.FindGameObjectWithTag("PlayerSelf");
             if (pTransform != null)
             {
+                pTransform = temp.transform;
                 gotPlayerRef = true;
             }
         }

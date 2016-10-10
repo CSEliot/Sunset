@@ -23,8 +23,10 @@ public class CBUG : MonoBehaviour {
 
     #region Private Vars
     private Text logText;
-    private List<string> lines;
-    private List<int> occurrences;
+    private LinkedList<string> lines;
+    private LinkedList<int> occurrences;
+    private LinkedListNode<string> tempLinesIter;
+    private LinkedListNode<int> tempOccurIter;
     private bool isParented;
     private float previousClear;
     private bool neverClear;
@@ -35,8 +37,8 @@ public class CBUG : MonoBehaviour {
     // Use this for initialization
     void Start () {
         logText = GetComponent<Text>();
-        lines = new List<string>();
-        occurrences = new List<int>();
+        lines = new LinkedList<string>();
+        occurrences = new LinkedList<int>();
         if (DisableOnScreen)
             logText.color = new Color(0, 0, 0, 0);
         if (ClearTime == 0)
@@ -45,13 +47,16 @@ public class CBUG : MonoBehaviour {
             ClearAmount = -1;
 
         transform.tag = "CBUG";
+        previousClear = Time.time;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-        if (!Debug.isDebugBuild)
+        if (!Debug.isDebugBuild) {
             gameObject.SetActive(false);
+            return;
+        }
 
         if (!ALL_DEBUG_TOGGLE)
             return;
@@ -67,13 +72,18 @@ public class CBUG : MonoBehaviour {
         }
 
         logText.text = "";
+        tempLinesIter = lines.First;
+        tempOccurIter = occurrences.First;
         for(int x = 0; x < lines.Count; x++) {
-            logText.text += lines[x] + " || " + occurrences[x] + "\n";
+            logText.text += tempLinesIter.Value + " || " + tempOccurIter.Value + "\n";
+            tempLinesIter = tempLinesIter.Next;
+            tempOccurIter = tempOccurIter.Next;
         }
 
         if (lines.Count > maxLines) {
             for (int x = 0; x < lines.Count - maxLines; x++) {
-                lines.RemoveAt(x);
+                lines.RemoveFirst();
+                occurrences.RemoveFirst();
             }
         }
 
@@ -112,13 +122,16 @@ public class CBUG : MonoBehaviour {
         if (lines.Count == 0)
             return;
 
-        if(amount == -1)
+        if(amount == -1) {
             lines.Clear();
-        else {
+            occurrences.Clear();
+        }
+        else 
+        {
             amount = amount > lines.Count ? lines.Count : amount;
             for(int x = 0; x < amount; x++) {
-                CBUG.Do("Removing line " + x + ". Total: " + amount);
-                lines.RemoveAt(x);
+                lines.RemoveFirst();
+                occurrences.RemoveFirst();
             }
         }
     }
@@ -136,16 +149,20 @@ public class CBUG : MonoBehaviour {
         if(SendToConsole)
             Debug.Log(line);
 
-        if (lines.Contains(line)) {
+        if (lines.Find(line) != null) {
+            tempLinesIter = lines.First;
+            tempOccurIter = occurrences.First;
             for (int x = 0; x < GetRef().lines.Count; x++) {
-                if (lines[x] == line) {
-                    occurrences[x]++;
+                if (tempLinesIter.Value == line) {
+                    tempOccurIter.Value++;
                     break;
                 }
+                tempLinesIter = tempLinesIter.Next;
+                tempOccurIter = tempOccurIter.Next;
             }
         } else {
-            lines.Add(line);
-            occurrences.Add(1);
+            lines.AddLast(line);
+            occurrences.AddLast(1);
         }
     }
 

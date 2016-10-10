@@ -16,7 +16,7 @@ GameObject:
   - 82: {fileID: 8257540}
   m_Layer: 10
   m_Name: Six
-  m_TagString: PlayerSelf
+  m_TagString: PlayerOther
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -579,6 +579,7 @@ MonoBehaviour:
   mask:
     serializedVersion: 2
     m_Bits: 4294967039
+  ID: 0
   TotalJumpsAllowed: 1
   JumpOffset: {x: 0, y: 0}
   GroundCheckEndPoint: 0.5
@@ -606,7 +607,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VaryPitchBy: 0.5
 --- !u!114 &11442302
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -618,7 +618,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VaryPitchBy: 0.5
 --- !u!114 &11445054
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -669,7 +668,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VaryPitchBy: 0.5
 --- !u!114 &11467440
 MonoBehaviour:
   m_ObjectHideFlags: 1

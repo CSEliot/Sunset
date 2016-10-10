@@ -46,6 +46,9 @@ public class WaitUIController : MonoBehaviour{
 
     // Use this for initialization
     void Start () {
+
+        tag = "WaitGUI";
+
         readyUpBypassCount = 0;
         readyUpBypassTotal = 2;
         M = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
@@ -57,7 +60,7 @@ public class WaitUIController : MonoBehaviour{
         PercentReady.text = "" + N.ReadyTotal + "/" + N.GetInRoomTotal;
 
         if (N.GameStarted)
-            activateSpectatingMode();
+            _ActivateSpectatingMode();
 
         rdyColor = new Color(1f, 1f, 1f, 1f);
         unRdyColor = new Color(1f, 1f, 1f, 0.5f);
@@ -109,10 +112,18 @@ public class WaitUIController : MonoBehaviour{
     }
 
     public void UnReady() {
-        if (!isReady)
+        if (!isReady) {
+            Back();
             return;        
+        }
         isReady = false;
         N.UnreadyButton();
+    }
+
+    public void Back()
+    {
+
+        N.SetCharacter();
     }
 
     #region Network Activity Sensitive
@@ -127,8 +138,8 @@ public class WaitUIController : MonoBehaviour{
         int playerSlot;
         for (int x = 0; x < PhotonNetwork.room.playerCount; x++)
         {
-            playerSlot = N.GetSlotNum(PhotonNetwork.playerList[x].ID);
-            PlayerSlots[playerSlot].color = N.GetRdyStatus(PhotonNetwork.playerList[x].ID) ? rdyColor : unRdyColor;
+            playerSlot = N.GetSlotNum(PhotonNetwork.playerList[x].ID - 1);
+            PlayerSlots[playerSlot].color = N.GetRdyStatus(PhotonNetwork.playerList[x].ID - 1) ? rdyColor : unRdyColor;
         }
     }
 
@@ -139,7 +150,7 @@ public class WaitUIController : MonoBehaviour{
         int charNum;
         for (int x = 0; x < PhotonNetwork.room.playerCount; x++)
         {
-            playerID = PhotonNetwork.playerList[x].ID;
+            playerID = PhotonNetwork.playerList[x].ID - 1;
             slotNum = N.GetSlotNum(playerID);
             charNum = N.GetCharNum(playerID);
             PlayerSlots[slotNum].sprite = UIHeads[charNum];
@@ -175,7 +186,7 @@ public class WaitUIController : MonoBehaviour{
     }
     #endregion
 
-    private void activateSpectatingMode()
+    private void _ActivateSpectatingMode()
     {
         Yes.SetActive(false);
         No.SetActive(false);
@@ -186,12 +197,24 @@ public class WaitUIController : MonoBehaviour{
         {
             PlayerSlots[i].transform.gameObject.SetActive(false);
         }
+
+        CamManager.SetTarget(null);
     }
 
 
     public void CheatGame()
     {
         readyUpBypassCount = 3;
+    }
+
+    public static void ActivateSpectatingMode()
+    {
+        getRef()._ActivateSpectatingMode();
+    }
+
+    private static WaitUIController getRef()
+    {
+        return GameObject.FindGameObjectWithTag("WaitGUI").GetComponent<WaitUIController>();
     }
 
     private int getImageNum()
@@ -215,7 +238,7 @@ public class WaitUIController : MonoBehaviour{
     private void startMatch()
     {
         //j.GameStarted(N.GetSlotNum(PhotonNetwork.player.ID));
-        gameObject.SetActive(false);
+        transform.GetChild(0).gameObject.SetActive(false);
         PlayerHead.sprite = getImage(getImageNum());
         stageListener.enabled = true;
     }

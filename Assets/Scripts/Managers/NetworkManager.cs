@@ -156,7 +156,7 @@ public class NetworkManager : Photon.MonoBehaviour{
             startCountdown = true;
             StartCoroutine(GameCountdown());
         }
-        else if( startCountdown == true && readyTotal < PhotonNetwork.playerList.Length)
+        if( startCountdown == true && readyTotal < PhotonNetwork.playerList.Length)
         {
             startCountdown = false;
         }
@@ -305,7 +305,7 @@ public class NetworkManager : Photon.MonoBehaviour{
         int playerID;
         for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
         {
-            playerID = PhotonNetwork.playerList[i].ID;
+            playerID = PhotonNetwork.playerList[i].ID - 1;
             storeLocalData(playerID, i);
         }
 
@@ -530,12 +530,12 @@ public class NetworkManager : Photon.MonoBehaviour{
 
     public void SetReadyStatus(PhotonTargets tellWho, ReadyCount action)
     {
-        M_PhotonView.RPC("ShowReadyStatus", tellWho, PhotonNetwork.player.ID, action);
+        M_PhotonView.RPC("ShowReadyStatus", tellWho, PhotonNetwork.player.ID - 1, action);
     }
 
     public void SetCharDisplay(PhotonTargets tellWho, int newChar)
     {
-        M_PhotonView.RPC("ShowNewChar", tellWho, PhotonNetwork.player.ID, newChar);
+        M_PhotonView.RPC("ShowNewChar", tellWho, PhotonNetwork.player.ID - 1, newChar);
     }
 
     public void ReadyButton()
@@ -582,7 +582,7 @@ public class NetworkManager : Photon.MonoBehaviour{
         M.PlaySFX(readySFX); // 2: ReadySFX | 6: UnreadySFX
 
         for (int x = 0; x < PhotonNetwork.playerList.Length; x++) {
-            ID_to_IsRdy[PhotonNetwork.playerList[x].ID] = false;
+            ID_to_IsRdy[PhotonNetwork.playerList[x].ID - 1] = false;
         }
         readyTotal = 0;
         rdyStateChange = true;
@@ -646,7 +646,7 @@ public class NetworkManager : Photon.MonoBehaviour{
     private void storeRemoteData(PhotonPlayer player)
     {
         int playerChar;
-        int playerID = player.ID;
+        int playerID = player.ID - 1;
         if (player.customProperties.ContainsKey("characterNum"))
             playerChar = (int)player.customProperties["characterNum"];
         else
@@ -676,7 +676,7 @@ public class NetworkManager : Photon.MonoBehaviour{
     /// <param name="player">player that disconnected.</param>
     private void unassignPlayerTracking(PhotonPlayer player)
     {
-        int playerID = player.ID;
+        int playerID = player.ID - 1;
         ID_to_CharNum.Remove(playerID);
         ID_to_IsRdy.Remove(playerID);
         ID_to_SlotNum.Remove(playerID);
@@ -707,7 +707,7 @@ public class NetworkManager : Photon.MonoBehaviour{
             ExitGames.Client.Photon.Hashtable tempRoomTable = PhotonNetwork.room.customProperties;
             tempRoomTable["GameStarted"] = true;
             PhotonNetwork.room.SetCustomProperties(tempRoomTable);
-            startTheMatch = true; // used by MatchHud
+            startTheMatch = true; // used by WaitGUI
             //Does the following:
             //set "gameStarted" as true.
             //GameStarted:
@@ -722,7 +722,7 @@ public class NetworkManager : Photon.MonoBehaviour{
             StageAnimations.Activate();
             //Does the following:
             // - Activates animations for things that need to be in sync Network-wise.
-            GameManager.GameStart(PhotonNetwork.player.ID, M.GetClientCharacterName());
+            GameManager.GameStart(PhotonNetwork.player.ID - 1, M.GetClientCharacterName());
             //Does the following:
             // - Spawns local player over network.
         }

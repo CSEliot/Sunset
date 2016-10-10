@@ -78,7 +78,10 @@ public class PlayerController2D : MonoBehaviour
     
     private float damage;
     private bool isDead;
+
     private int lastHitBy;
+    private float lastHitTime;
+    private float lastHitForgetLength;
 
     private GameHUDController GameUI;
 
@@ -86,6 +89,8 @@ public class PlayerController2D : MonoBehaviour
     private AudioSource myAudioSrc;
 
     private bool controlsPaused;
+    private float spawnPause;
+    private WaitForSeconds spawnPauseWait;
 
     private Animator anim;
 
@@ -123,8 +128,19 @@ public class PlayerController2D : MonoBehaviour
 
         _MobileInput = GameObject.FindGameObjectWithTag("MobileController").GetComponent<MobileController>();
 
-        if(_PhotonView.isMine)
-            _PhotonView.RPC("SetID", PhotonTargets.All, PhotonNetwork.player.ID);
+        spawnPause = 0.5f;
+        spawnPauseWait = new WaitForSeconds(spawnPause);
+
+        lastHitBy = -1;
+        lastHitTime = Time.time;
+        lastHitForgetLength = 5;//Seconds
+
+        if (_PhotonView.isMine) {
+            tag = "PlayerSelf";
+            _PhotonView.RPC("SetID", PhotonTargets.All, PhotonNetwork.player.ID- 1);
+            GameUI = GameObject.FindGameObjectWithTag("GameHUD").GetComponent<GameHUDController>();
+            CamManager.SetTarget(transform);
+        }
     }
  
 
@@ -179,6 +195,12 @@ public class PlayerController2D : MonoBehaviour
     {
         if (!_PhotonView.isMine)
             return;
+
+        //Only recent hits count
+        if(Time.time - lastHitTime > lastHitForgetLength) {
+            lastHitBy = -1;
+            lastHitTime = Time.time;
+        }
     }
 
     private void UpdateHurt()
@@ -217,7 +239,7 @@ public class PlayerController2D : MonoBehaviour
             && jumpsRemaining > 0 && totalJumpFrames < 0)
         {
             jumped = true;
-            CBUG.Log("Jumped is true!");
+            //CBUG.Log("Jumped is true!");
             jumpsRemaining -= 1;
             totalJumpFrames = jumpLag;
         }
@@ -242,7 +264,7 @@ public class PlayerController2D : MonoBehaviour
         tempAxisTouch = _MobileInput.GetAxis("MoveHorizontal");
         if ( tempAxisKey > 0 || tempAxisTouch > 0)
         {
-            CBUG.Log("Move axis: " + tempAxisTouch);
+            //CBUG.Log("Move axis: " + tempAxisTouch);
             moveLeft = 0;
             moveRight = tempAxisTouch > tempAxisKey ? tempAxisTouch : tempAxisKey;
         }
@@ -262,7 +284,7 @@ public class PlayerController2D : MonoBehaviour
     {
         if (downJumped)
         {
-            CBUG.Log("DownJumped");
+            //CBUG.Log("DownJumped");
             jumpForceTemp = DownJumpForce;
             downJumped = false;
         }
@@ -349,6 +371,9 @@ public class PlayerController2D : MonoBehaviour
 
     private void updateAttacks()
     {
+        if (isDead)
+            return;
+
         if(totalAttackFrames < 0 ){
             if ((Input.GetButtonDown("Up") || _MobileInput.GetButtonDown("Up")) && !punching)
             {
@@ -392,7 +417,7 @@ public class PlayerController2D : MonoBehaviour
     void SetID(int ID)
     {
         this.ID = ID;
-        CBUG.Do("Recording ID " + ID + "with Gamemaster.");
+        CBUG.Do("Recording ID " + ID + " with Gamemaster.");
         CBUG.Do("Character is: " + gameObject.name);
         GameManager.Players.Add(ID, gameObject);
     }
@@ -445,36 +470,77 @@ public class PlayerController2D : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// Calls GameManager's RecordDeath. Respawn Handling
+    /// is done from there.
+    /// </summary>
+    /// <param name="killer"></param>
+    /// <param name="killed"></param>
     [PunRPC]
     private void OnDeath(int killer, int killed)
     {
-        GameManager.RecordDeath(killer, killed);
+        isDead = true;
+        //Hide Self till respawn (or stay dead, ghost)
         transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+
+        //Freeze and Clear motion
+        _Rigibody2D.velocity = Vector2.zero;
+        velocity = Vector2.zero;
+
+        //Death Map: OnDeath > RecordDeath > HandleDeath >
+        // doRespawnOrGhost
+        GameManager.RecordDeath(killer, killed);
+        GameManager.HandleDeath(killed);
+
+        //TODO: Animate death
+    }
+    #endregion
+    
+    /// <summary>
+    /// Nothing to do. You stay invisible and immobile
+    /// </summary>
+    public void Ghost()
+    {
         transform.tag = "PlayerGhost";
     }
 
-    [PunRPC]
-    void OnRespawn()
+    /// <summary>
+    /// Respawning. Only Graphical UNLESS is our Player. Then we reposition ourselves.
+    /// </summary>
+    /// <param name="spawnPoint"></param>
+    public void Respawn(Vector3 spawnPoint)
     {
-        transform.tag = "PlayerSelf";
-        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
-    }
-    #endregion
+        if (_PhotonView.isMine) {
+            transform.position = spawnPoint;
+            GameHUDController.LoseALife();
+            GameHUDController.ResetDamage();
+            damage = 0;
+        }
 
+        _Rigibody2D.isKinematic = false;
+        StartCoroutine(spawnProtection()); 
+    }
+    private IEnumerator spawnProtection()
+    {
+        yield return spawnPauseWait; 
+        //TODO: Spawn animation
+        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
+        isDead = false;
+    }
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.name == "Physics Box(Clone)")
-        {
-            CBUG.Log("PUNCH");
-            if(transform.localScale.x > 0){
-                col.GetComponent<Rigidbody2D>().AddForce(new Vector2(BoxPunch, BoxPunch), ForceMode2D.Impulse);
-            }else{
-                col.GetComponent<Rigidbody2D>().AddForce(new Vector2(-BoxPunch, BoxPunch), ForceMode2D.Impulse);
-            }
-        }
+        //if (col.name == "Physics Box(Clone)")
+        //{
+        //    CBUG.Log("PUNCH");
+        //    if(transform.localScale.x > 0){
+        //        col.GetComponent<Rigidbody2D>().AddForce(new Vector2(BoxPunch, BoxPunch), ForceMode2D.Impulse);
+        //    }else{
+        //        col.GetComponent<Rigidbody2D>().AddForce(new Vector2(-BoxPunch, BoxPunch), ForceMode2D.Impulse);
+        //    }
+        //}
 
-        if (col == null || !_PhotonView.isMine)
+        if (isDead || col == null || !_PhotonView.isMine)
             return;
 
 
@@ -483,6 +549,8 @@ public class PlayerController2D : MonoBehaviour
         {
             //Get name of puncher
             lastHitBy = col.GetComponentInParent<PlayerController2D>().ID;
+            lastHitTime = Time.time;
+
             if (invincibilityCount > 0)
             {
                 return;
@@ -504,7 +572,7 @@ public class PlayerController2D : MonoBehaviour
             {
                 _PhotonView.RPC("HurtAnim", PhotonTargets.All, 3);
             }
-            GameUI.SetDamageTo(damage);
+            GameHUDController.SetDamageTo(damage);
             if (col.name == "PunchForward")
             {
                 //velocity += Vector2.right * PunchForceForward_Forward;
@@ -596,30 +664,10 @@ public class PlayerController2D : MonoBehaviour
 
         if (!_PhotonView.isMine)
             return;
-        isDead = true;
 
-        GameManager.RecordDeath(lastHitBy, ID);
-        _PhotonView.RPC("OnDeath", PhotonTargets.Others, lastHitBy, ID);
-        
-        //Freeze and Clear motion
-        _Rigibody2D.velocity = Vector2.zero;
-        velocity = Vector2.zero;
+        _PhotonView.RPC("OnDeath", PhotonTargets.All, lastHitBy, ID);
     }	  	
 
-    public void Ghost()
-    {
-        transform.tag = "PlayerGhost";
-    }
-
-    public void Respawn()
-    {
-        damage = 0;
-        GameUI.ResetDamage();
-        //transform.position = SpawnPoints[Random.Range(0, 6)].position;
-        _Rigibody2D.isKinematic = false; 
-        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
-        isDead = false;
-    }
 
     public bool GetIsDead()
     {

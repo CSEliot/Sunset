@@ -16,7 +16,7 @@ GameObject:
   - 82: {fileID: 8289998}
   m_Layer: 10
   m_Name: Dire
-  m_TagString: PlayerSelf
+  m_TagString: PlayerOther
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -639,6 +639,7 @@ MonoBehaviour:
   mask:
     serializedVersion: 2
     m_Bits: 4294967039
+  ID: 0
   TotalJumpsAllowed: 3
   JumpOffset: {x: 0, y: 5.95}
   GroundCheckEndPoint: 1.7
@@ -666,7 +667,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VaryPitchBy: 0.5
 --- !u!114 &11439836
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -728,7 +728,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VaryPitchBy: 0.5
 --- !u!114 &11491146
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -740,7 +739,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VaryPitchBy: 0.5
 --- !u!114 &11493470
 MonoBehaviour:
   m_ObjectHideFlags: 1
