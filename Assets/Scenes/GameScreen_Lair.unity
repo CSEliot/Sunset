@@ -125,6 +125,56 @@ Transform:
   - {fileID: 1477856892}
   m_Father: {fileID: 0}
   m_RootOrder: 3
+--- !u!21 &51168115
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 2DxFX/Standard/Pixel
+  m_Shader: {fileID: 4800000, guid: 8b9ca1acc7508564886cf5668bb81198, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+    - first:
+        name: _MainTex
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - first:
+        name: _Alpha
+      second: 0
+    - first:
+        name: _ColorMask
+      second: 15
+    - first:
+        name: _Offset
+      second: 128
+    - first:
+        name: _Stencil
+      second: 0
+    - first:
+        name: _StencilComp
+      second: 8
+    - first:
+        name: _StencilOp
+      second: 0
+    - first:
+        name: _StencilReadMask
+      second: 255
+    - first:
+        name: _StencilWriteMask
+      second: 255
+    m_Colors:
+    - first:
+        name: _Color
+      second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &65664504
 GameObject:
   m_ObjectHideFlags: 0
@@ -205,7 +255,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 1439970838}
+  - {fileID: 834466481}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -333,7 +383,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 578173691}
+  - {fileID: 1077263954}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -353,65 +403,6 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
---- !u!21 &144602880
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 2DxFX/Standard/Offset
-  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-    - first:
-        name: _MainTex
-      second:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - first:
-        name: _Alpha
-      second: 1
-    - first:
-        name: _ColorMask
-      second: 15
-    - first:
-        name: _OffsetX
-      second: 1
-    - first:
-        name: _OffsetY
-      second: 1
-    - first:
-        name: _Stencil
-      second: 0
-    - first:
-        name: _StencilComp
-      second: 8
-    - first:
-        name: _StencilOp
-      second: 0
-    - first:
-        name: _StencilReadMask
-      second: 255
-    - first:
-        name: _StencilWriteMask
-      second: 255
-    - first:
-        name: _ZoomX
-      second: 1
-    - first:
-        name: _ZoomY
-      second: 1
-    m_Colors:
-    - first:
-        name: _Color
-      second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &146230864
 GameObject:
   m_ObjectHideFlags: 0
@@ -474,14 +465,14 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
---- !u!21 &160393226
+--- !u!21 &223888781
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: 2DxFX/Standard/Offset
-  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
+  m_Name: 2DxFX/Standard/Pixel
+  m_Shader: {fileID: 4800000, guid: 8b9ca1acc7508564886cf5668bb81198, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_CustomRenderQueue: -1
@@ -498,16 +489,13 @@ Material:
     m_Floats:
     - first:
         name: _Alpha
-      second: 1
+      second: 0
     - first:
         name: _ColorMask
       second: 15
     - first:
-        name: _OffsetX
-      second: 1
-    - first:
-        name: _OffsetY
-      second: 1
+        name: _Offset
+      second: 128
     - first:
         name: _Stencil
       second: 0
@@ -523,71 +511,6 @@ Material:
     - first:
         name: _StencilWriteMask
       second: 255
-    - first:
-        name: _ZoomX
-      second: 1
-    - first:
-        name: _ZoomY
-      second: 1
-    m_Colors:
-    - first:
-        name: _Color
-      second: {r: 1, g: 1, b: 1, a: 1}
---- !u!21 &186118625
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 2DxFX/Standard/Offset
-  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-    - first:
-        name: _MainTex
-      second:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - first:
-        name: _Alpha
-      second: 1
-    - first:
-        name: _ColorMask
-      second: 15
-    - first:
-        name: _OffsetX
-      second: 1
-    - first:
-        name: _OffsetY
-      second: 1
-    - first:
-        name: _Stencil
-      second: 0
-    - first:
-        name: _StencilComp
-      second: 8
-    - first:
-        name: _StencilOp
-      second: 0
-    - first:
-        name: _StencilReadMask
-      second: 255
-    - first:
-        name: _StencilWriteMask
-      second: 255
-    - first:
-        name: _ZoomX
-      second: 1
-    - first:
-        name: _ZoomY
-      second: 1
     m_Colors:
     - first:
         name: _Color
@@ -697,12 +620,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 801395890f63ca1439e5d96ff6a563db, type: 2}
   m_IsPrefabParent: 0
---- !u!114 &234868514 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114000011986034410, guid: 801395890f63ca1439e5d96ff6a563db,
-    type: 2}
-  m_PrefabInternal: {fileID: 234868513}
-  m_Script: {fileID: 11500000, guid: 1d0a36bc030c78b41b912a1bb2080176, type: 3}
 --- !u!1 &236858013
 GameObject:
   m_ObjectHideFlags: 0
@@ -783,7 +700,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 942650505}
+  - {fileID: 1666298711}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -932,6 +849,65 @@ MonoBehaviour:
   Line3: {fileID: 1379725044}
   LineZ: 1
   mCtrl: {fileID: 985500563}
+--- !u!21 &261027331
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 2DxFX/Standard/Offset
+  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+    - first:
+        name: _MainTex
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - first:
+        name: _Alpha
+      second: 1
+    - first:
+        name: _ColorMask
+      second: 15
+    - first:
+        name: _OffsetX
+      second: 1
+    - first:
+        name: _OffsetY
+      second: 1
+    - first:
+        name: _Stencil
+      second: 0
+    - first:
+        name: _StencilComp
+      second: 8
+    - first:
+        name: _StencilOp
+      second: 0
+    - first:
+        name: _StencilReadMask
+      second: 255
+    - first:
+        name: _StencilWriteMask
+      second: 255
+    - first:
+        name: _ZoomX
+      second: 1
+    - first:
+        name: _ZoomY
+      second: 1
+    m_Colors:
+    - first:
+        name: _Color
+      second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &292361580
 GameObject:
   m_ObjectHideFlags: 0
@@ -1012,7 +988,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 974429389}
+  - {fileID: 944367120}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -1066,6 +1042,65 @@ Transform:
   - {fileID: 2014069814}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!21 &313004782
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 2DxFX/Standard/Offset
+  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+    - first:
+        name: _MainTex
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - first:
+        name: _Alpha
+      second: 1
+    - first:
+        name: _ColorMask
+      second: 15
+    - first:
+        name: _OffsetX
+      second: 1
+    - first:
+        name: _OffsetY
+      second: 1
+    - first:
+        name: _Stencil
+      second: 0
+    - first:
+        name: _StencilComp
+      second: 8
+    - first:
+        name: _StencilOp
+      second: 0
+    - first:
+        name: _StencilReadMask
+      second: 255
+    - first:
+        name: _StencilWriteMask
+      second: 255
+    - first:
+        name: _ZoomX
+      second: 1
+    - first:
+        name: _ZoomY
+      second: 1
+    m_Colors:
+    - first:
+        name: _Color
+      second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &315154824
 GameObject:
   m_ObjectHideFlags: 0
@@ -1242,7 +1277,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 1056941963}
+  - {fileID: 1171866783}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -1342,7 +1377,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 160393226}
+  - {fileID: 472781822}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -1362,6 +1397,65 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
+--- !u!21 &368948960
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 2DxFX/Standard/Offset
+  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+    - first:
+        name: _MainTex
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - first:
+        name: _Alpha
+      second: 1
+    - first:
+        name: _ColorMask
+      second: 15
+    - first:
+        name: _OffsetX
+      second: 1
+    - first:
+        name: _OffsetY
+      second: 1
+    - first:
+        name: _Stencil
+      second: 0
+    - first:
+        name: _StencilComp
+      second: 8
+    - first:
+        name: _StencilOp
+      second: 0
+    - first:
+        name: _StencilReadMask
+      second: 255
+    - first:
+        name: _StencilWriteMask
+      second: 255
+    - first:
+        name: _ZoomX
+      second: 1
+    - first:
+        name: _ZoomY
+      second: 1
+    m_Colors:
+    - first:
+        name: _Color
+      second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &370971926
 Prefab:
   m_ObjectHideFlags: 0
@@ -1513,7 +1607,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 400781058}
+  - {fileID: 1797267213}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -1533,65 +1627,6 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
---- !u!21 &400781058
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 2DxFX/Standard/Offset
-  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-    - first:
-        name: _MainTex
-      second:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - first:
-        name: _Alpha
-      second: 1
-    - first:
-        name: _ColorMask
-      second: 15
-    - first:
-        name: _OffsetX
-      second: 1
-    - first:
-        name: _OffsetY
-      second: 1
-    - first:
-        name: _Stencil
-      second: 0
-    - first:
-        name: _StencilComp
-      second: 8
-    - first:
-        name: _StencilOp
-      second: 0
-    - first:
-        name: _StencilReadMask
-      second: 255
-    - first:
-        name: _StencilWriteMask
-      second: 255
-    - first:
-        name: _ZoomX
-      second: 1
-    - first:
-        name: _ZoomY
-      second: 1
-    m_Colors:
-    - first:
-        name: _Color
-      second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &417800531
 GameObject:
   m_ObjectHideFlags: 0
@@ -1672,7 +1707,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 1308075269}
+  - {fileID: 2130005805}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -1692,6 +1727,65 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
+--- !u!21 &472781822
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 2DxFX/Standard/Offset
+  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+    - first:
+        name: _MainTex
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - first:
+        name: _Alpha
+      second: 1
+    - first:
+        name: _ColorMask
+      second: 15
+    - first:
+        name: _OffsetX
+      second: 1
+    - first:
+        name: _OffsetY
+      second: 1
+    - first:
+        name: _Stencil
+      second: 0
+    - first:
+        name: _StencilComp
+      second: 8
+    - first:
+        name: _StencilOp
+      second: 0
+    - first:
+        name: _StencilReadMask
+      second: 255
+    - first:
+        name: _StencilWriteMask
+      second: 255
+    - first:
+        name: _ZoomX
+      second: 1
+    - first:
+        name: _ZoomY
+      second: 1
+    m_Colors:
+    - first:
+        name: _Color
+      second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &541272211
 GameObject:
   m_ObjectHideFlags: 0
@@ -1772,7 +1866,66 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!21 &578173691
+--- !u!21 &628072945
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 2DxFX/Standard/Offset
+  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+    - first:
+        name: _MainTex
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - first:
+        name: _Alpha
+      second: 1
+    - first:
+        name: _ColorMask
+      second: 15
+    - first:
+        name: _OffsetX
+      second: 1
+    - first:
+        name: _OffsetY
+      second: 1
+    - first:
+        name: _Stencil
+      second: 0
+    - first:
+        name: _StencilComp
+      second: 8
+    - first:
+        name: _StencilOp
+      second: 0
+    - first:
+        name: _StencilReadMask
+      second: 255
+    - first:
+        name: _StencilWriteMask
+      second: 255
+    - first:
+        name: _ZoomX
+      second: 1
+    - first:
+        name: _ZoomY
+      second: 1
+    m_Colors:
+    - first:
+        name: _Color
+      second: {r: 1, g: 1, b: 1, a: 1}
+--- !u!21 &650969644
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
@@ -1991,7 +2144,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 857271290}
+  - {fileID: 261027331}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -2011,65 +2164,6 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
---- !u!21 &698800278
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 2DxFX/Standard/Offset
-  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-    - first:
-        name: _MainTex
-      second:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - first:
-        name: _Alpha
-      second: 1
-    - first:
-        name: _ColorMask
-      second: 15
-    - first:
-        name: _OffsetX
-      second: 1
-    - first:
-        name: _OffsetY
-      second: 1
-    - first:
-        name: _Stencil
-      second: 0
-    - first:
-        name: _StencilComp
-      second: 8
-    - first:
-        name: _StencilOp
-      second: 0
-    - first:
-        name: _StencilReadMask
-      second: 255
-    - first:
-        name: _StencilWriteMask
-      second: 255
-    - first:
-        name: _ZoomX
-      second: 1
-    - first:
-        name: _ZoomY
-      second: 1
-    m_Colors:
-    - first:
-        name: _Color
-      second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &737567811
 GameObject:
   m_ObjectHideFlags: 0
@@ -2167,7 +2261,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 0.16, y: 0.16}
---- !u!21 &808708526
+--- !u!21 &834466481
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
@@ -2251,124 +2345,6 @@ Material:
     - first:
         name: PixelSnap
       second: 0
-    m_Colors:
-    - first:
-        name: _Color
-      second: {r: 1, g: 1, b: 1, a: 1}
---- !u!21 &857271290
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 2DxFX/Standard/Offset
-  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-    - first:
-        name: _MainTex
-      second:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - first:
-        name: _Alpha
-      second: 1
-    - first:
-        name: _ColorMask
-      second: 15
-    - first:
-        name: _OffsetX
-      second: 1
-    - first:
-        name: _OffsetY
-      second: 1
-    - first:
-        name: _Stencil
-      second: 0
-    - first:
-        name: _StencilComp
-      second: 8
-    - first:
-        name: _StencilOp
-      second: 0
-    - first:
-        name: _StencilReadMask
-      second: 255
-    - first:
-        name: _StencilWriteMask
-      second: 255
-    - first:
-        name: _ZoomX
-      second: 1
-    - first:
-        name: _ZoomY
-      second: 1
-    m_Colors:
-    - first:
-        name: _Color
-      second: {r: 1, g: 1, b: 1, a: 1}
---- !u!21 &861779997
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 2DxFX/Standard/Offset
-  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-    - first:
-        name: _MainTex
-      second:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - first:
-        name: _Alpha
-      second: 1
-    - first:
-        name: _ColorMask
-      second: 15
-    - first:
-        name: _OffsetX
-      second: 1
-    - first:
-        name: _OffsetY
-      second: 1
-    - first:
-        name: _Stencil
-      second: 0
-    - first:
-        name: _StencilComp
-      second: 8
-    - first:
-        name: _StencilOp
-      second: 0
-    - first:
-        name: _StencilReadMask
-      second: 255
-    - first:
-        name: _StencilWriteMask
-      second: 255
-    - first:
-        name: _ZoomX
-      second: 1
-    - first:
-        name: _ZoomY
-      second: 1
     m_Colors:
     - first:
         name: _Color
@@ -2515,7 +2491,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 1311238600}
+  - {fileID: 1083125484}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -2597,6 +2573,65 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
+--- !u!21 &923344572
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 2DxFX/Standard/Offset
+  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+    - first:
+        name: _MainTex
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - first:
+        name: _Alpha
+      second: 1
+    - first:
+        name: _ColorMask
+      second: 15
+    - first:
+        name: _OffsetX
+      second: 1
+    - first:
+        name: _OffsetY
+      second: 1
+    - first:
+        name: _Stencil
+      second: 0
+    - first:
+        name: _StencilComp
+      second: 8
+    - first:
+        name: _StencilOp
+      second: 0
+    - first:
+        name: _StencilReadMask
+      second: 255
+    - first:
+        name: _StencilWriteMask
+      second: 255
+    - first:
+        name: _ZoomX
+      second: 1
+    - first:
+        name: _ZoomY
+      second: 1
+    m_Colors:
+    - first:
+        name: _Color
+      second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &924169518
 GameObject:
   m_ObjectHideFlags: 0
@@ -2677,7 +2712,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 698800278}
+  - {fileID: 1432553573}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -2697,7 +2732,7 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
---- !u!21 &942650505
+--- !u!21 &944367120
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
@@ -2836,7 +2871,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 1143013237}
+  - {fileID: 1786684957}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -2856,65 +2891,6 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
---- !u!21 &974429389
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 2DxFX/Standard/Offset
-  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-    - first:
-        name: _MainTex
-      second:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - first:
-        name: _Alpha
-      second: 1
-    - first:
-        name: _ColorMask
-      second: 15
-    - first:
-        name: _OffsetX
-      second: 1
-    - first:
-        name: _OffsetY
-      second: 1
-    - first:
-        name: _Stencil
-      second: 0
-    - first:
-        name: _StencilComp
-      second: 8
-    - first:
-        name: _StencilOp
-      second: 0
-    - first:
-        name: _StencilReadMask
-      second: 255
-    - first:
-        name: _StencilWriteMask
-      second: 255
-    - first:
-        name: _ZoomX
-      second: 1
-    - first:
-        name: _ZoomY
-      second: 1
-    m_Colors:
-    - first:
-        name: _Color
-      second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &985500563 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114000014228214546, guid: 801395890f63ca1439e5d96ff6a563db,
@@ -3001,7 +2977,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 1643516609}
+  - {fileID: 1330116471}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -3101,7 +3077,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 808708526}
+  - {fileID: 1794942836}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -3201,7 +3177,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 144602880}
+  - {fileID: 650969644}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -3307,66 +3283,7 @@ LineRenderer:
       serializedVersion: 2
       rgba: 4278190335
   m_UseWorldSpace: 0
---- !u!21 &1056941963
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 2DxFX/Standard/Offset
-  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-    - first:
-        name: _MainTex
-      second:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - first:
-        name: _Alpha
-      second: 1
-    - first:
-        name: _ColorMask
-      second: 15
-    - first:
-        name: _OffsetX
-      second: 1
-    - first:
-        name: _OffsetY
-      second: 1
-    - first:
-        name: _Stencil
-      second: 0
-    - first:
-        name: _StencilComp
-      second: 8
-    - first:
-        name: _StencilOp
-      second: 0
-    - first:
-        name: _StencilReadMask
-      second: 255
-    - first:
-        name: _StencilWriteMask
-      second: 255
-    - first:
-        name: _ZoomX
-      second: 1
-    - first:
-        name: _ZoomY
-      second: 1
-    m_Colors:
-    - first:
-        name: _Color
-      second: {r: 1, g: 1, b: 1, a: 1}
---- !u!21 &1061837705
+--- !u!21 &1077263954
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
@@ -3453,6 +3370,65 @@ Transform:
   m_Children: []
   m_Father: {fileID: 307496550}
   m_RootOrder: 4
+--- !u!21 &1083125484
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 2DxFX/Standard/Offset
+  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+    - first:
+        name: _MainTex
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - first:
+        name: _Alpha
+      second: 1
+    - first:
+        name: _ColorMask
+      second: 15
+    - first:
+        name: _OffsetX
+      second: 1
+    - first:
+        name: _OffsetY
+      second: 1
+    - first:
+        name: _Stencil
+      second: 0
+    - first:
+        name: _StencilComp
+      second: 8
+    - first:
+        name: _StencilOp
+      second: 0
+    - first:
+        name: _StencilReadMask
+      second: 255
+    - first:
+        name: _StencilWriteMask
+      second: 255
+    - first:
+        name: _ZoomX
+      second: 1
+    - first:
+        name: _ZoomY
+      second: 1
+    m_Colors:
+    - first:
+        name: _Color
+      second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1143012461
 GameObject:
   m_ObjectHideFlags: 0
@@ -3549,7 +3525,7 @@ EdgeCollider2D:
   m_Points:
   - {x: -42, y: 0}
   - {x: 42, y: 0}
---- !u!21 &1143013237
+--- !u!21 &1171866783
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
@@ -3665,65 +3641,6 @@ Material:
     - first:
         name: _Color
       second: {r: 1, g: 1, b: 1, a: 1}
---- !u!21 &1208024833
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 2DxFX/Standard/Offset
-  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-    - first:
-        name: _MainTex
-      second:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - first:
-        name: _Alpha
-      second: 1
-    - first:
-        name: _ColorMask
-      second: 15
-    - first:
-        name: _OffsetX
-      second: 1
-    - first:
-        name: _OffsetY
-      second: 1
-    - first:
-        name: _Stencil
-      second: 0
-    - first:
-        name: _StencilComp
-      second: 8
-    - first:
-        name: _StencilOp
-      second: 0
-    - first:
-        name: _StencilReadMask
-      second: 255
-    - first:
-        name: _StencilWriteMask
-      second: 255
-    - first:
-        name: _ZoomX
-      second: 1
-    - first:
-        name: _ZoomY
-      second: 1
-    m_Colors:
-    - first:
-        name: _Color
-      second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1296422705
 GameObject:
   m_ObjectHideFlags: 0
@@ -3804,7 +3721,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 1208024833}
+  - {fileID: 923344572}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -3824,66 +3741,7 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
---- !u!21 &1308075269
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 2DxFX/Standard/Offset
-  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-    - first:
-        name: _MainTex
-      second:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - first:
-        name: _Alpha
-      second: 1
-    - first:
-        name: _ColorMask
-      second: 15
-    - first:
-        name: _OffsetX
-      second: 1
-    - first:
-        name: _OffsetY
-      second: 1
-    - first:
-        name: _Stencil
-      second: 0
-    - first:
-        name: _StencilComp
-      second: 8
-    - first:
-        name: _StencilOp
-      second: 0
-    - first:
-        name: _StencilReadMask
-      second: 255
-    - first:
-        name: _StencilWriteMask
-      second: 255
-    - first:
-        name: _ZoomX
-      second: 1
-    - first:
-        name: _ZoomY
-      second: 1
-    m_Colors:
-    - first:
-        name: _Color
-      second: {r: 1, g: 1, b: 1, a: 1}
---- !u!21 &1311238600
+--- !u!21 &1330116471
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
@@ -4000,7 +3858,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -127.100006, y: 155.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -8.462964}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 3.992591}
   m_Children:
   - {fileID: 2140497506}
   m_Father: {fileID: 2144475584}
@@ -4085,7 +3943,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 861779997}
+  - {fileID: 2040246209}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -4261,7 +4119,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 2023204729}
+  - {fileID: 628072945}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -4281,6 +4139,65 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
+--- !u!21 &1432553573
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 2DxFX/Standard/Offset
+  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+    - first:
+        name: _MainTex
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - first:
+        name: _Alpha
+      second: 1
+    - first:
+        name: _ColorMask
+      second: 15
+    - first:
+        name: _OffsetX
+      second: 1
+    - first:
+        name: _OffsetY
+      second: 1
+    - first:
+        name: _Stencil
+      second: 0
+    - first:
+        name: _StencilComp
+      second: 8
+    - first:
+        name: _StencilOp
+      second: 0
+    - first:
+        name: _StencilReadMask
+      second: 255
+    - first:
+        name: _StencilWriteMask
+      second: 255
+    - first:
+        name: _ZoomX
+      second: 1
+    - first:
+        name: _ZoomY
+      second: 1
+    m_Colors:
+    - first:
+        name: _Color
+      second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1435509049
 GameObject:
   m_ObjectHideFlags: 0
@@ -4343,65 +4260,6 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
---- !u!21 &1439970838
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 2DxFX/Standard/Offset
-  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-    - first:
-        name: _MainTex
-      second:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - first:
-        name: _Alpha
-      second: 1
-    - first:
-        name: _ColorMask
-      second: 15
-    - first:
-        name: _OffsetX
-      second: 1
-    - first:
-        name: _OffsetY
-      second: 1
-    - first:
-        name: _Stencil
-      second: 0
-    - first:
-        name: _StencilComp
-      second: 8
-    - first:
-        name: _StencilOp
-      second: 0
-    - first:
-        name: _StencilReadMask
-      second: 255
-    - first:
-        name: _StencilWriteMask
-      second: 255
-    - first:
-        name: _ZoomX
-      second: 1
-    - first:
-        name: _ZoomY
-      second: 1
-    m_Colors:
-    - first:
-        name: _Color
-      second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1455506675
 GameObject:
   m_ObjectHideFlags: 0
@@ -4482,7 +4340,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 1061837705}
+  - {fileID: 313004782}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -4617,7 +4475,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: 1, w: 0}
   m_LocalPosition: {x: 120.5, y: 430.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 173.88889}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 183.86783}
   m_Children:
   - {fileID: 1435509050}
   m_Father: {fileID: 2144475584}
@@ -4655,56 +4513,6 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
---- !u!21 &1513711834
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 2DxFX/Standard/Pixel
-  m_Shader: {fileID: 4800000, guid: 8b9ca1acc7508564886cf5668bb81198, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-    - first:
-        name: _MainTex
-      second:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - first:
-        name: _Alpha
-      second: 0
-    - first:
-        name: _ColorMask
-      second: 15
-    - first:
-        name: _Offset
-      second: 128
-    - first:
-        name: _Stencil
-      second: 0
-    - first:
-        name: _StencilComp
-      second: 8
-    - first:
-        name: _StencilOp
-      second: 0
-    - first:
-        name: _StencilReadMask
-      second: 255
-    - first:
-        name: _StencilWriteMask
-      second: 255
-    m_Colors:
-    - first:
-        name: _Color
-      second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1606740812
 GameObject:
   m_ObjectHideFlags: 0
@@ -4748,7 +4556,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 1513711834}
+  - {fileID: 223888781}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -4861,65 +4669,6 @@ LineRenderer:
       serializedVersion: 2
       rgba: 4278190335
   m_UseWorldSpace: 0
---- !u!21 &1643516609
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 2DxFX/Standard/Offset
-  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-    - first:
-        name: _MainTex
-      second:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - first:
-        name: _Alpha
-      second: 1
-    - first:
-        name: _ColorMask
-      second: 15
-    - first:
-        name: _OffsetX
-      second: 1
-    - first:
-        name: _OffsetY
-      second: 1
-    - first:
-        name: _Stencil
-      second: 0
-    - first:
-        name: _StencilComp
-      second: 8
-    - first:
-        name: _StencilOp
-      second: 0
-    - first:
-        name: _StencilReadMask
-      second: 255
-    - first:
-        name: _StencilWriteMask
-      second: 255
-    - first:
-        name: _ZoomX
-      second: 1
-    - first:
-        name: _ZoomY
-      second: 1
-    m_Colors:
-    - first:
-        name: _Color
-      second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1653656735
 GameObject:
   m_ObjectHideFlags: 0
@@ -4982,6 +4731,65 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MinValues: {x: -200, y: -200, z: 0}
   MaxValues: {x: 200, y: 200, z: 0}
+--- !u!21 &1666298711
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 2DxFX/Standard/Offset
+  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+    - first:
+        name: _MainTex
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - first:
+        name: _Alpha
+      second: 1
+    - first:
+        name: _ColorMask
+      second: 15
+    - first:
+        name: _OffsetX
+      second: 1
+    - first:
+        name: _OffsetY
+      second: 1
+    - first:
+        name: _Stencil
+      second: 0
+    - first:
+        name: _StencilComp
+      second: 8
+    - first:
+        name: _StencilOp
+      second: 0
+    - first:
+        name: _StencilReadMask
+      second: 255
+    - first:
+        name: _StencilWriteMask
+      second: 255
+    - first:
+        name: _ZoomX
+      second: 1
+    - first:
+        name: _ZoomY
+      second: 1
+    m_Colors:
+    - first:
+        name: _Color
+      second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1705093516
 GameObject:
   m_ObjectHideFlags: 0
@@ -5009,10 +4817,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79e25c89ee9b9d9429e81351a0e831f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GameLength: 1
   RespawnTime: 3
-  TotalSpawns: 0
-  waitScreen: {fileID: 234868514}
 --- !u!4 &1705093518
 Transform:
   m_ObjectHideFlags: 0
@@ -5085,7 +4890,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 2035244286}
+  - {fileID: 51168115}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -5105,6 +4910,183 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
+--- !u!21 &1786684957
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 2DxFX/Standard/Offset
+  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+    - first:
+        name: _MainTex
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - first:
+        name: _Alpha
+      second: 1
+    - first:
+        name: _ColorMask
+      second: 15
+    - first:
+        name: _OffsetX
+      second: 1
+    - first:
+        name: _OffsetY
+      second: 1
+    - first:
+        name: _Stencil
+      second: 0
+    - first:
+        name: _StencilComp
+      second: 8
+    - first:
+        name: _StencilOp
+      second: 0
+    - first:
+        name: _StencilReadMask
+      second: 255
+    - first:
+        name: _StencilWriteMask
+      second: 255
+    - first:
+        name: _ZoomX
+      second: 1
+    - first:
+        name: _ZoomY
+      second: 1
+    m_Colors:
+    - first:
+        name: _Color
+      second: {r: 1, g: 1, b: 1, a: 1}
+--- !u!21 &1794942836
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 2DxFX/Standard/Offset
+  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+    - first:
+        name: _MainTex
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - first:
+        name: _Alpha
+      second: 1
+    - first:
+        name: _ColorMask
+      second: 15
+    - first:
+        name: _OffsetX
+      second: 1
+    - first:
+        name: _OffsetY
+      second: 1
+    - first:
+        name: _Stencil
+      second: 0
+    - first:
+        name: _StencilComp
+      second: 8
+    - first:
+        name: _StencilOp
+      second: 0
+    - first:
+        name: _StencilReadMask
+      second: 255
+    - first:
+        name: _StencilWriteMask
+      second: 255
+    - first:
+        name: _ZoomX
+      second: 1
+    - first:
+        name: _ZoomY
+      second: 1
+    m_Colors:
+    - first:
+        name: _Color
+      second: {r: 1, g: 1, b: 1, a: 1}
+--- !u!21 &1797267213
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 2DxFX/Standard/Offset
+  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+    - first:
+        name: _MainTex
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - first:
+        name: _Alpha
+      second: 1
+    - first:
+        name: _ColorMask
+      second: 15
+    - first:
+        name: _OffsetX
+      second: 1
+    - first:
+        name: _OffsetY
+      second: 1
+    - first:
+        name: _Stencil
+      second: 0
+    - first:
+        name: _StencilComp
+      second: 8
+    - first:
+        name: _StencilOp
+      second: 0
+    - first:
+        name: _StencilReadMask
+      second: 255
+    - first:
+        name: _StencilWriteMask
+      second: 255
+    - first:
+        name: _ZoomX
+      second: 1
+    - first:
+        name: _ZoomY
+      second: 1
+    m_Colors:
+    - first:
+        name: _Color
+      second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1948865795
 GameObject:
   m_ObjectHideFlags: 0
@@ -5115,9 +5097,10 @@ GameObject:
   - 4: {fileID: 1948865796}
   - 212: {fileID: 1948865797}
   - 95: {fileID: 1948865798}
+  - 114: {fileID: 1948865799}
   m_Layer: 0
   m_Name: Big Ass Sky
-  m_TagString: Untagged
+  m_TagString: Animated
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5185,6 +5168,17 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &1948865799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1948865795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a260596609ecf54d83e2e6fd3cf0ef3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1958494472
 GameObject:
   m_ObjectHideFlags: 0
@@ -5265,7 +5259,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 186118625}
+  - {fileID: 368948960}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -5313,7 +5307,35 @@ Transform:
   m_Children: []
   m_Father: {fileID: 307496550}
   m_RootOrder: 5
---- !u!21 &2023204729
+--- !u!1 &2039319789
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 2039319790}
+  m_Layer: 0
+  m_Name: SpawnPoints (4)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2039319790
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2039319789}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 200, y: -206, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 307496550}
+  m_RootOrder: 3
+--- !u!21 &2040246209
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
@@ -5372,14 +5394,14 @@ Material:
     - first:
         name: _Color
       second: {r: 1, g: 1, b: 1, a: 1}
---- !u!21 &2035244286
+--- !u!21 &2130005805
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: 2DxFX/Standard/Pixel
-  m_Shader: {fileID: 4800000, guid: 8b9ca1acc7508564886cf5668bb81198, type: 3}
+  m_Name: 2DxFX/Standard/Offset
+  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_CustomRenderQueue: -1
@@ -5396,13 +5418,16 @@ Material:
     m_Floats:
     - first:
         name: _Alpha
-      second: 0
+      second: 1
     - first:
         name: _ColorMask
       second: 15
     - first:
-        name: _Offset
-      second: 128
+        name: _OffsetX
+      second: 1
+    - first:
+        name: _OffsetY
+      second: 1
     - first:
         name: _Stencil
       second: 0
@@ -5418,38 +5443,16 @@ Material:
     - first:
         name: _StencilWriteMask
       second: 255
+    - first:
+        name: _ZoomX
+      second: 1
+    - first:
+        name: _ZoomY
+      second: 1
     m_Colors:
     - first:
         name: _Color
       second: {r: 1, g: 1, b: 1, a: 1}
---- !u!1 &2039319789
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 2039319790}
-  m_Layer: 0
-  m_Name: SpawnPoints (4)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2039319790
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2039319789}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 200, y: -206, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_Children: []
-  m_Father: {fileID: 307496550}
-  m_RootOrder: 3
 --- !u!1 &2140497505
 GameObject:
   m_ObjectHideFlags: 0

@@ -19,9 +19,11 @@ public class NetID : MonoBehaviour {
     public static int Convert(int netID)
     {
         if (RealIDs.ContainsKey(netID)) {
+            CBUG.Do("ID KEY FOUND! ID: " + netID);
             return RealIDs[netID];
         }
 
+        CBUG.Do("Adding new player ID: " + netID);
         for(int x = 0; x < PhotonNetwork.room.playerCount; x++) {
             if (!RealIDs.ContainsValue(x) && !RealIDs.ContainsKey(netID)) {
                 RealIDs.Add(netID, x);
