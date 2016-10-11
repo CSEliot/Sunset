@@ -137,7 +137,7 @@ public class PlayerController2D : MonoBehaviour
 
         if (_PhotonView.isMine) {
             tag = "PlayerSelf";
-            _PhotonView.RPC("SetID", PhotonTargets.All, PhotonNetwork.player.ID- 1);
+            _PhotonView.RPC("SetID", PhotonTargets.All, NetID.Convert(PhotonNetwork.player.ID));
             GameUI = GameObject.FindGameObjectWithTag("GameHUD").GetComponent<GameHUDController>();
             CamManager.SetTarget(transform);
         }

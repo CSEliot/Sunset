@@ -59,6 +59,7 @@ public class WaitUIController : MonoBehaviour{
 
         PercentReady.text = "" + N.ReadyTotal + "/" + N.GetInRoomTotal;
 
+        roomName.text = N.CurrentRoom.name;
         if (N.GameStarted)
             _ActivateSpectatingMode();
 
@@ -66,7 +67,6 @@ public class WaitUIController : MonoBehaviour{
         unRdyColor = new Color(1f, 1f, 1f, 0.5f);
 
         stageListener = GameObject.FindGameObjectWithTag("StageCamera").GetComponent<AudioListener>();
-        roomName.text = N.CurrentRoom.name;
     }
 	
 	// Update is called once per frame
@@ -138,8 +138,8 @@ public class WaitUIController : MonoBehaviour{
         int playerSlot;
         for (int x = 0; x < PhotonNetwork.room.playerCount; x++)
         {
-            playerSlot = N.GetSlotNum(PhotonNetwork.playerList[x].ID - 1);
-            PlayerSlots[playerSlot].color = N.GetRdyStatus(PhotonNetwork.playerList[x].ID - 1) ? rdyColor : unRdyColor;
+            playerSlot = N.GetSlotNum(NetID.Convert(PhotonNetwork.playerList[x].ID));
+            PlayerSlots[playerSlot].color = N.GetRdyStatus(NetID.Convert(PhotonNetwork.playerList[x].ID)) ? rdyColor : unRdyColor;
         }
     }
 
@@ -150,7 +150,7 @@ public class WaitUIController : MonoBehaviour{
         int charNum;
         for (int x = 0; x < PhotonNetwork.room.playerCount; x++)
         {
-            playerID = PhotonNetwork.playerList[x].ID - 1;
+            playerID = NetID.Convert(PhotonNetwork.playerList[x].ID);
             slotNum = N.GetSlotNum(playerID);
             charNum = N.GetCharNum(playerID);
             PlayerSlots[slotNum].sprite = UIHeads[charNum];

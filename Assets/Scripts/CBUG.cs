@@ -199,5 +199,12 @@ public class CBUG : MonoBehaviour {
     {
         GetRef()._Error(line);
     }
+
+    public static bool DEBUG_ON
+    {
+        get {
+            return GetRef().ALL_DEBUG_TOGGLE;
+        }
+    }
     #endregion
 }
