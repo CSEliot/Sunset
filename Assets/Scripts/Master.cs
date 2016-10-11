@@ -208,6 +208,7 @@ public class Master : MonoBehaviour
                 switchCanvas((int)Menu.map);
                 unloadStage();
                 N.LeaveRoom();
+                NetID.RealIDs.Clear();
                 break;
 		    case Menu.map: 
 			    currentMenu = Menu.main;
