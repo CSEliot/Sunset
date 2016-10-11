@@ -169,13 +169,13 @@ public class PlayerController2D : MonoBehaviour
     void FixedUpdate()
     {
         updateFacingDirection();
+        updateIsGrounded();
         if(!_PhotonView.isMine)
             return;
         if (wasGrounded && isGrounded)
         {
             canDownJump = true;
         }
-        updateIsGrounded();
         updateJumpingPhysics();
         updateDownJumpingPhysics();
         updateMovementPhysics();
@@ -351,9 +351,11 @@ public class PlayerController2D : MonoBehaviour
         {
             //CBUG.Log("Grounded on: " + (hit.collider.name));
             jumpsRemaining = TotalJumpsAllowed;
+            //transform.SetParent(hit.collider.transform);
         }
-        else if (isGrounded)
+        else if (!isGrounded)
         {
+            //transform.SetParent(null);
             //CBUG.Log("Grounded on: " + (hit.collider.name));
         }
         else

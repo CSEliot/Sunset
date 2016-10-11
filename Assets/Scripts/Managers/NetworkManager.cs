@@ -528,7 +528,7 @@ public class NetworkManager : Photon.MonoBehaviour{
     public void LeaveRoom()
     {
         CBUG.Log("Leaving Room.");
-        unassignPlayerTracking(PhotonNetwork.player);
+        //unassignPlayerTracking(PhotonNetwork.player);
         PhotonNetwork.LeaveRoom();
     }
 
@@ -685,6 +685,7 @@ public class NetworkManager : Photon.MonoBehaviour{
         ID_to_CharNum.Remove(playerID);
         ID_to_IsRdy.Remove(playerID);
         ID_to_SlotNum.Remove(playerID);
+        NetID.RealIDs.Remove(player.ID);
     }
 
     private void clearLocalTracking( )
@@ -692,6 +693,7 @@ public class NetworkManager : Photon.MonoBehaviour{
         ID_to_CharNum.Clear();
         ID_to_IsRdy.Clear();
         ID_to_SlotNum.Clear();
+        NetID.RealIDs.Clear();
     }
 
     /// <summary>
@@ -731,6 +733,17 @@ public class NetworkManager : Photon.MonoBehaviour{
             //Does the following:
             // - Spawns local player over network.
         }
+    }
+
+    public void NewGame()
+    {
+        ExitGames.Client.Photon.Hashtable tempRoomTable = PhotonNetwork.room.customProperties;
+        tempRoomTable["GameStarted"] = false;
+        PhotonNetwork.room.SetCustomProperties(tempRoomTable);
+        startTheMatch = false;
+        gameStarted = false;
+        startTimer = CountdownLength;
+        ResetReadyStatus();
     }
 
 }

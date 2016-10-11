@@ -73,7 +73,7 @@ public class PhotonTransformView : MonoBehaviour, IPunObservable
             return;
         }
 
-        transform.localPosition = m_PositionControl.UpdatePosition( transform.localPosition );
+        transform.position = m_PositionControl.UpdatePosition( transform.position);
     }
 
     void UpdateRotation()
@@ -111,7 +111,7 @@ public class PhotonTransformView : MonoBehaviour, IPunObservable
 
     public void OnPhotonSerializeView( PhotonStream stream, PhotonMessageInfo info )
     {
-        m_PositionControl.OnPhotonSerializeView( transform.localPosition, stream, info );
+        m_PositionControl.OnPhotonSerializeView( transform.position, stream, info );
         m_RotationControl.OnPhotonSerializeView( transform.localRotation, stream, info );
         m_ScaleControl.OnPhotonSerializeView( transform.localScale, stream, info );
 

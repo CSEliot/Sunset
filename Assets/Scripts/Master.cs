@@ -208,7 +208,6 @@ public class Master : MonoBehaviour
                 switchCanvas((int)Menu.map);
                 unloadStage();
                 N.LeaveRoom();
-                NetID.RealIDs.Clear();
                 break;
 		    case Menu.map: 
 			    currentMenu = Menu.main;
@@ -350,6 +349,7 @@ public class Master : MonoBehaviour
     private void loadStage()
     {
         SceneManager.LoadScene((int)currentMap, LoadSceneMode.Additive);
+        SceneManager.SetActiveScene(SceneManager.GetSceneAt(1));
     }
 
     private void unloadStage()
@@ -402,6 +402,13 @@ public class Master : MonoBehaviour
     {
        CBUG.Log("Game Starting with " + roomSize + " players.");
         escapeDisabled = false;
+        escapeHardened = true;
+    }
+
+    public void NewGame()
+    {
+        escapeHardened = false;
+        GoBack();
     }
 
     public void PlaySFX(int num)

@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour {
             endGame();
         }
 
-        if (CBUG.DEBUG_ON && ((int)(Time.time))%10 == 0) {
+        if (CBUG.DEBUG_ON && ((int)(Time.time))%20 == 0) {
             CBUG.Do("Time Remaining: " + (int)(startTime + gameLength - Time.time) );
         }
 

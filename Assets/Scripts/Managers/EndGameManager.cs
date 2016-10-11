@@ -50,10 +50,12 @@ public class EndGameManager : MonoBehaviour {
         int totalPlayers = KillsMatrix.GetLength(0);
         int mostKills = 0;
         int tempKills = 0;
-        int bestKiller = 0;
-        int mostLives = 0;
-        int tempLives = 0;
-        int bestSurvivor = 0;
+        int bestKiller = -1;
+        bool manyBestKiller = false;
+        int leastDeaths = 1000;
+        int tempDeaths = 0;
+        int bestSurvivor = -1;
+        bool manyBestSurvivor = false;
 
         CBUG.Do("X max: " + totalPlayers);
         for(int x = 0; x < totalPlayers; x++) {
@@ -62,34 +64,73 @@ public class EndGameManager : MonoBehaviour {
                 CBUG.Do("" + x + " Killed " + y  + "|" + KillsMatrix[x, y]);
                 tempKills += KillsMatrix[x,y];
             }
+            if(tempKills == leastDeaths) {
+                manyBestKiller = true;
+            }
             if (tempKills > mostKills) {
                 mostKills = tempKills;
                 bestKiller = x;
+                manyBestKiller = false;
             }
         }
 
         for (int y = 0; y < totalPlayers; y++) {
             for (int x = 0; x < totalPlayers; x++) {
-                tempLives += KillsMatrix[x, y];
+                tempDeaths += KillsMatrix[x, y];
             }
-            if (tempLives > mostLives) {
-                mostLives = tempLives;
+            if(tempDeaths == leastDeaths) {
+                manyBestSurvivor = true;
+            }
+            if (tempDeaths < leastDeaths) {
+                leastDeaths = tempDeaths;
                 bestSurvivor = y;
+                manyBestSurvivor = false;
             }
         }
         CBUG.Do("Player " + bestKiller + " Won Most Kills at: " + mostKills);
-        CBUG.Do("Player " + bestSurvivor + "Survived the Longest at: " + mostLives);
+        CBUG.Do("Player " + bestSurvivor + "Survived the Longest at: " + leastDeaths);
+        
+        if (manyBestSurvivor) {
+            if (manyBestKiller) {
+                GameHUDController.Won();
+            } else if (NetID.Convert(PhotonNetwork.player.ID) == bestKiller) {
+                GameHUDController.Won();
+            } else {
+                GameHUDController.Lost();
+            }
+        } else if (NetID.Convert(PhotonNetwork.player.ID) == bestSurvivor) {
+            CBUG.Do("I WIN! netID: " + PhotonNetwork.player.ID + " realID: " + NetID.Convert(PhotonNetwork.player.ID));
+            GameHUDController.Won();
+        } else {
+            GameHUDController.Lost();
+        }
         StartCoroutine(slowTime());
     }
 
     private IEnumerator slowTime()
     {
-
+        yield return new WaitForSeconds(0.5f);
         Time.timeScale = 0.5f;
         Time.fixedDeltaTime = 1f / 30f;
         yield return new WaitForSeconds(2f);
         Time.timeScale = 1f;
         Time.fixedDeltaTime = 1f / 60f;
+        leaveGame();
+    }
+
+    private void leaveGame()
+    {
+        GameObject.FindGameObjectWithTag("Networking").GetComponent<NetworkManager>().NewGame();
+        GameObject.FindGameObjectWithTag("Master").GetComponent<Master>().NewGame();
+        SceneManager.UnloadScene(GameObject.FindGameObjectWithTag("Master").GetComponent<Master>().CurrentMap);
+        StartCoroutine(reload());
+    }
+
+    private IEnumerator reload()
+    {
+        yield return new WaitForSeconds(0.1f);
+        SceneManager.LoadScene(GameObject.FindGameObjectWithTag("Master").GetComponent<Master>().CurrentMap, LoadSceneMode.Additive);
+        SceneManager.SetActiveScene(SceneManager.GetSceneAt(1));
     }
     #endregion
 }
