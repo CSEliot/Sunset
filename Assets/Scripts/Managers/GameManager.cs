@@ -9,9 +9,10 @@ using System.Collections;
 /// </summary>
 public class GameManager : MonoBehaviour {
 
+    private bool gameStarted;
     private float startTime;
-    public float GameLength; // In Seconds
     public float RespawnTime;
+    private float gameLength;
     private WaitForSeconds respawnWait;
     private int[] playerLives;
     private NetworkManager N;
@@ -20,7 +21,7 @@ public class GameManager : MonoBehaviour {
     private int startingLives;
     private int totalGhosts;
     public static Dictionary<int, GameObject> Players;
-    public static int[,] KillsMatrix; //x -> y // X killed Y
+    public int[,] killsMatrix; //x -> y // X killed Y
     
     private Transform[] SpawnPositions;
 
@@ -35,7 +36,9 @@ public class GameManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        gameStarted = false;
         startingLives = 2;
+        gameLength = 3f*60f; //Seconds
         respawnWait = new WaitForSeconds(RespawnTime);
         Players = new Dictionary<int, GameObject>();
 	    NetworkManager.SetGameStateMan(out N, this);
@@ -43,11 +46,18 @@ public class GameManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+
+        if (!gameStarted)
+            return;
+
         if(startingPlayers - 1 == totalGhosts || 
-            Time.time > startTime + GameLength) {
+            Time.time > startTime + gameLength) {
             //END GAME SEQUENCE
-            CBUG.Do("GAME ENDS BRUH ");
+            endGame();
+        }
+
+        if (CBUG.DEBUG_ON && ((int)(Time.time))%10 == 0) {
+            CBUG.Do("Time Remaining: " + (int)(startTime + gameLength - Time.time) );
         }
 
 	}
@@ -89,11 +99,19 @@ public class GameManager : MonoBehaviour {
     #region Helper Functions
     private void _GameStart(int myID, string charName)
     {
+        gameStarted = true;
+        SettingsManager.SetGameInfo(startingLives, gameLength);
+        startTime = Time.time;
 
         startingPlayers = N.ReadyTotal;
+        gameLength = SettingsManager.GameLength;
 
-        KillsMatrix = new int[N.ReadyTotal, N.ReadyTotal];
-        SettingsManager.SetGameInfo(startingLives);
+        killsMatrix = new int[N.ReadyTotal, N.ReadyTotal];
+        for(int x = 0; x < N.ReadyTotal; x++) {
+            for(int y = 0; y < N.ReadyTotal; y++) {
+                killsMatrix[x, y] = 0;
+            }
+        }
 
         SpawnPositions = new Transform[N.ReadyTotal];
         for (int x = 0; x < N.ReadyTotal; x++) {
@@ -113,6 +131,15 @@ public class GameManager : MonoBehaviour {
         GameHUDController.SetLives(SettingsManager.StartLives);
     }
 
+    private void endGame()
+    {
+        CBUG.Do("GAME ENDS BRUH ");
+        gameStarted = false;
+
+        EndGameManager.LaunchEndGame(killsMatrix);
+        CBUG.Do("IT OVER");
+    }
+
     private void _RecordDeath(int killer, int killed)
     {
         /*
@@ -122,7 +149,7 @@ public class GameManager : MonoBehaviour {
 
         //Note: Killer=0 means player suicided.
         if(killer != -1) {
-            KillsMatrix[killer, killed]++;
+            killsMatrix[killer, killed]++;
             CBUG.Do("Player " + (killer+1) + 
                     " knocked out Player " + (killed+1));
         } else {
@@ -142,6 +169,7 @@ public class GameManager : MonoBehaviour {
         if (playerLives[deadPlayerNum] == -1) {
             totalGhosts++;
             Players[deadPlayerNum].GetComponent<PlayerController2D>().Ghost();
+            //ONLY OUR PLAYER SHOPULD SPECTATE MODE
             WaitUIController.ActivateSpectatingMode();
         } else {
             //Player spawn position is controlled by Game Manager.

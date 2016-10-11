@@ -4,6 +4,7 @@ using System.Collections;
 public class SettingsManager : MonoBehaviour {
 
     private static int startLives;
+    private static float gameLength;
     private static bool infoUpdated;
 
     // Use this for initialization
@@ -22,6 +23,12 @@ public class SettingsManager : MonoBehaviour {
         }
     }
 
+    public static float GameLength{
+        get {
+            return gameLength;
+        }
+    }
+
     /// <summary>
     /// Trigger. Returns to false after returning true.
     /// </summary>
@@ -35,8 +42,9 @@ public class SettingsManager : MonoBehaviour {
         }
     }
 
-    public static void SetGameInfo(int StartingLives)
+    public static void SetGameInfo(int StartingLives, float GameLength)
     {
         startLives = StartingLives;
+        gameLength = GameLength;
     }
 }
