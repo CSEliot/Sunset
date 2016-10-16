@@ -432,6 +432,10 @@ public class NetworkManager : Photon.MonoBehaviour{
         {
             return readyTotal;
         }
+
+        set {
+            readyTotal = value;
+        }
     }
 
     public bool StartTheMatch

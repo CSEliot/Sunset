@@ -5,7 +5,7 @@ using UnityEditor;
 public class SelectByTag : MonoBehaviour
 {
 
-    private static string SelectedTag = "GameController";
+    private static string SelectedTag = "MobileController";
 
     [MenuItem("Helpers/Select By Tag")]
     public static void SelectObjectsWithTag()

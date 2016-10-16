@@ -5,30 +5,23 @@ public class RandomlyPitchAudio : MonoBehaviour {
 
     private AudioSource myAudioSource;
     float originalPitch;
-    private float varyPitchBy;
+    private float pitchMin;
+    private float pitchMax;
 
 	// Use this for initialization
-	void Start () {
-        varyPitchBy = 0.6f;
-        myAudioSource = GetComponent<AudioSource>();
-        originalPitch = myAudioSource.pitch;
-
-        myAudioSource.volume = Master.GetSFXVolume();
+	void Awake () {
+        pitchMin = 0.8f;
+        pitchMax = 1.2f;
+        myAudioSource = GetComponentInParent<AudioSource>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	
 	}
-
-    void Awake()
-    {
-    }
-
+    
     void OnEnable()
     {
-        Start();
-        myAudioSource.pitch = Random.Range(-varyPitchBy, varyPitchBy) + originalPitch;
-        myAudioSource.Play();
+        myAudioSource.pitch = Random.Range(pitchMin, pitchMax);
     }
 }

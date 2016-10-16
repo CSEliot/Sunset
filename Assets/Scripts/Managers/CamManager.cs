@@ -26,6 +26,7 @@ public class CamManager : MonoBehaviour
     private Vector3 m_LookAheadPos;
 
     private bool target_IsNew;
+    private string targetName;
 
     private float x_offset;
     private float y_offset;
@@ -95,6 +96,17 @@ public class CamManager : MonoBehaviour
         m_OffsetZ = (transform.position - target.position).z;
         transform.parent = null;
         target_IsNew = true;
+        targetName = newTarget.gameObject.name;
+    }
+
+    public static Transform GetTarget()
+    {
+        return getRef()._GetTarget();
+    }
+
+    public Transform _GetTarget()
+    {
+        return target;
     }
     /// <summary>
     /// Amount of screenshake is variable on character distance to camera.

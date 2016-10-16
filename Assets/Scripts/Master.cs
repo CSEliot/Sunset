@@ -113,13 +113,11 @@ public class Master : MonoBehaviour
     private bool escapeDisabled;
     private int escapePresses;
 
+    public bool IsOfflineMode;
+
     void Awake()
     {
-
-        N = GameObject.FindGameObjectWithTag("Networking").GetComponent<NetworkManager>();
-        
         version = Application.version;
-        VersionUI.text = "BETA " + Application.version;
         
 		currentMenu = Menu.main;
         currentMap = Map.pillar;
@@ -147,7 +145,11 @@ public class Master : MonoBehaviour
         
         stageNames = new string[totalUniqueStages] { "Pillar", "Void", "Lair" };
 
+        if (IsOfflineMode)
+            return;
+        VersionUI.text = "BETA " + Application.version;
         connectingWaitTime = 7; //Seconds
+        N = GameObject.FindGameObjectWithTag("Networking").GetComponent<NetworkManager>();
     }
 
     // Use this for initialization
@@ -159,6 +161,8 @@ public class Master : MonoBehaviour
 
         escapeHardened = false;
         escapeDisabled = false;
+        if (IsOfflineMode)
+            return;
         CBUG.Print(VersionUI.text);
     }
 
