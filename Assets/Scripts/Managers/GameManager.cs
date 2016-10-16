@@ -27,6 +27,9 @@ public class GameManager : MonoBehaviour {
 
     //public int TotalSpawns;
 
+    public bool IsLocalGame;
+    public int LocalPlayers;
+
     //private enum GameState
     //{
     //    Waiting,
@@ -41,13 +44,23 @@ public class GameManager : MonoBehaviour {
         gameLength = 3f*60f; //Seconds
         respawnWait = new WaitForSeconds(RespawnTime);
         Players = new Dictionary<int, GameObject>();
+        if (IsLocalGame) {
+            startingLives = int.MaxValue;
+            N = new NetworkManager();
+            N.ReadyTotal = LocalPlayers;
+            startLocal();
+            foreach(GameObject O in GameObject.FindGameObjectsWithTag("PlayerSelf")) {
+                Players.Add(O.GetComponent<PlayerController2DOffline>().ID, O);
+            }
+            return;
+        }
 	    NetworkManager.SetGameStateMan(out N, this);
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-        if (!gameStarted)
+        if (!gameStarted || IsLocalGame)
             return;
 
         if(startingPlayers - 1 == totalGhosts || 
@@ -130,6 +143,33 @@ public class GameManager : MonoBehaviour {
         }
         GameHUDController.SetLives(SettingsManager.StartLives);
     }
+    
+    private void startLocal()
+    { 
+        gameStarted = true;
+        SettingsManager.SetGameInfo(startingLives, gameLength);
+        startTime = Time.time;
+
+        startingPlayers = N.ReadyTotal;
+        gameLength = SettingsManager.GameLength;
+
+        killsMatrix = new int[N.ReadyTotal, N.ReadyTotal];
+        for (int x = 0; x < N.ReadyTotal; x++) {
+            for (int y = 0; y < N.ReadyTotal; y++) {
+                killsMatrix[x, y] = 0;
+            }
+        }
+
+        SpawnPositions = new Transform[N.ReadyTotal];
+        for (int x = 0; x < N.ReadyTotal; x++) {
+            SpawnPositions[x] = GameObject.FindGameObjectWithTag("SpawnPoints").transform.GetChild(x);
+        }
+
+        playerLives = new int[N.ReadyTotal];
+        for (int x = 0; x < N.ReadyTotal; x++) {
+            playerLives[x] = SettingsManager.StartLives;
+        }
+    }
 
     private void endGame()
     {
@@ -160,22 +200,25 @@ public class GameManager : MonoBehaviour {
 
     private void _HandleDeath(int killed)
     {
-        StartCoroutine(doRespawnOrGhost(killed));
+        if(IsLocalGame)
+            StartCoroutine(doRespawnOrGhost<PlayerController2DOffline>(killed));
+        else
+            StartCoroutine(doRespawnOrGhost<PlayerController2DOnline>(killed));
     }
 
-    private IEnumerator doRespawnOrGhost(int deadPlayerNum)
+    private IEnumerator doRespawnOrGhost<PlayerController>(int deadPlayerNum) where PlayerController : PlayerController2D
     {
         yield return respawnWait;
         if (playerLives[deadPlayerNum] == -1) {
             totalGhosts++;
-            Players[deadPlayerNum].GetComponent<PlayerController2D>().Ghost();
+            Players[deadPlayerNum].GetComponent<PlayerController>().Ghost();
             //ONLY OUR PLAYER SHOPULD SPECTATE MODE
             WaitUIController.ActivateSpectatingMode();
         } else {
             //Player spawn position is controlled by Game Manager.
             //But we only wanna reposition OUR player's position.
             //BUT ALSO
-            Players[deadPlayerNum].GetComponent<PlayerController2D>().Respawn(
+            Players[deadPlayerNum].GetComponent<PlayerController>().Respawn(
                 SpawnPositions[Random.Range(0, SpawnPositions.Length - 1)].position
             );
         }

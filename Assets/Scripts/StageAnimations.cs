@@ -5,12 +5,16 @@ using System.Collections;
 public class StageAnimations : MonoBehaviour {
 
     private Animator localAnim;
+    public bool IsTest;
+
 
 	// Use this for initialization
 	void Start () {
         localAnim = GetComponent<Animator>();
         localAnim.enabled = false;
         gameObject.tag = "StageAnim";
+        if (IsTest)
+            ActivateLocal();
 	}
 	
 	// Update is called once per frame

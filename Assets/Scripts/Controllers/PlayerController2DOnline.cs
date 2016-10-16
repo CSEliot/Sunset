@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class PlayerController2D : MonoBehaviour 
+public class PlayerController2DOnline : PlayerController2D 
 {
     public float Defense;
     public float Speed;
@@ -83,8 +83,6 @@ public class PlayerController2D : MonoBehaviour
     private float lastHitTime;
     private float lastHitForgetLength;
 
-    private GameHUDController GameUI;
-
     public AudioClip DeathNoise;
     private AudioSource myAudioSrc;
 
@@ -138,7 +136,6 @@ public class PlayerController2D : MonoBehaviour
         if (_PhotonView.isMine) {
             tag = "PlayerSelf";
             _PhotonView.RPC("SetID", PhotonTargets.All, NetID.Convert(PhotonNetwork.player.ID));
-            GameUI = GameObject.FindGameObjectWithTag("GameHUD").GetComponent<GameHUDController>();
             CamManager.SetTarget(transform);
         }
     }
@@ -298,7 +295,7 @@ public class PlayerController2D : MonoBehaviour
         {
             jumpForceTemp = JumpForce;
             jumped = false;
-            CBUG.Log("Jumped is false!");
+            //CBUG.Log("Jumped is false!");
         } 
         velocity.y += jumpForceTemp;
         jumpForceTemp = Mathf.Lerp(jumpForceTemp, 0f, JumpDecel);
@@ -501,7 +498,7 @@ public class PlayerController2D : MonoBehaviour
     /// <summary>
     /// Nothing to do. You stay invisible and immobile
     /// </summary>
-    public void Ghost()
+    public override void Ghost()
     {
         transform.tag = "PlayerGhost";
     }
@@ -510,7 +507,7 @@ public class PlayerController2D : MonoBehaviour
     /// Respawning. Only Graphical UNLESS is our Player. Then we reposition ourselves.
     /// </summary>
     /// <param name="spawnPoint"></param>
-    public void Respawn(Vector3 spawnPoint)
+    public override void Respawn(Vector3 spawnPoint)
     {
         if (_PhotonView.isMine) {
             transform.position = spawnPoint;
@@ -550,7 +547,7 @@ public class PlayerController2D : MonoBehaviour
         else if (col.name.Contains("Punch"))
         {
             //Get name of puncher
-            lastHitBy = col.GetComponentInParent<PlayerController2D>().ID;
+            lastHitBy = col.GetComponentInParent<PlayerController2DOnline>().ID;
             lastHitTime = Time.time;
 
             if (invincibilityCount > 0)

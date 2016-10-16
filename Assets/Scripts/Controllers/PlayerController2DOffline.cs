@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-public class PlayerController2DOffline : MonoBehaviour 
+public class PlayerController2DOffline : PlayerController2D
 {
     public float Defense;
     public float Speed;
@@ -22,11 +23,13 @@ public class PlayerController2DOffline : MonoBehaviour
 
     public LayerMask mask = -1;
 
-    Rigidbody2D m_Body;
-    private MobileController Input_M;
+    public int ID;
 
-    private bool m_IsGrounded;
-    private bool m_wasGrounded;
+    private Rigidbody2D _Rigibody2D;
+    private MobileController _MobileInput;
+
+    private bool isGrounded;
+    private bool wasGrounded;
     private int jumpsRemaining;
     private bool jumped;
     private bool canDownJump;
@@ -43,7 +46,7 @@ public class PlayerController2DOffline : MonoBehaviour
 
     private Vector2 position;
     private Vector2 velocity;
-    
+
     public int jumpLag;
     private int totalJumpFrames;
 
@@ -69,42 +72,33 @@ public class PlayerController2DOffline : MonoBehaviour
     private float punchForceForward_UpTemp;
     private float punchForceDownTemp;
     private Dictionary<string, float> StrengthsList;
-	private bool punchForceApplied;
+    private bool punchForceApplied;
     public float PunchDisablePerc;
-
-    //private bool PunchUp;
-    //private bool PunchLeft;
-    //private bool PunchRight;
-    //private bool PunchDown;
-
-    private bool cameraFollowAssigned;
-    private bool battleUIAssigned;
-    private CamManager camShaker;
 
     private float damage;
     private bool isDead;
 
-    private GameHUDController GameUI;
-
-    private Transform[] SpawnPoints;
-
-    private bool playersSpawned;
+    private int lastHitBy;
+    private float lastHitTime;
+    private float lastHitForgetLength;
     
-    private bool readyGUIFound;
-
     public AudioClip DeathNoise;
+    public AudioClip PunchNoise;
     private AudioSource myAudioSrc;
 
     private bool controlsPaused;
+    private float spawnPause;
+    private WaitForSeconds spawnPauseWait;
 
     private Animator anim;
 
     public float BoxPunch;
 
-    public bool IsDummy;
-    public int DummySpawn;
+    public Vector2 LeftRaytraceOffset;
+    public Vector2 RightRaytraceOffset;
 
-    void Awake() 
+
+    void Awake()
     {
         anim = GetComponentInChildren<Animator>();
         moveRight = 0;
@@ -112,27 +106,21 @@ public class PlayerController2DOffline : MonoBehaviour
         controlsPaused = false;
         myAudioSrc = GetComponent<AudioSource>();
         myAudioSrc.clip = DeathNoise;
-        readyGUIFound = false;
-        playersSpawned = false;
         punching = false;
-        camShaker = GameObject.FindGameObjectWithTag("StageCamera")
-            .GetComponent<CamManager>();
-        
+
         isDead = false;
-        battleUIAssigned = false;
-        SpawnPoints = GameObject.FindGameObjectWithTag
-            ("SpawnPoints").GetComponent<SpawnOfflineTest>().SpawnList;
         StrengthsList = GameObject.FindGameObjectWithTag("Master").
             GetComponent<Master>().GetStrengthList();
 
-        CBUG.Log("Str List: " + StrengthsList.ToStringFull());
+
+        CBUG.Log("" + (StrengthsList == null ? "True" : "False"));
+
         jumpForceTemp = 0f;
         SpeedTemp = 0f;
-        cameraFollowAssigned = false;
         attackDisableDelay = new WaitForSeconds(AttackLife);
         facingRight = true;
         position = new Vector2();
-        m_Body = GetComponent<Rigidbody2D>();
+        _Rigibody2D = GetComponent<Rigidbody2D>();
         jumpsRemaining = TotalJumpsAllowed;
 
         AttackObjs = new GameObject[3];
@@ -140,61 +128,46 @@ public class PlayerController2DOffline : MonoBehaviour
         AttackObjs[1] = transform.GetChild(1).gameObject;
         AttackObjs[2] = transform.GetChild(2).gameObject;
 
-        Input_M = GameObject.FindGameObjectWithTag("MobileController").GetComponent<MobileController>();
+        _MobileInput = GameObject.FindGameObjectWithTag("MobileController").GetComponent<MobileController>();
+
+        spawnPause = 0.5f;
+        spawnPauseWait = new WaitForSeconds(spawnPause);
+
+        lastHitBy = -1;
+        lastHitTime = Time.time;
+        lastHitForgetLength = 5;//Seconds
     }
 
-    [PunRPC]
-    void AssignPlayerTag(int ID)
+
+    void Update()
     {
-        transform.GetChild(0).tag = "" + ID;
-    }
+        UpdateHurt();
+        if (CamManager.GetTarget().gameObject.name != gameObject.name)
+            return;
 
-    void Update() 
-    {
-        //OFFLINE MODE <<FOR NOW>> ASSUMES SINGLEPLAYER ONLY
-
-        if (!readyGUIFound)
-        {
-            readyGUIFound = true;
-        }
-        if (!cameraFollowAssigned)
-            AssignCameraFollow(transform);
-        //if (!battleUIAssigned){
-        //    BattleUI = GameObject.FindGameObjectWithTag("BattleUI")
-        //        .GetComponent<LifeMaster>();
-        //    battleUIAssigned = true;
-        //}
-        
-
+        //CBUG.Log("OOOH I AM" + name);
         //Jump Detection Only, no physics handling.
-        if (controlsPaused)
-        {
+        if (controlsPaused) {
             moveLeft = 0;
             moveRight = 0;
             return;
         }
 
         updateSpecials();
-        if (!IsDummy)
-        {
-            updateJumping();
-            updateDownJumping();    
-        }
+        updateJumping();
+        updateDownJumping();
         updateAttacks();
-        if(!IsDummy)
-            updateMovement();
-        UpdateHurt();
+        updateMovement();
     }
 
     void FixedUpdate()
     {
         updateFacingDirection();
+        updateIsGrounded();
 
-        if (m_wasGrounded && m_IsGrounded)
-        {
+        if (wasGrounded && isGrounded) {
             canDownJump = true;
         }
-        updateIsGrounded();
         updateJumpingPhysics();
         updateDownJumpingPhysics();
         updateMovementPhysics();
@@ -205,63 +178,52 @@ public class PlayerController2DOffline : MonoBehaviour
         ////}
 
         velocity += Vector2.down * GravityForce;
-        if(!isDead)
-            m_Body.velocity = velocity;
+        if (!isDead)
+            _Rigibody2D.velocity = velocity;
         velocity = Vector3.zero;
     }
 
     void LateUpdate()
     {
+        //Only recent hits count
+        if (Time.time - lastHitTime > lastHitForgetLength) {
+            lastHitBy = -1;
+            lastHitTime = Time.time;
+        }
     }
 
     private void UpdateHurt()
     {
-        if(invincibilityCount>=0)
+        if (invincibilityCount >= 0)
             invincibilityCount--;
     }
 
-    IEnumerator WinWait()
-    {
-        yield return new WaitForSeconds(2f);
-    }
-
-    IEnumerator LoseWait()
-    {
-        yield return new WaitForSeconds(1.9f);
-    }
-
-    //private void 
-
     private void updateSpecials()
     {
-        if (Input.GetButtonDown("Special") && invincibilityCount < 0)
-        {
-            PauseMvmnt();
-        }
+        //if (Input.GetButtonDown("Special") && invincibilityCount < 0) {
+        //    _PhotonView.RPC("SpecialActivate", PhotonTargets.All);
+        //    PauseMvmnt();
+        //}
     }
 
     private void updateFacingDirection()
     {
-        if( !facingRight && m_Body.velocity.x > 0.2f )
-        {
+        if (!facingRight && _Rigibody2D.velocity.x > 0.2f) {
             facingRight = true;
-            transform.localScale = new Vector3( 1, 1, 1 );
-        }
-        else if( facingRight && m_Body.velocity.x < -0.2f )
-        {
+            transform.localScale = new Vector3(1, 1, 1);
+        } else if (facingRight && _Rigibody2D.velocity.x < -0.2f) {
             facingRight = false;
-            transform.localScale = new Vector3( -1, 1, 1 );
+            transform.localScale = new Vector3(-1, 1, 1);
         }
     }
 
     private void updateJumping()
     {
         if ((Input.GetButtonDown("Jump") == true
-            || Input_M.GetButtonDown("Jump"))
-            && jumpsRemaining > 0 && totalJumpFrames < 0)
-        {
+            || _MobileInput.GetButtonDown("Jump"))
+            && jumpsRemaining > 0 && totalJumpFrames < 0) {
             jumped = true;
-            CBUG.Log("Jumped is true!");
+            //CBUG.Log("Jumped is true!");
             jumpsRemaining -= 1;
             totalJumpFrames = jumpLag;
         }
@@ -271,9 +233,8 @@ public class PlayerController2DOffline : MonoBehaviour
     private void updateDownJumping()
     {
         if ((Input.GetButtonDown("DownJump") == true
-            || Input_M.GetButtonDown("DownJump"))
-            && canDownJump)
-        {
+            || _MobileInput.GetButtonDown("DownJump"))
+            && canDownJump) {
             downJumped = true;
             canDownJump = false;
         }
@@ -283,29 +244,24 @@ public class PlayerController2DOffline : MonoBehaviour
     {
         //tempAxis left n right, keyboar axis left n right, or no input
         tempAxisKey = Input.GetAxis("MoveHorizontal");
-        tempAxisTouch = Input_M.GetAxis("MoveHorizontal");
-        if ( tempAxisKey > 0 || tempAxisTouch > 0)
-        {
+        tempAxisTouch = _MobileInput.GetAxis("MoveHorizontal");
+        if (tempAxisKey > 0 || tempAxisTouch > 0) {
+            //CBUG.Log("Move axis: " + tempAxisTouch);
             moveLeft = 0;
             moveRight = tempAxisTouch > tempAxisKey ? tempAxisTouch : tempAxisKey;
-        }
-        else if ( tempAxisKey < 0 || tempAxisTouch < 0)
-        {
+        } else if (tempAxisKey < 0 || tempAxisTouch < 0) {
             moveLeft = tempAxisTouch < tempAxisKey ? tempAxisTouch : tempAxisKey;
             moveRight = 0;
-        }
-        else
-        {
+        } else {
             moveLeft = 0;
-            moveRight = 0; 
+            moveRight = 0;
         }
     }
 
     private void updateDownJumpingPhysics()
     {
-        if (downJumped)
-        {
-            CBUG.Log("DownJumped");
+        if (downJumped) {
+            //CBUG.Log("DownJumped");
             jumpForceTemp = DownJumpForce;
             downJumped = false;
         }
@@ -315,12 +271,11 @@ public class PlayerController2DOffline : MonoBehaviour
 
     private void updateJumpingPhysics()
     {
-        if (jumped)
-        {
+        if (jumped) {
             jumpForceTemp = JumpForce;
             jumped = false;
-            CBUG.Log("Jumped is false!");
-        } 
+            //CBUG.Log("Jumped is false!");
+        }
         velocity.y += jumpForceTemp;
         jumpForceTemp = Mathf.Lerp(jumpForceTemp, 0f, JumpDecel);
     }
@@ -331,54 +286,63 @@ public class PlayerController2DOffline : MonoBehaviour
         //Normally we'd have any Input Handling get called from Update,
         //But dropped inputs aren't a problem with 'getaxis' since it's
         //Continuous and not a single frame like GetButtonDown
-        if(moveRight != 0){
-            SpeedTemp = Mathf.Lerp(SpeedTemp, Speed*moveRight, SpeedAccel);
-        }
-        else if (moveLeft != 0)
-        {
-            SpeedTemp = Mathf.Lerp(SpeedTemp, Speed*moveLeft, SpeedAccel);
-        }
-        else if(m_IsGrounded)
-        {
+        if (moveRight != 0) {
+            SpeedTemp = Mathf.Lerp(SpeedTemp, Speed * moveRight, SpeedAccel);
+        } else if (moveLeft != 0) {
+            SpeedTemp = Mathf.Lerp(SpeedTemp, Speed * moveLeft, SpeedAccel);
+        } else if (isGrounded) {
             SpeedTemp = Mathf.Lerp(SpeedTemp, 0f, SpeedDecel);
-        }
-        else
-        {
+        } else {
             SpeedTemp = Mathf.Lerp(SpeedTemp, 0f, AirSpeedDecel);
         }
-		if(!punchForceApplied)
-        	velocity.x += SpeedTemp;
+        if (!punchForceApplied)
+            velocity.x += SpeedTemp;
     }
 
     private void updateIsGrounded()
     {
         set2DPosition();
 
-        RaycastHit2D hit = 
-            Physics2D.Raycast(position+JumpOffset, 
-                              -Vector2.up, 
-                              GroundCheckEndPoint, 
+        RaycastHit2D hitLeft =
+            Physics2D.Raycast(position + JumpOffset + LeftRaytraceOffset,
+                              -Vector2.up,
+                              GroundCheckEndPoint,
                               mask.value);
 
-        //Debug.DrawLine(position+JumpOffset,
-        //               position + (-Vector2.up * GroundCheckEndPoint),
-        //               Color.red,
-        //               0.01f);
-        m_wasGrounded = m_IsGrounded;
-        m_IsGrounded = hit.collider != null;
+        Debug.DrawLine(position + JumpOffset + LeftRaytraceOffset,
+                       (position + JumpOffset + LeftRaytraceOffset) + (-Vector2.up * GroundCheckEndPoint),
+                       Color.red,
+                       0.01f);
+
+        RaycastHit2D hitRight =
+            Physics2D.Raycast(position + JumpOffset + RightRaytraceOffset,
+                              -Vector2.up,
+                              GroundCheckEndPoint,
+                              mask.value);
+
+        Debug.DrawLine(position + JumpOffset + RightRaytraceOffset,
+                       (position + JumpOffset + RightRaytraceOffset) + (-Vector2.up * GroundCheckEndPoint),
+                       Color.red,
+                       0.01f);
+
+        wasGrounded = isGrounded;
+        bool isLeftGrounded = hitLeft.collider != null;
+        bool isRightGrounded = hitRight.collider != null;
         //hit.collider.gameObject.layer
         ///Can't regain jumpcounts before jump force is applied.
-        if (m_IsGrounded && !jumped)
-        {
+        if (isRightGrounded && !jumped) {
             //CBUG.Log("Grounded on: " + (hit.collider.name));
             jumpsRemaining = TotalJumpsAllowed;
-        }
-        else if (m_IsGrounded)
-        {
+            transform.SetParent(hitRight.collider.transform);
+        } else if (isLeftGrounded && !jumped) {
             //CBUG.Log("Grounded on: " + (hit.collider.name));
-        }
-        else
-        {
+            jumpsRemaining = TotalJumpsAllowed;
+            transform.SetParent(hitLeft.collider.transform);
+        } else if (!isGrounded) {
+            transform.SetParent(null);
+            isGrounded = false;
+            //CBUG.Log("Grounded on: " + (hit.collider.name));
+        } else {
             //CBUG.Log("No Raycast Contact.");
         }
         //if(!m_IsGrounded && down)
@@ -392,59 +356,76 @@ public class PlayerController2DOffline : MonoBehaviour
 
     private void updateAttacks()
     {
-        if(totalAttackFrames < 0 ){
-            if ((Input.GetButtonDown("Up") || Input_M.GetButtonDown("Up")) && !punching)
-            {
+        if (isDead)
+            return;
+
+        if (totalAttackFrames < 0) {
+            if ((Input.GetButtonDown("Up") || _MobileInput.GetButtonDown("Up")) && !punching) {
                 punching = true;
                 AttackObjs[0].SetActive(true);
-                StartCoroutine(DisableDelay(AttackObjs[0]));
+                myAudioSrc.PlayOneShot(PunchNoise);
+                StartCoroutine(disableDelay(AttackObjs[0]));
                 totalAttackFrames = AttackLag;
+                //_PhotonView.RPC("UpAttack", PhotonTargets.Others);
             }
-            if ((Input.GetButtonDown("Down") || Input_M.GetButtonDown("Down")) && !punching)
-            {
+            if ((Input.GetButtonDown("Down") || _MobileInput.GetButtonDown("Down")) && !punching) {
                 punching = true;
                 AttackObjs[2].SetActive(true);
-                StartCoroutine(DisableDelay(AttackObjs[2]));
+                myAudioSrc.PlayOneShot(PunchNoise);
+                StartCoroutine(disableDelay(AttackObjs[2]));
                 totalAttackFrames = AttackLag;
+                //_PhotonView.RPC("DownAttack", PhotonTargets.Others);
             }
-            if (facingRight && (Input.GetButtonDown("Right") || Input_M.GetButtonDown("Right")) && !punching)
-            {
+            if (facingRight && (Input.GetButtonDown("Right") || _MobileInput.GetButtonDown("Right")) && !punching) {
                 punching = true;
                 AttackObjs[1].SetActive(true);
-                StartCoroutine(DisableDelay(AttackObjs[1]));
+                myAudioSrc.PlayOneShot(PunchNoise);
+                StartCoroutine(disableDelay(AttackObjs[1]));
                 totalAttackFrames = AttackLag;
+                //_PhotonView.RPC("ForwardAttack", PhotonTargets.Others);
             }
-            if (!facingRight && (Input.GetButtonDown("Left") || Input_M.GetButtonDown("Left")) && !punching)
-            {
+            if (!facingRight && (Input.GetButtonDown("Left") || _MobileInput.GetButtonDown("Left")) && !punching) {
                 punching = true;
                 AttackObjs[1].SetActive(true);
-                StartCoroutine(DisableDelay(AttackObjs[1]));
+                myAudioSrc.PlayOneShot(PunchNoise);
+                StartCoroutine(disableDelay(AttackObjs[1]));
                 totalAttackFrames = AttackLag;
+                //_PhotonView.RPC("ForwardAttack", PhotonTargets.Others);
             }
         }
         totalAttackFrames -= 1;
     }
 
+    #region RPC Functions.
+    //TODO: Determine allowed scope of RPC functions.
+    [PunRPC]
+    void SetID(int ID)
+    {
+        this.ID = ID;
+        CBUG.Do("Recording ID " + ID + " with Gamemaster.");
+        CBUG.Do("Character is: " + gameObject.name);
+        GameManager.Players.Add(ID, gameObject);
+    }
 
     [PunRPC]
     void UpAttack()
     {
         AttackObjs[0].SetActive(true);
-        StartCoroutine(DisableDelay(AttackObjs[0]));
+        StartCoroutine(disableDelay(AttackObjs[0]));
     }
 
     [PunRPC]
     void ForwardAttack()
     {
         AttackObjs[1].SetActive(true);
-        StartCoroutine(DisableDelay(AttackObjs[1]));
+        StartCoroutine(disableDelay(AttackObjs[1]));
     }
 
     [PunRPC]
     void DownAttack()
     {
         AttackObjs[2].SetActive(true);
-        StartCoroutine(DisableDelay(AttackObjs[2]));
+        StartCoroutine(disableDelay(AttackObjs[2]));
     }
 
     [PunRPC]
@@ -456,8 +437,7 @@ public class PlayerController2DOffline : MonoBehaviour
     [PunRPC]
     void HurtAnim(int hurtNum)
     {
-        switch (hurtNum)
-        {
+        switch (hurtNum) {
             case 1:
                 anim.SetBool("HurtSmall", true);
                 break;
@@ -468,97 +448,140 @@ public class PlayerController2DOffline : MonoBehaviour
                 anim.SetBool("HurtBig", true);
                 break;
             default:
-                CBUG.Error("BAD ANIM NUMBER GIVEN"); 
+                CBUG.Error("BAD ANIM NUMBER GIVEN");
                 break;
         }
     }
 
 
+    /// <summary>
+    /// Calls GameManager's RecordDeath. Respawn Handling
+    /// is done from there.
+    /// </summary>
+    /// <param name="killer"></param>
+    /// <param name="killed"></param>
+    [PunRPC]
+    private void OnDeath(int killer, int killed)
+    {
+        isDead = true;
+        //Hide Self till respawn (or stay dead, ghost)
+        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+        transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Image>().enabled = false;
+        //Freeze and Clear motion
+        _Rigibody2D.velocity = Vector2.zero;
+        velocity = Vector2.zero;
+
+        //Death Map: OnDeath > RecordDeath > HandleDeath >
+        // doRespawnOrGhost
+        GameManager.RecordDeath(killer, killed);
+        GameManager.HandleDeath(killed);
+
+        //TODO: Animate death
+    }
+    #endregion
+
+    /// <summary>
+    /// Nothing to do. You stay invisible and immobile
+    /// </summary>
+    public override void Ghost()
+    {
+        //transform.tag = "PlayerGhost";
+    }
+
+    /// <summary>
+    /// Respawning. Only Graphical UNLESS is our Player. Then we reposition ourselves.
+    /// </summary>
+    /// <param name="spawnPoint"></param>
+    public override void Respawn(Vector3 spawnPoint)
+    {
+        transform.position = spawnPoint;
+        damage = 0;
+
+        _Rigibody2D.isKinematic = false;
+        StartCoroutine(spawnProtection());
+    }
+
+    public void SetNewTarget()
+    {
+        CamManager.SetTarget(transform);
+        GameHUDController.SetDamageTo(damage);
+    }
+    private IEnumerator spawnProtection()
+    {
+        yield return spawnPauseWait;
+        //TODO: Spawn animation
+        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
+        transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Image>().enabled = true;
+        isDead = false;
+    }
+
     void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.name == "Physics Box(Clone)")
-        {
-            CBUG.Log("PUNCH");
-            if(transform.localScale.x > 0){
-                col.GetComponent<Rigidbody2D>().AddForce(new Vector2(BoxPunch, BoxPunch), ForceMode2D.Impulse);
-            }else{
-                col.GetComponent<Rigidbody2D>().AddForce(new Vector2(-BoxPunch, BoxPunch), ForceMode2D.Impulse);
-            }
-        }
+        //if (col.name == "Physics Box(Clone)")
+        //{
+        //    CBUG.Log("PUNCH");
+        //    if(transform.localScale.x > 0){
+        //        col.GetComponent<Rigidbody2D>().AddForce(new Vector2(BoxPunch, BoxPunch), ForceMode2D.Impulse);
+        //    }else{
+        //        col.GetComponent<Rigidbody2D>().AddForce(new Vector2(-BoxPunch, BoxPunch), ForceMode2D.Impulse);
+        //    }
+        //}
 
-        if (col == null)
+        if (isDead || col == null)
             return;
 
 
         //apply force . . .
-        else if (col.name.Contains("Punch"))
-        {
-            if (invincibilityCount > 0)
-            {
+        else if (col.name.Contains("Punch")) {
+            //Get name of puncher
+            lastHitBy = col.GetComponentInParent<PlayerController2DOffline>().ID;
+            lastHitTime = Time.time;
+
+            if (invincibilityCount > 0) {
                 return;
-            }
-            else
-            {
+            } else {
                 invincibilityCount = InvicibilityFrames;
             }
-
             damage += PunchPercentAdd;
-
-            if (damage < 30)
-            {
+            if (damage < 30) {
                 HurtAnim(1);
-            }
-            else if (damage < 60)
-            {
+            } else if (damage < 60) {
                 HurtAnim(2);
-            }
-            else
-            {
+            } else {
                 HurtAnim(3);
             }
-            //BattleUI.SetDamageTo(damage);
-            if (col.name.Contains("PunchForward"))
-            {
+            GameHUDController.SetDamageTo(damage);
+            if (col.name == "PunchForward") {
                 //velocity += Vector2.right * PunchForceForward_Forward;
-                if (col.transform.parent.localScale.x > 0)
-                {
+                if (col.transform.parent.localScale.x > 0) {
                     Vector2 temp = Vector2.right * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name] - Defense);
                     temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name] - Defense);
                     StartCoroutine(
-                        ApplyPunchForce(temp * (damage/100f))
+                        applyPunchForce(temp * (damage / 100f))
                     );
-                }
-                else
-                {
+                } else {
                     Vector2 temp = Vector2.left * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name] - Defense);
                     temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name] - Defense);
                     StartCoroutine(
-                        ApplyPunchForce(temp * (damage / 100f))
+                        applyPunchForce(temp * (damage / 100f))
                     );
                 }
-            }
-            else if (col.name == "PunchUp")
-            {
+            } else if (col.name == "PunchUp") {
                 StartCoroutine(
-                    ApplyPunchForce(
+                    applyPunchForce(
                         (Vector2.up * (PunchForceUp + StrengthsList[col.transform.parent.name] - Defense) * (damage / 100f))
                     )
                 );
-            }
-            else
-            {
-                if (!m_IsGrounded)
-                {
+            } else {
+                if (!isGrounded) {
                     StartCoroutine(
-                        ApplyPunchForce(
+                        applyPunchForce(
                             (Vector2.down * (PunchForceDown + StrengthsList[col.transform.parent.name] - Defense) * (damage / 100f))
                         )
                     );
-                }
-                else
-                {
+                } else {
                     StartCoroutine(
-                        ApplyPunchForce(
+                        applyPunchForce(
                             (Vector2.up * (PunchForceDown + StrengthsList[col.transform.parent.name] - Defense) * (damage / 200f))
                         )
                     );
@@ -567,43 +590,29 @@ public class PlayerController2DOffline : MonoBehaviour
         }
     }
 
-    IEnumerator DisableDelay(GameObject dis)
+    private IEnumerator disableDelay(GameObject dis)
     {
         yield return attackDisableDelay;
         dis.SetActive(false);
         punching = false;
     }
 
-    private void AssignCameraFollow(Transform myTransform)
-    {
-        if (myTransform == null)
-        {
-            return;
-        }
-        //camShaker.SetTarget(myTransform);  
-        cameraFollowAssigned = true;
-    }
-
-    IEnumerator ApplyPunchForce(Vector2 punchForce)
+    private IEnumerator applyPunchForce(Vector2 punchForce)
     {
         Vector2 tempPunchForce = punchForce;
         bool isTempForceLow = false;
-        //camShaker.PunchShake(tempPunchForce.magnitude);
-        while (tempPunchForce.magnitude > 0.01f)
-        {
+        CamManager.PunchShake(tempPunchForce.magnitude);
+        while (tempPunchForce.magnitude > 0.01f) {
             velocity += tempPunchForce;
             tempPunchForce = Vector2.Lerp(tempPunchForce, Vector2.zero, PunchForceDecel);
-            
+
             if (!isTempForceLow &&
-                tempPunchForce.magnitude < punchForce.magnitude * PunchDisablePerc)
-            {
+                tempPunchForce.magnitude < punchForce.magnitude * PunchDisablePerc) {
                 isTempForceLow = true;
                 //if the force goes below 25%, let the character move again. 
-	        	punchForceApplied = false;
-            }
-            else if(!isTempForceLow)
-            {
-			    punchForceApplied = true;
+                punchForceApplied = false;
+            } else if (!isTempForceLow) {
+                punchForceApplied = true;
             }
             yield return null;
         }
@@ -614,54 +623,11 @@ public class PlayerController2DOffline : MonoBehaviour
         if (col.tag != "DeathWall")
             return;
         myAudioSrc.Play();
-        //camShaker.DeathShake(true);
+        CamManager.DeathShake(CamManager.GetTarget().name == gameObject.name);
 
-
-        StartCoroutine(respawn());
-        
-    }	  	
-
-    public void Ghost()
-    {
-        //GameUI.Lost();
-        //isDead = true;
-        //m_Body.velocity = Vector2.zero;
-        //velocity = Vector2.zero;
-        //m_Body.isKinematic = true;
-        //transform.tag = "PlayerGhost";
-        //transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+        OnDeath(lastHitBy, ID);
     }
 
-    IEnumerator respawn()
-    {
-        isDead = true;
-        m_Body.velocity = Vector2.zero;
-        velocity = Vector2.zero;
-        m_Body.isKinematic = true;
-        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-        yield return new WaitForSeconds(3f);
-        damage = 0;
-        //BattleUI.ResetDamage();
-        transform.position = SpawnPoints[0].position;
-        m_Body.isKinematic = false; 
-        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
-        isDead = false;
-    }
-
-    [PunRPC]
-    IEnumerator OnDeath()
-    {
-        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-        yield return new WaitForSeconds(3f);
-        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
-    }
-
-    [PunRPC]
-    void OnGhost()
-    {
-        transform.tag = "PlayerGhost";
-        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-    }
 
     public bool GetIsDead()
     {
@@ -678,3 +644,10 @@ public class PlayerController2DOffline : MonoBehaviour
         controlsPaused = false;
     }
 }
+//public void CheckWon()
+//{
+//    if (m_PhotonView.isMine && !isDead)
+//    {
+//        BattleUI.Won();
+//    }
+//}

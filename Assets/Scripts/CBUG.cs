@@ -35,7 +35,7 @@ public class CBUG : MonoBehaviour {
 
 
     // Use this for initialization
-    void Start () {
+    void Awake () {
         logText = GetComponent<Text>();
         lines = new LinkedList<string>();
         occurrences = new LinkedList<int>();
@@ -168,8 +168,12 @@ public class CBUG : MonoBehaviour {
 
     private void _Print(string line, bool debugOn)
     {
-        if (ALL_DEBUG_TOGGLE && debugOn)
-            _Print(line);
+        if (ALL_DEBUG_TOGGLE && debugOn) {
+            if (line == null)
+                _Print("Null @ " + System.Environment.StackTrace);
+            else
+                _Print(line);
+        }
     }
 
     private void _Error(string line)
