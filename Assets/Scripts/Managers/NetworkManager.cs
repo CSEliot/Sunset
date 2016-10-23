@@ -140,8 +140,8 @@ public class NetworkManager : Photon.MonoBehaviour{
 
         if (!PhotonNetwork.connected) 
             return;
-        if(PhotonNetwork.room != null)
-            CBUG.Do("TotalRoomPlayersIs: " + PhotonNetwork.room.playerCount);
+        //if(PhotonNetwork.room != null)
+        //    CBUG.Do("TotalRoomPlayersIs: " + PhotonNetwork.room.playerCount);
 
         if (Time.time - previousUpdateTime > ServerUpdateLength)
         {
@@ -288,6 +288,9 @@ public class NetworkManager : Photon.MonoBehaviour{
         if ((bool)PhotonNetwork.room.customProperties["GameStarted"] == true)
         {
             return;
+        }else {
+            gameStarted = false;
+            startTheMatch = false;
         }
         
         //if we join in and game is ready to start, un-ready,
@@ -748,6 +751,10 @@ public class NetworkManager : Photon.MonoBehaviour{
         gameStarted = false;
         startTimer = CountdownLength;
         ResetReadyStatus();
+
+        plrStateChange = true;
+        rdyStateChange = true;
+        startCountdown = false;
     }
 
 }

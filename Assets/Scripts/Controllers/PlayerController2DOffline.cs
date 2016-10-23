@@ -83,6 +83,8 @@ public class PlayerController2DOffline : PlayerController2D
     private float lastHitForgetLength;
     
     public AudioClip DeathNoise;
+    private Color deathColor;
+    private Color lifeColor;
     public AudioClip PunchNoise;
     private AudioSource myAudioSrc;
 
@@ -108,6 +110,8 @@ public class PlayerController2DOffline : PlayerController2D
         myAudioSrc.clip = DeathNoise;
         punching = false;
 
+        deathColor = Color.clear;
+        lifeColor = Color.white;
         isDead = false;
         StrengthsList = GameObject.FindGameObjectWithTag("Master").
             GetComponent<Master>().GetStrengthList();
@@ -466,7 +470,7 @@ public class PlayerController2DOffline : PlayerController2D
         isDead = true;
         //Hide Self till respawn (or stay dead, ghost)
         transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-        transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Image>().enabled = false;
+        transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Image>().color = deathColor;
         //Freeze and Clear motion
         _Rigibody2D.velocity = Vector2.zero;
         velocity = Vector2.zero;
@@ -511,7 +515,7 @@ public class PlayerController2DOffline : PlayerController2D
         yield return spawnPauseWait;
         //TODO: Spawn animation
         transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
-        transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Image>().enabled = true;
+        transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Image>().color = lifeColor;
         isDead = false;
     }
 

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -93,6 +94,7 @@ public class PlayerController2DOnline : PlayerController2D
     private Animator anim;
 
     public float BoxPunch;
+    
 
     void Awake() 
     {
@@ -348,11 +350,11 @@ public class PlayerController2DOnline : PlayerController2D
         {
             //CBUG.Log("Grounded on: " + (hit.collider.name));
             jumpsRemaining = TotalJumpsAllowed;
-            //transform.SetParent(hit.collider.transform);
+            transform.SetParent(hit.collider.transform);
         }
         else if (!isGrounded)
         {
-            //transform.SetParent(null);
+            transform.SetParent(null);
             //CBUG.Log("Grounded on: " + (hit.collider.name));
         }
         else
@@ -480,7 +482,7 @@ public class PlayerController2DOnline : PlayerController2D
     {
         isDead = true;
         //Hide Self till respawn (or stay dead, ghost)
-        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+        transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Image>().enabled = false;
 
         //Freeze and Clear motion
         _Rigibody2D.velocity = Vector2.zero;
@@ -521,9 +523,10 @@ public class PlayerController2DOnline : PlayerController2D
     }
     private IEnumerator spawnProtection()
     {
-        yield return spawnPauseWait; 
+        yield return spawnPauseWait;
         //TODO: Spawn animation
-        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
+        transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Image>().enabled = true;
+
         isDead = false;
     }
 

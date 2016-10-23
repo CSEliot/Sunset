@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 [RequireComponent(typeof(Animator))]
 public class StageAnimations : MonoBehaviour {
 
     private Animator localAnim;
-    public bool IsTest;
 
 
 	// Use this for initialization
@@ -13,7 +13,7 @@ public class StageAnimations : MonoBehaviour {
         localAnim = GetComponent<Animator>();
         localAnim.enabled = false;
         gameObject.tag = "StageAnim";
-        if (IsTest)
+        if (SceneManager.GetActiveScene().name == "GameScreen_Practice")
             ActivateLocal();
 	}
 	

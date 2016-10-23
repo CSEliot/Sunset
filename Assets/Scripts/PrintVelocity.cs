@@ -10,6 +10,6 @@ public class PrintVelocity : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {    
-        CBUG.Do("V: " + GetComponent<Rigidbody2D>().velocity);
+        //CBUG.Do("V: " + GetComponent<Rigidbody2D>().velocity);
 	}
 }

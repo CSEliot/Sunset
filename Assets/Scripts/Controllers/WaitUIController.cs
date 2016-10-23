@@ -237,6 +237,7 @@ public class WaitUIController : MonoBehaviour{
 
     private void startMatch()
     {
+        CBUG.Do("WAIT UI STARTING MATCH!");
         //j.GameStarted(N.GetSlotNum(PhotonNetwork.player.ID));
         transform.GetChild(0).gameObject.SetActive(false);
         PlayerHead.sprite = getImage(getImageNum());

@@ -15,6 +15,8 @@ public class Master : MonoBehaviour
 {
     public static bool DEBUG_ON = true;
 
+    public GameObject MainCameraRef;
+
     [System.Serializable]
     public class NameToStrength
     {
@@ -219,9 +221,28 @@ public class Master : MonoBehaviour
                 N.LeaveServer();
 			    break;
 		    case Menu.ingame:
-                currentMenu = Menu.chara;
-                loadMenu();
-                escapeHardened = false;
+                if (GameManager.GameStarted) {
+                    currentMenu = Menu.map;
+                    loadMenu();
+                    EscapeHardened = true;
+                    switchCanvas((int)Menu.map);
+                    unloadStage();
+                    N.LeaveRoom();
+                }else {
+                    currentMenu = Menu.chara;
+                    loadMenu();
+                    escapeHardened = false;
+                }
+                //DONT HANDLE ON_DISCONNECT HERE!!
+                //  escapeHardened = false;
+                //Post-GameStart
+                //  "If You leave now Warning"
+                //  Return to Room Select.
+                //Post-END_Game
+                //  (stats like level, kills, deaths are tracked live)
+                //  (stats like wins/loses are tracked immediately after game ends)
+                //  Return to Character Select. Same thing as button.  
+                //Pre-GameStart 
                 break;
             case Menu.options:
                 currentMenu = Menu.main;
