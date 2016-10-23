@@ -10,6 +10,7 @@ using System.Collections;
 public class GameManager : MonoBehaviour {
 
     private bool gameStarted;
+    private bool gameEnded;
     private float startTime;
     public float RespawnTime;
     private float gameLength;
@@ -40,6 +41,7 @@ public class GameManager : MonoBehaviour {
     // Use this for initialization
     void Start () {
         gameStarted = false;
+        gameEnded = false;
         startingLives = 2;
         gameLength = 3f*60f; //Seconds
         respawnWait = new WaitForSeconds(RespawnTime);
@@ -60,7 +62,7 @@ public class GameManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (!gameStarted || IsLocalGame)
+        if (!gameStarted || IsLocalGame || gameEnded)
             return;
 
         if(startingPlayers - 1 == totalGhosts || 
@@ -76,6 +78,20 @@ public class GameManager : MonoBehaviour {
 	}
 
     #region Public Static Functions
+
+    public static bool GameStarted
+    {
+        get {
+            return getRef().gameStarted;
+        }
+    }
+
+    public static bool GameEnded
+    {
+        get {
+            return getRef().gameEnded;
+        }
+    }
     /// <summary>
     /// Records death and
     /// </summary>
@@ -173,11 +189,8 @@ public class GameManager : MonoBehaviour {
 
     private void endGame()
     {
-        CBUG.Do("GAME ENDS BRUH ");
-        gameStarted = false;
-
-        EndGameManager.LaunchEndGame(killsMatrix);
-        CBUG.Do("IT OVER");
+        gameEnded = true;
+        EndGameManager.LaunchEndGame(killsMatrix, Players);
     }
 
     private void _RecordDeath(int killer, int killed)
@@ -208,13 +221,14 @@ public class GameManager : MonoBehaviour {
 
     private IEnumerator doRespawnOrGhost<PlayerController>(int deadPlayerNum) where PlayerController : PlayerController2D
     {
-        yield return respawnWait;
         if (playerLives[deadPlayerNum] == -1) {
             totalGhosts++;
             Players[deadPlayerNum].GetComponent<PlayerController>().Ghost();
             //ONLY OUR PLAYER SHOPULD SPECTATE MODE
             WaitUIController.ActivateSpectatingMode();
+            yield return null;
         } else {
+            yield return respawnWait;
             //Player spawn position is controlled by Game Manager.
             //But we only wanna reposition OUR player's position.
             //BUT ALSO

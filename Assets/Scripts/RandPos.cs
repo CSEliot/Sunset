@@ -23,7 +23,7 @@ public class RandPos : MonoBehaviour {
 
     public void Randomize()
     {
-        CBUG.Log("Randomizing! Skelly Position");
+        //CBUG.Log("Randomizing! Skelly Position");
         newPos.Set(Random.Range(MinValues.x, MaxValues.x), Random.Range(MinValues.y, MaxValues.y), Random.Range(MinValues.z, MaxValues.z));
         transform.localPosition = newPos;
     }
