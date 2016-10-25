@@ -33,6 +33,7 @@ TagManager:
   - CBUG
   - GameUI
   - EndGameManager
+  - Settings
   layers:
   - Default
   - TransparentFX

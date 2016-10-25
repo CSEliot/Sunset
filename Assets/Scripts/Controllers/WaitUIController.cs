@@ -162,7 +162,7 @@ public class WaitUIController : MonoBehaviour{
     {
         bool isActive = true;
         
-        for(int i = 0; i < Master.MaxRoomSize; i++)
+        for(int i = 0; i < NetworkManager.ROOM_CAP; i++)
         {
             if (i == PhotonNetwork.playerList.Length)
                 isActive = false;

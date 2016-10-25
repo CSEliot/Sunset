@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections;
 
 /// <summary>
+/// General handler & storer, slowly being phased out.
 /// Handles scene management and everything that's inter-scene. This includes:
 ///  - Music
 ///  - Background Animations
@@ -13,8 +14,6 @@ using System.Collections;
 /// </summary>
 public class Master : MonoBehaviour
 {
-    public static bool DEBUG_ON = true;
-
     public GameObject MainCameraRef;
 
     [System.Serializable]
@@ -26,7 +25,6 @@ public class Master : MonoBehaviour
 
     public NameToStrength[] StrengthsList;
     private Dictionary<string, float> NameStrengthDict;
-    public static int MaxRoomSize = 6;
     public GameObject[] AllCharacters;
     public int PlayableCharacters;
 
@@ -34,7 +32,6 @@ public class Master : MonoBehaviour
 
     private GameObject clientCharacter;
     public int PlayerCharNum;
-    public int InRoomNumber;
 
     private string stageName;
 
