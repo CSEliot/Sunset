@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.Collections;
@@ -33,7 +34,23 @@ public class EndGameManager : MonoBehaviour {
     private Dictionary<int, GameObject> Players;
     private delegate void function_to_delay();
 
+    public NetworkManager N;
     public Master M;
+    public GameObject AnimRays;
+
+    public GameObject[] RootPlayerSlots;
+
+    public Image[] playerImages;
+    public GameObject[] winnerGraphicImages;
+
+    public Text[] textUsernames;
+    public Text[] textUsernames_BG;
+
+    public Text[] WinnerTexts;
+    public Text[] WinnerTexts_BG;
+
+    private List<int> bestKillers; //Only relevant to most recent game
+    private List<int> bestSurvivors; //Only relevant to most recent game
 
     // Use this for initialization
     void Start () {
@@ -57,7 +74,7 @@ public class EndGameManager : MonoBehaviour {
             //CBUG.Do("RootObjName: " + SceneManager.GetSceneAt(0).GetRootGameObjects()[x]);
         }
         CBUG.Error("FRIEND NOT FOUND!");
-        return null;
+        return null; 
     }
 
     public static void LaunchEndGame(int[,] KillsMatrix, Dictionary<int, GameObject> Players)
@@ -88,13 +105,11 @@ public class EndGameManager : MonoBehaviour {
         int totalPlayers = KillsMatrix.GetLength(0);
         int mostKills = 0;
         int tempKills = 0;
-        int bestKiller = -1;
-        bool manyBestKiller = false;
-        int leastDeaths = 1000;
+        int leastDeaths = SettingsManager._StartLives;
         int tempDeaths = 0;
-        int bestSurvivor = -1;
-        bool manyBestSurvivor = false;
 
+        bestKillers.Clear();
+        bestSurvivors.Clear();
         //CBUG.Do("X max: " + totalPlayers);
         for(int x = 0; x < totalPlayers; x++) {
             for(int y = 0; y < totalPlayers; y++) {
@@ -102,13 +117,11 @@ public class EndGameManager : MonoBehaviour {
                 //CBUG.Do("" + x + " Killed " + y  + "|" + KillsMatrix[x, y]);
                 tempKills += KillsMatrix[x,y];
             }
-            if(tempKills == leastDeaths) {
-                manyBestKiller = true;
-            }
-            if (tempKills > mostKills) {
+            if (tempKills == mostKills) {
+                bestKillers.Add(x);
+            } else if(tempKills > mostKills) {
+                bestKillers.Clear();
                 mostKills = tempKills;
-                bestKiller = x;
-                manyBestKiller = false;
             }
         }
 
@@ -117,40 +130,34 @@ public class EndGameManager : MonoBehaviour {
                 tempDeaths += KillsMatrix[x, y];
             }
             if(tempDeaths == leastDeaths) {
-                manyBestSurvivor = true;
+                bestSurvivors.Add(y);
             }
             if (tempDeaths < leastDeaths) {
+                bestSurvivors.Clear();
                 leastDeaths = tempDeaths;
-                bestSurvivor = y;
-                manyBestSurvivor = false;
             }
-        }
-
-        if(bestKiller != -1) {
-            CBUG.Do("Player " + bestKiller + " Won Most Kills at: " + mostKills);
-        }else {
-            CBUG.Do("No Best Killer!");
-        }
-        if(bestSurvivor != -1) {
-            CBUG.Do("Player " + bestSurvivor + "Survived the Longest at: " + leastDeaths);
-        }else {
-            CBUG.Do("No best survivor! Everyone wins!");
         }
         
-        if (manyBestSurvivor) {
-            if (manyBestKiller) {
-                GameHUDController.Won();
-            } else if (NetID.Convert(PhotonNetwork.player.ID) == bestKiller) {
-                GameHUDController.Won();
-            } else {
-                GameHUDController.Lost();
-            }
-        } else if (NetID.Convert(PhotonNetwork.player.ID) == bestSurvivor) {
-            CBUG.Do("I WIN! netID: " + PhotonNetwork.player.ID + " realID: " + NetID.Convert(PhotonNetwork.player.ID));
-            GameHUDController.Won();
-        } else {
-            GameHUDController.Lost();
+        int startSlot = Mathf.Clamp(4 - N.ReadyTotal, 0, 5);
+        int endSlot = Mathf.Clamp(4 + N.ReadyTotal, 0, 5);
+        for (int x = startSlot; x < endSlot + 1; x++) {
+            
         }
+        
+        //if (manyBestSurvivor) {
+        //    if (manyBestKiller) {
+        //        GameHUDController.Won();
+        //    } else if (NetID.Convert(PhotonNetwork.player.ID) == bestKiller) {
+        //        GameHUDController.Won();
+        //    } else {
+        //        GameHUDController.Lost();
+        //    }
+        //} else if (NetID.Convert(PhotonNetwork.player.ID) == bestSurvivor) {
+        //    CBUG.Do("I WIN! netID: " + PhotonNetwork.player.ID + " realID: " + NetID.Convert(PhotonNetwork.player.ID));
+        //    GameHUDController.Won();
+        //} else {
+        //    GameHUDController.Lost();
+        //}
         StartCoroutine(slowTime());
         StartCoroutine(loadScoreboard());
         StartCoroutine(reloadArena());
@@ -160,6 +167,7 @@ public class EndGameManager : MonoBehaviour {
     private IEnumerator loadScoreboard()
     {
         yield return slomoTimeSeconds;
+        AnimRays.SetActive(false);
         onScoreboard = true;
         Scoreboard.SetActive(true);
         MainMenuCamera.SetActive(true);
@@ -187,6 +195,7 @@ public class EndGameManager : MonoBehaviour {
         yield return new WaitForSeconds(Time.deltaTime);
         SceneManager.LoadScene(GameObject.FindGameObjectWithTag("Master").GetComponent<Master>().CurrentMap, LoadSceneMode.Additive);
         SceneManager.SetActiveScene(SceneManager.GetSceneAt(1));
+        AnimRays.SetActive(true);
     }
 
     /// <summary>

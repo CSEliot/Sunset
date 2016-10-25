@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour {
     private bool gameStarted;
     private bool gameEnded;
     private float startTime;
-    public float RespawnTime;
+    private float respawnTime;
     private float gameLength;
     private WaitForSeconds respawnWait;
     private int[] playerLives;
@@ -42,9 +42,10 @@ public class GameManager : MonoBehaviour {
     void Start () {
         gameStarted = false;
         gameEnded = false;
-        startingLives = 2;
-        gameLength = 3f*60f; //Seconds
-        respawnWait = new WaitForSeconds(RespawnTime);
+        SettingsManager.GetGameInfo(ref startingLives,
+                                    ref gameLength,
+                                    ref respawnTime);
+        respawnWait = new WaitForSeconds(respawnTime);
         Players = new Dictionary<int, GameObject>();
         if (IsLocalGame) {
             startingLives = int.MaxValue;
@@ -133,7 +134,7 @@ public class GameManager : MonoBehaviour {
         startTime = Time.time;
 
         startingPlayers = N.ReadyTotal;
-        gameLength = SettingsManager.GameLength;
+        gameLength = SettingsManager._GameLength;
 
         killsMatrix = new int[N.ReadyTotal, N.ReadyTotal];
         for(int x = 0; x < N.ReadyTotal; x++) {
@@ -155,9 +156,9 @@ public class GameManager : MonoBehaviour {
 
         playerLives = new int[N.ReadyTotal];
         for (int x = 0; x < N.ReadyTotal; x++) {
-            playerLives[x] = SettingsManager.StartLives;
+            playerLives[x] = SettingsManager._StartLives;
         }
-        GameHUDController.SetLives(SettingsManager.StartLives);
+        GameHUDController.SetLives(SettingsManager._StartLives);
     }
     
     private void startLocal()
@@ -167,7 +168,7 @@ public class GameManager : MonoBehaviour {
         startTime = Time.time;
 
         startingPlayers = N.ReadyTotal;
-        gameLength = SettingsManager.GameLength;
+        gameLength = SettingsManager._GameLength;
 
         killsMatrix = new int[N.ReadyTotal, N.ReadyTotal];
         for (int x = 0; x < N.ReadyTotal; x++) {
@@ -183,7 +184,7 @@ public class GameManager : MonoBehaviour {
 
         playerLives = new int[N.ReadyTotal];
         for (int x = 0; x < N.ReadyTotal; x++) {
-            playerLives[x] = SettingsManager.StartLives;
+            playerLives[x] = SettingsManager._StartLives;
         }
     }
 

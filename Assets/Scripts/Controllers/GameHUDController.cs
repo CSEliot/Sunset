@@ -16,7 +16,7 @@ public class GameHUDController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        lives = SettingsManager.StartLives;
+        lives = SettingsManager._StartLives;
         damage = 0;
         tag = "GameHUD";
 	}

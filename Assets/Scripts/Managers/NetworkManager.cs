@@ -16,6 +16,8 @@ public class NetworkManager : Photon.MonoBehaviour{
     
     public int SendRate;
 
+    public const int ROOM_CAP = 6;
+
     public Master M;
     public MapSelectUIController MapUI;
     public PhotonView M_PhotonView;
@@ -47,6 +49,8 @@ public class NetworkManager : Photon.MonoBehaviour{
     private int startTimer;
     private bool startCountdown;
     public int CountdownLength;
+    private int minPlayersAllowed;
+    private int maxPlayersAllowed;
     #endregion
 
     public enum ReadyCount
@@ -84,6 +88,9 @@ public class NetworkManager : Photon.MonoBehaviour{
 
     void Start()
     {
+        minPlayersAllowed = SettingsManager._MinimumPlayers;
+        maxPlayersAllowed = SettingsManager._MaximumPlayers;
+
         ID_to_SlotNum = new Dictionary<int, int>();
         ID_to_CharNum = new Dictionary<int, int>();
         ID_to_IsRdy = new Dictionary<int, bool>();
@@ -206,7 +213,7 @@ public class NetworkManager : Photon.MonoBehaviour{
     {
         int randInt = UnityEngine.Random.Range(0, 10000);
         string roomName = M.GetStageName() + (Rooms[MapUI.getTargetStage()].Count + randInt);
-        PhotonNetwork.JoinOrCreateRoom(roomName, new RoomOptions() { MaxPlayers = Convert.ToByte(Master.MaxRoomSize) }, null);
+        PhotonNetwork.JoinOrCreateRoom(roomName, new RoomOptions() { MaxPlayers = Convert.ToByte(ROOM_CAP) }, null);
     }
 
     public void OnConnectedToMaster()
@@ -273,7 +280,6 @@ public class NetworkManager : Photon.MonoBehaviour{
         //Get total number of players logged into room.
         int totalPlayersFound = PhotonNetwork.playerList.Length;
         PhotonNetwork.playerName = "Player " + totalPlayersFound;
-        M.InRoomNumber = totalPlayersFound - 1;
 
         // If it's a new room, create descriptor keys
         ExitGames.Client.Photon.Hashtable tempTable;
