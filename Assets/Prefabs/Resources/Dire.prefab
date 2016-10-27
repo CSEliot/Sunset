@@ -640,7 +640,7 @@ MonoBehaviour:
   mask:
     serializedVersion: 2
     m_Bits: 4294967039
-  ID: 0
+  SlotNum: 0
   TotalJumpsAllowed: 3
   JumpOffset: {x: 0, y: 5.95}
   GroundCheckEndPoint: 1.7
@@ -3277,8 +3277,8 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_SortingLayerID: 1241500191
-  m_SortingOrder: 567
+  m_SortingLayerID: 0
+  m_SortingOrder: 2
   m_TargetDisplay: 0
 --- !u!224 &224000010658866214
 RectTransform:

@@ -23,7 +23,7 @@ public class PlayerController2DOnline : PlayerController2D
 
     public LayerMask mask = -1;
 
-    public int ID;
+    public int SlotNum;
 
     private Rigidbody2D _Rigibody2D;
     private PhotonView _PhotonView;
@@ -87,6 +87,7 @@ public class PlayerController2DOnline : PlayerController2D
     public AudioClip DeathNoise;
     private AudioSource myAudioSrc;
 
+    private bool isFrozen;
     private bool controlsPaused;
     private float spawnPause;
     private WaitForSeconds spawnPauseWait;
@@ -94,10 +95,12 @@ public class PlayerController2DOnline : PlayerController2D
     private Animator anim;
 
     public float BoxPunch;
-    
+
 
     void Awake() 
     {
+        isFrozen = false;
+        DontDestroyOnLoad(gameObject);
         anim = GetComponentInChildren<Animator>();
         moveRight = 0;
         moveLeft = 0;
@@ -137,7 +140,7 @@ public class PlayerController2DOnline : PlayerController2D
 
         if (_PhotonView.isMine) {
             tag = "PlayerSelf";
-            _PhotonView.RPC("SetID", PhotonTargets.All, NetID.Convert(PhotonNetwork.player.ID));
+            _PhotonView.RPC("SetSlotNum", PhotonTargets.All, NetID.ConvertToSlot(PhotonNetwork.player.ID));
             CamManager.SetTarget(transform);
         }
     }
@@ -156,6 +159,9 @@ public class PlayerController2DOnline : PlayerController2D
             moveRight = 0;
             return;
         }
+
+        if (isFrozen)
+            return;
 
         updateSpecials();
         updateJumping();
@@ -415,12 +421,12 @@ public class PlayerController2DOnline : PlayerController2D
     #region RPC Functions.
     //TODO: Determine allowed scope of RPC functions.
     [PunRPC]
-    void SetID(int ID)
+    void SetSlotNum(int SlotNUm)
     {
-        this.ID = ID;
-        CBUG.Do("Recording ID " + ID + " with Gamemaster.");
+        this.SlotNum = SlotNUm;
+        CBUG.Do("Recording ID " + SlotNUm + " with Gamemaster.");
         CBUG.Do("Character is: " + gameObject.name);
-        GameManager.Players.Add(ID, gameObject);
+        GameManager.AddPlayer(SlotNUm, gameObject);
     }
 
     [PunRPC]
@@ -530,6 +536,17 @@ public class PlayerController2DOnline : PlayerController2D
         isDead = false;
     }
 
+    public void Freeze()
+    {
+        _Rigibody2D.isKinematic = true;
+        isFrozen= true;
+    }
+    public void UnFreeze()
+    {
+        _Rigibody2D.isKinematic = false;
+        isFrozen = false;
+    }
+
     void OnTriggerEnter2D(Collider2D col)
     {
         //if (col.name == "Physics Box(Clone)")
@@ -550,7 +567,7 @@ public class PlayerController2DOnline : PlayerController2D
         else if (col.name.Contains("Punch"))
         {
             //Get name of puncher
-            lastHitBy = col.GetComponentInParent<PlayerController2DOnline>().ID;
+            lastHitBy = col.GetComponentInParent<PlayerController2DOnline>().SlotNum;
             lastHitTime = Time.time;
 
             if (invincibilityCount > 0)
@@ -667,7 +684,7 @@ public class PlayerController2DOnline : PlayerController2D
         if (!_PhotonView.isMine)
             return;
 
-        _PhotonView.RPC("OnDeath", PhotonTargets.All, lastHitBy, ID);
+        _PhotonView.RPC("OnDeath", PhotonTargets.All, lastHitBy, SlotNum);
     }	  	
 
 

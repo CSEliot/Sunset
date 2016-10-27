@@ -112,6 +112,12 @@ public class GameManager : MonoBehaviour {
     {
         getRef()._HandleDeath(killed);
     }
+
+    public static void AddPlayer(int ID, GameObject Player)
+    {
+        Players.Add(ID, Player);
+        EndGameManager.Players.Add(ID, Player);
+    }
     #endregion
 
     public bool IsGhost(int playerNum)

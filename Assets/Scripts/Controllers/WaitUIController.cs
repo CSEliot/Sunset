@@ -44,6 +44,8 @@ public class WaitUIController : MonoBehaviour{
     public Text countdownTextTop;
     public Text countdownTextBottom;
 
+    private bool isPostStartSpectator;
+
     // Use this for initialization
     void Start () {
 
@@ -60,8 +62,11 @@ public class WaitUIController : MonoBehaviour{
         PercentReady.text = "" + N.ReadyTotal + "/" + N.GetInRoomTotal;
 
         roomName.text = N.CurrentRoom.name;
-        if (N.GameStarted)
-            _ActivateSpectatingMode();
+        isPostStartSpectator = false;
+        if (N.GameStarted) {
+            activateSpectatingMode();
+            isPostStartSpectator = true;
+        }
 
         rdyColor = new Color(1f, 1f, 1f, 1f);
         unRdyColor = new Color(1f, 1f, 1f, 0.5f);
@@ -138,23 +143,22 @@ public class WaitUIController : MonoBehaviour{
         int playerSlot;
         for (int x = 0; x < PhotonNetwork.room.playerCount; x++)
         {
-            playerSlot = N.GetSlotNum(NetID.Convert(PhotonNetwork.playerList[x].ID));
-            PlayerSlots[playerSlot].color = N.GetRdyStatus(NetID.Convert(PhotonNetwork.playerList[x].ID)) ? rdyColor : unRdyColor;
+            playerSlot = NetID.ConvertToSlot(PhotonNetwork.playerList[x].ID);
+            PlayerSlots[playerSlot].color = N.GetRdyStatus(PhotonNetwork.playerList[x].ID) ? rdyColor : unRdyColor;
         }
     }
 
     private void updatePlayerCharDisplay()
     {
         int slotNum;
-        int playerID;
         int charNum;
         for (int x = 0; x < PhotonNetwork.room.playerCount; x++)
         {
-            playerID = NetID.Convert(PhotonNetwork.playerList[x].ID);
-            slotNum = N.GetSlotNum(playerID);
-            charNum = N.GetCharNum(playerID);
+           
+            slotNum = NetID.ConvertToSlot(PhotonNetwork.playerList[x].ID);
+            charNum = N.GetCharNum(PhotonNetwork.playerList[x].ID);
             PlayerSlots[slotNum].sprite = UIHeads[charNum];
-            CBUG.Log(string.Format("UpdateHUDCharDisplay playerID: {0} slotNum: {1} charNum: {2}", playerID, slotNum, charNum));
+            CBUG.Log(string.Format("UpdateHUDCharDisplay playerID/slotNum: {0} charNum: {1}", slotNum, charNum));
         }
     }
 
@@ -186,11 +190,12 @@ public class WaitUIController : MonoBehaviour{
     }
     #endregion
 
-    private void _ActivateSpectatingMode()
+    private void activateSpectatingMode()
     {
         Yes.SetActive(false);
         No.SetActive(false);
 
+        transform.GetChild(0).gameObject.SetActive(true);
         ReadyText.text = "Spectating . . .";
         PercentReady.text = "";
         for (int i = 0; i < PlayerSlots.Length; i++)
@@ -209,7 +214,7 @@ public class WaitUIController : MonoBehaviour{
 
     public static void ActivateSpectatingMode()
     {
-        getRef()._ActivateSpectatingMode();
+        getRef().activateSpectatingMode();
     }
 
     private static WaitUIController getRef()
@@ -241,6 +246,5 @@ public class WaitUIController : MonoBehaviour{
         //j.GameStarted(N.GetSlotNum(PhotonNetwork.player.ID));
         transform.GetChild(0).gameObject.SetActive(false);
         PlayerHead.sprite = getImage(getImageNum());
-        stageListener.enabled = true;
     }
 }

@@ -31,7 +31,10 @@ public class EndGameManager : MonoBehaviour {
     public float AutoKickTime;
     private WaitForSeconds autoKickSeconds;
 
-    private Dictionary<int, GameObject> Players;
+    /// <summary>
+    /// Assigned new players by a GameManager upon instantiation.
+    /// </summary>
+    public static Dictionary<int, GameObject> Players;
     private delegate void function_to_delay();
 
     public NetworkManager N;
@@ -54,11 +57,17 @@ public class EndGameManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        tag = "EndGameManager";
+
+        Players = new Dictionary<int, GameObject>();
+
+          tag = "EndGameManager";
         onScoreboard = false;
 
         slomoTimeSeconds = new WaitForSeconds(SlomoTime);
         autoKickSeconds = new WaitForSeconds(AutoKickTime);
+
+        bestKillers = new List<int>();
+        bestSurvivors = new List<int>();
 	}
 	
 	// Update is called once per frame
@@ -93,7 +102,6 @@ public class EndGameManager : MonoBehaviour {
     public void LeaveScoreboard()
     {
         onScoreboard = false;
-        GameObject.FindGameObjectWithTag("Networking").GetComponent<NetworkManager>().NewGame();
         GameObject.FindGameObjectWithTag("Master").GetComponent<Master>().NewGame();
         Scoreboard.SetActive(false);
     }
@@ -112,9 +120,10 @@ public class EndGameManager : MonoBehaviour {
         bestSurvivors.Clear();
         //CBUG.Do("X max: " + totalPlayers);
         for(int x = 0; x < totalPlayers; x++) {
+            tempKills = 0;
             for(int y = 0; y < totalPlayers; y++) {
-                //CBUG.Do("Y Max: " + KillsMatrix.GetLength(1));
-                //CBUG.Do("" + x + " Killed " + y  + "|" + KillsMatrix[x, y]);
+                CBUG.Do("Y Max: " + KillsMatrix.GetLength(1));
+                CBUG.Do("" + x + " Killed " + y + "|" + KillsMatrix[x, y]);
                 tempKills += KillsMatrix[x,y];
             }
             if (tempKills == mostKills) {
@@ -122,10 +131,12 @@ public class EndGameManager : MonoBehaviour {
             } else if(tempKills > mostKills) {
                 bestKillers.Clear();
                 mostKills = tempKills;
+                bestKillers.Add(x);
             }
         }
 
         for (int y = 0; y < totalPlayers; y++) {
+            tempDeaths = 0;
             for (int x = 0; x < totalPlayers; x++) {
                 tempDeaths += KillsMatrix[x, y];
             }
@@ -135,15 +146,43 @@ public class EndGameManager : MonoBehaviour {
             if (tempDeaths < leastDeaths) {
                 bestSurvivors.Clear();
                 leastDeaths = tempDeaths;
+                bestSurvivors.Add(y);
             }
+        }
+
+        for(int x = 0; x < 5; x++) {
+            WinnerTexts[x].text = "";
+            WinnerTexts_BG[x].text = "";
+            textUsernames[x].text = "";
+            textUsernames_BG[x].text = "";
+            RootPlayerSlots[x].SetActive(false);
+            winnerGraphicImages[x].SetActive(false);
         }
         
         int startSlot = Mathf.Clamp(4 - N.ReadyTotal, 0, 5);
-        int endSlot = Mathf.Clamp(4 + N.ReadyTotal, 0, 5);
-        for (int x = startSlot; x < endSlot + 1; x++) {
-            
+        int endSlot = Mathf.Clamp(startSlot + N.ReadyTotal, 0, 5);
+        int tempPlayerNum = 0;
+        for (int x = startSlot; x < endSlot; x++) {
+            RootPlayerSlots[x].SetActive(true);
+            playerImages[x].sprite = M.AllCharacters[N.GetCharNum(NetID.FromSlotToNet[tempPlayerNum])].GetComponentInChildren<Image>().sprite;
+            if(bestKillers.Contains(tempPlayerNum) || bestSurvivors.Contains(tempPlayerNum)) {
+                winnerGraphicImages[x].SetActive(true);
+                if (bestKillers.Contains(tempPlayerNum)) {
+                    WinnerTexts[x].text += "Most Kills";
+                    WinnerTexts_BG[x].text += "Most Kills";
+                }
+                if(bestKillers.Contains(tempPlayerNum) && bestSurvivors.Contains(tempPlayerNum)) {
+                    WinnerTexts[x].text += "\n";
+                    WinnerTexts_BG[x].text += "\n";
+                }
+                if (bestSurvivors.Contains(tempPlayerNum)) {
+                    WinnerTexts[x].text += "Most Lives";
+                    WinnerTexts_BG[x].text += "Most Lives";
+                }
+            }
+            tempPlayerNum++;
         }
-        
+
         //if (manyBestSurvivor) {
         //    if (manyBestKiller) {
         //        GameHUDController.Won();
@@ -158,11 +197,36 @@ public class EndGameManager : MonoBehaviour {
         //} else {
         //    GameHUDController.Lost();
         //}
+        StartCoroutine(clearPlayers());
         StartCoroutine(slowTime());
         StartCoroutine(loadScoreboard());
         StartCoroutine(reloadArena());
         StartCoroutine(autoKick());
+        //StartCoroutine(savePlayers());
     }
+
+    //private IEnumerator savePlayers()
+    //{
+    //    yield return slomoTimeSeconds;
+    //    int i = 0;
+        
+    //    foreach (GameObject player in Players.Values) {
+    //        player.transform.SetParent(null);
+    //        player.GetComponent<PlayerController2DOnline>().Freeze();
+    //        i++;
+    //    }
+    //    yield return null;
+    //    i = 0;
+    //    foreach (GameObject player in Players.Values) {
+    //        player.transform.position = RootPlayerSlots[i].transform.position;
+    //        SceneManager.MoveGameObjectToScene(player, SceneManager.GetSceneAt(0));
+    //        i++;
+    //    }
+    //    yield return null;
+    //    foreach (GameObject player in Players.Values) {
+    //        player.GetComponent<PlayerController2DOnline>().UnFreeze();
+    //    }
+    //}
 
     private IEnumerator loadScoreboard()
     {
@@ -191,11 +255,24 @@ public class EndGameManager : MonoBehaviour {
     private IEnumerator reloadArena()
     {
         yield return slomoTimeSeconds;
+        //yield return null;
+        //yield return null;
+        //yield return null; //Stall by 3 frames to allow players to be saved in savePlayers()
+        GameObject.FindGameObjectWithTag("Networking").GetComponent<NetworkManager>().NewGame();
         SceneManager.UnloadScene(GameObject.FindGameObjectWithTag("Master").GetComponent<Master>().CurrentMap);
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(0.25f); //0.25f = arbitrary delay to allow for unload.
         SceneManager.LoadScene(GameObject.FindGameObjectWithTag("Master").GetComponent<Master>().CurrentMap, LoadSceneMode.Additive);
         SceneManager.SetActiveScene(SceneManager.GetSceneAt(1));
         AnimRays.SetActive(true);
+    }
+
+    private IEnumerator clearPlayers()
+    {
+        yield return slomoTimeSeconds;
+        foreach (GameObject plObj in Players.Values) {
+            Destroy(plObj);
+        }
+        Players.Clear();
     }
 
     /// <summary>
@@ -204,6 +281,7 @@ public class EndGameManager : MonoBehaviour {
     /// <returns></returns>
     private IEnumerator autoKick()
     {
+        yield return slomoTimeSeconds;
         yield return autoKickSeconds;
         if (onScoreboard) {
             LeaveScoreboard();

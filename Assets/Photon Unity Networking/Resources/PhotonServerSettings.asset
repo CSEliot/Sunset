@@ -51,4 +51,5 @@ MonoBehaviour:
   - ShowNewChar
   - OnRespawn
   - SetID
+  - SetSlotNum
   DisableAutoOpenWizard: 1

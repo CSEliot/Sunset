@@ -32,7 +32,6 @@ public class NetworkManager : Photon.MonoBehaviour{
     private float previousUpdateTime;
     public float ServerUpdateLength;
     
-    private Dictionary<int, int> ID_to_SlotNum;
     private Dictionary<int, int> ID_to_CharNum;
     private Dictionary<int, bool> ID_to_IsRdy;
 
@@ -90,8 +89,7 @@ public class NetworkManager : Photon.MonoBehaviour{
     {
         minPlayersAllowed = SettingsManager._MinimumPlayers;
         maxPlayersAllowed = SettingsManager._MaximumPlayers;
-
-        ID_to_SlotNum = new Dictionary<int, int>();
+        
         ID_to_CharNum = new Dictionary<int, int>();
         ID_to_IsRdy = new Dictionary<int, bool>();
         
@@ -293,6 +291,7 @@ public class NetworkManager : Photon.MonoBehaviour{
         // if room is already made AND the game started . . .
         if ((bool)PhotonNetwork.room.customProperties["GameStarted"] == true)
         {
+            gameStarted = true;
             return;
         }else {
             gameStarted = false;
@@ -316,7 +315,7 @@ public class NetworkManager : Photon.MonoBehaviour{
         int playerID;
         for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
         {
-            playerID = NetID.Convert(PhotonNetwork.playerList[i].ID);
+            playerID = PhotonNetwork.playerList[i].ID;
             storeLocalData(playerID, i);
         }
 
@@ -521,11 +520,6 @@ public class NetworkManager : Photon.MonoBehaviour{
         return ID_to_CharNum[logInID];
     }
 
-    public int GetSlotNum(int logInID)
-    {
-       return ID_to_SlotNum[logInID];
-    }
-
     public bool GetRdyStatus(int logInID)
     {
         return ID_to_IsRdy[logInID];
@@ -547,12 +541,12 @@ public class NetworkManager : Photon.MonoBehaviour{
 
     public void SetReadyStatus(PhotonTargets tellWho, ReadyCount action)
     {
-        M_PhotonView.RPC("ShowReadyStatus", tellWho, NetID.Convert(PhotonNetwork.player.ID), action);
+        M_PhotonView.RPC("ShowReadyStatus", tellWho, PhotonNetwork.player.ID, action);
     }
 
     public void SetCharDisplay(PhotonTargets tellWho, int newChar)
     {
-        M_PhotonView.RPC("ShowNewChar", tellWho, NetID.Convert(PhotonNetwork.player.ID), newChar);
+        M_PhotonView.RPC("ShowNewChar", tellWho, PhotonNetwork.player.ID, newChar);
     }
 
     public void ReadyButton()
@@ -600,7 +594,7 @@ public class NetworkManager : Photon.MonoBehaviour{
         M.PlaySFX(readySFX); // 2: ReadySFX | 6: UnreadySFX
 
         for (int x = 0; x < PhotonNetwork.playerList.Length; x++) {
-            ID_to_IsRdy[NetID.Convert(PhotonNetwork.playerList[x].ID)] = false;
+            ID_to_IsRdy[PhotonNetwork.playerList[x].ID] = false;
         }
         readyTotal = 0;
         rdyStateChange = true;
@@ -639,12 +633,7 @@ public class NetworkManager : Photon.MonoBehaviour{
             ID_to_CharNum.Add(playerID, playerChar);
         else
             ID_to_CharNum[playerID] = playerChar;
-
-        if (!ID_to_SlotNum.ContainsKey(playerID))
-            ID_to_SlotNum.Add(playerID, playerNum);
-        else
-            ID_to_SlotNum[playerID] = playerNum;
-
+        
         if (!ID_to_IsRdy.ContainsKey(playerID))
             ID_to_IsRdy.Add(playerID, false);
         else
@@ -664,7 +653,7 @@ public class NetworkManager : Photon.MonoBehaviour{
     private void storeRemoteData(PhotonPlayer player)
     {
         int playerChar;
-        int playerID = NetID.Convert(player.ID);
+        int playerID = player.ID;
         if (player.customProperties.ContainsKey("characterNum"))
             playerChar = (int)player.customProperties["characterNum"];
         else
@@ -675,12 +664,7 @@ public class NetworkManager : Photon.MonoBehaviour{
             ID_to_CharNum.Add(playerID, playerChar);
         else
             ID_to_CharNum[playerID] = playerChar;
-
-        if (!ID_to_SlotNum.ContainsKey(playerID))
-            ID_to_SlotNum.Add(playerID, PhotonNetwork.playerList.Length - 1);
-        else
-            ID_to_SlotNum[playerID] = PhotonNetwork.playerList.Length - 1;
-
+        
         if (!ID_to_IsRdy.ContainsKey(playerID))
             ID_to_IsRdy.Add(playerID, false);
         else
@@ -694,19 +678,20 @@ public class NetworkManager : Photon.MonoBehaviour{
     /// <param name="player">player that disconnected.</param>
     private void unassignPlayerTracking(PhotonPlayer player)
     {
-        int playerID = NetID.Convert(player.ID);
-        ID_to_CharNum.Remove(playerID);
-        ID_to_IsRdy.Remove(playerID);
-        ID_to_SlotNum.Remove(playerID);
-        NetID.RealIDs.Remove(player.ID);
+        ID_to_CharNum.Remove(player.ID);
+        ID_to_IsRdy.Remove(player.ID);
+        NetID.Remove(player.ID);
     }
 
+    /// <summary>
+    /// Helper function used by "OnJoinedRoom"
+    /// </summary>
     private void clearLocalTracking( )
     {
         ID_to_CharNum.Clear();
         ID_to_IsRdy.Clear();
-        ID_to_SlotNum.Clear();
-        NetID.RealIDs.Clear();
+        NetID.FromNetToSlot.Clear();
+        NetID.FromSlotToNet.Clear();
     }
 
     /// <summary>
@@ -742,7 +727,7 @@ public class NetworkManager : Photon.MonoBehaviour{
             StageAnimations.Activate();
             //Does the following:
             // - Activates animations for things that need to be in sync Network-wise.
-            GameManager.GameStart(NetID.Convert(PhotonNetwork.player.ID), M.GetClientCharacterName());
+            GameManager.GameStart(NetID.ConvertToSlot(PhotonNetwork.player.ID), M.GetClientCharacterName());
             //Does the following:
             // - Spawns local player over network.
         }
@@ -758,7 +743,7 @@ public class NetworkManager : Photon.MonoBehaviour{
         startTimer = CountdownLength;
         ResetReadyStatus();
 
-        plrStateChange = true;
+        plrStateChange = true;                 
         rdyStateChange = true;
         startCountdown = false;
     }

@@ -158,9 +158,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'MOST KILLS
-
-    MOST LIVES'
+  m_Text: 
 --- !u!222 &10431088
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2234,9 +2232,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'MOST KILLS
-
-    MOST LIVES'
+  m_Text: 
 --- !u!222 &305949425
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2530,9 +2526,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'MOST KILLS
-
-    MOST LIVES'
+  m_Text: 
 --- !u!222 &347083360
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2762,65 +2756,6 @@ RectTransform:
   m_PrefabParentObject: {fileID: 224000012260827680, guid: 5d138663e42b13a49993f58122f2efff,
     type: 2}
   m_PrefabInternal: {fileID: 925967937}
---- !u!21 &420500211
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 2DxFX/Standard/Offset
-  m_Shader: {fileID: 4800000, guid: 52b76e0b393d4e24ea34fe0da86f3bb1, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-    - first:
-        name: _MainTex
-      second:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - first:
-        name: _Alpha
-      second: 0
-    - first:
-        name: _ColorMask
-      second: 15
-    - first:
-        name: _OffsetX
-      second: 1
-    - first:
-        name: _OffsetY
-      second: 1
-    - first:
-        name: _Stencil
-      second: 0
-    - first:
-        name: _StencilComp
-      second: 8
-    - first:
-        name: _StencilOp
-      second: 0
-    - first:
-        name: _StencilReadMask
-      second: 255
-    - first:
-        name: _StencilWriteMask
-      second: 255
-    - first:
-        name: _ZoomX
-      second: 1
-    - first:
-        name: _ZoomY
-      second: 1
-    m_Colors:
-    - first:
-        name: _Color
-      second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &428988111
 GameObject:
   m_ObjectHideFlags: 0
@@ -2888,9 +2823,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'MOST KILLS
-
-    MOST LIVES'
+  m_Text: 
 --- !u!222 &428988114
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5075,9 +5008,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'MOST KILLS
-
-    MOST LIVES'
+  m_Text: 
 --- !u!222 &841899528
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5855,9 +5786,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'MOST KILLS
-
-    MOST LIVES'
+  m_Text: 
 --- !u!222 &889655447
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6390,7 +6319,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &948514858
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7056,7 +6985,7 @@ MonoBehaviour:
   m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 420500211}
+  m_Material: {fileID: 1457927918}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
@@ -7485,7 +7414,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1142770127
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7605,9 +7534,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'MOST KILLS
-
-    MOST LIVES'
+  m_Text: 
 --- !u!222 &1152428838
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7838,9 +7765,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'MOST KILLS
-
-    MOST LIVES'
+  m_Text: 
 --- !u!222 &1161778944
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7914,9 +7839,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'MOST KILLS
-
-    MOST LIVES'
+  m_Text: 
 --- !u!222 &1166261136
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -8829,7 +8752,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1329014434
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8941,7 +8864,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1362304924
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9450,7 +9373,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1455734664
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9473,6 +9396,35 @@ RectTransform:
   m_AnchoredPosition: {x: 198, y: -0.00000021192724}
   m_SizeDelta: {x: 132, y: 216}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!21 &1457927918
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+    - first:
+        name: _MainTex
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - first:
+        name: PixelSnap
+      second: 0
+    m_Colors:
+    - first:
+        name: _Color
+      second: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1467717574
 GameObject:
   m_ObjectHideFlags: 0
@@ -10475,9 +10427,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'MOST KILLS
-
-    MOST LIVES'
+  m_Text: 
 --- !u!222 &1543781426
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10643,7 +10593,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
       propertyPath: DontUnloadObjs.Array.size
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 475854, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
       propertyPath: m_LocalPosition.x
@@ -10737,7 +10687,7 @@ Prefab:
     - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
       propertyPath: DontUnloadObjs.Array.data[5]
       value: 
-      objectReference: {fileID: 1901907072}
+      objectReference: {fileID: 1720277680}
     - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
       propertyPath: MainCameraRef
       value: 
@@ -11171,7 +11121,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1665531015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13059,7 +13009,7 @@ MonoBehaviour:
   Scoreboard: {fileID: 1968703064}
   SlomoTime: 2
   AutoKickTime: 30
-  N: {fileID: 0}
+  N: {fileID: 1321382020}
   M: {fileID: 1674059609}
   AnimRays: {fileID: 1492318496}
   RootPlayerSlots:
@@ -13629,7 +13579,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1934064268
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14177,7 +14127,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1968703065
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15078,7 +15028,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2085123087
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15168,9 +15118,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'MOST KILLS
-
-    MOST LIVES'
+  m_Text: 
 --- !u!222 &2094568901
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -15940,9 +15888,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'MOST KILLS
-
-    MOST LIVES'
+  m_Text: 
 --- !u!222 &2142754717
 CanvasRenderer:
   m_ObjectHideFlags: 0
