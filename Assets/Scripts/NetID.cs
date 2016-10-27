@@ -3,12 +3,16 @@ using System.Collections.Generic;
 
 public class NetID : MonoBehaviour {
 
-    public static Dictionary<int, int> RealIDs;
-
+    /// <summary>
+    /// NetID -> RoomID (slotNum)
+    /// </summary>
+    public static Dictionary<int, int> FromNetToSlot;
+    public static Dictionary<int, int> FromSlotToNet;
 
 	// Use this for initialization
 	void Start () {
-        RealIDs = new Dictionary<int, int>();
+        FromNetToSlot = new Dictionary<int, int>();
+        FromSlotToNet = new Dictionary<int, int>();
     }
 	
 	// Update is called once per frame
@@ -16,20 +20,38 @@ public class NetID : MonoBehaviour {
 	
 	}
 
-    public static int Convert(int netID)
+    /// <summary>
+    /// From netID to roomID for properly handling slots.
+    /// </summary>
+    /// <param name="netID"></param>
+    /// <returns>Player's Room ID</returns>
+    public static int ConvertToSlot(int netID)
     {
-        if (RealIDs.ContainsKey(netID)) {
-            CBUG.Do("ID KEY FOUND! ID: " + netID);
-            return RealIDs[netID];
+        if (FromNetToSlot.ContainsKey(netID)) {
+            //CBUG.Do("ID KEY FOUND! ID: " + netID);
+            return FromNetToSlot[netID];
         }
 
         CBUG.Do("Adding new player ID: " + netID);
         for(int x = 0; x < PhotonNetwork.room.playerCount; x++) {
-            if (!RealIDs.ContainsValue(x) && !RealIDs.ContainsKey(netID)) {
-                RealIDs.Add(netID, x);
+            if (!FromNetToSlot.ContainsValue(x) && !FromNetToSlot.ContainsKey(netID)) {
+                FromNetToSlot.Add(netID, x);
+                FromSlotToNet.Add(x, netID);
             }
         }
-        return RealIDs[netID];
+        return FromNetToSlot[netID];
     }
     
+    public static void Remove(int netID)
+    {
+        FromSlotToNet.Clear();
+        int slotNumToRemove = FromNetToSlot[netID];
+        FromNetToSlot.Remove(netID);
+        foreach(int id in FromNetToSlot.Keys) {
+            if(FromNetToSlot[id] > slotNumToRemove ) {
+                FromNetToSlot[id] = FromNetToSlot[id] - 1;
+                FromNetToSlot.Add(FromNetToSlot[id], id);
+            }
+        }
+    }
 }

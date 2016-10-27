@@ -408,7 +408,7 @@ public class PlayerController2DOffline : PlayerController2D
         this.ID = ID;
         CBUG.Do("Recording ID " + ID + " with Gamemaster.");
         CBUG.Do("Character is: " + gameObject.name);
-        GameManager.Players.Add(ID, gameObject);
+        GameManager.AddPlayer(ID, gameObject);
     }
 
     [PunRPC]

@@ -218,6 +218,7 @@ public class Master : MonoBehaviour
                 N.LeaveServer();
 			    break;
 		    case Menu.ingame:
+                //Leaving after game started means GOTO->Map Select, so unload stage.
                 if (GameManager.GameStarted) {
                     currentMenu = Menu.map;
                     loadMenu();
@@ -225,21 +226,12 @@ public class Master : MonoBehaviour
                     switchCanvas((int)Menu.map);
                     unloadStage();
                     N.LeaveRoom();
-                }else {
+                }else {//Else we're just changing character.
                     currentMenu = Menu.chara;
                     loadMenu();
                     escapeHardened = false;
+                    GameObject.FindGameObjectWithTag("StageCamera").GetComponent<AudioListener>().enabled = false;
                 }
-                //DONT HANDLE ON_DISCONNECT HERE!!
-                //  escapeHardened = false;
-                //Post-GameStart
-                //  "If You leave now Warning"
-                //  Return to Room Select.
-                //Post-END_Game
-                //  (stats like level, kills, deaths are tracked live)
-                //  (stats like wins/loses are tracked immediately after game ends)
-                //  Return to Character Select. Same thing as button.  
-                //Pre-GameStart 
                 break;
             case Menu.options:
                 currentMenu = Menu.main;
@@ -275,6 +267,7 @@ public class Master : MonoBehaviour
                 switchCanvas((int)Menu.ingame);
                 unloadMenu();
                 PlayMSX(1);
+                GameObject.FindGameObjectWithTag("StageCamera").GetComponent<AudioListener>().enabled = true;
                 break;
             case (int)Menu.practice:
                 loadStage();
