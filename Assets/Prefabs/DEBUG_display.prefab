@@ -74,6 +74,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ALL_DEBUG_TOGGLE: 1
+  DebugOnOfficial: 1
   SendToConsole: 1
   DisableOnScreen: 0
   ClearTime: 3.5

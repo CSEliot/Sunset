@@ -100,7 +100,7 @@ public class PlayerController2DOnline : PlayerController2D
     void Awake() 
     {
         isFrozen = false;
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
         anim = GetComponentInChildren<Animator>();
         moveRight = 0;
         moveLeft = 0;
