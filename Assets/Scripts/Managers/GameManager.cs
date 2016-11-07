@@ -232,7 +232,9 @@ public class GameManager : MonoBehaviour {
             totalGhosts++;
             Players[deadPlayerNum].GetComponent<PlayerController>().Ghost();
             //ONLY OUR PLAYER SHOPULD SPECTATE MODE
-            WaitUIController.ActivateSpectatingMode();
+            if (deadPlayerNum == NetID.ConvertToSlot(PhotonNetwork.player.ID)){
+                WaitUIController.ActivateSpectatingMode();
+            }
             yield return null;
         } else {
             yield return respawnWait;

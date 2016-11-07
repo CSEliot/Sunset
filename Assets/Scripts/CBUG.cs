@@ -13,6 +13,7 @@ public class CBUG : MonoBehaviour {
 
     #region Public Unity-Assigned Vars
     public bool ALL_DEBUG_TOGGLE;
+    public bool DebugOnOfficial;
     public bool SendToConsole;
     public bool DisableOnScreen;
     public float ClearTime;
@@ -53,7 +54,7 @@ public class CBUG : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (!Debug.isDebugBuild) {
+        if (!Debug.isDebugBuild && !DebugOnOfficial) {
             gameObject.SetActive(false);
             return;
         }

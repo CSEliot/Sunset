@@ -95,13 +95,13 @@ PlayerSettings:
     16:9: 1
     Others: 1
   bundleIdentifier: com.KiteLion.Sunset
-  bundleVersion: 0.6.6
+  bundleVersion: 0.6.71
   preloadedAssets: []
   metroEnableIndependentInputSource: 0
   xboxOneDisableKinectGpuReservation: 0
   singlePassStereoRendering: 0
   protectGraphicsMemory: 0
-  AndroidBundleVersionCode: 32
+  AndroidBundleVersionCode: 34
   AndroidMinSdkVersion: 19
   AndroidPreferredInstallLocation: 0
   aotOptions: 
