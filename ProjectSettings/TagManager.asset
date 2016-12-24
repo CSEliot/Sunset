@@ -34,6 +34,9 @@ TagManager:
   - GameUI
   - EndGameManager
   - Settings
+  - BattleUI
+  - MatchHUD
+  - AudioHelper
   layers:
   - Default
   - TransparentFX
