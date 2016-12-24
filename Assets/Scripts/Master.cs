@@ -163,6 +163,7 @@ public class Master : MonoBehaviour
         if (IsOfflineMode)
             return;
         CBUG.Print(VersionUI.text);
+        _Audio.Play(10);
     }
 
     // Update is called once per frame

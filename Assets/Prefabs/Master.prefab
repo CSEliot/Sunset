@@ -5,10 +5,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 424336}
-  - 82: {fileID: 8234060}
+  - component: {fileID: 424336}
+  - component: {fileID: 8234060}
   m_Layer: 0
   m_Name: SFX
   m_TagString: Untagged
@@ -21,12 +21,12 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 475854}
-  - 114: {fileID: 11426406}
-  - 82: {fileID: 8260162}
-  - 114: {fileID: 114000013667519192}
+  - component: {fileID: 475854}
+  - component: {fileID: 11426406}
+  - component: {fileID: 8260162}
+  - component: {fileID: 114000013667519192}
   m_Layer: 0
   m_Name: Master
   m_TagString: Master
@@ -43,10 +43,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 475854}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &475854
 Transform:
   m_ObjectHideFlags: 1
@@ -56,12 +56,12 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 424336}
   - {fileID: 4000011195623720}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &8234060
 AudioSource:
   m_ObjectHideFlags: 1
@@ -78,6 +78,7 @@ AudioSource:
   Loop: 0
   Mute: 0
   Spatialize: 0
+  SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
@@ -90,12 +91,14 @@ AudioSource:
   rolloffCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - time: 0
+    - serializedVersion: 2
+      time: 0
       value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
-    - time: 1
+    - serializedVersion: 2
+      time: 1
       value: 0
       inSlope: 0
       outSlope: 0
@@ -106,7 +109,8 @@ AudioSource:
   panLevelCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - time: 0
+    - serializedVersion: 2
+      time: 0
       value: 0
       inSlope: 0
       outSlope: 0
@@ -117,7 +121,8 @@ AudioSource:
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - time: 0
+    - serializedVersion: 2
+      time: 0
       value: 0
       inSlope: 0
       outSlope: 0
@@ -128,7 +133,8 @@ AudioSource:
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - time: 0
+    - serializedVersion: 2
+      time: 0
       value: 1
       inSlope: 0
       outSlope: 0
@@ -152,6 +158,7 @@ AudioSource:
   Loop: 1
   Mute: 0
   Spatialize: 0
+  SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 0
   MinDistance: 1
@@ -164,7 +171,8 @@ AudioSource:
   rolloffCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - time: 0
+    - serializedVersion: 2
+      time: 0
       value: 1
       inSlope: 0
       outSlope: -1.002004
@@ -175,7 +183,8 @@ AudioSource:
   panLevelCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - time: 0
+    - serializedVersion: 2
+      time: 0
       value: 0
       inSlope: 0
       outSlope: 0
@@ -186,7 +195,8 @@ AudioSource:
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - time: 1
+    - serializedVersion: 2
+      time: 1
       value: 0.49961686
       inSlope: 0
       outSlope: 0
@@ -197,7 +207,8 @@ AudioSource:
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - time: 0
+    - serializedVersion: 2
+      time: 0
       value: 1
       inSlope: 0
       outSlope: 0
@@ -216,6 +227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55dd11065e7f34942b876a63d49f61ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MainCameraRef: {fileID: 0}
   StrengthsList:
   - Name: Fang(Clone)
     Power: 0
@@ -246,8 +258,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
   PlayerCharNum: 0
-  InRoomNumber: 0
   SFX:
   - {fileID: 8300000, guid: 81b785f9d9c1d4fa782d238424990d83, type: 3}
   - {fileID: 8300000, guid: 05929a34a4eaf4e1b99da072671e1851, type: 3}
@@ -259,12 +271,12 @@ MonoBehaviour:
   - {fileID: 8300000, guid: b6c43bebd9157ca438e8df6262dc281b, type: 3}
   - {fileID: 8300000, guid: 8b6fa95c6c63cfd4c82452c798bb0f64, type: 3}
   - {fileID: 8300000, guid: 89a24fcce7f874a2b8e7dae03bd74c8a, type: 3}
+  - {fileID: 8300000, guid: 1c4d8efbdf815734f9cea88e3b080bf2, type: 3}
   MSX:
   - {fileID: 8300000, guid: 0b06de17858b94edfb8f855701064572, type: 3}
   - {fileID: 8300000, guid: 6e37a5174b26ab146a086ed86fc467e8, type: 3}
   - {fileID: 8300000, guid: 722d929e74e804b2e9bc44b0636b22c3, type: 3}
   - {fileID: 8300000, guid: 219de431b18449b4297ca91c834c568f, type: 3}
-  - {fileID: 0}
   UIHeads: []
   PlayerHead: {fileID: 0}
   MenuCanvasList:
@@ -277,6 +289,7 @@ MonoBehaviour:
   Rays: {fileID: 0}
   N: {fileID: 0}
   MapUI: {fileID: 0}
+  IsOfflineMode: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -377,11 +390,11 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 4000011195623720}
-  - 114: {fileID: 114000012855790926}
-  - 114: {fileID: 114000011595243920}
+  - component: {fileID: 4000011195623720}
+  - component: {fileID: 114000012855790926}
+  - component: {fileID: 114000011595243920}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -398,10 +411,10 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 475854}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &114000011595243920
 MonoBehaviour:
   m_ObjectHideFlags: 1
