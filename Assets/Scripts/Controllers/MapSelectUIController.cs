@@ -64,6 +64,8 @@ public class MapSelectUIController : MonoBehaviour {
         Reset();
         maxStages = M.TotalUniqueStages;
         roomSizeText = " / 6\nMax Players";
+        _Audio.Play(15);
+
     }
 
     void OnEnable()
@@ -139,6 +141,18 @@ public class MapSelectUIController : MonoBehaviour {
         Name2.text = MapNames[currentHorizSelector];
         RoomNameHelper.RoomName = MapNames[currentHorizSelector];
         RoomNameHelper.AssignNewRoom();
+        if (RoomNameHelper.RoomName.Equals("Pillar"))
+        {
+            _Audio.Play(12);
+        }
+        if (RoomNameHelper.RoomName.Equals("Void"))
+        {
+            _Audio.Play(13);
+        }
+        if (RoomNameHelper.RoomName.Equals("Lair"))
+        {
+            _Audio.Play(14);
+        }
     }
 
 	public void ShiftSelectionUp(){
@@ -188,6 +202,18 @@ public class MapSelectUIController : MonoBehaviour {
         Name2.text = MapNames[currentHorizSelector];
         RoomNameHelper.RoomName = MapNames[currentHorizSelector];
         RoomNameHelper.AssignNewRoom();
+        if (RoomNameHelper.RoomName.Equals("Pillar"))
+        {
+            _Audio.Play(12);
+        }
+        if (RoomNameHelper.RoomName.Equals("Void"))
+        {
+            _Audio.Play(13);
+        }
+        if (RoomNameHelper.RoomName.Equals("Lair"))
+        {
+            _Audio.Play(14);
+        }
     }
 
     public void SetTotalOnline(int totalOnline)
@@ -213,7 +239,7 @@ public class MapSelectUIController : MonoBehaviour {
         UpArrow.interactable = roomsAvailable > 1 && currentVertSelector != N.Rooms[currentHorizSelector].Count - 1; ;
 		DownArrow.interactable = currentVertSelector > 0;
 
-		if (roomsAvailable != 0) {
+        if (roomsAvailable != 0) {
             RoomPlayerCount.text = N.Rooms[currentHorizSelector][currentVertSelector].size + "/6 Players\n" +
                 N.Rooms[currentHorizSelector][currentVertSelector].name;//roomSizeText;
 

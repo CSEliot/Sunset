@@ -45,10 +45,12 @@ public class CharacterSelectUIController : MonoBehaviour {
     {
         resetUI();
         N.SetCharacter();
+        _Audio.Play(16);
+
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update () {
 
 	}
 
@@ -91,7 +93,8 @@ public class CharacterSelectUIController : MonoBehaviour {
             return;
 
         M.AssignPlayerCharacter(chosenChar);
-        N.SetCharacter(); 
+        N.SetCharacter();
+        _Audio.Play(chosenChar + 20);
     }
 
     private void resetUI()

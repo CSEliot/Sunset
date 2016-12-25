@@ -117,7 +117,7 @@ public class Master : MonoBehaviour
     void Awake()
     {
         version = Application.version;
-        
+
 		currentMenu = Menu.main;
         currentMap = Map.pillar;
         rmAction = RoomAction.unset;

@@ -964,6 +964,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 93992772}
+        m_MethodName: Play
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 18
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &93992770
@@ -5537,6 +5548,7 @@ GameObject:
   - component: {fileID: 882075664}
   - component: {fileID: 882075662}
   - component: {fileID: 882075663}
+  - component: {fileID: 882075665}
   m_Layer: 5
   m_Name: West
   m_TagString: Untagged
@@ -5647,6 +5659,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 882075665}
+        m_MethodName: Play
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 30
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &882075663
@@ -5682,6 +5705,17 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 882075660}
+--- !u!114 &882075665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 882075660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd1fda6548ed39a4994fac8def303e44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &885858378
 GameObject:
   m_ObjectHideFlags: 0
@@ -10654,6 +10688,10 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.size
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 475854, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -10751,6 +10789,166 @@ Prefab:
       propertyPath: MapUI
       value: 
       objectReference: {fileID: 948514863}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[10]
+      value: 
+      objectReference: {fileID: 8300000, guid: 9d482eb09f6ac16458d5a07f5f7def9a, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[11]
+      value: 
+      objectReference: {fileID: 8300000, guid: b1694add0da43514c8370667f7b31de3, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[12]
+      value: 
+      objectReference: {fileID: 8300000, guid: 9a47977face674147b22587802910ea0, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[13]
+      value: 
+      objectReference: {fileID: 8300000, guid: 5dbc4d674fcf78840b891d45fb160111, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[14]
+      value: 
+      objectReference: {fileID: 8300000, guid: effede9bd2831014b91bb465733357e4, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[15]
+      value: 
+      objectReference: {fileID: 8300000, guid: 19dda72d8970ee44f87b548a8e56f29a, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[16]
+      value: 
+      objectReference: {fileID: 8300000, guid: 2020c12590448ec4cabdde41949b38b8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[17]
+      value: 
+      objectReference: {fileID: 8300000, guid: 50597bcc25d3bf449905c633a6064ad9, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[18]
+      value: 
+      objectReference: {fileID: 8300000, guid: afeae886b88894e41810d2182420ad6a, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[19]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[20]
+      value: 
+      objectReference: {fileID: 8300000, guid: f89a536daf464f1499e72c596bf24b4c, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[21]
+      value: 
+      objectReference: {fileID: 8300000, guid: 0c277c89780a0a147ae9c96061051c6a, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[22]
+      value: 
+      objectReference: {fileID: 8300000, guid: 18aeceef648428f4585a197466112ff4, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[23]
+      value: 
+      objectReference: {fileID: 8300000, guid: 313fee9b3b2b7f741aca13c696923237, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[24]
+      value: 
+      objectReference: {fileID: 8300000, guid: ee6b509a0f54bec42a05e4668b9e644b, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[25]
+      value: 
+      objectReference: {fileID: 8300000, guid: ab789f1ef7d8bdc41ab800b4a8bb40b2, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[26]
+      value: 
+      objectReference: {fileID: 8300000, guid: 0d6750523cd19d349a83c5fdc15229ed, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[27]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[28]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[29]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[30]
+      value: 
+      objectReference: {fileID: 8300000, guid: 5daf3c0da1b76764fa31189e7539e303, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[31]
+      value: 
+      objectReference: {fileID: 8300000, guid: a1148987037fc4f4fad9bb08738df39e, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[32]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[33]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[34]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[35]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[36]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[37]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[38]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[39]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[40]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[41]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[42]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[43]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[44]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[45]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[46]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[47]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[48]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: SFX.Array.data[49]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e6c0f1991c5e03409d86950b94d81e8, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
   m_IsPrefabParent: 0
@@ -11419,7 +11617,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 17
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -14361,6 +14559,7 @@ GameObject:
   - component: {fileID: 1977513514}
   - component: {fileID: 1977513513}
   - component: {fileID: 1977513515}
+  - component: {fileID: 1977513516}
   m_Layer: 5
   m_Name: East
   m_TagString: Untagged
@@ -14471,6 +14670,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 1977513516}
+        m_MethodName: Play
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 31
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!222 &1977513514
@@ -14506,6 +14716,17 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &1977513516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1977513511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd1fda6548ed39a4994fac8def303e44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2016816555
 GameObject:
   m_ObjectHideFlags: 0
