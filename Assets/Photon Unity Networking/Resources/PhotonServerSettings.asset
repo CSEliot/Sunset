@@ -11,15 +11,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f3758f8f58fdef43803eb9be1df0608, type: 3}
   m_Name: PhotonServerSettings
   m_EditorClassIdentifier: 
+  AppID: d4e9e94d-de9a-44ec-9668-5f1898d4e76c
+  VoiceAppID: 
+  ChatAppID: 
   HostType: 4
+  PreferredRegion: 1
+  EnabledRegions: -1
   Protocol: 0
   ServerAddress: 50.168.63.210
   ServerPort: 5055
-  AppID: d4e9e94d-de9a-44ec-9668-5f1898d4e76c
-  PreferredRegion: 1
-  EnabledRegions: -1
+  VoiceServerPort: 5055
   JoinLobby: 1
   EnableLobbyStatistics: 1
+  PunLogging: 0
+  NetworkLogging: 1
+  RunInBackground: 1
   RpcList:
   - Chat
   - ColorRpc
@@ -52,4 +58,5 @@ MonoBehaviour:
   - OnRespawn
   - SetID
   - SetSlotNum
+  - Flash
   DisableAutoOpenWizard: 1
