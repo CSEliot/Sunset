@@ -33,7 +33,7 @@ public class NetID : MonoBehaviour {
         }
 
         CBUG.Do("Adding new player ID: " + netID);
-        for(int x = 0; x < PhotonNetwork.room.playerCount; x++) {
+        for(int x = 0; x < PhotonNetwork.room.PlayerCount; x++) {
             if (!FromNetToSlot.ContainsValue(x) && !FromNetToSlot.ContainsKey(netID)) {
                 FromNetToSlot.Add(netID, x);
                 FromSlotToNet.Add(x, netID);
