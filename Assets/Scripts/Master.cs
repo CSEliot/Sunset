@@ -117,7 +117,7 @@ public class Master : MonoBehaviour
     void Awake()
     {
         version = Application.version;
-
+        CBUG.Do("Application Version is: " + version + ".");
 		currentMenu = Menu.main;
         currentMap = Map.pillar;
         rmAction = RoomAction.unset;

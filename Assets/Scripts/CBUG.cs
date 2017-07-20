@@ -54,13 +54,14 @@ public class CBUG : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (!Debug.isDebugBuild && !DebugOnOfficial) {
-            gameObject.SetActive(false);
-            return;
-        }
-
         if (!ALL_DEBUG_TOGGLE)
             return;
+
+        if (!Debug.isDebugBuild && !DebugOnOfficial) {
+            ALL_DEBUG_TOGGLE = false;
+            Do("Official Build, Disabled!");
+            return;
+        }
 
         if (Clear) {
             Clear = false;
@@ -180,11 +181,22 @@ public class CBUG : MonoBehaviour {
     private void _Error(string line)
     {
         _Print("ERROR <~> " + line);
+        Debug.Log("ERROR <~> " + line);
         logText.color = Color.red;
+    }
+
+    private void _SrsError(string line)
+    {
+        _Error(line);
+        throw new System.Exception("ERROR <~> " + line);
     }
     #endregion
 
     #region Public Static Functions
+    /// <summary>
+    /// -1 for All lines.
+    /// </summary>
+    /// <param name="amount"></param>
     public static void ClearLines(int amount)
     {
         GetRef()._ClearLines(amount);
@@ -203,6 +215,11 @@ public class CBUG : MonoBehaviour {
     public static void Error(string line)
     {
         GetRef()._Error(line);
+    }
+
+    public static void SrsError(string line)
+    {
+        GetRef()._SrsError(line);
     }
 
     public static bool DEBUG_ON
