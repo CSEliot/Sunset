@@ -259,7 +259,7 @@ public class EndGameManager : MonoBehaviour {
         //yield return null;
         //yield return null; //Stall by 3 frames to allow players to be saved in savePlayers()
         GameObject.FindGameObjectWithTag("Networking").GetComponent<NetworkManager>().NewGame();
-        SceneManager.UnloadScene(GameObject.FindGameObjectWithTag("Master").GetComponent<Master>().CurrentMap);
+        SceneManager.UnloadSceneAsync(GameObject.FindGameObjectWithTag("Master").GetComponent<Master>().CurrentMap);
         yield return new WaitForSeconds(0.25f); //0.25f = arbitrary delay to allow for unload.
         SceneManager.LoadScene(GameObject.FindGameObjectWithTag("Master").GetComponent<Master>().CurrentMap, LoadSceneMode.Additive);
         SceneManager.SetActiveScene(SceneManager.GetSceneAt(1));

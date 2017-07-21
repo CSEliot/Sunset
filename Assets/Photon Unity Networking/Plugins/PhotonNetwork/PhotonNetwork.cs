@@ -316,7 +316,7 @@ public static class PhotonNetwork
     /// It automatically gets updated when someone joins or leaves.
     ///
     /// This can be used to list all players in a room.
-    /// Each player's PhotonPlayer.customProperties are accessible (set and synchronized via
+    /// Each player's PhotonPlayer.CustomProperties are accessible (set and synchronized via
     /// PhotonPlayer.SetCustomProperties).
     ///
     /// You can use a PhotonPlayer.TagObject to store an arbitrary object for reference.
@@ -339,7 +339,7 @@ public static class PhotonNetwork
     /// It automatically gets updated when someone joins or leaves.
     ///
     /// This can be used to list all other players in a room.
-    /// Each player's PhotonPlayer.customProperties are accessible (set and synchronized via
+    /// Each player's PhotonPlayer.CustomProperties are accessible (set and synchronized via
     /// PhotonPlayer.SetCustomProperties).
     ///
     /// You can use a PhotonPlayer.TagObject to store an arbitrary object for reference.
@@ -2241,7 +2241,7 @@ public static class PhotonNetwork
     /// </summary>
     /// <remarks>
     /// Use this method with care. It can create inconsistencies of state between players!
-    /// This only changes the player.customProperties locally. This can be useful to clear your
+    /// This only changes the player.CustomProperties locally. This can be useful to clear your
     /// Custom Properties between games (let's say they store which turn you made, kills, etc).
     ///
     /// SetPlayerCustomProperties() syncs and can be used to set values to null while in a room.
