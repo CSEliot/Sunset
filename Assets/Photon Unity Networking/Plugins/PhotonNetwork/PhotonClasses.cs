@@ -223,7 +223,7 @@ public interface IPunCallbacks
     /// If a match has to be started "actively", you can call an [PunRPC](@ref PhotonView.RPC) triggered by a user's button-press or a timer.
     ///
     /// When this is called, you can usually already access the existing players in the room via PhotonNetwork.playerList.
-    /// Also, all custom properties should be already available as Room.customProperties. Check Room.playerCount to find out if
+    /// Also, all custom properties should be already available as Room.CustomProperties. Check Room.playerCount to find out if
     /// enough players are in the room to start playing.
     /// </remarks>
     void OnJoinedRoom();
@@ -700,7 +700,7 @@ namespace Photon
         /// If a match has to be started "actively", you can call an [PunRPC](@ref PhotonView.RPC) triggered by a user's button-press or a timer.
         ///
         /// When this is called, you can usually already access the existing players in the room via PhotonNetwork.playerList.
-        /// Also, all custom properties should be already available as Room.customProperties. Check Room.playerCount to find out if
+        /// Also, all custom properties should be already available as Room.CustomProperties. Check Room.playerCount to find out if
         /// enough players are in the room to start playing.
         /// </remarks>
         public virtual void OnJoinedRoom()

@@ -370,7 +370,7 @@ public class Master : MonoBehaviour
 
     private void unloadStage()
     {
-        SceneManager.UnloadScene(SceneManager.GetSceneAt(1));
+        SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(1));
     }
 
     private void unloadMenu()

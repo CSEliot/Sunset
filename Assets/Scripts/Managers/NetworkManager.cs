@@ -176,7 +176,7 @@ public class NetworkManager : Photon.MonoBehaviour{
     public void SetCharacter()
     {
         CBUG.Log("Adding player property");
-        ExitGames.Client.Photon.Hashtable playerProperties = PhotonNetwork.player.customProperties;
+        ExitGames.Client.Photon.Hashtable playerProperties = PhotonNetwork.player.CustomProperties;
         //Update local player's chosen character online.
         if (playerProperties.ContainsKey("characterNum"))
         {
@@ -270,7 +270,7 @@ public class NetworkManager : Photon.MonoBehaviour{
         startTimer = CountdownLength;
         
         // All callbacks are listed in enum: PhotonNetworkingMessage.
-        CBUG.Log("On Joined Room: " + PhotonNetwork.room.name);
+        CBUG.Log("On Joined Room: " + PhotonNetwork.room.Name);
         inLobby = false;
         //As a new player, we must assign default player properties.
         //SetCharacter();
@@ -281,15 +281,15 @@ public class NetworkManager : Photon.MonoBehaviour{
 
         // If it's a new room, create descriptor keys
         ExitGames.Client.Photon.Hashtable tempTable;
-        if (!PhotonNetwork.room.customProperties.ContainsKey("GameStarted"))
+        if (!PhotonNetwork.room.CustomProperties.ContainsKey("GameStarted"))
         {
             tempTable = PhotonNetwork
-                .room.customProperties;
+                .room.CustomProperties;
             tempTable.Add("GameStarted", false);
             PhotonNetwork.room.SetCustomProperties(tempTable);
         } else 
         // if room is already made AND the game started . . .
-        if ((bool)PhotonNetwork.room.customProperties["GameStarted"] == true)
+        if ((bool)PhotonNetwork.room.CustomProperties["GameStarted"] == true)
         {
             gameStarted = true;
             return;
@@ -300,7 +300,7 @@ public class NetworkManager : Photon.MonoBehaviour{
         
         //if we join in and game is ready to start, un-ready,
         //because a new player forces all players to re-ready.
-        tempTable = PhotonNetwork.player.customProperties;
+        tempTable = PhotonNetwork.player.CustomProperties;
         if (!tempTable.ContainsKey("IsReady"))
             tempTable.Add("IsReady", false);
         else
@@ -376,8 +376,8 @@ public class NetworkManager : Photon.MonoBehaviour{
         for (int x = 0; x < latestRooms.Length; x++)
         {
             roomInfoTemp = latestRooms[x];
-            roomNameTemp = roomInfoTemp.name;
-            roomSizeTemp = roomInfoTemp.playerCount;
+            roomNameTemp = roomInfoTemp.Name;
+            roomSizeTemp = roomInfoTemp.PlayerCount;
 
             CBUG.Log("Room " + roomNameTemp + " has " + roomSizeTemp + " players.");
             for(int i = 0; i < M.TotalUniqueStages; i++)
@@ -414,7 +414,7 @@ public class NetworkManager : Photon.MonoBehaviour{
     {
         get
         {
-            return PhotonNetwork.room.playerCount;
+            return PhotonNetwork.room.PlayerCount;
         }
     }
 
@@ -551,7 +551,7 @@ public class NetworkManager : Photon.MonoBehaviour{
 
     public void ReadyButton()
     {
-        ExitGames.Client.Photon.Hashtable tempPlayerTable = PhotonNetwork.player.customProperties;
+        ExitGames.Client.Photon.Hashtable tempPlayerTable = PhotonNetwork.player.CustomProperties;
         tempPlayerTable["IsReady"] = true;
         PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
         SetReadyStatus(PhotonTargets.All, ReadyCount.Add);
@@ -559,7 +559,7 @@ public class NetworkManager : Photon.MonoBehaviour{
 
     public void UnreadyButton()
     {
-        ExitGames.Client.Photon.Hashtable tempPlayerTable = PhotonNetwork.player.customProperties;
+        ExitGames.Client.Photon.Hashtable tempPlayerTable = PhotonNetwork.player.CustomProperties;
         tempPlayerTable["IsReady"] = false;
         PhotonNetwork.player.SetCustomProperties(tempPlayerTable);
         SetReadyStatus(PhotonTargets.All, ReadyCount.Subtract);
@@ -623,8 +623,8 @@ public class NetworkManager : Photon.MonoBehaviour{
     private void storeLocalData(int playerID, int playerNum)
     {
         int playerChar;
-        if (PhotonNetwork.playerList[playerNum].customProperties.ContainsKey("characterNum"))
-            playerChar = (int)PhotonNetwork.playerList[playerNum].customProperties["characterNum"];
+        if (PhotonNetwork.playerList[playerNum].CustomProperties.ContainsKey("characterNum"))
+            playerChar = (int)PhotonNetwork.playerList[playerNum].CustomProperties["characterNum"];
         else
             playerChar = 0;
 
@@ -654,8 +654,8 @@ public class NetworkManager : Photon.MonoBehaviour{
     {
         int playerChar;
         int playerID = player.ID;
-        if (player.customProperties.ContainsKey("characterNum"))
-            playerChar = (int)player.customProperties["characterNum"];
+        if (player.CustomProperties.ContainsKey("characterNum"))
+            playerChar = (int)player.CustomProperties["characterNum"];
         else
             playerChar = 0;
 
@@ -709,7 +709,7 @@ public class NetworkManager : Photon.MonoBehaviour{
         {
             //BOTTLENECK AND HOOK TO START A GAME
             // Mark room as "GameStarted"
-            ExitGames.Client.Photon.Hashtable tempRoomTable = PhotonNetwork.room.customProperties;
+            ExitGames.Client.Photon.Hashtable tempRoomTable = PhotonNetwork.room.CustomProperties;
             tempRoomTable["GameStarted"] = true;
             PhotonNetwork.room.SetCustomProperties(tempRoomTable);
             startTheMatch = true; // used by WaitGUI
@@ -735,7 +735,7 @@ public class NetworkManager : Photon.MonoBehaviour{
 
     public void NewGame()
     {
-        ExitGames.Client.Photon.Hashtable tempRoomTable = PhotonNetwork.room.customProperties;
+        ExitGames.Client.Photon.Hashtable tempRoomTable = PhotonNetwork.room.CustomProperties;
         tempRoomTable["GameStarted"] = false;
         PhotonNetwork.room.SetCustomProperties(tempRoomTable);
         startTheMatch = false;

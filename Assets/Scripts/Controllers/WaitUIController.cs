@@ -61,7 +61,7 @@ public class WaitUIController : MonoBehaviour{
 
         PercentReady.text = "" + N.ReadyTotal + "/" + N.GetInRoomTotal;
 
-        roomName.text = N.CurrentRoom.name;
+        roomName.text = N.CurrentRoom.Name;
         isPostStartSpectator = false;
         if (N.GameStarted) {
             activateSpectatingMode();
@@ -141,7 +141,7 @@ public class WaitUIController : MonoBehaviour{
         //No.SetActive(false);
 
         int playerSlot;
-        for (int x = 0; x < PhotonNetwork.room.playerCount; x++)
+        for (int x = 0; x < PhotonNetwork.room.PlayerCount; x++)
         {
             playerSlot = NetID.ConvertToSlot(PhotonNetwork.playerList[x].ID);
             PlayerSlots[playerSlot].color = N.GetRdyStatus(PhotonNetwork.playerList[x].ID) ? rdyColor : unRdyColor;
@@ -152,7 +152,7 @@ public class WaitUIController : MonoBehaviour{
     {
         int slotNum;
         int charNum;
-        for (int x = 0; x < PhotonNetwork.room.playerCount; x++)
+        for (int x = 0; x < PhotonNetwork.room.PlayerCount; x++)
         {
            
             slotNum = NetID.ConvertToSlot(PhotonNetwork.playerList[x].ID);

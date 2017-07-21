@@ -624,12 +624,14 @@ public class PlayerController2DOffline : PlayerController2D
 
     void OnTriggerExit2D(Collider2D col)
     {
-        if (col.tag != "DeathWall")
-            return;
-        myAudioSrc.Play();
-        CamManager.DeathShake(CamManager.GetTarget().name == gameObject.name);
+        bool isOutsideWall = !col.IsTouching(GetComponentInChildren<Collider2D>()); 
+        if (col.tag == "DeathWall" && isOutsideWall)
+        {
+            myAudioSrc.Play();
+            CamManager.DeathShake(CamManager.GetTarget().name == gameObject.name);
 
-        OnDeath(lastHitBy, ID);
+            OnDeath(lastHitBy, ID);
+        }
     }
 
 

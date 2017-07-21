@@ -57,7 +57,7 @@ public class SpecialsController : MonoBehaviour {
     private void LoreOverload()
     {
         Vector3 bookSpawn = transform.parent.position + new Vector3(SpawnAdjust, SpawnHeight, 0);
-        GameObject book = Instantiate(Book, bookSpawn, Quaternion.EulerAngles(0f, 0f, 0f)) as GameObject;
+        GameObject book = Instantiate(Book, bookSpawn, Quaternion.Euler(0f, 0f, 0f)) as GameObject;
         book.GetComponent<BookSplosion>().SetOwnerTag(transform.tag);
     }
 }
