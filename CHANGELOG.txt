@@ -1,21 +1,15 @@
-CHANGELOG - V0.6.8
+CHANGELOG - V0.6.81
 Game Changes:
     
     Art:
-	- Character Audio in.
 
     General:
-	+ Gamepad controls implemented but untested.
-	/ Refresh rate length for map select halved.
+	- Debugger now accessible from builds. Tap bottom right cor
+	ner of settings screen 10 times.
 
     Gameplay/Code:
-	- Dire nerfed. Only 2 jumps now.
-	/ 2 jumps minimum for each character. High speed characters get 3.
-	/ Pillar made easier. (Bottom platform can be jumped up through).
 
     Fixes:
-	+ Stability fix for edge cases involving room state changing post ready-up.
-	+ Disconnecting players now count as having lost all lives.
 
 
  KEY: (/) Change, (+) Addition, (-) Removal
