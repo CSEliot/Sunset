@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 /// All Pre-game, Post-Character Select UI code. 
 /// Dependency on net code and Photon minimized room size calls.
 /// </summary>
-public class WaitUIController : MonoBehaviour{
+public class WaitGUIController : MonoBehaviour{
 
     private bool isReady;
     public Color rdyColor; //Unfaded
@@ -21,14 +21,14 @@ public class WaitUIController : MonoBehaviour{
 
     public Text PercentReady;
 
-    public Image[] PlayerSlots;
+    public Image[] RoomSlotImages;
 
     private int readyUpBypassCount;
     private int readyUpBypassTotal;
 
     private AudioListener stageListener;
 
-    public Text ReadyText;
+    public GameObject ReadyGUI;
     public GameObject Yes;
     public GameObject No;
 
@@ -55,6 +55,7 @@ public class WaitUIController : MonoBehaviour{
         readyUpBypassTotal = 2;
         M = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
         N = GameObject.FindGameObjectWithTag("Networking").GetComponent<NetworkManager>();
+        N.WaitGUI = GetComponent<WaitGUIController>();
 
         isReady = false;
         headSprite = getImageNum();
@@ -101,6 +102,7 @@ public class WaitUIController : MonoBehaviour{
         updateCountdownDisplay(N.StartCountdown, N.StartTimer);
 	}
 
+    #region UI Unity Calls - Called By UI
     public void ReadyUp() 
     {
         if (N.GetInRoomTotal < 2)
@@ -108,21 +110,28 @@ public class WaitUIController : MonoBehaviour{
             Warning.SetActive(true);
             return;
         }
-        if (isReady)
-        {
-            return;
-        }
         isReady = true;
         N.ReadyButton();
+        Yes.SetActive(false);
+        No.SetActive(true);
+        M.PlaySFX(1);
     }
 
-    public void UnReady() {
-        if (!isReady) {
-            Back();
-            return;        
-        }
+    public void UnReady()
+    {
         isReady = false;
         N.UnreadyButton();
+        Yes.SetActive(true);
+        No.SetActive(false);
+        M.PlaySFX(1);
+    }
+    #endregion
+
+    public void UnReadyUI()
+    {
+        Yes.SetActive(true);
+        No.SetActive(false);
+        M.PlaySFX(1);
     }
 
     public void Back()
@@ -140,11 +149,11 @@ public class WaitUIController : MonoBehaviour{
         //Yes.SetActive(true);
         //No.SetActive(false);
 
-        int playerSlot;
+        int playerNumber;
         for (int x = 0; x < PhotonNetwork.room.PlayerCount; x++)
         {
-            playerSlot = NetID.ConvertToSlot(PhotonNetwork.playerList[x].ID);
-            PlayerSlots[playerSlot].color = N.GetRdyStatus(PhotonNetwork.playerList[x].ID) ? rdyColor : unRdyColor;
+            playerNumber = NetIDs.PlayerNumber(PhotonNetwork.playerList[x].ID);
+            RoomSlotImages[playerNumber].color = N.GetRdyStatus(PhotonNetwork.playerList[x].ID) ? rdyColor : unRdyColor;
         }
     }
 
@@ -155,9 +164,9 @@ public class WaitUIController : MonoBehaviour{
         for (int x = 0; x < PhotonNetwork.room.PlayerCount; x++)
         {
            
-            slotNum = NetID.ConvertToSlot(PhotonNetwork.playerList[x].ID);
+            slotNum = NetIDs.PlayerNumber(PhotonNetwork.playerList[x].ID);
             charNum = N.GetCharNum(PhotonNetwork.playerList[x].ID);
-            PlayerSlots[slotNum].sprite = UIHeads[charNum];
+            RoomSlotImages[slotNum].sprite = UIHeads[charNum];
             CBUG.Log(string.Format("UpdateHUDCharDisplay playerID/slotNum: {0} charNum: {1}", slotNum, charNum));
         }
     }
@@ -170,7 +179,7 @@ public class WaitUIController : MonoBehaviour{
         {
             if (i == PhotonNetwork.playerList.Length)
                 isActive = false;
-            PlayerSlots[i].transform.gameObject.SetActive(isActive);
+            RoomSlotImages[i].transform.gameObject.SetActive(isActive);
         }
     }
 
@@ -196,11 +205,11 @@ public class WaitUIController : MonoBehaviour{
         No.SetActive(false);
 
         transform.GetChild(0).gameObject.SetActive(true);
-        ReadyText.text = "Spectating . . .";
+        ReadyGUI.GetComponent<Text>().text = "Spectating . . .";
         PercentReady.text = "";
-        for (int i = 0; i < PlayerSlots.Length; i++)
+        for (int i = 0; i < RoomSlotImages.Length; i++)
         {
-            PlayerSlots[i].transform.gameObject.SetActive(false);
+            RoomSlotImages[i].transform.gameObject.SetActive(false);
         }
 
         CamManager.SetTarget(null);
@@ -217,9 +226,9 @@ public class WaitUIController : MonoBehaviour{
         getRef().activateSpectatingMode();
     }
 
-    private static WaitUIController getRef()
+    private static WaitGUIController getRef()
     {
-        return GameObject.FindGameObjectWithTag("WaitGUI").GetComponent<WaitUIController>();
+        return GameObject.FindGameObjectWithTag("WaitGUI").GetComponent<WaitGUIController>();
     }
 
     private int getImageNum()

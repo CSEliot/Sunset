@@ -140,7 +140,7 @@ public class PlayerController2DOnline : PlayerController2D
 
         if (_PhotonView.isMine) {
             tag = "PlayerSelf";
-            _PhotonView.RPC("SetSlotNum", PhotonTargets.All, NetID.ConvertToSlot(PhotonNetwork.player.ID));
+            _PhotonView.RPC("SetSlotNum", PhotonTargets.All, NetIDs.PlayerNumber(PhotonNetwork.player.ID));
             CamManager.SetTarget(transform);
         }
     }
@@ -496,8 +496,8 @@ public class PlayerController2DOnline : PlayerController2D
 
         //Death Map: OnDeath > RecordDeath > HandleDeath >
         // doRespawnOrGhost
-        GameManager.RecordDeath(killer, killed);
-        GameManager.HandleDeath(killed);
+        GameManager.RecordDeath(killer, killed, false);
+        GameManager.HandleDeath(killed, false);
 
         //TODO: Animate death
     }
@@ -676,15 +676,18 @@ public class PlayerController2DOnline : PlayerController2D
 
     void OnTriggerExit2D(Collider2D col)
     {
-        if (col.tag != "DeathWall")
-            return;
-        myAudioSrc.Play();
-        CamManager.DeathShake(_PhotonView.isMine);
+        bool isOutsideWall = !col.IsTouching(GetComponentInChildren<Collider2D>());
+        if (col.tag == "DeathWall" && isOutsideWall)
+        {
+            myAudioSrc.Play();
+            CamManager.DeathShake(CamManager.GetTarget().name == gameObject.name);
 
-        if (!_PhotonView.isMine)
-            return;
+            if (!_PhotonView.isMine)
+                return;
 
-        _PhotonView.RPC("OnDeath", PhotonTargets.All, lastHitBy, SlotNum);
+            _PhotonView.RPC("OnDeath", PhotonTargets.All, lastHitBy, SlotNum);
+        }
+
     }	  	
 
 
