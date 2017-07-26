@@ -20,6 +20,7 @@ public class NetworkManager : Photon.MonoBehaviour{
 
     public Master M;
     public MapSelectUIController MapUI;
+    public WaitGUIController WaitGUI;
     public PhotonView M_PhotonView;
 
     private bool inLobby = false;
@@ -30,7 +31,7 @@ public class NetworkManager : Photon.MonoBehaviour{
     private bool isEastServer;
 
     private float previousUpdateTime;
-    public float ServerUpdateLength;
+    public float ServerUpdateLoopTime;
     
     private Dictionary<int, int> ID_to_CharNum;
     private Dictionary<int, bool> ID_to_IsRdy;
@@ -106,7 +107,7 @@ public class NetworkManager : Photon.MonoBehaviour{
   
         previousUpdateTime = Time.time;
 
-        serverPlayerMax = 20;
+        serverPlayerMax = 100;
         isConnectAllowed = false; //Enabled when server region given.
 
 		Rooms = new List<List<room>> ();
@@ -148,7 +149,7 @@ public class NetworkManager : Photon.MonoBehaviour{
         //if(PhotonNetwork.room != null)
         //    CBUG.Do("TotalRoomPlayersIs: " + PhotonNetwork.room.playerCount);
 
-        if (Time.time - previousUpdateTime > ServerUpdateLength)
+        if (Time.time - previousUpdateTime > ServerUpdateLoopTime)
         {
             previousUpdateTime = Time.time;
             setServerStats();
@@ -212,6 +213,11 @@ public class NetworkManager : Photon.MonoBehaviour{
         int randInt = UnityEngine.Random.Range(0, 10000);
         string roomName = M.GetStageName() + (Rooms[MapUI.getTargetStage()].Count + randInt);
         PhotonNetwork.JoinOrCreateRoom(roomName, new RoomOptions() { MaxPlayers = Convert.ToByte(ROOM_CAP) }, null);
+    }
+
+    public void OnPhotonSerializeView ()
+    {
+        CBUG.Log("Serialized View");
     }
 
     public void OnConnectedToMaster()
@@ -345,6 +351,12 @@ public class NetworkManager : Photon.MonoBehaviour{
         unassignPlayerTracking(player);
         plrStateChange = true;
         rdyStateChange = true;
+        if (gameStarted)
+        {
+            GameManager.RecordDeath(-1, NetIDs.PlayerNumber(player.ID), true);
+            GameManager.HandleDeath(NetIDs.PlayerNumber(player.ID), true);
+        }
+
     }
 
     public void JoinServer(bool attempt)
@@ -485,6 +497,10 @@ public class NetworkManager : Photon.MonoBehaviour{
         }
     }
 
+    /// <summary>
+    /// If there was a change in any player state, let the GUI know.
+    /// </summary>
+    /// <returns></returns>
     public bool GetPlayerStateChange()
     {
         if(plrStateChange)
@@ -578,18 +594,22 @@ public class NetworkManager : Photon.MonoBehaviour{
         M.PlaySFX(readySFX); // 2: ReadySFX | 6: UnreadySFX
 
         if(action == ReadyCount.Add) {
-            readyTotal++;
+            readyTotal = readyTotal >= PhotonNetwork.room.PlayerCount? PhotonNetwork.room.PlayerCount : readyTotal + 1;
             ID_to_IsRdy[playerID] = true;
         }else { //action == ReadyCount.Subtract
-            readyTotal--;
+            readyTotal = readyTotal <= 0 ? 0 : readyTotal - 1;
             ID_to_IsRdy[playerID] = false;
         }
         rdyStateChange = true;
-        startTimer = CountdownLength;
+        startTimer = CountdownLength;   
     }
 
     private void ResetReadyStatus()
     {
+        //In the case that this function is called upon room join, WaitGUI isn't assigned yet.
+        if (WaitGUI != null)
+            WaitGUI.UnReadyUI();
+
         int readySFX = 6;
         M.PlaySFX(readySFX); // 2: ReadySFX | 6: UnreadySFX
 
@@ -680,7 +700,7 @@ public class NetworkManager : Photon.MonoBehaviour{
     {
         ID_to_CharNum.Remove(player.ID);
         ID_to_IsRdy.Remove(player.ID);
-        NetID.Remove(player.ID);
+        NetIDs.Remove(player.ID);
     }
 
     /// <summary>
@@ -690,8 +710,7 @@ public class NetworkManager : Photon.MonoBehaviour{
     {
         ID_to_CharNum.Clear();
         ID_to_IsRdy.Clear();
-        NetID.FromNetToSlot.Clear();
-        NetID.FromSlotToNet.Clear();
+        NetIDs.Clear();
     }
 
     /// <summary>
@@ -727,7 +746,7 @@ public class NetworkManager : Photon.MonoBehaviour{
             StageAnimations.Activate();
             //Does the following:
             // - Activates animations for things that need to be in sync Network-wise.
-            GameManager.GameStart(NetID.ConvertToSlot(PhotonNetwork.player.ID), M.GetClientCharacterName());
+            GameManager.GameStart(NetIDs.PlayerNumber(PhotonNetwork.player.ID), M.GetClientCharacterName());
             //Does the following:
             // - Spawns local player over network.
         }

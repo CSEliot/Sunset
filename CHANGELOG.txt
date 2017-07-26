@@ -1,45 +1,28 @@
-﻿CHANGELOG - V0.55
+CHANGELOG - V0.6.8
 Game Changes:
     
     Art:
-    / Map screen AFTER character select.
-    / Character Select Scaling
-    / How To Play Scaling
-    + Sunrays in all Background  
-    
-    + Tons more buttons
-    
-    / Cloud character revision
-
-    + Retextured “Floating Pillar” stage
-
-    / Skips vocals in menu music.
+	- Character Audio in.
 
     General:
-    / Character select happens first, THEN map select.
-
-    / Hel renamed to Lair.
+	+ Gamepad controls implemented but untested.
+	/ Refresh rate length for map select halved.
 
     Gameplay/Code:
-    
-    + Framerate and Send Rate optimized.
-    + Control display optimized hard.
+	- Dire nerfed. Only 2 jumps now.
+	/ 2 jumps minimum for each character. High speed characters get 3.
+	/ Pillar made easier. (Bottom platform can be jumped up through).
 
     Fixes:
-    / weird bug on controls, before editted per screen
-    
-    / "Test Control" VS "Play Online" button alternates badly
-    
-    / Clicking Play online from title screen should set character select to map select
-
+	+ Stability fix for edge cases involving room state changing post ready-up.
+	+ Disconnecting players now count as having lost all lives.
 
 
  KEY: (/) Change, (+) Addition, (-) Removal
     
 Networking Changes:
 
-Balance Changes Needed:
- 
+Balance Changes Needed: 
 
 Suggestions:
 
@@ -73,9 +56,9 @@ Later:
 
 Bugs:
  - FIXED? Damage % randomly shoots up and KOs in 1 hit. (Kissing hitboxes.)
- - Teleporty bug.
  - Can't re-ready after a new player joins.
- - Can't move after being punched at lower percentages.
+ - Players will sometimes be KO'd twice in one death, resulting in a negative life counter.
+ - PA makes a room. PB joins and readies up. PC joins. PA and PC have -1/ as text.
 
 Cool Ideas:
 - Sunset Project
@@ -84,34 +67,26 @@ Cool Ideas:
 - *Nude Mod
 - HD Mod
 
-Working Devices List:
- - Samsung Galaxy S4 (Eli)
- - Sumsung Tab 4 SM-T230NU (Eli)
- - LG G4  (Bryan, Josh)
- - Samsung S7 Edge 2016 (Jon)
- - 2015 Moto X (Tom)
- - Samsung S6 Edge (Kit, Richard)
- - iPhone 6S (Brandan, Nate)
- - DOOGEE VOYAGER 2 (Lilo)
- - iPhone 4s (Paul)
- - Nokia 635 W8.1 (Dobrynia)
- - Asus MeMO Pad 8 (Paul)
-
 Potential Music Sources: 
  - https://roboctopus.bandcamp.com/album/disco-txt-ep-version
  - https://glenntai.bandcamp.com/album/3brk-heartbreak
  - We Knew By Chipzel from Disconnected
- - Garoad of VA​-​11 HALL​-​A
+ - Garoad of VA?-?11 HALL?-?A
  - Shirobon http://shirobon.bandcamp.com/
- - contact@chiptuneswin.com <-- contact for large resource: http://chiptuneswin.bandcamp.com/album/chiptunes-win-volume-5
+ - contact@chiptuneswin.com <-- contact for large resource: 
+http://chiptuneswin.bandcamp.com/album/chiptunes-win-volume-5
 
 
-Anyone know of good chipstep music? or perhaps electronic music that's a bit more videogame-y? We're slowly moving focus onto audio now. For reference, here's some music we plan to have or already do:
+Anyone know of good chipstep music? or perhaps electronic music that's 
+a bit more videogame-y? We're slowly moving focus onto audio now. For reference, here's some music we plan to have or already do:
 
 https://www.youtube.com/watch?v=n4A_F5SXmgo
 https://soundcloud.com/multifaros/the-factory
 https://soundcloud.com/shirobon/take-me-to-pleasure-island
 
-If you find anything that you think is good, PLEASE ADD IT HERE! https://docs.google.com/document/d/1qGR9ycN6abYzt1-4D36qr5my9_cX-5HXWi0-MOrlGqI/edit?usp=sharing
+If you find anything that you think is good, PLEASE ADD IT HERE! 
+https://docs.google.com/document/d/1qGR9ycN6abYzt1-4D36qr5my9_cX-5HXWi0-MOrlGqI/edit?usp=sharing
 
-And please bookmark it! This process is actually very time consuming and yields the least amount of progress while doing so, so we could really use everyone's help. For now, please share regardless of copyright, we'll ask for permission where we have to.
+And please bookmark it! This process is actually very time consuming and yields the 
+least amount of progress while doing so, so we could really use everyone's help. For now, 
+please share regardless of copyright, we'll ask for permission where we have to.

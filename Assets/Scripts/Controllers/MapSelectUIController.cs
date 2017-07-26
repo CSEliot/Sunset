@@ -84,7 +84,7 @@ public class MapSelectUIController : MonoBehaviour {
             isServerWoke = true;
         }
 
-         if(Time.time - timeSinceLastUpdate > N.ServerUpdateLength)
+         if(Time.time - timeSinceLastUpdate > N.ServerUpdateLoopTime)
         {
             timeSinceLastUpdate = Time.time;
             SetTotalOnline(N.TotalOnline);

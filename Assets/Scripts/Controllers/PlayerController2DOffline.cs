@@ -223,8 +223,13 @@ public class PlayerController2DOffline : PlayerController2D
 
     private void updateJumping()
     {
+
+        //bool K = ();
+
+        CBUG.Do(Input.GetAxisRaw("Jump") + "");
+
         if ((Input.GetButtonDown("Jump") == true
-            || _MobileInput.GetButtonDown("Jump"))
+            || _MobileInput.GetButtonDown("Jump") || Input.GetAxisRaw("Jump") > 0f)
             && jumpsRemaining > 0 && totalJumpFrames < 0) {
             jumped = true;
             //CBUG.Log("Jumped is true!");
@@ -477,8 +482,8 @@ public class PlayerController2DOffline : PlayerController2D
 
         //Death Map: OnDeath > RecordDeath > HandleDeath >
         // doRespawnOrGhost
-        GameManager.RecordDeath(killer, killed);
-        GameManager.HandleDeath(killed);
+        GameManager.RecordDeath(killer, killed, false);
+        GameManager.HandleDeath(killed, false);
 
         //TODO: Animate death
     }

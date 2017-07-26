@@ -122,7 +122,7 @@ public class PhotonTransformViewPositionControl
                     m_CurrentSpeed = Mathf.MoveTowards( m_CurrentSpeed, targetSpeed, Time.deltaTime * m_Model.InterpolateMoveTowardsDeceleration );
                 }
 
-                //Debug.Log( m_CurrentSpeed + " - " + targetSpeed + " - " + transform.localPosition + " - " + targetPosition );
+                //Debug.Log( m_CurrentSpeed + " - " + targetSpeed + " - " + transform.position + " - " + targetPosition );
 
                 currentPosition = Vector3.MoveTowards( currentPosition, targetPosition, Time.deltaTime * m_CurrentSpeed );
                 break;*/

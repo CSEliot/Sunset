@@ -164,7 +164,7 @@ public class EndGameManager : MonoBehaviour {
         int tempPlayerNum = 0;
         for (int x = startSlot; x < endSlot; x++) {
             RootPlayerSlots[x].SetActive(true);
-            playerImages[x].sprite = M.AllCharacters[N.GetCharNum(NetID.FromSlotToNet[tempPlayerNum])].GetComponentInChildren<Image>().sprite;
+            playerImages[x].sprite = M.AllCharacters[N.GetCharNum(NetIDs.GetNetID(tempPlayerNum))].GetComponentInChildren<Image>().sprite;
             if(bestKillers.Contains(tempPlayerNum) || bestSurvivors.Contains(tempPlayerNum)) {
                 winnerGraphicImages[x].SetActive(true);
                 if (bestKillers.Contains(tempPlayerNum)) {
