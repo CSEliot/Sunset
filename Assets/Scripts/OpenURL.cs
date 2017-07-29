@@ -5,6 +5,6 @@ public class OpenURL : MonoBehaviour {
 
 	public void Do()
     {
-        Application.OpenURL("http://sunset.btong.me/");
+        Application.OpenURL("http://sunsetbrawlers.com/");
     }
 }
