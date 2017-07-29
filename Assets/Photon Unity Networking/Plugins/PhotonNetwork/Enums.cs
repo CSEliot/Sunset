@@ -192,7 +192,7 @@ public enum PhotonNetworkingMessage
     /// If a match has to be started "actively", you can instead call an [PunRPC](@ref PhotonView.RPC) triggered by a user's button-press or a timer.
     ///
     /// When this is called, you can usually already access the existing players in the room via PhotonNetwork.playerList.
-    /// Also, all custom properties should be already available as Room.customProperties. Check Room.playerCount to find out if
+    /// Also, all custom properties should be already available as Room.CustomProperties. Check Room.playerCount to find out if
     /// enough players are in the room to start playing.
     ///
     /// Example: void OnJoinedRoom() { ... }
@@ -419,9 +419,9 @@ public enum PhotonNetworkingMessage
 
 	/// <summary>
 	/// Called when a remote Photon Player activity changed. This will be called ONLY is PlayerTtl is greater then 0.
-	/// 
+	///
 	/// Use PhotonPlayer.IsInactive to check the current activity state
-	/// 	
+	///
 	/// Example: void OnPhotonPlayerActivityChanged(PhotonPlayer otherPlayer) {...}
 	/// </summary>
 	/// <remarks>
@@ -440,7 +440,7 @@ public enum PhotonNetworkingMessage
 	/// PhotonView view = viewAndPlayers[0] as PhotonView;
 	///
 	/// PhotonPlayer newOwner = viewAndPlayers[1] as PhotonPlayer;
-	/// 
+	///
 	/// PhotonPlayer oldOwner = viewAndPlayers[2] as PhotonPlayer;
 	/// </remarks>
 	/// <example>void OnOwnershipTransfered(object[] viewAndPlayers) {} //</example>
@@ -508,7 +508,7 @@ public enum CloudRegionCode
     au = 5,
     ///<summary>USA West, San José, usw</summary>
     usw = 6,
-    ///<summary>South America	, Sao Paulo, sa</summary>
+    ///<summary>South America, Sao Paulo, sa</summary>
     sa = 7,
     ///<summary>Canada East, Montreal, cae</summary>
     cae = 8,

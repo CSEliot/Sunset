@@ -164,7 +164,7 @@ public class EndGameManager : MonoBehaviour {
         int tempPlayerNum = 0;
         for (int x = startSlot; x < endSlot; x++) {
             RootPlayerSlots[x].SetActive(true);
-            playerImages[x].sprite = M.AllCharacters[N.GetCharNum(NetID.FromSlotToNet[tempPlayerNum])].GetComponentInChildren<Image>().sprite;
+            playerImages[x].sprite = M.AllCharacters[N.GetCharNum(NetIDs.GetNetID(tempPlayerNum))].GetComponentInChildren<Image>().sprite;
             if(bestKillers.Contains(tempPlayerNum) || bestSurvivors.Contains(tempPlayerNum)) {
                 winnerGraphicImages[x].SetActive(true);
                 if (bestKillers.Contains(tempPlayerNum)) {
@@ -259,7 +259,7 @@ public class EndGameManager : MonoBehaviour {
         //yield return null;
         //yield return null; //Stall by 3 frames to allow players to be saved in savePlayers()
         GameObject.FindGameObjectWithTag("Networking").GetComponent<NetworkManager>().NewGame();
-        SceneManager.UnloadScene(GameObject.FindGameObjectWithTag("Master").GetComponent<Master>().CurrentMap);
+        SceneManager.UnloadSceneAsync(GameObject.FindGameObjectWithTag("Master").GetComponent<Master>().CurrentMap);
         yield return new WaitForSeconds(0.25f); //0.25f = arbitrary delay to allow for unload.
         SceneManager.LoadScene(GameObject.FindGameObjectWithTag("Master").GetComponent<Master>().CurrentMap, LoadSceneMode.Additive);
         SceneManager.SetActiveScene(SceneManager.GetSceneAt(1));

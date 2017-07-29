@@ -34,7 +34,7 @@ public class ShowInfoOfPlayer : Photon.MonoBehaviour
             textGo = new GameObject("3d text");
             //textGo.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
             textGo.transform.parent = this.gameObject.transform;
-            textGo.transform.localPosition = Vector3.zero;
+            textGo.transform.position = Vector3.zero;
 
             MeshRenderer mr = textGo.AddComponent<MeshRenderer>();
             mr.material = font.material;

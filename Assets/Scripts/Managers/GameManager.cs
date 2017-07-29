@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour {
         if (!gameStarted || IsLocalGame || gameEnded)
             return;
 
-        if(startingPlayers - 1 == totalGhosts || 
+        if(startingPlayers - 1 <= totalGhosts || 
             Time.time > startTime + gameLength) {
             //END GAME SEQUENCE
             endGame();
@@ -96,11 +96,11 @@ public class GameManager : MonoBehaviour {
     /// <summary>
     /// Records death and
     /// </summary>
-    /// <param name="killer"></param>
-    /// <param name="killed"></param>
-    public static void RecordDeath(int killer, int killed)
+    /// <param name="Killer"></param>
+    /// <param name="Killed"></param>
+    public static void RecordDeath(int Killer, int Killed, bool IsDisconnect)
     {
-        getRef()._RecordDeath(killer, killed);
+        getRef()._RecordDeath(Killer, Killed, IsDisconnect);
     }
 
     public static void GameStart(int myID, string charName)
@@ -108,9 +108,9 @@ public class GameManager : MonoBehaviour {
         getRef()._GameStart(myID, charName);   
     }
 
-    public static void HandleDeath(int killed)
+    public static void HandleDeath(int Killed, bool IsDisconnect)
     {
-        getRef()._HandleDeath(killed);
+        getRef()._HandleDeath(Killed, IsDisconnect);
     }
 
     public static void AddPlayer(int ID, GameObject Player)
@@ -200,40 +200,49 @@ public class GameManager : MonoBehaviour {
         EndGameManager.LaunchEndGame(killsMatrix, Players);
     }
 
-    private void _RecordDeath(int killer, int killed)
+    private void _RecordDeath(int killer, int killed, bool isDisconnect)
     {
         /*
          * Players know when they've killed someone, but they think they
          * suicided when someone kills them.
          */
+        //Not sure if above is still issue.
 
-        //Note: Killer=0 means player suicided.
-        if(killer != -1) {
-            killsMatrix[killer, killed]++;
-            CBUG.Do("Player " + (killer+1) + 
-                    " knocked out Player " + (killed+1));
-        } else {
-            CBUG.Do("Player " + (killed+1) + " Suicided!");
+        if (isDisconnect)
+        {
+            killer = -1;
+            CBUG.Do("Player " + killed + " disconnected midgame!");
+            playerLives[killed] = 0;
         }
-        playerLives[killed]--;
+        else
+        {
+            //Note: Killer=-1 means player suicided.
+            if(killer != -1) {
+                killsMatrix[killer, killed]++;
+                CBUG.Do("Player " + (killer+1) + " knocked out Player " + (killed+1));
+            } else {
+                CBUG.Do("Player " + (killed+1) + " Suicided!");
+            }
+            playerLives[killed]--;
+        }
     }
 
-    private void _HandleDeath(int killed)
+    private void _HandleDeath(int killed, bool isDisconnect)
     {
         if(IsLocalGame)
-            StartCoroutine(doRespawnOrGhost<PlayerController2DOffline>(killed));
+            StartCoroutine(doRespawnOrGhost<PlayerController2DOffline>(killed, isDisconnect));
         else
-            StartCoroutine(doRespawnOrGhost<PlayerController2DOnline>(killed));
+            StartCoroutine(doRespawnOrGhost<PlayerController2DOnline>(killed, isDisconnect));
     }
 
-    private IEnumerator doRespawnOrGhost<PlayerController>(int deadPlayerNum) where PlayerController : PlayerController2D
+    private IEnumerator doRespawnOrGhost<PlayerController>(int deadPlayerNum, bool isDisconnect) where PlayerController : PlayerController2D
     {
-        if (playerLives[deadPlayerNum] == -1) {
+        if (playerLives[deadPlayerNum] <= -1 || isDisconnect) {
             totalGhosts++;
-            Players[deadPlayerNum].GetComponent<PlayerController>().Ghost();
+            Players[deadPlayerNum].GetComponent<PlayerController>().Ghost(); 
             //ONLY OUR PLAYER SHOPULD SPECTATE MODE
-            if (deadPlayerNum == NetID.ConvertToSlot(PhotonNetwork.player.ID)){
-                WaitUIController.ActivateSpectatingMode();
+            if (deadPlayerNum == NetIDs.PlayerNumber(PhotonNetwork.player.ID)){
+                WaitGUIController.ActivateSpectatingMode();
             }
             yield return null;
         } else {

@@ -11,7 +11,6 @@ public class CamManager : MonoBehaviour
     public int OnDeathWaitTicks;
 
     private Transform clientTf;
-    private UnityStandardAssets._2D.Camera2DFollow cam;
     private bool isClientFound;
 
     public Transform target;
@@ -154,13 +153,6 @@ public class CamManager : MonoBehaviour
             x_offset -= x_totalAdded;
             y_offset -= y_totalAdded;
         }
-    }
-
-    void StopShaking()
-    {
-        CancelInvoke("CameraShake");
-        transform.GetComponent<UnityStandardAssets._2D.Camera2DFollow>()
-            .enabled = true;
     }
 
     private static CamManager getRef()

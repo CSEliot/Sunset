@@ -12,8 +12,7 @@ using System.Collections.Generic;
 public class CBUG : MonoBehaviour {
 
     #region Public Unity-Assigned Vars
-    public bool ALL_DEBUG_TOGGLE;
-    public bool DebugOnOfficial;
+    public bool ALL_DEBUG_ENABLED;
     public bool SendToConsole;
     public bool DisableOnScreen;
     public float ClearTime;
@@ -23,6 +22,7 @@ public class CBUG : MonoBehaviour {
     #endregion
 
     #region Private Vars
+    private bool showAnyway;
     private Text logText;
     private LinkedList<string> lines;
     private LinkedList<int> occurrences;
@@ -32,11 +32,15 @@ public class CBUG : MonoBehaviour {
     private float previousClear;
     private bool neverClear;
     private int maxLines = 33; //Tested, based on 24pt Min.
+    private int tapsUntilEnable = 10;
+    private int currentTaps = 0;
     #endregion
 
 
     // Use this for initialization
-    void Awake () {
+    void Awake()
+    {
+        showAnyway = false;
         logText = GetComponent<Text>();
         lines = new LinkedList<string>();
         occurrences = new LinkedList<int>();
@@ -49,25 +53,37 @@ public class CBUG : MonoBehaviour {
 
         transform.tag = "CBUG";
         previousClear = Time.time;
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    }
 
-        if (!Debug.isDebugBuild && !DebugOnOfficial) {
-            gameObject.SetActive(false);
+
+
+    void Start()
+    {
+        showAnyway = (PlayerPrefs.GetInt("CBUG_ON", 0) == 1);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+        if (!ALL_DEBUG_ENABLED && !showAnyway)
+            return;
+
+        if (!Application.isEditor && !showAnyway)
+        {
+            ALL_DEBUG_ENABLED = false;
+            Do("In-Build, CBUG Disabled!");
             return;
         }
 
-        if (!ALL_DEBUG_TOGGLE)
-            return;
-
-        if (Clear) {
+        if (Clear)
+        {
             Clear = false;
             _ClearLines(ClearAmount);
         }
 
-        if (!isParented && GameObject.Find("CanvasGroup") != null) {
+        if (!isParented && GameObject.Find("CanvasGroup") != null)
+        {
             isParented = true;
             GameObject.Find("CanvasGroup").transform.SetParent(transform, true);
         }
@@ -75,24 +91,44 @@ public class CBUG : MonoBehaviour {
         logText.text = "";
         tempLinesIter = lines.First;
         tempOccurIter = occurrences.First;
-        for(int x = 0; x < lines.Count; x++) {
+        for (int x = 0; x < lines.Count; x++)
+        {
             logText.text += tempLinesIter.Value + " || " + tempOccurIter.Value + "\n";
             tempLinesIter = tempLinesIter.Next;
             tempOccurIter = tempOccurIter.Next;
         }
 
-        if (lines.Count > maxLines) {
-            for (int x = 0; x < lines.Count - maxLines; x++) {
+        if (lines.Count > maxLines)
+        {
+            for (int x = 0; x < lines.Count - maxLines; x++)
+            {
                 lines.RemoveFirst();
                 occurrences.RemoveFirst();
             }
         }
 
-        if(!neverClear && Time.time - previousClear > ClearTime) {
+        if (!neverClear && Time.time - previousClear > ClearTime)
+        {
             Clear = true;
             previousClear = Time.time;
         }
-	}
+    }
+
+
+    public void EnableCBUG ()
+    {
+        currentTaps++;
+        if (currentTaps >= tapsUntilEnable)
+        {
+            if (!showAnyway)
+                PlayerPrefs.SetInt("CBUG_ON", 1);
+            else
+                PlayerPrefs.SetInt("CBUG_ON", 0);
+
+            PlayerPrefs.Save();
+            Application.Quit();
+        }
+    }
 
     #region Debug Aliases
     public static void Log(string line)
@@ -115,7 +151,6 @@ public class CBUG : MonoBehaviour {
         GetRef()._Print(line, debugOn);
     }
     #endregion
-
 
     #region Helper Functions
     private void _ClearLines(int amount)
@@ -144,7 +179,7 @@ public class CBUG : MonoBehaviour {
 
     private void _Print(string line)
     {
-        if (!ALL_DEBUG_TOGGLE)
+        if (!ALL_DEBUG_ENABLED)
             return;
 
         if(SendToConsole)
@@ -169,7 +204,7 @@ public class CBUG : MonoBehaviour {
 
     private void _Print(string line, bool debugOn)
     {
-        if (ALL_DEBUG_TOGGLE && debugOn) {
+        if (ALL_DEBUG_ENABLED && debugOn) {
             if (line == null)
                 _Print("Null @ " + System.Environment.StackTrace);
             else
@@ -180,11 +215,22 @@ public class CBUG : MonoBehaviour {
     private void _Error(string line)
     {
         _Print("ERROR <~> " + line);
+        Debug.Log("ERROR <~> " + line);
         logText.color = Color.red;
+    }
+
+    private void _SrsError(string line)
+    {
+        _Error(line);
+        throw new System.Exception("ERROR <~> " + line);
     }
     #endregion
 
     #region Public Static Functions
+    /// <summary>
+    /// -1 for All lines.
+    /// </summary>
+    /// <param name="amount"></param>
     public static void ClearLines(int amount)
     {
         GetRef()._ClearLines(amount);
@@ -205,10 +251,15 @@ public class CBUG : MonoBehaviour {
         GetRef()._Error(line);
     }
 
+    public static void SrsError(string line)
+    {
+        GetRef()._SrsError(line);
+    }
+
     public static bool DEBUG_ON
     {
         get {
-            return GetRef().ALL_DEBUG_TOGGLE;
+            return GetRef().ALL_DEBUG_ENABLED;
         }
     }
     #endregion
