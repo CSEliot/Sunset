@@ -64,7 +64,7 @@ public class PhotonView : Photon.MonoBehaviour
 
     public int ownerId;
 
-    public int group = 0;
+    public byte group = 0;
 
     protected internal bool mixedModeIsReliable = false;
 
@@ -384,12 +384,12 @@ public class PhotonView : Photon.MonoBehaviour
             switch (this.onSerializeTransformOption)
             {
                 case OnSerializeTransform.All:
-                    trans.localPosition = (Vector3) stream.ReceiveNext();
+                    trans.position = (Vector3) stream.ReceiveNext();
                     trans.localRotation = (Quaternion) stream.ReceiveNext();
                     trans.localScale = (Vector3) stream.ReceiveNext();
                     break;
                 case OnSerializeTransform.OnlyPosition:
-                    trans.localPosition = (Vector3) stream.ReceiveNext();
+                    trans.position = (Vector3) stream.ReceiveNext();
                     break;
                 case OnSerializeTransform.OnlyRotation:
                     trans.localRotation = (Quaternion) stream.ReceiveNext();
@@ -398,7 +398,7 @@ public class PhotonView : Photon.MonoBehaviour
                     trans.localScale = (Vector3) stream.ReceiveNext();
                     break;
                 case OnSerializeTransform.PositionAndRotation:
-                    trans.localPosition = (Vector3) stream.ReceiveNext();
+                    trans.position = (Vector3) stream.ReceiveNext();
                     trans.localRotation = (Quaternion) stream.ReceiveNext();
                     break;
             }
@@ -463,12 +463,12 @@ public class PhotonView : Photon.MonoBehaviour
             switch (this.onSerializeTransformOption)
             {
                 case OnSerializeTransform.All:
-                    stream.SendNext(trans.localPosition);
+                    stream.SendNext(trans.position);
                     stream.SendNext(trans.localRotation);
                     stream.SendNext(trans.localScale);
                     break;
                 case OnSerializeTransform.OnlyPosition:
-                    stream.SendNext(trans.localPosition);
+                    stream.SendNext(trans.position);
                     break;
                 case OnSerializeTransform.OnlyRotation:
                     stream.SendNext(trans.localRotation);
@@ -477,7 +477,7 @@ public class PhotonView : Photon.MonoBehaviour
                     stream.SendNext(trans.localScale);
                     break;
                 case OnSerializeTransform.PositionAndRotation:
-                    stream.SendNext(trans.localPosition);
+                    stream.SendNext(trans.position);
                     stream.SendNext(trans.localRotation);
                     break;
             }

@@ -192,8 +192,8 @@ public class ScreenController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Application.isEditor)
-            assignScreenActivityPCTEST();
+        if (Application.isEditor || !Application.isMobilePlatform)
+            return; //assignScreenActivityPCTEST();
         else
             readScreenActivity();
 

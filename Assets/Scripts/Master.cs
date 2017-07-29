@@ -106,7 +106,8 @@ public class Master : MonoBehaviour
     public MapSelectUIController MapUI;
 
     private float timeConnecting;
-    private float connectingWaitTime;
+    public float ConnectToRoomMaxWaitTime;
+    public float ConnectToServerMaxWaitTime;
 
     private bool escapeHardened; //A hardened escape requires 3 presses.
     private bool escapeDisabled;
@@ -117,11 +118,11 @@ public class Master : MonoBehaviour
     void Awake()
     {
         version = Application.version;
-
+        CBUG.Do("Application Version is: " + version + ".");
 		currentMenu = Menu.main;
         currentMap = Map.pillar;
         rmAction = RoomAction.unset;
-
+        
         stageName = "Pillar";
         
         isEast = true;
@@ -147,7 +148,6 @@ public class Master : MonoBehaviour
         if (IsOfflineMode)
             return;
         VersionUI.text = "BETA " + Application.version;
-        connectingWaitTime = 7; //Seconds
         N = GameObject.FindGameObjectWithTag("Networking").GetComponent<NetworkManager>();
     }
 
@@ -163,7 +163,7 @@ public class Master : MonoBehaviour
         if (IsOfflineMode)
             return;
         CBUG.Print(VersionUI.text);
-        _Audio.Play(10);
+        //_Audio.Play(10);
     }
 
     // Update is called once per frame
@@ -255,10 +255,10 @@ public class Master : MonoBehaviour
 			    break;
 		    case (int)Menu.map:
                 N.JoinServer(true);
-                StartCoroutine(gotoMapHelper());
+                StartCoroutine(gotoMap());
 			    break;
 		    case (int)Menu.chara:
-                StartCoroutine(gotoCharHelper());
+                StartCoroutine(gotoCharacterSelect());
                 break; 
             case (int)Menu.options:
                 switchCanvas((int)Menu.options);
@@ -290,16 +290,17 @@ public class Master : MonoBehaviour
     /// and there's no connection, we return to the previous screen.
     /// </summary>
     /// <returns></returns>
-    private IEnumerator gotoMapHelper()
+    private IEnumerator gotoMap()
     {
         timeConnecting = Time.time;
         ToggleConnectLoadScreen(true);
         GoTo(-1);
         while (!PhotonNetwork.connectedAndReady)
         {
-            if (Time.time - timeConnecting > connectingWaitTime)
+            if (Time.time - timeConnecting > ConnectToServerMaxWaitTime)
             {
                 GoTo(0);
+                ToggleConnectLoadScreen(false);
                 N.JoinServer(false);
                 break;
             }else
@@ -311,10 +312,11 @@ public class Master : MonoBehaviour
         {
             AssignPlayerCharacter(0);
             switchCanvas((int)Menu.map);
+            _Audio.Play(12); //Say "Pillar"
         }
     }
 
-    private IEnumerator gotoCharHelper()
+    private IEnumerator gotoCharacterSelect()
     {
         if (rmAction == RoomAction.unset)
         {
@@ -333,7 +335,7 @@ public class Master : MonoBehaviour
         GoTo(-1);
         while (!PhotonNetwork.inRoom)
         {
-            if (Time.time - timeConnecting > connectingWaitTime)
+            if (Time.time - timeConnecting > ConnectToRoomMaxWaitTime)
             {
                 GoTo(1);
                 MapUI.FullRoomWarning.SetActive(true);
@@ -370,7 +372,7 @@ public class Master : MonoBehaviour
 
     private void unloadStage()
     {
-        SceneManager.UnloadScene(SceneManager.GetSceneAt(1));
+        SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(1));
     }
 
     private void unloadMenu()

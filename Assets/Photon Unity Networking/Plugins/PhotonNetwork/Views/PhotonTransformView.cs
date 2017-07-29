@@ -82,7 +82,7 @@ public class PhotonTransformView : MonoBehaviour, IPunObservable
             return;
         }
 
-       	transform.localPosition = this.m_PositionControl.UpdatePosition(transform.localPosition);
+       	transform.position = this.m_PositionControl.UpdatePosition(transform.position);
     }
 
     void UpdateRotation()
@@ -120,7 +120,7 @@ public class PhotonTransformView : MonoBehaviour, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        this.m_PositionControl.OnPhotonSerializeView(transform.localPosition, stream, info);
+        this.m_PositionControl.OnPhotonSerializeView(transform.position, stream, info);
         this.m_RotationControl.OnPhotonSerializeView(transform.localRotation, stream, info);
         this.m_ScaleControl.OnPhotonSerializeView(transform.localScale, stream, info);
 
@@ -140,7 +140,7 @@ public class PhotonTransformView : MonoBehaviour, IPunObservable
 
 				if (this.m_PositionModel.SynchronizeEnabled)
 				{
-					this.transform.localPosition = this.m_PositionControl.GetNetworkPosition();
+					this.transform.position = this.m_PositionControl.GetNetworkPosition();
 				}
 
 				if (this.m_RotationModel.SynchronizeEnabled)
@@ -173,7 +173,7 @@ public class PhotonTransformView : MonoBehaviour, IPunObservable
     {
         Vector3 targetPosition = this.m_PositionControl.GetNetworkPosition();
 
-		// we are synchronizing the localPosition, so we need to add the parent position for a proper positioning.
+		// we are synchronizing the position, so we need to add the parent position for a proper positioning.
 		if (transform.parent != null)
 		{
 			targetPosition = transform.parent.position + targetPosition ;
