@@ -1,11 +1,10 @@
-CHANGELOG - V0.6.81
+CHANGELOG - V0.6.82
 Game Changes:
     
     Art:
 
     General:
-	- Debugger now accessible from builds. Tap bottom right cor
-	ner of settings screen 10 times.
+	- Max server size for players is now 100. Up from only 20. Also some minor UI changes.
 
     Gameplay/Code:
 
