@@ -1,14 +1,22 @@
-CHANGELOG - V0.6.82
+CHANGELOG - V0.6.83
 Game Changes:
     
     Art:
 
     General:
-	- Max server size for players is now 100. Up from only 20. Also some minor UI changes.
+	- Back button also disables during countdown.
+	- Upon returning to Character Select, your previously selected character is highlighted.
+	- Exit Button removed.
 
     Gameplay/Code:
+	- Sitting on top of a player no longer causes you to rotate when they do. 
+	- Dire and Lore jump slightly less high.
+	- Sarchy and Fang jump slightly higher.
+	- Timer added.
+	- Improvements to the Void stage.
 
     Fixes:
-
+	- Players will sometimes be KO'd twice in one death, resulting in a negative life counter.
+	- Down Attack has returned. (Got overwritten during controller support implementation)
 
  KEY: (/) Change, (+) Addition, (-) Removal
