@@ -8,6 +8,7 @@ public class GameHUDController : MonoBehaviour {
 
     public Text Lives_Text;
     public Text Damage_Text;
+    public Text Timer;
     public GameObject YouLoseText;
     public GameObject YouWinText;
     
@@ -66,6 +67,11 @@ public class GameHUDController : MonoBehaviour {
     {
         getRef()._LoseALife();
     }
+
+    public static void SetClock(string Time)
+    {
+        getRef()._SetClock(Time);
+    }
     #endregion
 
     #region Private Helper Functions
@@ -107,6 +113,11 @@ public class GameHUDController : MonoBehaviour {
     {
         lives--;
         Lives_Text.text = "" + lives;
+    }
+
+    private void _SetClock(string time)
+    {
+        Timer.text = time;
     }
     #endregion
 
