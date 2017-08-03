@@ -129,7 +129,8 @@ public class PlayerController2DOnline : PlayerController2D
         AttackObjs[1] = transform.GetChild(1).gameObject;
         AttackObjs[2] = transform.GetChild(2).gameObject;
 
-        _MobileInput = GameObject.FindGameObjectWithTag("MobileController").GetComponent<MobileController>();
+        if(GameObject.FindGameObjectWithTag("MobileController") != null)
+            _MobileInput = GameObject.FindGameObjectWithTag("MobileController").GetComponent<MobileController>();
 
         spawnPause = 0.5f;
         spawnPauseWait = new WaitForSeconds(spawnPause);
@@ -349,13 +350,15 @@ public class PlayerController2DOnline : PlayerController2D
         //               Color.red,
         //               0.01f);
         wasGrounded = isGrounded;
-        isGrounded = hit.collider != null;
+        isGrounded = (hit.collider != null);
         //hit.collider.gameObject.layer
         ///Can't regain jumpcounts before jump force is applied.
         if (isGrounded && !jumped)
         {
-            //CBUG.Log("Grounded on: " + (hit.collider.name));
             jumpsRemaining = TotalJumpsAllowed;
+            if (hit.transform.tag.Contains("Player"))
+                return;
+            //CBUG.Log("Grounded on: " + (hit.collider.name));
             transform.SetParent(hit.collider.transform);
         }
         else if (!isGrounded)

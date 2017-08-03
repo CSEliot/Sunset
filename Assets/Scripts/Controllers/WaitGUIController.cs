@@ -29,8 +29,9 @@ public class WaitGUIController : MonoBehaviour{
     private AudioListener stageListener;
 
     public GameObject ReadyGUI;
-    public GameObject Yes;
-    public GameObject No;
+    public GameObject YesButton;
+    public GameObject NoButton;
+    public GameObject BackButton;
 
     public Text roomName;
 
@@ -112,8 +113,8 @@ public class WaitGUIController : MonoBehaviour{
         }
         isReady = true;
         N.ReadyButton();
-        Yes.SetActive(false);
-        No.SetActive(true);
+        YesButton.SetActive(false);
+        NoButton.SetActive(true);
         M.PlaySFX(1);
     }
 
@@ -121,16 +122,16 @@ public class WaitGUIController : MonoBehaviour{
     {
         isReady = false;
         N.UnreadyButton();
-        Yes.SetActive(true);
-        No.SetActive(false);
+        YesButton.SetActive(true);
+        NoButton.SetActive(false);
         M.PlaySFX(1);
     }
     #endregion
 
     public void UnReadyUI()
     {
-        Yes.SetActive(true);
-        No.SetActive(false);
+        YesButton.SetActive(true);
+        NoButton.SetActive(false);
         M.PlaySFX(1);
     }
 
@@ -194,15 +195,16 @@ public class WaitGUIController : MonoBehaviour{
         {
             M.EscapeDisabled = true;
             //on the last second, disable the ability to leave
-            No.SetActive(false);
+            NoButton.SetActive(false);
+            BackButton.SetActive(false);
         }
     }
     #endregion
 
     private void activateSpectatingMode()
     {
-        Yes.SetActive(false);
-        No.SetActive(false);
+        YesButton.SetActive(false);
+        NoButton.SetActive(false);
 
         transform.GetChild(0).gameObject.SetActive(true);
         ReadyGUI.GetComponent<Text>().text = "Spectating . . .";

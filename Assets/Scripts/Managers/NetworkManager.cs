@@ -356,6 +356,10 @@ public class NetworkManager : Photon.MonoBehaviour{
             GameManager.RecordDeath(-1, NetIDs.PlayerNumber(player.ID), true);
             GameManager.HandleDeath(NetIDs.PlayerNumber(player.ID), true);
         }
+        else
+        {
+            //
+        }
 
     }
 
