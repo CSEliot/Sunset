@@ -1,86 +1,22 @@
-CHANGELOG - V0.6.81
+CHANGELOG - V0.6.83
 Game Changes:
     
     Art:
 
     General:
-	- Debugger now accessible from builds. Tap bottom right cor
-	ner of settings screen 10 times.
+	- Back button also disables during countdown.
+	- Upon returning to Character Select, your previously selected character is highlighted.
+	- Exit Button removed.
 
     Gameplay/Code:
+	- Sitting on top of a player no longer causes you to rotate when they do. 
+	- Dire and Lore jump slightly less high.
+	- Sarchy and Fang jump slightly higher.
+	- Timer added.
+	- Improvements to the Void stage.
 
     Fixes:
-
+	- Players will sometimes be KO'd twice in one death, resulting in a negative life counter.
+	- Down Attack has returned. (Got overwritten during controller support implementation)
 
  KEY: (/) Change, (+) Addition, (-) Removal
-    
-Networking Changes:
-
-Balance Changes Needed: 
-
-Suggestions:
-
-To Be Made:
- / move the win/loss detection out of the master file
-    and other things that don't need to be in the Master class
- / pixelated particle effect.
- / Back buttons go back 1 screen.
- / Toggle control lines in settings.
- + Disconnect detection.
- + Map select working same way as character select.
- + Short hops.  
- + Usernames.
- + Wall Jumping
- / jump detection left and right corners.
- + Left and Right to Swap Spectators
- + When new players join, the down arrow pops up during spectating.
- + Charging attacks
- + Special Abilities
- + Cosmetic System Support
- + Bigger hit boxes
- + Item gambling System
-
-Later:
- + Destructible Terrain
- + More maps.
- + Items.
- + Mouse Control Options.
- + Controller Support.
- + Mobile Support.
-
-Bugs:
- - FIXED? Damage % randomly shoots up and KOs in 1 hit. (Kissing hitboxes.)
- - Can't re-ready after a new player joins.
- - Players will sometimes be KO'd twice in one death, resulting in a negative life counter.
- - PA makes a room. PB joins and readies up. PC joins. PA and PC have -1/ as text.
-
-Cool Ideas:
-- Sunset Project
-- Pierce takes over another character.
-- Shit Quality makes everyone one single pixel.
-- *Nude Mod
-- HD Mod
-
-Potential Music Sources: 
- - https://roboctopus.bandcamp.com/album/disco-txt-ep-version
- - https://glenntai.bandcamp.com/album/3brk-heartbreak
- - We Knew By Chipzel from Disconnected
- - Garoad of VA?-?11 HALL?-?A
- - Shirobon http://shirobon.bandcamp.com/
- - contact@chiptuneswin.com <-- contact for large resource: 
-http://chiptuneswin.bandcamp.com/album/chiptunes-win-volume-5
-
-
-Anyone know of good chipstep music? or perhaps electronic music that's 
-a bit more videogame-y? We're slowly moving focus onto audio now. For reference, here's some music we plan to have or already do:
-
-https://www.youtube.com/watch?v=n4A_F5SXmgo
-https://soundcloud.com/multifaros/the-factory
-https://soundcloud.com/shirobon/take-me-to-pleasure-island
-
-If you find anything that you think is good, PLEASE ADD IT HERE! 
-https://docs.google.com/document/d/1qGR9ycN6abYzt1-4D36qr5my9_cX-5HXWi0-MOrlGqI/edit?usp=sharing
-
-And please bookmark it! This process is actually very time consuming and yields the 
-least amount of progress while doing so, so we could really use everyone's help. For now, 
-please share regardless of copyright, we'll ask for permission where we have to.

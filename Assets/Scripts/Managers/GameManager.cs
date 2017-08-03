@@ -12,7 +12,9 @@ public class GameManager : MonoBehaviour {
     private bool gameStarted;
     private bool gameEnded;
     private float startTime;
+    private float secondsPlayed;
     private float respawnTime;
+    private bool isRespawning; //Trigger boxes can be fickle. This is to prevent 2 simul. respawn attempts.
     private float gameLength;
     private WaitForSeconds respawnWait;
     private int[] playerLives;
@@ -40,6 +42,7 @@ public class GameManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        secondsPlayed = 0;
         gameStarted = false;
         gameEnded = false;
         SettingsManager.GetGameInfo(ref startingLives,
@@ -72,8 +75,14 @@ public class GameManager : MonoBehaviour {
             endGame();
         }
 
+        if(secondsPlayed + startTime < Time.time)
+        {
+            secondsPlayed++;
+            GameHUDController.SetClock("" + (gameLength - secondsPlayed));//"" + (secondsPlayed / 60) + ":" + (secondsPlayed - (secondsPlayed / 60) * 60));
+        }
+
         if (CBUG.DEBUG_ON && ((int)(Time.time))%20 == 0) {
-            CBUG.Do("Time Remaining: " + (int)(startTime + gameLength - Time.time) );
+            //CBUG.Do("Time Remaining: " + (int)(startTime + gameLength - Time.time) );
         }
 
 	}
@@ -138,6 +147,8 @@ public class GameManager : MonoBehaviour {
         gameStarted = true;
         SettingsManager.SetGameInfo(startingLives, gameLength);
         startTime = Time.time;
+        secondsPlayed = 0;
+        GameHUDController.SetClock("" + (gameLength - secondsPlayed));// (secondsPlayed / 60) + ":" + (secondsPlayed - (secondsPlayed / 60) * 60));")
 
         startingPlayers = N.ReadyTotal;
         gameLength = SettingsManager._GameLength;
@@ -229,6 +240,9 @@ public class GameManager : MonoBehaviour {
 
     private void _HandleDeath(int killed, bool isDisconnect)
     {
+        if (isRespawning)
+            return;
+
         if(IsLocalGame)
             StartCoroutine(doRespawnOrGhost<PlayerController2DOffline>(killed, isDisconnect));
         else
@@ -246,6 +260,7 @@ public class GameManager : MonoBehaviour {
             }
             yield return null;
         } else {
+            isRespawning = true;
             yield return respawnWait;
             //Player spawn position is controlled by Game Manager.
             //But we only wanna reposition OUR player's position.
@@ -253,6 +268,7 @@ public class GameManager : MonoBehaviour {
             Players[deadPlayerNum].GetComponent<PlayerController>().Respawn(
                 SpawnPositions[Random.Range(0, SpawnPositions.Length - 1)].position
             );
+            isRespawning = false;
         }
     }
 
