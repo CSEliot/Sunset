@@ -14,10 +14,4 @@ public class HurtAnimController : MonoBehaviour {
 	
 	}
 
-    public void UnHurt()
-    {
-        anim.SetBool("HurtSmall", false);
-        anim.SetBool("HurtMedium", false);
-        anim.SetBool("HurtBig", false);
-    }
 }
