@@ -52,11 +52,16 @@ public class PlayerController2DOffline : PlayerController2D
 
     private GameObject[] AttackObjs;
     public int AttackLag;
+    /// <summary>
+    /// # of Frames of holding down before a charge is initiated.
+    /// </summary>
+    private int chargeFrames = 3;
     public float AttackLife;
     private int totalAttackFrames;
     private WaitForSeconds attackDisableDelay;
     public float InvicibilityFrames;
     private float invincibilityCount;
+
 
     private bool facingRight;
 
@@ -93,16 +98,22 @@ public class PlayerController2DOffline : PlayerController2D
     private WaitForSeconds spawnPauseWait;
 
     private Animator anim;
+    private ParticleSystem partSys;
 
     public float BoxPunch;
 
     public Vector2 LeftRaytraceOffset;
     public Vector2 RightRaytraceOffset;
 
+    public bool IsPlayerControlled;
 
     void Awake()
     {
-        anim = GetComponentInChildren<Animator>();
+        IsPlayerControlled = false;
+        anim = GetComponent<Animator>();
+        partSys = GetComponentInChildren<ParticleSystem>();
+        partSys.Play();
+        partSys.Stop();
         moveRight = 0;
         moveLeft = 0;
         controlsPaused = false;
@@ -226,7 +237,7 @@ public class PlayerController2DOffline : PlayerController2D
 
         //bool K = ();
 
-        CBUG.Do(Input.GetAxisRaw("Jump") + "");
+        //CBUG.Do(Input.GetAxisRaw("Jump") + "");
 
         if ((Input.GetButtonDown("Jump") == true
             || _MobileInput.GetButtonDown("Jump") || Input.GetAxisRaw("Jump") > 0f)
@@ -440,28 +451,8 @@ public class PlayerController2DOffline : PlayerController2D
     [PunRPC]
     void SpecialActivate()
     {
-        anim.SetBool("Activating", true);
+        //anim.SetBool("Activating", true);
     }
-
-    [PunRPC]
-    void HurtAnim(int hurtNum)
-    {
-        switch (hurtNum) {
-            case 1:
-                anim.SetBool("HurtSmall", true);
-                break;
-            case 2:
-                anim.SetBool("HurtMedium", true);
-                break;
-            case 3:
-                anim.SetBool("HurtBig", true);
-                break;
-            default:
-                CBUG.Error("BAD ANIM NUMBER GIVEN");
-                break;
-        }
-    }
-
 
     /// <summary>
     /// Calls GameManager's RecordDeath. Respawn Handling
@@ -474,7 +465,7 @@ public class PlayerController2DOffline : PlayerController2D
     {
         isDead = true;
         //Hide Self till respawn (or stay dead, ghost)
-        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+        transform.GetComponentInChildren<Image>().enabled = false;
         transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Image>().color = deathColor;
         //Freeze and Clear motion
         _Rigibody2D.velocity = Vector2.zero;
@@ -490,7 +481,7 @@ public class PlayerController2DOffline : PlayerController2D
     #endregion
 
     /// <summary>
-    /// Nothing to do. You stay invisible and immobile
+    /// Does nothing in offline mode. No lives, no ghosting.
     /// </summary>
     public override void Ghost()
     {
@@ -515,6 +506,24 @@ public class PlayerController2DOffline : PlayerController2D
         CamManager.SetTarget(transform);
         GameHUDController.SetDamageTo(damage);
     }
+
+    public void TurnPartsOn()
+    {
+        partSys.Play();
+    }
+
+    public void TurnPartsOff()
+    {
+        partSys.Stop();
+    }
+
+    public void UnHurt()
+    {
+        anim.SetBool("HurtSmall", false);
+        anim.SetBool("HurtMedium", false);
+        anim.SetBool("HurtBig", false);
+    }
+
     private IEnumerator spawnProtection()
     {
         yield return spawnPauseWait;
@@ -546,20 +555,18 @@ public class PlayerController2DOffline : PlayerController2D
             lastHitBy = col.GetComponentInParent<PlayerController2DOffline>().ID;
             lastHitTime = Time.time;
 
+            CBUG.Do("THING");
+
             if (invincibilityCount > 0) {
                 return;
             } else {
                 invincibilityCount = InvicibilityFrames;
             }
             damage += PunchPercentAdd;
-            if (damage < 30) {
-                HurtAnim(1);
-            } else if (damage < 60) {
-                HurtAnim(2);
-            } else {
-                HurtAnim(3);
-            }
-            GameHUDController.SetDamageTo(damage);
+
+            if(IsPlayerControlled)
+                GameHUDController.SetDamageTo(damage);
+
             if (col.name == "PunchForward") {
                 //velocity += Vector2.right * PunchForceForward_Forward;
                 if (col.transform.parent.localScale.x > 0) {
@@ -610,7 +617,10 @@ public class PlayerController2DOffline : PlayerController2D
     {
         Vector2 tempPunchForce = punchForce;
         bool isTempForceLow = false;
-        CamManager.PunchShake(tempPunchForce.magnitude);
+
+        if(IsPlayerControlled)
+            CamManager.PunchShake(tempPunchForce.magnitude);
+
         while (tempPunchForce.magnitude > 0.01f) {
             velocity += tempPunchForce;
             tempPunchForce = Vector2.Lerp(tempPunchForce, Vector2.zero, PunchForceDecel);

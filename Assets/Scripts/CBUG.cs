@@ -34,6 +34,7 @@ public class CBUG : MonoBehaviour {
     private int maxLines = 33; //Tested, based on 24pt Min.
     private int tapsUntilEnable = 10;
     private int currentTaps = 0;
+    private bool isTemp;
     #endregion
 
 
@@ -53,9 +54,16 @@ public class CBUG : MonoBehaviour {
 
         transform.tag = "CBUG";
         previousClear = Time.time;
+        isTemp = false;
+
+        Application.logMessageReceived += HandleUnityLog;
     }
 
-
+    private CBUG( bool isTemp)
+    {
+        if (isTemp)
+            this.isTemp = true;
+    }
 
     void Start()
     {
@@ -114,6 +122,17 @@ public class CBUG : MonoBehaviour {
         }
     }
 
+    public void HandleUnityLog(string LogString, string StackTrace, LogType type)
+    {
+        switch (type)
+        {
+            case LogType.Error:
+                CBUG.SrsError(LogString + "/n" + StackTrace);
+                break;
+            default:
+                break;
+        }
+    }
 
     public void EnableCBUG ()
     {
@@ -174,11 +193,27 @@ public class CBUG : MonoBehaviour {
 
     private static CBUG GetRef()
     {
-        return GameObject.FindGameObjectWithTag("CBUG").GetComponent<CBUG>();
+        GameObject myCBUG = GameObject.FindGameObjectWithTag("CBUG");
+        if(myCBUG == null)
+        {
+            return new CBUG(true);
+        }
+        else
+        {
+            return myCBUG.GetComponent<CBUG>();
+        }
+
     }
 
     private void _Print(string line)
     {
+
+        if (isTemp)
+        {
+            Debug.Log(line);
+            return;
+        }
+
         if (!ALL_DEBUG_ENABLED)
             return;
 
@@ -246,11 +281,19 @@ public class CBUG : MonoBehaviour {
         GetRef()._Print(line, debugOn);
     }
 
+    /// <summary>
+    /// Red-ify the Debug text. But don't throw an Exception.
+    /// </summary>
+    /// <param name="line"></param>
     public static void Error(string line)
     {
         GetRef()._Error(line);
     }
 
+    /// <summary>
+    /// Like Error, but also actually throws an Exception given the Line.
+    /// </summary>
+    /// <param name="line"></param>
     public static void SrsError(string line)
     {
         GetRef()._SrsError(line);

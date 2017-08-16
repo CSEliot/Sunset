@@ -3,14 +3,15 @@ using System.Collections;
 
 public class ToggleParticles : MonoBehaviour {
 
-    private ParticleSystem targetPart;
+    public ParticleSystem targetPart;
     private bool isEnabled;
 
 
     // Use this for initialization
     void Start () {
         isEnabled = false;
-        targetPart = GetComponentInChildren<ParticleSystem>();
+        if(GetComponentInChildren<ParticleSystem>() != null)
+            targetPart = GetComponentInChildren<ParticleSystem>();
         targetPart.Play();
         TurnOff();
     }

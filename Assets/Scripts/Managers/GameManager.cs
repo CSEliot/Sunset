@@ -8,7 +8,7 @@ using System.Collections;
 /// TODO: Rename map stuff to Stage stuff
 /// </summary>
 public class GameManager : MonoBehaviour {
-
+    
     private bool gameStarted;
     private bool gameEnded;
     private float startTime;
@@ -23,10 +23,18 @@ public class GameManager : MonoBehaviour {
     private int startingPlayers;
     private int startingLives;
     private int totalGhosts;
-    public static Dictionary<int, GameObject> Players;
+    public static Dictionary<int, GameObject> PlayableCharacters;
     public int[,] killsMatrix; //x -> y // X killed Y
     
+    enum k
+    {
+        x,
+        y
+    };
+
+    k z;
     private Transform[] SpawnPositions;
+    
 
     //public int TotalSpawns;
 
@@ -49,22 +57,22 @@ public class GameManager : MonoBehaviour {
                                     ref gameLength,
                                     ref respawnTime);
         respawnWait = new WaitForSeconds(respawnTime);
-        Players = new Dictionary<int, GameObject>();
+        PlayableCharacters = new Dictionary<int, GameObject>();
         if (IsLocalGame) {
             startingLives = int.MaxValue;
             N = new NetworkManager();
             N.ReadyTotal = LocalPlayers;
             startLocal();
-            foreach(GameObject O in GameObject.FindGameObjectsWithTag("PlayerSelf")) {
-                Players.Add(O.GetComponent<PlayerController2DOffline>().ID, O);
+            foreach(GameObject PbC in GameObject.FindGameObjectsWithTag("PlayerSelf")) {
+                PlayableCharacters.Add(PbC.GetComponent<PlayerController2DOffline>().ID, PbC);
             }
             return;
         }
 	    NetworkManager.SetGameStateMan(out N, this);
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update () {
 
         if (!gameStarted || IsLocalGame || gameEnded)
             return;
@@ -124,8 +132,20 @@ public class GameManager : MonoBehaviour {
 
     public static void AddPlayer(int ID, GameObject Player)
     {
-        Players.Add(ID, Player);
+        PlayableCharacters.Add(ID, Player);
         EndGameManager.Players.Add(ID, Player);
+    }
+
+    /// <summary>
+    /// For SinglePlayer Game use. Tells all other PCs they're not selected.
+    /// </summary>
+    public static void UnselectControlled(GameObject NewSelect)
+    {
+        foreach(GameObject PC in PlayableCharacters.Values)
+        {
+            PC.GetComponent<PlayerController2DOffline>().IsPlayerControlled = false;
+        }
+        NewSelect.GetComponent<PlayerController2DOffline>().IsPlayerControlled = true;
     }
     #endregion
 
@@ -208,7 +228,7 @@ public class GameManager : MonoBehaviour {
     private void endGame()
     {
         gameEnded = true;
-        EndGameManager.LaunchEndGame(killsMatrix, Players);
+        EndGameManager.LaunchEndGame(killsMatrix, PlayableCharacters);
     }
 
     private void _RecordDeath(int killer, int killed, bool isDisconnect)
@@ -253,7 +273,7 @@ public class GameManager : MonoBehaviour {
     {
         if (playerLives[deadPlayerNum] <= -1 || isDisconnect) {
             totalGhosts++;
-            Players[deadPlayerNum].GetComponent<PlayerController>().Ghost(); 
+            PlayableCharacters[deadPlayerNum].GetComponent<PlayerController>().Ghost(); 
             //ONLY OUR PLAYER SHOPULD SPECTATE MODE
             if (deadPlayerNum == NetIDs.PlayerNumber(PhotonNetwork.player.ID)){
                 WaitGUIController.ActivateSpectatingMode();
@@ -265,7 +285,7 @@ public class GameManager : MonoBehaviour {
             //Player spawn position is controlled by Game Manager.
             //But we only wanna reposition OUR player's position.
             //BUT ALSO
-            Players[deadPlayerNum].GetComponent<PlayerController>().Respawn(
+            PlayableCharacters[deadPlayerNum].GetComponent<PlayerController>().Respawn(
                 SpawnPositions[Random.Range(0, SpawnPositions.Length - 1)].position
             );
             isRespawning = false;
