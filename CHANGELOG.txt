@@ -2,17 +2,19 @@ CHANGELOG - V0.6.84
 Game Changes:
     
     Art:
-	O Particles aren't correct color.
+	/ Practice Mode: Particles are square, pixely, and colorful!
 
     General:
 	O New Character animations and charge attacks not in.
+	+ Debugging available in Practice Mode.
 
     Gameplay:
 	/ Out of bounds Warning Signs now further away. Boundaries changed.
+	/ Attacks now animation-based. This means better feedback during fights.
 
     Fixes:
-	/ Practice Mode fists rendering behind characters.
-	/ Person punched and puncher take damage in Practice Mode. 
-	O Hurt animations don't work in singleplayer.
+	/ Practice Mode fists rendered behind characters.
+	/ Person punched and puncher took damage in Practice Mode. 
+	/ Hurt animations didn't work in singleplayer.
 
  KEY: (/) Change, (+) Addition, (-) Removal, (O) Known but not Fixed
