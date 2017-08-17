@@ -125,11 +125,11 @@ public class PlayerController2DOnline : PlayerController2D
         _PhotonTransform = GetComponent<PhotonTransformView>();
 
         AttackObjs = new GameObject[3];
-        AttackObjs[0] = transform.GetChild(3).gameObject;
-        AttackObjs[1] = transform.GetChild(1).gameObject;
-        AttackObjs[2] = transform.GetChild(2).gameObject;
+        AttackObjs[0] = transform.Find("PunchUp").gameObject;
+        AttackObjs[1] = transform.Find("PunchForward").gameObject;
+        AttackObjs[2] = transform.Find("PunchDown").gameObject;
 
-        if(GameObject.FindGameObjectWithTag("MobileController") != null)
+        if (GameObject.FindGameObjectWithTag("MobileController") != null)
             _MobileInput = GameObject.FindGameObjectWithTag("MobileController").GetComponent<MobileController>();
 
         spawnPause = 0.5f;
@@ -454,24 +454,18 @@ public class PlayerController2DOnline : PlayerController2D
     }
 
     [PunRPC]
-    void SpecialActivate()
-    {
-        anim.SetBool("Activating", true);
-    }
-
-    [PunRPC]
     void HurtAnim(int hurtNum)
     {
         switch (hurtNum)
         {
             case 1:
-                anim.SetBool("HurtSmall", true);
+                anim.SetTrigger("HurtSmall");
                 break;
             case 2:
-                anim.SetBool("HurtMedium", true);
+                anim.SetTrigger("HurtMedium");
                 break;
             case 3:
-                anim.SetBool("HurtBig", true);
+                anim.SetTrigger("HurtBig");
                 break;
             default:
                 CBUG.Error("BAD ANIM NUMBER GIVEN");

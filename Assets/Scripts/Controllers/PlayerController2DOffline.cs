@@ -56,7 +56,7 @@ public class PlayerController2DOffline : PlayerController2D
     /// # of Frames of holding down before a charge is initiated.
     /// </summary>
     private int chargeFrames = 3;
-    public float AttackLife;
+    private float attackLife = 0.2f;
     private int totalAttackFrames;
     private WaitForSeconds attackDisableDelay;
     public float InvicibilityFrames;
@@ -98,7 +98,9 @@ public class PlayerController2DOffline : PlayerController2D
     private WaitForSeconds spawnPauseWait;
 
     private Animator anim;
-    private ParticleSystem partSys;
+    private ParticleSystem mainPartSys;
+    private ParticleSystem deathParts;
+    private Image bodyImg;
 
     public float BoxPunch;
 
@@ -111,9 +113,30 @@ public class PlayerController2DOffline : PlayerController2D
     {
         IsPlayerControlled = false;
         anim = GetComponent<Animator>();
-        partSys = GetComponentInChildren<ParticleSystem>();
-        partSys.Play();
-        partSys.Stop();
+
+        foreach(ParticleSystem partSys in GetComponentsInChildren<ParticleSystem>())
+        {
+            if (partSys.gameObject.name == "Main Particle System")
+            {
+                mainPartSys = partSys;
+            }
+            if (partSys.gameObject.name == "Death Particle System")
+            {
+                deathParts = partSys;
+            }
+            CBUG.Do("Partsys name is: " + partSys.gameObject.name);
+        }
+        mainPartSys.Stop();
+        deathParts.Stop();
+
+        foreach (Image img in GetComponentsInChildren<Image>())
+        {
+            if (img.gameObject.name == "BodyRender")
+            {
+                bodyImg = img;
+            }
+        }
+
         moveRight = 0;
         moveLeft = 0;
         controlsPaused = false;
@@ -127,21 +150,18 @@ public class PlayerController2DOffline : PlayerController2D
         StrengthsList = GameObject.FindGameObjectWithTag("Master").
             GetComponent<Master>().GetStrengthList();
 
-
-        CBUG.Log("" + (StrengthsList == null ? "True" : "False"));
-
         jumpForceTemp = 0f;
         SpeedTemp = 0f;
-        attackDisableDelay = new WaitForSeconds(AttackLife);
+        attackDisableDelay = new WaitForSeconds(attackLife);
         facingRight = true;
         position = new Vector2();
         _Rigibody2D = GetComponent<Rigidbody2D>();
         jumpsRemaining = TotalJumpsAllowed;
 
         AttackObjs = new GameObject[3];
-        AttackObjs[0] = transform.GetChild(3).gameObject;
-        AttackObjs[1] = transform.GetChild(1).gameObject;
-        AttackObjs[2] = transform.GetChild(2).gameObject;
+        AttackObjs[0] = transform.Find("PunchUp").gameObject;
+        AttackObjs[1] = transform.Find("PunchForward").gameObject;
+        AttackObjs[2] = transform.Find("PunchDown").gameObject;
 
         _MobileInput = GameObject.FindGameObjectWithTag("MobileController").GetComponent<MobileController>();
 
@@ -382,33 +402,37 @@ public class PlayerController2DOffline : PlayerController2D
         if (totalAttackFrames < 0) {
             if ((Input.GetButtonDown("Up") || _MobileInput.GetButtonDown("Up")) && !punching) {
                 punching = true;
-                AttackObjs[0].SetActive(true);
+                //AttackObjs[0].SetActive(true);
                 myAudioSrc.PlayOneShot(PunchNoise);
-                StartCoroutine(disableDelay(AttackObjs[0]));
+                StartCoroutine(stopAnimationWithDelay("NormalAttackUp"));
+                anim.SetBool("NormalAttackUp", true);
                 totalAttackFrames = AttackLag;
                 //_PhotonView.RPC("UpAttack", PhotonTargets.Others);
             }
             if ((Input.GetButtonDown("Down") || _MobileInput.GetButtonDown("Down")) && !punching) {
                 punching = true;
-                AttackObjs[2].SetActive(true);
+                //AttackObjs[2].SetActive(true);
                 myAudioSrc.PlayOneShot(PunchNoise);
-                StartCoroutine(disableDelay(AttackObjs[2]));
+                StartCoroutine(stopAnimationWithDelay("NormalAttackDown"));
+                anim.SetBool("NormalAttackDown", true);
                 totalAttackFrames = AttackLag;
                 //_PhotonView.RPC("DownAttack", PhotonTargets.Others);
             }
             if (facingRight && (Input.GetButtonDown("Right") || _MobileInput.GetButtonDown("Right")) && !punching) {
                 punching = true;
-                AttackObjs[1].SetActive(true);
+                //AttackObjs[1].SetActive(true);
                 myAudioSrc.PlayOneShot(PunchNoise);
-                StartCoroutine(disableDelay(AttackObjs[1]));
+                StartCoroutine(stopAnimationWithDelay("NormalAttackForward"));
+                anim.SetBool("NormalAttackForward", true);
                 totalAttackFrames = AttackLag;
                 //_PhotonView.RPC("ForwardAttack", PhotonTargets.Others);
             }
             if (!facingRight && (Input.GetButtonDown("Left") || _MobileInput.GetButtonDown("Left")) && !punching) {
                 punching = true;
-                AttackObjs[1].SetActive(true);
+                //AttackObjs[1].SetActive(true);
                 myAudioSrc.PlayOneShot(PunchNoise);
-                StartCoroutine(disableDelay(AttackObjs[1]));
+                StartCoroutine(stopAnimationWithDelay("NormalAttackForward"));
+                anim.SetBool("NormalAttackForward", true);
                 totalAttackFrames = AttackLag;
                 //_PhotonView.RPC("ForwardAttack", PhotonTargets.Others);
             }
@@ -428,27 +452,6 @@ public class PlayerController2DOffline : PlayerController2D
     }
 
     [PunRPC]
-    void UpAttack()
-    {
-        AttackObjs[0].SetActive(true);
-        StartCoroutine(disableDelay(AttackObjs[0]));
-    }
-
-    [PunRPC]
-    void ForwardAttack()
-    {
-        AttackObjs[1].SetActive(true);
-        StartCoroutine(disableDelay(AttackObjs[1]));
-    }
-
-    [PunRPC]
-    void DownAttack()
-    {
-        AttackObjs[2].SetActive(true);
-        StartCoroutine(disableDelay(AttackObjs[2]));
-    }
-
-    [PunRPC]
     void SpecialActivate()
     {
         //anim.SetBool("Activating", true);
@@ -465,8 +468,8 @@ public class PlayerController2DOffline : PlayerController2D
     {
         isDead = true;
         //Hide Self till respawn (or stay dead, ghost)
-        transform.GetComponentInChildren<Image>().enabled = false;
-        transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Image>().color = deathColor;
+        bodyImg.enabled = false;
+        deathParts.Play();
         //Freeze and Clear motion
         _Rigibody2D.velocity = Vector2.zero;
         velocity = Vector2.zero;
@@ -509,28 +512,21 @@ public class PlayerController2DOffline : PlayerController2D
 
     public void TurnPartsOn()
     {
-        partSys.Play();
+        mainPartSys.Play();
     }
 
     public void TurnPartsOff()
     {
-        partSys.Stop();
-    }
-
-    public void UnHurt()
-    {
-        anim.SetBool("HurtSmall", false);
-        anim.SetBool("HurtMedium", false);
-        anim.SetBool("HurtBig", false);
+        mainPartSys.Stop();
     }
 
     private IEnumerator spawnProtection()
     {
         yield return spawnPauseWait;
         //TODO: Spawn animation
-        transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
-        transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Image>().color = lifeColor;
+        bodyImg.enabled = true;
         isDead = false;
+        deathParts.Stop();
     }
 
     void OnTriggerEnter2D(Collider2D col)
@@ -554,9 +550,7 @@ public class PlayerController2DOffline : PlayerController2D
             //Get name of puncher
             lastHitBy = col.GetComponentInParent<PlayerController2DOffline>().ID;
             lastHitTime = Time.time;
-
-            CBUG.Do("THING");
-
+            
             if (invincibilityCount > 0) {
                 return;
             } else {
@@ -564,7 +558,21 @@ public class PlayerController2DOffline : PlayerController2D
             }
             damage += PunchPercentAdd;
 
-            if(IsPlayerControlled)
+
+            if (damage < 30)
+            {
+                hurtAnim(1);
+            }
+            else if (damage < 60)
+            {
+                hurtAnim(2);
+            }
+            else
+            {
+                hurtAnim(3);
+            }
+
+            if (IsPlayerControlled)
                 GameHUDController.SetDamageTo(damage);
 
             if (col.name == "PunchForward") {
@@ -606,10 +614,15 @@ public class PlayerController2DOffline : PlayerController2D
         }
     }
 
-    private IEnumerator disableDelay(GameObject dis)
+    /// <summary>
+    /// For stopping triggers.
+    /// </summary>
+    /// <param name="boolName"></param>
+    /// <returns></returns>
+    private IEnumerator stopAnimationWithDelay(string boolName)
     {
         yield return attackDisableDelay;
-        dis.SetActive(false);
+        anim.SetBool(boolName, false);
         punching = false;
     }
 
@@ -646,6 +659,25 @@ public class PlayerController2DOffline : PlayerController2D
             CamManager.DeathShake(CamManager.GetTarget().name == gameObject.name);
 
             OnDeath(lastHitBy, ID);
+        }
+    }
+
+    private void hurtAnim(int hurtNum)
+    {
+        switch (hurtNum)
+        {
+            case 1:
+                anim.SetBool("HurtSmall", true);
+                break;
+            case 2:
+                anim.SetBool("HurtMedium", true);
+                break;
+            case 3:
+                anim.SetBool("HurtBig", true);
+                break;
+            default:
+                CBUG.Error("BAD ANIM NUMBER GIVEN");
+                break;
         }
     }
 

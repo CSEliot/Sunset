@@ -127,7 +127,10 @@ public class CBUG : MonoBehaviour {
         switch (type)
         {
             case LogType.Error:
-                CBUG.SrsError(LogString + "/n" + StackTrace);
+                CBUG.Error(type.ToString() + LogString + "/n" + StackTrace);
+                break;
+            case LogType.Exception:
+                CBUG.Error(type.ToString() + LogString + "/n" + StackTrace);
                 break;
             default:
                 break;
