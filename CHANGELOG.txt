@@ -4,6 +4,7 @@ Game Changes:
     Art:
 	/ Practice Mode: Particles are square, pixely, and colorful!
 	/ Online Play: 	Particles are square, pixely, and colorful!
+	/ Sarchy is no longer rainbow!
 
     General:
 	O New Character animations and charge attacks not in.
