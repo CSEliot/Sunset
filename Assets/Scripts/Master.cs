@@ -132,6 +132,10 @@ public class Master : MonoBehaviour
         myMusicAudio = GetComponent<AudioSource>();
         mySFXAudio = transform.GetChild(0).GetComponent<AudioSource>();
         PlayMSX(3);
+        if (SceneManager.GetActiveScene().name.Contains("Practice"))
+        {
+            PlayMSX(0);
+        }
         NameStrengthDict = new Dictionary<string, float>();
         foreach (NameToStrength character in StrengthsList)
         {
@@ -390,7 +394,7 @@ public class Master : MonoBehaviour
 
     private void loadMenu()
     {
-        PlayMSX(3);
+        PlayMSX(0);
         GameObject[] menuObjs = SceneManager.GetSceneByName("MainMenu").GetRootGameObjects();
         for (int i = 0; i < menuObjs.Length; i++)
         {
