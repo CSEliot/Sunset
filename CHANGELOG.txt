@@ -1,13 +1,15 @@
-CHANGELOG - V0.6.84
+CHANGELOG - V0.6.9
 Game Changes:
     
     Art:
 	/ Practice Mode: Particles are square, pixely, and colorful!
+	/ Online Play: 	Particles are square, pixely, and colorful!
 
     General:
 	O New Character animations and charge attacks not in.
 	+ Debugging available in Practice Mode.
 	+ Updated to latest Photon. (Had to manually recode local -> world positioning)
+	+ New "First Time" Visual Guide.
 
     Gameplay:
 	/ Out of bounds Warning Signs now further away. Boundaries changed.
