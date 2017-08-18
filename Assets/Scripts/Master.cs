@@ -115,6 +115,9 @@ public class Master : MonoBehaviour
 
     public bool IsOfflineMode;
 
+    private bool isFirstTime;
+    public GameObject FirstTimeNotice;
+
     void Awake()
     {
         version = Application.version;
@@ -126,7 +129,15 @@ public class Master : MonoBehaviour
         stageName = "Pillar";
         
         isEast = true;
+        if (Application.isEditor)
+            PlayerPrefs.DeleteAll();
         bool tempControlsShown = PlayerPrefs.GetInt("isControlsShown", 1) == 1 ? true : false;
+
+        isFirstTime = PlayerPrefs.GetInt("isFirstTime", 1) == 1? true : false;
+        FirstTimeNotice.SetActive(isFirstTime);
+        isFirstTime = false;
+        PlayerPrefs.SetInt("isFirstTime", 0);
+
         isControlsShown = tempControlsShown;
 
         myMusicAudio = GetComponent<AudioSource>();

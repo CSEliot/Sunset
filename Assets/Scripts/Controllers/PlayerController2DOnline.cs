@@ -180,8 +180,7 @@ public class PlayerController2DOnline : PlayerController2D
 
         if (isFrozen)
             return;
-
-        updateSpecials();
+        
         updateJumping();
         updateDownJumping();    
         updateAttacks();
@@ -230,6 +229,9 @@ public class PlayerController2DOnline : PlayerController2D
     {
         if(invincibilityCount>=0)
             invincibilityCount--;
+        //if (invincibilityCount == 0)
+        //    TurnPartsOff();
+
     }
 
     private void updateSpecials()
@@ -606,6 +608,7 @@ public class PlayerController2DOnline : PlayerController2D
             else
             {
                 invincibilityCount = InvicibilityFrames;
+                //TurnPartsOn();
             }
             damage += PunchPercentAdd;
             if (damage < 30)

@@ -1037,7 +1037,7 @@ MonoBehaviour:
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 124
   m_DefaultSpriteDPI: 74.7
-  m_DynamicPixelsPerUnit: 1
+  m_DynamicPixelsPerUnit: 0
 --- !u!114 &114785823199115026
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -10770,7 +10770,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!224 &224034559920234824
 RectTransform:
