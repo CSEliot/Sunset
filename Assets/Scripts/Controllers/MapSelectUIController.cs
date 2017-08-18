@@ -82,6 +82,7 @@ public class MapSelectUIController : MonoBehaviour {
         if(!isServerWoke && N.TotalOnline > 0) {
             M.ToggleConnectLoadScreen(false);
             isServerWoke = true;
+            M.PlayMSX(0);
         }
 
          if(Time.time - timeSinceLastUpdate > N.ServerUpdateLoopTime)
