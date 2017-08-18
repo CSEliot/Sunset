@@ -316,7 +316,7 @@ public static class PhotonNetwork
     /// It automatically gets updated when someone joins or leaves.
     ///
     /// This can be used to list all players in a room.
-    /// Each player's PhotonPlayer.CustomProperties are accessible (set and synchronized via
+    /// Each player's PhotonPlayer.customProperties are accessible (set and synchronized via
     /// PhotonPlayer.SetCustomProperties).
     ///
     /// You can use a PhotonPlayer.TagObject to store an arbitrary object for reference.
@@ -339,7 +339,7 @@ public static class PhotonNetwork
     /// It automatically gets updated when someone joins or leaves.
     ///
     /// This can be used to list all other players in a room.
-    /// Each player's PhotonPlayer.CustomProperties are accessible (set and synchronized via
+    /// Each player's PhotonPlayer.customProperties are accessible (set and synchronized via
     /// PhotonPlayer.SetCustomProperties).
     ///
     /// You can use a PhotonPlayer.TagObject to store an arbitrary object for reference.
@@ -2212,7 +2212,7 @@ public static class PhotonNetwork
     /// If the Hashtable is null, the custom properties will be cleared.
     /// Custom properties are never cleared automatically, so they carry over to the next room, if you don't change them.
     ///
-    /// Don't set properties by modifying PhotonNetwork.player.CustomProperties!
+    /// Don't set properties by modifying PhotonNetwork.player.customProperties!
     /// </remarks>
     /// <param name="customProperties">Only string-typed keys will be used from this hashtable. If null, custom properties are all deleted.</param>
     public static void SetPlayerCustomProperties(Hashtable customProperties)
@@ -2241,7 +2241,7 @@ public static class PhotonNetwork
     /// </summary>
     /// <remarks>
     /// Use this method with care. It can create inconsistencies of state between players!
-    /// This only changes the player.CustomProperties locally. This can be useful to clear your
+    /// This only changes the player.customProperties locally. This can be useful to clear your
     /// Custom Properties between games (let's say they store which turn you made, kills, etc).
     ///
     /// SetPlayerCustomProperties() syncs and can be used to set values to null while in a room.

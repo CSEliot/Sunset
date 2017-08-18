@@ -7,14 +7,17 @@ Game Changes:
     General:
 	O New Character animations and charge attacks not in.
 	+ Debugging available in Practice Mode.
+	+ Updated to latest Photon. (Had to manually recode local -> world positioning)
 
     Gameplay:
 	/ Out of bounds Warning Signs now further away. Boundaries changed.
 	/ Attacks now animation-based. This means better feedback during fights.
+	/ Practice Stage top is no longer flat.
 
     Fixes:
 	/ Practice Mode fists rendered behind characters.
 	/ Person punched and puncher took damage in Practice Mode. 
 	/ Hurt animations didn't work in singleplayer.
+	/ Players dieing at same time no longer cancels a respawn.	
 
  KEY: (/) Change, (+) Addition, (-) Removal, (O) Known but not Fixed

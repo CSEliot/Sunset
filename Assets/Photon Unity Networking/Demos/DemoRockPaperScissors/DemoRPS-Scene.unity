@@ -2817,6 +2817,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: beaae63f7865d7c41b3aced4e96e790d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GuiOffset:
+    x: 0
+    y: 0
+    width: 300
+    height: 300
+  DontDestroy: 1
+  Time: 0
+  DetailedConnection: 0
+  Server: 0
+  AppVersion: 0
+  UserId: 0
+  Room: 1
+  RoomProps: 1
+  Player: 1
+  PlayerProps: 0
+  Others: 1
+  Buttons: 1
+  ExpectedUsers: 0
 --- !u!114 &1860739898
 MonoBehaviour:
   m_ObjectHideFlags: 0

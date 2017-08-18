@@ -494,6 +494,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9b53cc9db43d39428412f981834d9c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ResourceTypeToLoad: 1
+  ResourceToLoad: http://doc.exitgames.com/photon-cloud/Marco_Polo_Tutorial
 --- !u!1 &1099269470
 GameObject:
   m_ObjectHideFlags: 0
