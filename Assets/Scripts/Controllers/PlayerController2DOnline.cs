@@ -93,12 +93,29 @@ public class PlayerController2DOnline : PlayerController2D
     private WaitForSeconds spawnPauseWait;
 
     private Animator anim;
+    private ParticleSystem mainPartSys;
+    private ParticleSystem deathParts;
 
     public float BoxPunch;
 
 
     void Awake() 
     {
+
+        foreach (ParticleSystem partSys in GetComponentsInChildren<ParticleSystem>())
+        {
+            if (partSys.gameObject.name == "Main Particle System")
+            {
+                mainPartSys = partSys;
+            }
+            if (partSys.gameObject.name == "Death Particle System")
+            {
+                deathParts = partSys;
+            }
+        }
+        mainPartSys.Stop();
+        deathParts.Stop();
+
         isFrozen = false;
         //DontDestroyOnLoad(gameObject);
         anim = GetComponentInChildren<Animator>();
@@ -487,6 +504,7 @@ public class PlayerController2DOnline : PlayerController2D
             return;
 
         isDead = true;
+        deathParts.Play();
         //Hide Self till respawn (or stay dead, ghost)
         transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Image>().enabled = false;
 
@@ -523,7 +541,7 @@ public class PlayerController2DOnline : PlayerController2D
             GameHUDController.ResetDamage();
             damage = 0;
         }
-
+        deathParts.Stop();
         _Rigibody2D.isKinematic = false;
         StartCoroutine(spawnProtection()); 
     }
@@ -546,6 +564,16 @@ public class PlayerController2DOnline : PlayerController2D
     {
         _Rigibody2D.isKinematic = false;
         isFrozen = false;
+    }
+
+    public void TurnPartsOn()
+    {
+        mainPartSys.Play();
+    }
+
+    public void TurnPartsOff()
+    {
+        mainPartSys.Stop();
     }
 
     void OnTriggerEnter2D(Collider2D col)
