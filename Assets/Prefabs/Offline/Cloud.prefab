@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5001996}
   - component: {fileID: 8281004}
   - component: {fileID: 114000010246233748}
+  - component: {fileID: 95998286429567584}
   m_Layer: 0
   m_Name: Cloud
   m_TagString: PlayerSelf
@@ -824,6 +825,23 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 22, y: 22}
   m_EdgeRadius: 0
+--- !u!95 &95998286429567584
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9518653a4faf0024c9effa9efd6d8321, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &114000010246233748
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4322,24 +4340,24 @@ ParticleSystem:
         m_RotationOrder: 4
     startColor:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 4
       minColor: {r: 1, g: 1, b: 1, a: 1}
       maxColor: {r: 0, g: 1, b: 0.006896496, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 1, g: 1, b: 1, a: 1}
-        key1: {r: 1, g: 1, b: 1, a: 1}
-        key2: {r: 0, g: 0, b: 0, a: 0}
-        key3: {r: 0, g: 0, b: 0, a: 0}
-        key4: {r: 0, g: 0, b: 0, a: 0}
+        key0: {r: 0, g: 1, b: 0.13103461, a: 1}
+        key1: {r: 0.25882354, g: 1, b: 0.35594332, a: 1}
+        key2: {r: 0.5323529, g: 1, b: 0.5936309, a: 0}
+        key3: {r: 0.75293916, g: 1, b: 0.7853127, a: 0}
+        key4: {r: 1, g: 1, b: 1, a: 0}
         key5: {r: 0, g: 0, b: 0, a: 0}
         key6: {r: 0, g: 0, b: 0, a: 0}
         key7: {r: 0, g: 0, b: 0, a: 0}
         ctime0: 0
-        ctime1: 65535
-        ctime2: 0
-        ctime3: 0
-        ctime4: 0
+        ctime1: 16962
+        ctime2: 34888
+        ctime3: 49344
+        ctime4: 65535
         ctime5: 0
         ctime6: 0
         ctime7: 0
@@ -4351,8 +4369,8 @@ ParticleSystem:
         atime5: 0
         atime6: 0
         atime7: 0
-        m_Mode: 0
-        m_NumColorKeys: 2
+        m_Mode: 1
+        m_NumColorKeys: 5
         m_NumAlphaKeys: 2
       minGradient:
         serializedVersion: 2
@@ -7366,7 +7384,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 415113966
+  randomSeed: -389249939
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -7454,24 +7472,24 @@ ParticleSystem:
         m_RotationOrder: 4
     startColor:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 4
       minColor: {r: 1, g: 1, b: 1, a: 1}
       maxColor: {r: 0, g: 1, b: 0.006896496, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 1, g: 1, b: 1, a: 1}
-        key1: {r: 1, g: 1, b: 1, a: 1}
-        key2: {r: 0, g: 0, b: 0, a: 0}
-        key3: {r: 0, g: 0, b: 0, a: 0}
-        key4: {r: 0, g: 0, b: 0, a: 0}
+        key0: {r: 0, g: 1, b: 0.13103461, a: 1}
+        key1: {r: 0.22352941, g: 1, b: 0.32527393, a: 1}
+        key2: {r: 0.5088235, g: 1, b: 0.57318467, a: 0}
+        key3: {r: 0.67940927, g: 1, b: 0.7214178, a: 0}
+        key4: {r: 1, g: 1, b: 1, a: 0}
         key5: {r: 0, g: 0, b: 0, a: 0}
         key6: {r: 0, g: 0, b: 0, a: 0}
         key7: {r: 0, g: 0, b: 0, a: 0}
         ctime0: 0
-        ctime1: 65535
-        ctime2: 0
-        ctime3: 0
-        ctime4: 0
+        ctime1: 16577
+        ctime2: 33346
+        ctime3: 49344
+        ctime4: 65535
         ctime5: 0
         ctime6: 0
         ctime7: 0
@@ -7483,8 +7501,8 @@ ParticleSystem:
         atime5: 0
         atime6: 0
         atime7: 0
-        m_Mode: 0
-        m_NumColorKeys: 2
+        m_Mode: 1
+        m_NumColorKeys: 5
         m_NumAlphaKeys: 2
       minGradient:
         serializedVersion: 2
@@ -10788,6 +10806,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -4.4}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
