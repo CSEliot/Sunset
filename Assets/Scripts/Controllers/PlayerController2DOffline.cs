@@ -124,7 +124,6 @@ public class PlayerController2DOffline : PlayerController2D
             {
                 deathParts = partSys;
             }
-            CBUG.Do("Partsys name is: " + partSys.gameObject.name);
         }
         mainPartSys.Stop();
         deathParts.Stop();
@@ -463,7 +462,6 @@ public class PlayerController2DOffline : PlayerController2D
     /// </summary>
     /// <param name="killer"></param>
     /// <param name="killed"></param>
-    [PunRPC]
     private void OnDeath(int killer, int killed)
     {
         isDead = true;
@@ -478,8 +476,6 @@ public class PlayerController2DOffline : PlayerController2D
         // doRespawnOrGhost
         GameManager.RecordDeath(killer, killed, false);
         GameManager.HandleDeath(killed, false);
-
-        //TODO: Animate death
     }
     #endregion
 

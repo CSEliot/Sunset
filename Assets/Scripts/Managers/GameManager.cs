@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour {
     private float startTime;
     private float secondsPlayed;
     private float respawnTime;
-    private bool isRespawning; //Trigger boxes can be fickle. This is to prevent 2 simul. respawn attempts.
     private float gameLength;
     private WaitForSeconds respawnWait;
     private int[] playerLives;
@@ -260,9 +259,6 @@ public class GameManager : MonoBehaviour {
 
     private void _HandleDeath(int killed, bool isDisconnect)
     {
-        if (isRespawning)
-            return;
-
         if(IsLocalGame)
             StartCoroutine(doRespawnOrGhost<PlayerController2DOffline>(killed, isDisconnect));
         else
@@ -280,7 +276,6 @@ public class GameManager : MonoBehaviour {
             }
             yield return null;
         } else {
-            isRespawning = true;
             yield return respawnWait;
             //Player spawn position is controlled by Game Manager.
             //But we only wanna reposition OUR player's position.
@@ -288,7 +283,6 @@ public class GameManager : MonoBehaviour {
             PlayableCharacters[deadPlayerNum].GetComponent<PlayerController>().Respawn(
                 SpawnPositions[Random.Range(0, SpawnPositions.Length - 1)].position
             );
-            isRespawning = false;
         }
     }
 

@@ -385,21 +385,21 @@ public class PhotonView : Photon.MonoBehaviour
             {
                 case OnSerializeTransform.All:
                     trans.position = (Vector3) stream.ReceiveNext();
-                    trans.localRotation = (Quaternion) stream.ReceiveNext();
+                    trans.rotation = (Quaternion) stream.ReceiveNext();
                     trans.localScale = (Vector3) stream.ReceiveNext();
                     break;
                 case OnSerializeTransform.OnlyPosition:
                     trans.position = (Vector3) stream.ReceiveNext();
                     break;
                 case OnSerializeTransform.OnlyRotation:
-                    trans.localRotation = (Quaternion) stream.ReceiveNext();
+                    trans.rotation = (Quaternion) stream.ReceiveNext();
                     break;
                 case OnSerializeTransform.OnlyScale:
                     trans.localScale = (Vector3) stream.ReceiveNext();
                     break;
                 case OnSerializeTransform.PositionAndRotation:
                     trans.position = (Vector3) stream.ReceiveNext();
-                    trans.localRotation = (Quaternion) stream.ReceiveNext();
+                    trans.rotation = (Quaternion) stream.ReceiveNext();
                     break;
             }
         }
@@ -464,7 +464,7 @@ public class PhotonView : Photon.MonoBehaviour
             {
                 case OnSerializeTransform.All:
                     stream.SendNext(trans.position);
-                    stream.SendNext(trans.localRotation);
+                    stream.SendNext(trans.rotation);
                     stream.SendNext(trans.localScale);
                     break;
                 case OnSerializeTransform.OnlyPosition:
@@ -478,7 +478,7 @@ public class PhotonView : Photon.MonoBehaviour
                     break;
                 case OnSerializeTransform.PositionAndRotation:
                     stream.SendNext(trans.position);
-                    stream.SendNext(trans.localRotation);
+                    stream.SendNext(trans.rotation);
                     break;
             }
         }

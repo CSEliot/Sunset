@@ -483,6 +483,9 @@ public class PlayerController2DOnline : PlayerController2D
     [PunRPC]
     private void OnDeath(int killer, int killed)
     {
+        if (isDead)
+            return;
+
         isDead = true;
         //Hide Self till respawn (or stay dead, ghost)
         transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Image>().enabled = false;
@@ -524,6 +527,7 @@ public class PlayerController2DOnline : PlayerController2D
         _Rigibody2D.isKinematic = false;
         StartCoroutine(spawnProtection()); 
     }
+
     private IEnumerator spawnProtection()
     {
         yield return spawnPauseWait;

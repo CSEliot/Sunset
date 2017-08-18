@@ -121,7 +121,7 @@ public class PhotonTransformView : MonoBehaviour, IPunObservable
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         this.m_PositionControl.OnPhotonSerializeView(transform.position, stream, info);
-        this.m_RotationControl.OnPhotonSerializeView(transform.localRotation, stream, info);
+        this.m_RotationControl.OnPhotonSerializeView(transform.rotation, stream, info);
         this.m_ScaleControl.OnPhotonSerializeView(transform.localScale, stream, info);
 
         if (this.m_PhotonView.isMine == false && this.m_PositionModel.DrawErrorGizmo == true)
@@ -173,11 +173,11 @@ public class PhotonTransformView : MonoBehaviour, IPunObservable
     {
         Vector3 targetPosition = this.m_PositionControl.GetNetworkPosition();
 
-		// we are synchronizing the position, so we need to add the parent position for a proper positioning.
-		if (transform.parent != null)
-		{
-			targetPosition = transform.parent.position + targetPosition ;
-		}
+		// we are //NOT// synchronizing the localPosition, so we need to add the parent position for a proper positioning.
+		//if (transform.parent != null)
+		//{
+		//	targetPosition = transform.parent.position + targetPosition ;
+		//}
 
 		Debug.DrawLine(targetPosition, transform.position, Color.red, 2f);
         Debug.DrawLine(transform.position, transform.position + Vector3.up, Color.green, 2f);
