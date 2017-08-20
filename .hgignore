@@ -27,3 +27,4 @@ syntax: regexp
 ^Temp/.*
 ^obj/.*
 ^Builds/.*
+^.vs/.*
