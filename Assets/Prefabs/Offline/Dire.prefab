@@ -870,7 +870,7 @@ MonoBehaviour:
   jumpLag: 16
   AttackLag: 14
   InvicibilityFrames: 5
-  PunchPercentAdd: 4
+  PunchPercentAdd: 8
   PunchForceUp: 2100
   PunchForceForward_Forward: 1700
   PunchForceForward_Up: 1500

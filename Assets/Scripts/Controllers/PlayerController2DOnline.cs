@@ -64,6 +64,7 @@ public class PlayerController2DOnline : PlayerController2D
 
     private bool punching;
     public int PunchPercentAdd;
+    private float damageTweek;
     public float PunchForceUp;
     public float PunchForceForward_Forward;
     public float PunchForceForward_Up;
@@ -98,6 +99,7 @@ public class PlayerController2DOnline : PlayerController2D
 
     public float BoxPunch;
 
+    
 
     void Awake() 
     {
@@ -162,7 +164,12 @@ public class PlayerController2DOnline : PlayerController2D
             CamManager.SetTarget(transform);
         }
     }
- 
+
+    private void Start()
+    {
+        damageTweek = 0.5f;
+    }
+
 
     void Update() 
     {
@@ -632,7 +639,7 @@ public class PlayerController2DOnline : PlayerController2D
                     Vector2 temp = Vector2.right * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name] - Defense);
                     temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name] - Defense);
                     StartCoroutine(
-                        applyPunchForce(temp * (damage/100f))
+                        applyPunchForce(temp * (damage/100f) * )
                     );
                 }
                 else

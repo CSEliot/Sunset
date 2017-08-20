@@ -31,9 +31,9 @@ public class CBUG : MonoBehaviour {
     private bool isParented;
     private float previousClear;
     private bool neverClear;
-    private int maxLines = 33; //Tested, based on 24pt Min.
-    private int tapsUntilEnable = 10;
-    private int currentTaps = 0;
+    private int maxLines; 
+    private int tapsUntilEnable;
+    private int currentTaps;
     private bool isTemp;
     #endregion
 
@@ -57,6 +57,10 @@ public class CBUG : MonoBehaviour {
         isTemp = false;
 
         Application.logMessageReceived += HandleUnityLog;
+
+        maxLines = 33; //Tested, based on 24pt Min.
+        tapsUntilEnable = 10;
+        currentTaps = 0;
     }
 
     private CBUG( bool isTemp)
