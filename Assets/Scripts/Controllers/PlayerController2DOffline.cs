@@ -67,6 +67,7 @@ public class PlayerController2DOffline : PlayerController2D
 
     private bool punching;
     public int PunchPercentAdd;
+    private float damageTweek;
     public float PunchForceUp;
     public float PunchForceForward_Forward;
     public float PunchForceForward_Up;
@@ -172,6 +173,10 @@ public class PlayerController2DOffline : PlayerController2D
         lastHitForgetLength = 5;//Seconds
     }
 
+    void Start()
+    {
+        damageTweek = 0.5f;
+    }
 
     void Update()
     {
@@ -577,26 +582,30 @@ public class PlayerController2DOffline : PlayerController2D
                     Vector2 temp = Vector2.right * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name] - Defense);
                     temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name] - Defense);
                     StartCoroutine(
-                        applyPunchForce(temp * (damage / 100f))
+                        applyPunchForce(temp * (damage / 100f) * damageTweek)
                     );
                 } else {
                     Vector2 temp = Vector2.left * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name] - Defense);
                     temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name] - Defense);
                     StartCoroutine(
-                        applyPunchForce(temp * (damage / 100f))
+                        applyPunchForce(temp * (damage / 100f) * damageTweek)
                     );
                 }
             } else if (col.name == "PunchUp") {
                 StartCoroutine(
                     applyPunchForce(
-                        (Vector2.up * (PunchForceUp + StrengthsList[col.transform.parent.name] - Defense) * (damage / 100f))
+                        (Vector2.up * (PunchForceUp + StrengthsList[col.transform.parent.name] - Defense) 
+                        * (damage / 100f)
+                        * damageTweek)
                     )
                 );
             } else {
                 if (!isGrounded) {
                     StartCoroutine(
                         applyPunchForce(
-                            (Vector2.down * (PunchForceDown + StrengthsList[col.transform.parent.name] - Defense) * (damage / 100f))
+                            (Vector2.down * (PunchForceDown + StrengthsList[col.transform.parent.name] - Defense) 
+                            * (damage / 100f)
+                            * damageTweek)
                         )
                     );
                 } else {
