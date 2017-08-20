@@ -1,26 +1,20 @@
-CHANGELOG - V0.6.9
-Game Changes:
-    
-    Art:
-	/ Practice Mode: Particles are square, pixely, and colorful!
-	/ Online Play: 	Particles are square, pixely, and colorful!
-	/ Sarchy is no longer rainbow!
+CHANGELOG - V0.6.9.1
+KEY: (/) Change, (+) Addition, (-) Removal, (O) Known but not Fixed
+	Art:
+	O Hide Controls toggle not a toggle.
+	+ Fight Music is back!
+	/ Pillar platforms 
 
-    General:
+	General:
 	O New Character animations and charge attacks not in.
-	+ Debugging available in Practice Mode.
-	+ Updated to latest Photon. (Had to manually recode local -> world positioning)
-	+ New "First Time" Visual Guide.
+	
+	Gameplay:
+	+ Pillar, now with floaty earth!
+	/ Controls Grid toggle more obvious!
+	/ Damage doubled!
 
-    Gameplay:
-	/ Out of bounds Warning Signs now further away. Boundaries changed.
-	/ Attacks now animation-based. This means better feedback during fights.
-	/ Practice Stage top is no longer flat.
-
-    Fixes:
-	/ Practice Mode fists rendered behind characters.
-	/ Person punched and puncher took damage in Practice Mode. 
-	/ Hurt animations didn't work in singleplayer.
-	/ Players dieing at same time no longer cancels a respawn.	
-
- KEY: (/) Change, (+) Addition, (-) Removal, (O) Known but not Fixed
+	Fixes:
+	O Previous character selected in previous game doesn't assign properly, related to old bug.
+	- Combat music doesn't play when fight begins.
+	- Debugger lines being immediately cleared.
+	/ Six's particleFX positions fixed.

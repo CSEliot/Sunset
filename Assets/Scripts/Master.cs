@@ -129,14 +129,12 @@ public class Master : MonoBehaviour
         stageName = "Pillar";
         
         isEast = true;
-        if (Application.isEditor)
-            PlayerPrefs.DeleteAll();
+        //if (Application.isEditor)
+        //    PlayerPrefs.DeleteAll();
         bool tempControlsShown = PlayerPrefs.GetInt("isControlsShown", 1) == 1 ? true : false;
 
         isFirstTime = PlayerPrefs.GetInt("isFirstTime", 1) == 1? true : false;
         FirstTimeNotice.SetActive(isFirstTime);
-        isFirstTime = false;
-        PlayerPrefs.SetInt("isFirstTime", 0);
 
         isControlsShown = tempControlsShown;
 
@@ -146,6 +144,8 @@ public class Master : MonoBehaviour
         if (SceneManager.GetActiveScene().name.Contains("Practice"))
         {
             PlayMSX(0);
+            isFirstTime = false;
+            PlayerPrefs.SetInt("isFirstTime", 0);
         }
         NameStrengthDict = new Dictionary<string, float>();
         foreach (NameToStrength character in StrengthsList)
@@ -639,5 +639,9 @@ public class Master : MonoBehaviour
             myMusicAudio.Play();
     }
 
-
+    void OnApplicationQuit()
+    {
+        isFirstTime = false;
+        PlayerPrefs.SetInt("isFirstTime", 0);
+    }
 }

@@ -660,7 +660,7 @@ MonoBehaviour:
   AttackLag: 14
   AttackLife: 0.12
   InvicibilityFrames: 5
-  PunchPercentAdd: 4
+  PunchPercentAdd: 8
   PunchForceUp: 2100
   PunchForceForward_Forward: 1700
   PunchForceForward_Up: 1500
@@ -1382,7 +1382,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1079349517908922}
   m_LocalRotation: {x: -0, y: -0, z: -0.7071068, w: 0.7071067}
-  m_LocalPosition: {x: -68.2, y: -135, z: 0}
+  m_LocalPosition: {x: 1, y: 10.5, z: 0}
   m_LocalScale: {x: 0.99999976, y: 0.99999976, z: 1}
   m_Children: []
   m_Father: {fileID: 400000}
@@ -1395,7 +1395,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1162354280689340}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -56.330013, y: -135.7, z: 0}
+  m_LocalPosition: {x: 13.9, y: 9.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 469018}
@@ -1586,7 +1586,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 1590717585
+  randomSeed: 1663820343
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -7930,7 +7930,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 4
   m_TargetDisplay: 0
 --- !u!224 &224000013131481366
 RectTransform:

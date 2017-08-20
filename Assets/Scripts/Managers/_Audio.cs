@@ -14,6 +14,7 @@ public class _Audio : MonoBehaviour {
 
     private void Awake()
     {
+        DontDestroyOnLoad(this);
         M = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
     }
  

@@ -753,6 +753,8 @@ public class NetworkManager : Photon.MonoBehaviour{
             GameManager.GameStart(NetIDs.PlayerNumber(PhotonNetwork.player.ID), M.GetClientCharacterName());
             //Does the following:
             // - Spawns local player over network.
+            _Audio.ChangeMusic();
+            _Audio.Play(2);
         }
     }
 

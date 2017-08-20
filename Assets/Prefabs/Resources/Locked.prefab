@@ -220,7 +220,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 108512}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: 0cb77231a430b454fb792ff7ffcc3943, type: 2}
+  m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -729,7 +729,7 @@ MonoBehaviour:
   AttackLag: 14
   AttackLife: 0.09
   InvicibilityFrames: 5
-  PunchPercentAdd: 4
+  PunchPercentAdd: 8
   PunchForceUp: 2100
   PunchForceForward_Forward: 1700
   PunchForceForward_Up: 1500
