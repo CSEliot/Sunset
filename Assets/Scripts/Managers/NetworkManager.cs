@@ -38,6 +38,9 @@ public class NetworkManager : Photon.MonoBehaviour{
 
     private TypedLobby inMatchLobby;
 
+    private string serverRegionDisplayObjName;
+    private string serverVersionDisplayObjName;
+
     #region Room State Tracking
     private GameManager gameMan;
     private bool gameStarted;
@@ -88,6 +91,9 @@ public class NetworkManager : Photon.MonoBehaviour{
 
     void Start()
     {
+        serverRegionDisplayObjName = "ServerRegion";
+        serverVersionDisplayObjName = "ServerVersion";
+
         minPlayersAllowed = SettingsManager._MinimumPlayers;
         maxPlayersAllowed = SettingsManager._MaximumPlayers;
         
@@ -102,7 +108,7 @@ public class NetworkManager : Photon.MonoBehaviour{
 
         version = M.Version; //Debug.isDebugBuild ? "test" : 
         isEastServer = PlayerPrefs.GetInt("Server", 0) == 1 ? true : false;
-        //"Server" returns either 0=none, 1 = east, 2 = West
+        //"Server" returns either 0=noneSpecified, 1 = east, 2 = West
         //isEastServer won't be used if 0, and instead 'best' region is used.
   
         previousUpdateTime = Time.time;
@@ -133,7 +139,7 @@ public class NetworkManager : Photon.MonoBehaviour{
             else
             {
                 PhotonNetwork.ConnectToRegion(isEastServer ? CloudRegionCode.us : CloudRegionCode.usw, version);
-                CBUG.Log("Connecting to Chosen Region.");
+                CBUG.Log("Connecting to Chosen Region: " + (isEastServer ? CloudRegionCode.us.ToString() : CloudRegionCode.usw.ToString()));
             }
 
             CBUG.Log("Version Number is: " + version);
@@ -231,6 +237,10 @@ public class NetworkManager : Photon.MonoBehaviour{
         //PhotonNetwork.JoinOrCreateRoom("Waiting", new RoomOptions() { MaxPlayers = Convert.ToByte(serverPlayerMax) }, null);
 
         inLobby = true;
+        GameObject.Find(serverRegionDisplayObjName).GetComponent<Text>().text = "Server Region: " + PhotonNetwork.networkingPeer.CloudRegion.ToString();
+        GameObject.Find(serverRegionDisplayObjName).transform.GetChild(0).GetComponent<Text>().text = "Server Region: " + PhotonNetwork.networkingPeer.CloudRegion.ToString();
+        GameObject.Find(serverVersionDisplayObjName).GetComponent<Text>().text = "Server Version: " + Application.version;
+        GameObject.Find(serverVersionDisplayObjName).transform.GetChild(0).GetComponentInChildren<Text>().text = "Server Version: " + Application.version;
     }
 
     public void OnLeftLobby()
@@ -406,19 +416,18 @@ public class NetworkManager : Photon.MonoBehaviour{
         //CBUG.Log("There are a total of " + totalOnline + " online.");
     }
 
-    public bool IsEastServer
+    public void SetEast ()
     {
-        get
-        {
-            return isEastServer;
-        }
+        isEastServer = true;
+        PlayerPrefs.SetInt("Server", 1);
+        PlayerPrefs.Save();
+    }
 
-        set
-        {
-            isEastServer = value;
-            PlayerPrefs.SetInt("Server", value ? 1 : 2);
-            PlayerPrefs.Save();
-        }
+    public void SetWest()
+    {
+        isEastServer = false;
+        PlayerPrefs.SetInt("Server", 2);
+        PlayerPrefs.Save();
     }
 
     public void ForgetServer()
