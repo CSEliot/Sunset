@@ -6,6 +6,7 @@ KEY: (/) Change, (+) Addition, (-) Removal, (O) Known but not Fixed
 	/ Pillar platforms 
 
 	General:
+	+ More server details!
 	O New Character animations and charge attacks not in.
 	
 	Gameplay:
