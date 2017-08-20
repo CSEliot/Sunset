@@ -48,6 +48,8 @@ public class FadeOnPlayerPos : MonoBehaviour
         myLocation = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         maxDistance = 35f;
 
+        fadeObj._Alpha = 0f;
+
         if ((int)CurrentFollowing < 3)
         {
             fadeOnSingleComponent1D = true;

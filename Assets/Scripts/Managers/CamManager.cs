@@ -6,7 +6,7 @@ public class CamManager : MonoBehaviour
     Vector3 originalCameraPosition;
 
     public float DeathShakeMod = 0.05f;
-    public float PunchShakeMod = 0.001f;
+    private float punchShakeMod;
     public int PunchWaitTicks;
     public int OnDeathWaitTicks;
 
@@ -32,7 +32,6 @@ public class CamManager : MonoBehaviour
     private Vector3 offsetVector;
     private float maxDeathDistance;
 
-
     // Use this for initialization
     private void Start()
     {
@@ -43,6 +42,7 @@ public class CamManager : MonoBehaviour
         m_LastTargetPosition = target.position;
         m_OffsetZ = (transform.position - target.position).z;
         transform.parent = null;
+        punchShakeMod = 0.015f; //Reduced from 0.02
     }
 
 
@@ -135,7 +135,7 @@ public class CamManager : MonoBehaviour
 
     public void _PunchShake(float BodyVelocityMag)
     {
-        float shakeAmt = BodyVelocityMag * PunchShakeMod;
+        float shakeAmt = BodyVelocityMag * punchShakeMod;
         StartCoroutine(cameraShake(PunchWaitTicks, shakeAmt));
     }
 
