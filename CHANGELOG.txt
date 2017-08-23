@@ -1,4 +1,4 @@
-CHANGELOG - V0.6.9.1
+CHANGELOG - V0.6.9.2
 KEY: (/) Change, (+) Addition, (-) Removal, (O) Known but not Fixed
 	Art:
 	O Hide Controls toggle not a toggle.
@@ -6,6 +6,7 @@ KEY: (/) Change, (+) Addition, (-) Removal, (O) Known but not Fixed
 	/ Pillar platforms 
 
 	General:
+	+ Added SKIP button for first-time setup
 	+ More server details!
 	O New Character animations and charge attacks not in.
 	
