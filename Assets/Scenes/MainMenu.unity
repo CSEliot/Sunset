@@ -1324,6 +1324,11 @@ Prefab:
       propertyPath: ClearTime
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114000010837225942, guid: fa5783ece7b7cb04abe739ee3b46cce1,
+        type: 2}
+      propertyPath: DisableOnScreen
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa5783ece7b7cb04abe739ee3b46cce1, type: 2}
   m_IsPrefabParent: 0
