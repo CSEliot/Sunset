@@ -1,7 +1,7 @@
-CHANGELOG - V0.6.9.2
+CHANGELOG - V0.6.92
 KEY: (/) Change, (+) Addition, (-) Removal, (O) Known but not Fixed
 	Art:
-	/ Hide Controls toggle not a toggle.
+	O Hide Controls toggle not a toggle.
 	+ Fight Music is back!
 	/ Pillar platforms 
 
@@ -20,5 +20,3 @@ KEY: (/) Change, (+) Addition, (-) Removal, (O) Known but not Fixed
 	- Combat music doesn't play when fight begins.
 	- Debugger lines being immediately cleared.
 	/ Six's particleFX positions fixed.
-
-Download the game, free! www.sunsetbrawlers.com
