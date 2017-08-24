@@ -639,7 +639,7 @@ public class PlayerController2DOnline : PlayerController2D
                     Vector2 temp = Vector2.right * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name] - Defense);
                     temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name] - Defense);
                     StartCoroutine(
-                        applyPunchForce(temp * (damage/100f) * )
+                        applyPunchForce(temp * (damage/100f) * damageTweek)
                     );
                 }
                 else
@@ -647,7 +647,7 @@ public class PlayerController2DOnline : PlayerController2D
                     Vector2 temp = Vector2.left * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name] - Defense);
                     temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name] - Defense);
                     StartCoroutine(
-                        applyPunchForce(temp * (damage / 100f))
+                        applyPunchForce(temp * (damage / 100f) * damageTweek)
                     );
                 }
             }
@@ -655,7 +655,9 @@ public class PlayerController2DOnline : PlayerController2D
             {
                 StartCoroutine(
                     applyPunchForce(
-                        (Vector2.up * (PunchForceUp + StrengthsList[col.transform.parent.name] - Defense) * (damage / 100f))
+                        (Vector2.up * (PunchForceUp + StrengthsList[col.transform.parent.name] - Defense) 
+                        * (damage / 100f)
+                        * damageTweek)
                     )
                 );
             }
@@ -665,7 +667,9 @@ public class PlayerController2DOnline : PlayerController2D
                 {
                     StartCoroutine(
                         applyPunchForce(
-                            (Vector2.down * (PunchForceDown + StrengthsList[col.transform.parent.name] - Defense) * (damage / 100f))
+                            (Vector2.down * (PunchForceDown + StrengthsList[col.transform.parent.name] - Defense) 
+                            * (damage / 100f)
+                            * damageTweek)
                         )
                     );
                 }
@@ -673,7 +677,9 @@ public class PlayerController2DOnline : PlayerController2D
                 {
                     StartCoroutine(
                         applyPunchForce(
-                            (Vector2.up * (PunchForceDown + StrengthsList[col.transform.parent.name] - Defense) * (damage / 200f))
+                            (Vector2.up * (PunchForceDown + StrengthsList[col.transform.parent.name] - Defense) 
+                            * (damage / 200f)
+                            * damageTweek)
                         )
                     );
                 }
