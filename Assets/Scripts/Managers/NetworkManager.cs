@@ -265,6 +265,11 @@ public class NetworkManager : Photon.MonoBehaviour{
         M.GoBack();
     }
 
+    public virtual void OnCustomAuthenticationFailed(DisconnectCause cause)
+    {
+        OnFailedToConnectToPhoton(cause);
+    }
+
     public void OnLeftRoom()
     {
         CBUG.Log("Left Room.");
