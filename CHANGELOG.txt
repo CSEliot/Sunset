@@ -1,22 +1,11 @@
-CHANGELOG - V0.6.92
+CHANGELOG - V0.6.93
 KEY: (/) Change, (+) Addition, (-) Removal, (O) Known but not Fixed
 	Art:
-	O Hide Controls toggle not a toggle.
-	+ Fight Music is back!
-	/ Pillar platforms 
 
 	General:
-	+ Added SKIP button for first-time setup
-	+ More server details!
-	O New Character animations and charge attacks not in.
-	
+	 - Beta tag removed from in-game.
+
 	Gameplay:
-	+ Pillar, now with floaty earth!
-	/ Controls Grid toggle more obvious!
-	/ Damage doubled!
 
 	Fixes:
 	O Previous character selected in previous game doesn't assign properly, related to old bug.
-	- Combat music doesn't play when fight begins.
-	- Debugger lines being immediately cleared.
-	/ Six's particleFX positions fixed.
