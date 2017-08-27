@@ -28,7 +28,7 @@ public class PlayerController2DOnline : PlayerController2D
     private Rigidbody2D _Rigibody2D;
     private PhotonView _PhotonView;
     private PhotonTransformView _PhotonTransform;
-    private MobileController _MobileInput;
+    private GameInputController _MobileInput;
 
     private bool isGrounded;
     private bool wasGrounded;
@@ -149,7 +149,7 @@ public class PlayerController2DOnline : PlayerController2D
         AttackObjs[2] = transform.Find("PunchDown").gameObject;
 
         if (GameObject.FindGameObjectWithTag("MobileController") != null)
-            _MobileInput = GameObject.FindGameObjectWithTag("MobileController").GetComponent<MobileController>();
+            _MobileInput = GameObject.FindGameObjectWithTag("MobileController").GetComponent<GameInputController>();
 
         spawnPause = 0.5f;
         spawnPauseWait = new WaitForSeconds(spawnPause);
@@ -267,7 +267,7 @@ public class PlayerController2DOnline : PlayerController2D
     private void updateJumping()
     {
         if ((Input.GetButtonDown("Jump") == true
-            || _MobileInput.GetButtonDown("Jump"))
+            || _MobileInput.GetAxis("Jump") > 0f)
             && jumpsRemaining > 0 && totalJumpFrames < 0)
         {
             jumped = true;
@@ -281,7 +281,7 @@ public class PlayerController2DOnline : PlayerController2D
     private void updateDownJumping()
     {
         if ((Input.GetButtonDown("DownJump") == true
-            || _MobileInput.GetButtonDown("DownJump"))
+            || _MobileInput.GetAxis("DownJump") > 0f)
             && canDownJump)
         {
             downJumped = true;
@@ -370,11 +370,7 @@ public class PlayerController2DOnline : PlayerController2D
                               -Vector2.up, 
                               GroundCheckEndPoint, 
                               mask.value);
-
-        //Debug.DrawLine(position+JumpOffset,
-        //               position + (-Vector2.up * GroundCheckEndPoint),
-        //               Color.red,
-        //               0.01f);
+        
         wasGrounded = isGrounded;
         isGrounded = (hit.collider != null);
         //hit.collider.gameObject.layer
@@ -411,7 +407,7 @@ public class PlayerController2DOnline : PlayerController2D
             return;
 
         if(totalAttackFrames < 0 ){
-            if ((Input.GetButtonDown("Up") || _MobileInput.GetButtonDown("Up")) && !punching)
+            if ((Input.GetButtonDown("Up") || _MobileInput.GetButton("Up")) && !punching)
             {
                 punching = true;
                 AttackObjs[0].SetActive(true);
@@ -419,7 +415,7 @@ public class PlayerController2DOnline : PlayerController2D
                 totalAttackFrames = AttackLag;
                 _PhotonView.RPC("UpAttack", PhotonTargets.Others);
             }
-            if ((Input.GetButtonDown("Down") || _MobileInput.GetButtonDown("Down")) && !punching)
+            if ((Input.GetButtonDown("Down") || _MobileInput.GetButton("Down")) && !punching)
             {
                 punching = true;
                 AttackObjs[2].SetActive(true);
@@ -427,7 +423,7 @@ public class PlayerController2DOnline : PlayerController2D
                 totalAttackFrames = AttackLag;
                 _PhotonView.RPC("DownAttack", PhotonTargets.Others);
             }
-            if (facingRight && (Input.GetButtonDown("Right") || _MobileInput.GetButtonDown("Right")) && !punching)
+            if (facingRight && (Input.GetButtonDown("Right") || _MobileInput.GetButton("Right")) && !punching)
             {
                 punching = true;
                 AttackObjs[1].SetActive(true);
@@ -435,7 +431,7 @@ public class PlayerController2DOnline : PlayerController2D
                 totalAttackFrames = AttackLag;
                 _PhotonView.RPC("ForwardAttack", PhotonTargets.Others);
             }
-            if (!facingRight && (Input.GetButtonDown("Left") || _MobileInput.GetButtonDown("Left")) && !punching)
+            if (!facingRight && (Input.GetButtonDown("Left") || _MobileInput.GetButton("Left")) && !punching)
             {
                 punching = true;
                 AttackObjs[1].SetActive(true);

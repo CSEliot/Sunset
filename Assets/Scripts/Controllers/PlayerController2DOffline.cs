@@ -10,7 +10,7 @@ public class PlayerController2DOffline : PlayerController2D
     public float SpeedAccel = 0.5f;
     public float AirSpeedDecel;
     public float SpeedDecel = 0.5f;
-    private float SpeedTemp;
+    private float speedTemp;
     public float JumpForce;
     public float DownJumpForce;
     public float JumpDecel = 0.5f;
@@ -26,7 +26,7 @@ public class PlayerController2DOffline : PlayerController2D
     public int ID;
 
     private Rigidbody2D _Rigibody2D;
-    private MobileController _MobileInput;
+    private GameInputController gameInput;
 
     private bool isGrounded;
     private bool wasGrounded;
@@ -37,7 +37,7 @@ public class PlayerController2DOffline : PlayerController2D
     public int TotalJumpsAllowed;
     public Vector2 JumpOffset;
     float tempAxisKey;
-    float tempAxisTouch;
+    float tempAxis;
 
     private float moveLeft;
     private float moveRight;
@@ -52,10 +52,6 @@ public class PlayerController2DOffline : PlayerController2D
 
     private GameObject[] AttackObjs;
     public int AttackLag;
-    /// <summary>
-    /// # of Frames of holding down before a charge is initiated.
-    /// </summary>
-    private int chargeFrames = 3;
     private float attackLife = 0.2f;
     private int totalAttackFrames;
     private WaitForSeconds attackDisableDelay;
@@ -65,7 +61,7 @@ public class PlayerController2DOffline : PlayerController2D
 
     private bool facingRight;
 
-    private bool punching;
+    //private bool punching;
     public int PunchPercentAdd;
     private float damageTweek;
     public float PunchForceUp;
@@ -80,6 +76,19 @@ public class PlayerController2DOffline : PlayerController2D
     private Dictionary<string, float> StrengthsList;
     private bool punchForceApplied;
     public float PunchDisablePerc;
+
+    /// <summary>
+    /// # of Frames of holding down before a charge is initiated.
+    /// </summary>
+    private int chargingFrames;
+    private bool isCharging;
+    public int maxNormalPunchFrames;
+    public int maxChargePunchFrames;
+    private float chargeFistSizeMultiplier;
+    private float preChargeFistSizeMultiplier;
+    private float normalFistSizeMultiplier;
+    public float SpeedWhileChargingModifier;
+    private float movSpeedChargeModifier;
 
     private float damage;
     private bool isDead;
@@ -142,7 +151,7 @@ public class PlayerController2DOffline : PlayerController2D
         controlsPaused = false;
         myAudioSrc = GetComponent<AudioSource>();
         myAudioSrc.clip = DeathNoise;
-        punching = false;
+        //punching = false;
 
         deathColor = Color.clear;
         lifeColor = Color.white;
@@ -151,7 +160,7 @@ public class PlayerController2DOffline : PlayerController2D
             GetComponent<Master>().GetStrengthList();
 
         jumpForceTemp = 0f;
-        SpeedTemp = 0f;
+        speedTemp = 0f;
         attackDisableDelay = new WaitForSeconds(attackLife);
         facingRight = true;
         position = new Vector2();
@@ -162,8 +171,8 @@ public class PlayerController2DOffline : PlayerController2D
         AttackObjs[0] = transform.Find("PunchUp").gameObject;
         AttackObjs[1] = transform.Find("PunchForward").gameObject;
         AttackObjs[2] = transform.Find("PunchDown").gameObject;
-
-        _MobileInput = GameObject.FindGameObjectWithTag("MobileController").GetComponent<MobileController>();
+        
+        gameInput = GameObject.FindGameObjectWithTag("MobileController").GetComponent<GameInputController>();
 
         spawnPause = 0.5f;
         spawnPauseWait = new WaitForSeconds(spawnPause);
@@ -171,11 +180,23 @@ public class PlayerController2DOffline : PlayerController2D
         lastHitBy = -1;
         lastHitTime = Time.time;
         lastHitForgetLength = 5;//Seconds
+
+        isCharging = false;
+        chargingFrames = 0;
     }
 
     void Start()
     {
         damageTweek = 0.5f;
+        movSpeedChargeModifier = 1.0f;
+        chargeFistSizeMultiplier = 2.0f;
+        preChargeFistSizeMultiplier = 0.58f;
+        normalFistSizeMultiplier = 0.75f;
+        float temp = normalFistSizeMultiplier;
+        AttackObjs[0].transform.localScale.Set(temp, temp, 1f);
+        AttackObjs[1].transform.localScale.Set(temp, temp, 1f);
+        AttackObjs[2].transform.localScale.Set(temp, temp, 1f);
+
     }
 
     void Update()
@@ -263,9 +284,10 @@ public class PlayerController2DOffline : PlayerController2D
 
         //CBUG.Do(Input.GetAxisRaw("Jump") + "");
 
-        if ((Input.GetButtonDown("Jump") == true
-            || _MobileInput.GetButtonDown("Jump") || Input.GetAxisRaw("Jump") > 0f)
-            && jumpsRemaining > 0 && totalJumpFrames < 0) {
+        if (  (gameInput.GetButton("Jump") || gameInput.GetAxis("Jump") > 0f)
+            && jumpsRemaining > 0 
+            && totalJumpFrames < 0)
+        {
             jumped = true;
             //CBUG.Log("Jumped is true!");
             jumpsRemaining -= 1;
@@ -276,9 +298,9 @@ public class PlayerController2DOffline : PlayerController2D
 
     private void updateDownJumping()
     {
-        if ((Input.GetButtonDown("DownJump") == true
-            || _MobileInput.GetButtonDown("DownJump"))
-            && canDownJump) {
+        if (  (gameInput.GetButton("DownJump")|| gameInput.GetAxis("DownJump") < 0f)
+            && canDownJump)
+        {
             downJumped = true;
             canDownJump = false;
         }
@@ -287,14 +309,12 @@ public class PlayerController2DOffline : PlayerController2D
     private void updateMovement()
     {
         //tempAxis left n right, keyboar axis left n right, or no input
-        tempAxisKey = Input.GetAxis("MoveHorizontal");
-        tempAxisTouch = _MobileInput.GetAxis("MoveHorizontal");
-        if (tempAxisKey > 0 || tempAxisTouch > 0) {
-            //CBUG.Log("Move axis: " + tempAxisTouch);
+        tempAxis = gameInput.GetAxis("MoveHorizontal");
+        if (tempAxis > 0) {
             moveLeft = 0;
-            moveRight = tempAxisTouch > tempAxisKey ? tempAxisTouch : tempAxisKey;
-        } else if (tempAxisKey < 0 || tempAxisTouch < 0) {
-            moveLeft = tempAxisTouch < tempAxisKey ? tempAxisTouch : tempAxisKey;
+            moveRight = tempAxis;
+        } else if (tempAxis < 0) {
+            moveLeft = tempAxis;
             moveRight = 0;
         } else {
             moveLeft = 0;
@@ -318,9 +338,8 @@ public class PlayerController2DOffline : PlayerController2D
         if (jumped) {
             jumpForceTemp = JumpForce;
             jumped = false;
-            //CBUG.Log("Jumped is false!");
         }
-        velocity.y += jumpForceTemp;
+        velocity.y += jumpForceTemp * (!isGrounded ? 1.0f : movSpeedChargeModifier);
         jumpForceTemp = Mathf.Lerp(jumpForceTemp, 0f, JumpDecel);
     }
 
@@ -331,16 +350,16 @@ public class PlayerController2DOffline : PlayerController2D
         //But dropped inputs aren't a problem with 'getaxis' since it's
         //Continuous and not a single frame like GetButtonDown
         if (moveRight != 0) {
-            SpeedTemp = Mathf.Lerp(SpeedTemp, Speed * moveRight, SpeedAccel);
+            speedTemp = Mathf.Lerp(speedTemp, Speed * moveRight, SpeedAccel);
         } else if (moveLeft != 0) {
-            SpeedTemp = Mathf.Lerp(SpeedTemp, Speed * moveLeft, SpeedAccel);
+            speedTemp = Mathf.Lerp(speedTemp, Speed * moveLeft, SpeedAccel);
         } else if (isGrounded) {
-            SpeedTemp = Mathf.Lerp(SpeedTemp, 0f, SpeedDecel);
+            speedTemp = Mathf.Lerp(speedTemp, 0f, SpeedDecel);
         } else {
-            SpeedTemp = Mathf.Lerp(SpeedTemp, 0f, AirSpeedDecel);
+            speedTemp = Mathf.Lerp(speedTemp, 0f, AirSpeedDecel);
         }
         if (!punchForceApplied)
-            velocity.x += SpeedTemp;
+            velocity.x += speedTemp * (!isGrounded ? 1.0f : movSpeedChargeModifier);
     }
 
     private void updateIsGrounded()
@@ -372,6 +391,8 @@ public class PlayerController2DOffline : PlayerController2D
         wasGrounded = isGrounded;
         bool isLeftGrounded = hitLeft.collider != null;
         bool isRightGrounded = hitRight.collider != null;
+        isGrounded = (isLeftGrounded || isRightGrounded);
+
         //hit.collider.gameObject.layer
         ///Can't regain jumpcounts before jump force is applied.
         if (isRightGrounded && !jumped) {
@@ -404,8 +425,7 @@ public class PlayerController2DOffline : PlayerController2D
             return;
 
         if (totalAttackFrames < 0) {
-            if ((Input.GetButtonDown("Up") || _MobileInput.GetButtonDown("Up")) && !punching) {
-                punching = true;
+            if (gameInput.GetButton("Up")) {
                 //AttackObjs[0].SetActive(true);
                 myAudioSrc.PlayOneShot(PunchNoise);
                 StartCoroutine(stopAnimationWithDelay("NormalAttackUp"));
@@ -413,8 +433,7 @@ public class PlayerController2DOffline : PlayerController2D
                 totalAttackFrames = AttackLag;
                 //_PhotonView.RPC("UpAttack", PhotonTargets.Others);
             }
-            if ((Input.GetButtonDown("Down") || _MobileInput.GetButtonDown("Down")) && !punching) {
-                punching = true;
+            if (gameInput.GetButton("Down")) {
                 //AttackObjs[2].SetActive(true);
                 myAudioSrc.PlayOneShot(PunchNoise);
                 StartCoroutine(stopAnimationWithDelay("NormalAttackDown"));
@@ -422,17 +441,51 @@ public class PlayerController2DOffline : PlayerController2D
                 totalAttackFrames = AttackLag;
                 //_PhotonView.RPC("DownAttack", PhotonTargets.Others);
             }
-            if (facingRight && (Input.GetButtonDown("Right") || _MobileInput.GetButtonDown("Right")) && !punching) {
-                punching = true;
-                //AttackObjs[1].SetActive(true);
-                myAudioSrc.PlayOneShot(PunchNoise);
-                StartCoroutine(stopAnimationWithDelay("NormalAttackForward"));
-                anim.SetBool("NormalAttackForward", true);
-                totalAttackFrames = AttackLag;
-                //_PhotonView.RPC("ForwardAttack", PhotonTargets.Others);
+
+            if (facingRight && gameInput.GetButton("Right")) {
+
+                if (chargingFrames > maxChargePunchFrames)
+                {
+                    anim.SetBool("IsCharging", isCharging);
+                }
+                else if (chargingFrames > maxNormalPunchFrames)
+                {
+                    isCharging = false;
+                    // Cancel charging animation
+                    movSpeedChargeModifier = 1.0f;
+                    anim.SetBool("IsCharging", isCharging);
+                }
+                else
+                {
+                    chargingFrames++;
+                    isCharging = true;
+                    movSpeedChargeModifier = SpeedWhileChargingModifier;
+                }
             }
-            if (!facingRight && (Input.GetButtonDown("Left") || _MobileInput.GetButtonDown("Left")) && !punching) {
-                punching = true;
+            
+            if (!gameInput.GetButton("Right") && isCharging)
+            {
+                if(chargingFrames < maxNormalPunchFrames)
+                {
+                    myAudioSrc.PlayOneShot(PunchNoise);
+                    StartCoroutine(stopAnimationWithDelay("NormalAttackForward"));
+                    anim.SetBool("NormalAttackForward", true);
+                    totalAttackFrames = AttackLag;
+                }
+                else if (chargingFrames < maxChargePunchFrames)
+                {
+                    //launch charging animation
+                }
+                else
+                {
+                    //Cancel charging animation
+                }
+                chargingFrames = 0;
+                isCharging = false;
+                movSpeedChargeModifier = 1.0f;
+            }
+
+            if (!facingRight && (Input.GetButtonDown("Left") || gameInput.GetButton("Left"))) {
                 //AttackObjs[1].SetActive(true);
                 myAudioSrc.PlayOneShot(PunchNoise);
                 StartCoroutine(stopAnimationWithDelay("NormalAttackForward"));
@@ -628,7 +681,7 @@ public class PlayerController2DOffline : PlayerController2D
     {
         yield return attackDisableDelay;
         anim.SetBool(boolName, false);
-        punching = false;
+        //punching = false;
     }
 
     private IEnumerator applyPunchForce(Vector2 punchForce)
@@ -700,6 +753,11 @@ public class PlayerController2DOffline : PlayerController2D
     public void UnpauseMvmnt()
     {
         controlsPaused = false;
+    }
+
+    public void AssignFistSize()
+    {
+
     }
 }
 //public void CheckWon()

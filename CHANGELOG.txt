@@ -1,4 +1,4 @@
-CHANGELOG - V0.6.93
+CHANGELOG - V0.7
 KEY: (/) Change, (+) Addition, (-) Removal, (O) Known but not Fixed
 	Art:
 
@@ -6,6 +6,10 @@ KEY: (/) Change, (+) Addition, (-) Removal, (O) Known but not Fixed
 	 - Beta tag removed from in-game.
 
 	Gameplay:
+	 - Down Jumping now works in Offline/Practice Mode.
+	 - CHARGE ATTACK:
+		- Move speed and jump height halved while charging.
+		- 
 
 	Fixes:
 	O Previous character selected in previous game doesn't assign properly, related to old bug.

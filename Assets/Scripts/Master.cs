@@ -162,7 +162,7 @@ public class Master : MonoBehaviour
 
         if (IsOfflineMode)
             return;
-        VersionUI.text = "BETA " + Application.version;
+        VersionUI.text = Application.version;
         N = GameObject.FindGameObjectWithTag("Networking").GetComponent<NetworkManager>();
     }
 

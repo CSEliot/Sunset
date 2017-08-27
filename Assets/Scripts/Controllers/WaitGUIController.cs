@@ -164,7 +164,6 @@ public class WaitGUIController : MonoBehaviour{
         int charNum;
         for (int x = 0; x < PhotonNetwork.room.PlayerCount; x++)
         {
-           
             slotNum = NetIDs.PlayerNumber(PhotonNetwork.playerList[x].ID);
             charNum = N.GetCharNum(PhotonNetwork.playerList[x].ID);
             RoomSlotImages[slotNum].sprite = UIHeads[charNum];
