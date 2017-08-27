@@ -975,7 +975,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1427397711908384}
   m_LocalRotation: {x: -0, y: -0, z: -0.7071068, w: 0.7071067}
-  m_LocalPosition: {x: 27.4, y: 7.8, z: 0}
+  m_LocalPosition: {x: 70.8, y: 7.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400000}
@@ -1151,8 +1151,9 @@ MonoBehaviour:
   PunchForceDecel: 0.04
   PunchDisablePerc: 0.5
   MaxNormalPunchFrames: 15
-  MaxChargePunchFrames: 5000
+  MaxChargePunchFrames: 200
   SpeedWhileChargingModifier: 0.5
+  JumpSpeedWhileChargingModifier: 0.75
   DeathNoise: {fileID: 8300000, guid: da0dc1881e1d84368ba88ea848692f7c, type: 3}
   PunchNoise: {fileID: 8300000, guid: 54a8c03987aa44500ab40b86abe29ebc, type: 3}
   BoxPunch: 500
