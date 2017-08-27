@@ -44,7 +44,7 @@ public class ScreenController : MonoBehaviour
     private bool isLeftToggledOn;
     private bool isRightToggledOn;
 
-    public MobileController mCtrl;
+    public GameInputController mCtrl;
 
     private float angle;
     private float distThresh; // Between 1 and 0;
@@ -448,7 +448,12 @@ public class ScreenController : MonoBehaviour
     private void registerMovement()
     {
         if (!isLeftActive)
+        {
+            mCtrl.SetButtonUp("Jump");
+            mCtrl.SetButtonUp("DownJump");
+            mCtrl.SetAxisUp("MoveHorizontal");
             return;
+        }
 
         //get distance first.
         tempDist = Vector2.Distance(leftRgnCenter, LeftScnPos);
@@ -467,12 +472,13 @@ public class ScreenController : MonoBehaviour
 
         if (LeftScnPos.y - leftRgnCenter.y > 0)
         {
-            mCtrl.SetButtonDown("Jump");
+            mCtrl.SetAxisUp("DownJump");
+            mCtrl.SetAxisDown("Jump", tempSpeed);
         }
         else
         {
-            mCtrl.SetButtonUp("Jump");
-            mCtrl.SetButtonDown("DownJump");
+            mCtrl.SetAxisUp("Jump");
+            mCtrl.SetAxisDown("DownJump", -tempSpeed);
         }
     }
 
@@ -480,7 +486,10 @@ public class ScreenController : MonoBehaviour
     {
  
         if (!isRightActive)
+        {
+            mCtrl.SetButtonUp("Left", "Down", "Up", "Right");
             return;
+        }
 
         angle = Mathf.Atan2(RightScnPos.y - rightRgnCenter.y, RightScnPos.x - rightRgnCenter.x);
         angle = angle * (180f / Mathf.PI);
@@ -488,19 +497,22 @@ public class ScreenController : MonoBehaviour
         if (angle > bottomRightLimit && angle < topRightLimit)
         {
             mCtrl.SetButtonDown("Right");
+            mCtrl.SetButtonUp("Left", "Down", "Up");
         }
         else if (angle < topLeftLimit && angle > topRightLimit)
         {
             mCtrl.SetButtonDown("Up");
+            mCtrl.SetButtonUp("Left", "Down", "Right");
         }
         else if (angle < bottomLeftLimit || angle > topLeftLimit)
         {
-
             mCtrl.SetButtonDown("Left");
+            mCtrl.SetButtonUp("Down", "Up", "Right");
         }
         else if (angle > bottomLeftLimit && angle < bottomRightLimit)
         {
             mCtrl.SetButtonDown("Down");
+            mCtrl.SetButtonUp("Left", "Up", "Right");
         }
     }
 
