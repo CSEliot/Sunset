@@ -82,8 +82,8 @@ public class PlayerController2DOffline : PlayerController2D
     /// </summary>
     private int chargingFrames;
     private bool isCharging;
-    public int maxNormalPunchFrames;
-    public int maxChargePunchFrames;
+    public int MaxNormalPunchFrames;
+    public int MaxChargePunchFrames;
     private float chargeFistSizeMultiplier;
     private float preChargeFistSizeMultiplier;
     private float normalFistSizeMultiplier;
@@ -444,35 +444,35 @@ public class PlayerController2DOffline : PlayerController2D
 
             if (facingRight && gameInput.GetButton("Right")) {
 
-                if (chargingFrames > maxChargePunchFrames)
-                {
-                    anim.SetBool("IsCharging", isCharging);
-                }
-                else if (chargingFrames > maxNormalPunchFrames)
+                chargingFrames++;
+                isCharging = true;
+                movSpeedChargeModifier = SpeedWhileChargingModifier;
+                if (chargingFrames > MaxChargePunchFrames)
                 {
                     isCharging = false;
                     // Cancel charging animation
                     movSpeedChargeModifier = 1.0f;
                     anim.SetBool("IsCharging", isCharging);
                 }
+                else if (chargingFrames > MaxNormalPunchFrames)
+                {
+                    anim.SetBool("IsCharging", isCharging);
+                }
                 else
                 {
-                    chargingFrames++;
-                    isCharging = true;
-                    movSpeedChargeModifier = SpeedWhileChargingModifier;
                 }
             }
             
             if (!gameInput.GetButton("Right") && isCharging)
             {
-                if(chargingFrames < maxNormalPunchFrames)
+                if(chargingFrames < MaxNormalPunchFrames)
                 {
                     myAudioSrc.PlayOneShot(PunchNoise);
                     StartCoroutine(stopAnimationWithDelay("NormalAttackForward"));
                     anim.SetBool("NormalAttackForward", true);
                     totalAttackFrames = AttackLag;
                 }
-                else if (chargingFrames < maxChargePunchFrames)
+                else if (chargingFrames < MaxChargePunchFrames)
                 {
                     //launch charging animation
                 }
@@ -482,6 +482,7 @@ public class PlayerController2DOffline : PlayerController2D
                 }
                 chargingFrames = 0;
                 isCharging = false;
+                anim.SetBool("IsCharging", isCharging);
                 movSpeedChargeModifier = 1.0f;
             }
 
