@@ -82,13 +82,16 @@ public class PlayerController2DOffline : PlayerController2D
     /// </summary>
     private int chargingFrames;
     private bool isCharging;
+    //private bool chargeReleased;
     public int MaxNormalPunchFrames;
     public int MaxChargePunchFrames;
     private float chargeFistSizeMultiplier;
     private float preChargeFistSizeMultiplier;
     private float normalFistSizeMultiplier;
     public float SpeedWhileChargingModifier;
+    public float JumpSpeedWhileChargingModifier;
     private float movSpeedChargeModifier;
+    private float jumpSpeedChargeModifier;
 
     private float damage;
     private bool isDead;
@@ -189,6 +192,7 @@ public class PlayerController2DOffline : PlayerController2D
     {
         damageTweek = 0.5f;
         movSpeedChargeModifier = 1.0f;
+        jumpSpeedChargeModifier = 1.0f;
         chargeFistSizeMultiplier = 2.0f;
         preChargeFistSizeMultiplier = 0.58f;
         normalFistSizeMultiplier = 0.75f;
@@ -197,6 +201,8 @@ public class PlayerController2DOffline : PlayerController2D
         AttackObjs[1].transform.localScale.Set(temp, temp, 1f);
         AttackObjs[2].transform.localScale.Set(temp, temp, 1f);
 
+        //chargeReleased = true;
+        anim.SetTrigger("ChargeReleased");
     }
 
     void Update()
@@ -336,10 +342,10 @@ public class PlayerController2DOffline : PlayerController2D
     private void updateJumpingPhysics()
     {
         if (jumped) {
-            jumpForceTemp = JumpForce;
+            jumpForceTemp = JumpForce * (!isGrounded ? 1.0f : jumpSpeedChargeModifier);
             jumped = false;
         }
-        velocity.y += jumpForceTemp * (!isGrounded ? 1.0f : movSpeedChargeModifier);
+        velocity.y += jumpForceTemp;
         jumpForceTemp = Mathf.Lerp(jumpForceTemp, 0f, JumpDecel);
     }
 
@@ -447,11 +453,14 @@ public class PlayerController2DOffline : PlayerController2D
                 chargingFrames++;
                 isCharging = true;
                 movSpeedChargeModifier = SpeedWhileChargingModifier;
+                jumpSpeedChargeModifier = JumpSpeedWhileChargingModifier;
                 if (chargingFrames > MaxChargePunchFrames)
                 {
                     isCharging = false;
+                    chargingFrames = 0;
                     // Cancel charging animation
                     movSpeedChargeModifier = 1.0f;
+                    jumpSpeedChargeModifier = 1.0f;
                     anim.SetBool("IsCharging", isCharging);
                 }
                 else if (chargingFrames > MaxNormalPunchFrames)
@@ -460,30 +469,38 @@ public class PlayerController2DOffline : PlayerController2D
                 }
                 else
                 {
+
                 }
             }
             
-            if (!gameInput.GetButton("Right") && isCharging)
+            if (!gameInput.GetButton("Right"))
             {
-                if(chargingFrames < MaxNormalPunchFrames)
+                if (isCharging)
                 {
-                    myAudioSrc.PlayOneShot(PunchNoise);
-                    StartCoroutine(stopAnimationWithDelay("NormalAttackForward"));
-                    anim.SetBool("NormalAttackForward", true);
-                    totalAttackFrames = AttackLag;
+                    if (chargingFrames < MaxNormalPunchFrames)
+                    {
+                        myAudioSrc.PlayOneShot(PunchNoise);
+                        StartCoroutine(stopAnimationWithDelay("NormalAttackForward"));
+                        anim.SetBool("NormalAttackForward", true);
+                        totalAttackFrames = AttackLag;
+                    }
+                    else if (chargingFrames < MaxChargePunchFrames)
+                    {
+                        //launch charging animation
+                        anim.SetTrigger("ChargeReleased");
+                        //return;
+                    }
+                    else
+                    {
+                        //Cancel charging animation
+                    }
+                    chargingFrames = 0;
+                    isCharging = false;
+                    anim.SetBool("IsCharging", isCharging);
                 }
-                else if (chargingFrames < MaxChargePunchFrames)
-                {
-                    //launch charging animation
-                }
-                else
-                {
-                    //Cancel charging animation
-                }
-                chargingFrames = 0;
-                isCharging = false;
-                anim.SetBool("IsCharging", isCharging);
+                anim.SetTrigger("ChargeReleased");
                 movSpeedChargeModifier = 1.0f;
+                jumpSpeedChargeModifier = 1.0f;
             }
 
             if (!facingRight && (Input.GetButtonDown("Left") || gameInput.GetButton("Left"))) {
