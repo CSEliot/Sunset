@@ -63,6 +63,9 @@ public class PlayerController2DOffline : PlayerController2D
 
     //private bool punching;
     public int PunchPercentAdd;
+    /// <summary>
+    /// Eventually to be used so that less players = more damage per player.
+    /// </summary>
     private float damageTweek;
     public float PunchForceUp;
     public float PunchForceForward_Forward;
@@ -92,6 +95,8 @@ public class PlayerController2DOffline : PlayerController2D
     public float JumpSpeedWhileChargingModifier;
     private float movSpeedChargeModifier;
     private float jumpSpeedChargeModifier;
+    public float MaximumChargeBonusDamage;
+    private float chargePercentage;
 
     private float damage;
     private bool isDead;
@@ -489,6 +494,7 @@ public class PlayerController2DOffline : PlayerController2D
                         //launch charging animation
                         anim.SetTrigger("ChargeReleased");
                         //return;
+                        chargePercentage = ((float)chargingFrames) / (float)MaxChargePunchFrames;
                     }
                     else
                     {
@@ -628,7 +634,7 @@ public class PlayerController2DOffline : PlayerController2D
             } else {
                 invincibilityCount = InvicibilityFrames;
             }
-            damage += PunchPercentAdd;
+            damage += (PunchPercentAdd + (PunchPercentAdd * chargePercentage));
 
 
             if (damage < 30)
@@ -773,9 +779,26 @@ public class PlayerController2DOffline : PlayerController2D
         controlsPaused = false;
     }
 
+    /// <summary>
+    /// Referenced by animation.
+    /// </summary>
     public void AssignFistSize()
     {
-
+        if(AttackObjs[0].transform.localScale.x > normalFistSizeMultiplier)
+        {
+            float temp = normalFistSizeMultiplier;
+            AttackObjs[0].transform.localScale = new Vector3(temp, temp, 1f);
+            AttackObjs[1].transform.localScale = new Vector3(temp, temp, 1f);
+            AttackObjs[2].transform.localScale = new Vector3(temp, temp, 1f);
+        }
+        else
+        {
+            float fistScale;
+            fistScale = normalFistSizeMultiplier  + chargePercentage * (chargeFistSizeMultiplier - normalFistSizeMultiplier);
+            AttackObjs[0].transform.localScale = new Vector3(fistScale, fistScale, 1f);
+            AttackObjs[1].transform.localScale = new Vector3(fistScale, fistScale, 1f);
+            AttackObjs[2].transform.localScale = new Vector3(fistScale, fistScale, 1f);
+        }
     }
 }
 //public void CheckWon()
