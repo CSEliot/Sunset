@@ -13,3 +13,9 @@ KEY: (/) Change, (+) Addition, (-) Removal, (O) Known but not Fixed
 
 	Fixes:
 	O Previous character selected in previous game doesn't assign properly, related to old bug.
+
+
+spoken w/ brandan. Dev team i sin Louisiana, New Orleans. very close social environment, working close w/ designers, and under a designer vet.
+would use ruby on rails. "only hiring really nice people". UI programmer.
+
+410-227-4901 - Nicholas Jackson

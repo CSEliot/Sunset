@@ -60,6 +60,7 @@ public class PlayerController2DOffline : PlayerController2D
 
 
     private bool facingRight;
+    private bool canTurnAround;
 
     //private bool punching;
     public int PunchPercentAdd;
@@ -80,14 +81,18 @@ public class PlayerController2DOffline : PlayerController2D
     private bool punchForceApplied;
     public float PunchDisablePerc;
 
+    private enum attackType { Up, Down, Left, Right, None };
     /// <summary>
     /// # of Frames of holding down before a charge is initiated.
     /// </summary>
-    private int chargingFrames;
-    private bool isCharging;
-    //private bool chargeReleased;
-    public int MaxNormalPunchFrames;
-    public int MaxChargePunchFrames;
+    private float startingPunchTime;
+    private attackType chargingAttack;
+    public float MaxNormalPunchTime;
+    public float MaxChargePunchTime;
+    /// <summary>
+    /// How long after fully charged can we hold it for? 
+    /// </summary>
+    public float MaxChargePunchHold;
     private float chargeFistSizeMultiplier;
     private float preChargeFistSizeMultiplier;
     private float normalFistSizeMultiplier;
@@ -95,8 +100,9 @@ public class PlayerController2DOffline : PlayerController2D
     public float JumpSpeedWhileChargingModifier;
     private float movSpeedChargeModifier;
     private float jumpSpeedChargeModifier;
-    public float MaximumChargeBonusDamage;
     private float chargePercentage;
+    public float ExponentialDamageMod;
+    public AudioClip[] ChargeSFX;
 
     private float damage;
     private bool isDead;
@@ -110,6 +116,8 @@ public class PlayerController2DOffline : PlayerController2D
     private Color lifeColor;
     public AudioClip PunchNoise;
     private AudioSource myAudioSrc;
+    private int currentSFX;
+
 
     private bool controlsPaused;
     private float spawnPause;
@@ -129,6 +137,7 @@ public class PlayerController2DOffline : PlayerController2D
 
     void Awake()
     {
+        currentSFX = -1;
         IsPlayerControlled = false;
         anim = GetComponent<Animator>();
 
@@ -171,6 +180,8 @@ public class PlayerController2DOffline : PlayerController2D
         speedTemp = 0f;
         attackDisableDelay = new WaitForSeconds(attackLife);
         facingRight = true;
+        canTurnAround = true;
+
         position = new Vector2();
         _Rigibody2D = GetComponent<Rigidbody2D>();
         jumpsRemaining = TotalJumpsAllowed;
@@ -189,8 +200,8 @@ public class PlayerController2DOffline : PlayerController2D
         lastHitTime = Time.time;
         lastHitForgetLength = 5;//Seconds
 
-        isCharging = false;
-        chargingFrames = 0;
+        chargingAttack = attackType.None;
+        startingPunchTime = 0;
     }
 
     void Start()
@@ -207,7 +218,7 @@ public class PlayerController2DOffline : PlayerController2D
         AttackObjs[2].transform.localScale.Set(temp, temp, 1f);
 
         //chargeReleased = true;
-        anim.SetTrigger("ChargeReleased");
+        //anim.SetTrigger("ChargeReleased");
     }
 
     void Update()
@@ -279,10 +290,27 @@ public class PlayerController2DOffline : PlayerController2D
 
     private void updateFacingDirection()
     {
+        if (chargingAttack != attackType.None || !canTurnAround)
+            return;
+
         if (!facingRight && _Rigibody2D.velocity.x > 0.2f) {
             facingRight = true;
             transform.localScale = new Vector3(1, 1, 1);
         } else if (facingRight && _Rigibody2D.velocity.x < -0.2f) {
+            facingRight = false;
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
+    }
+
+    private void setFacingDirection(bool toFaceRight)
+    {
+        if (toFaceRight)
+        {
+            facingRight = true;
+            transform.localScale = new Vector3(1, 1, 1);
+        }
+        else
+        {
             facingRight = false;
             transform.localScale = new Vector3(-1, 1, 1);
         }
@@ -435,88 +463,148 @@ public class PlayerController2DOffline : PlayerController2D
         if (isDead)
             return;
 
+        // If ability to attack is on cooldown
         if (totalAttackFrames < 0) {
-            if (gameInput.GetButton("Up")) {
-                //AttackObjs[0].SetActive(true);
-                myAudioSrc.PlayOneShot(PunchNoise);
-                StartCoroutine(stopAnimationWithDelay("NormalAttackUp"));
-                anim.SetBool("NormalAttackUp", true);
-                totalAttackFrames = AttackLag;
-                //_PhotonView.RPC("UpAttack", PhotonTargets.Others);
-            }
-            if (gameInput.GetButton("Down")) {
-                //AttackObjs[2].SetActive(true);
-                myAudioSrc.PlayOneShot(PunchNoise);
-                StartCoroutine(stopAnimationWithDelay("NormalAttackDown"));
-                anim.SetBool("NormalAttackDown", true);
-                totalAttackFrames = AttackLag;
-                //_PhotonView.RPC("DownAttack", PhotonTargets.Others);
-            }
 
-            if (facingRight && gameInput.GetButton("Right")) {
-
-                chargingFrames++;
-                isCharging = true;
-                movSpeedChargeModifier = SpeedWhileChargingModifier;
-                jumpSpeedChargeModifier = JumpSpeedWhileChargingModifier;
-                if (chargingFrames > MaxChargePunchFrames)
-                {
-                    isCharging = false;
-                    chargingFrames = 0;
-                    // Cancel charging animation
-                    movSpeedChargeModifier = 1.0f;
-                    jumpSpeedChargeModifier = 1.0f;
-                    anim.SetBool("IsCharging", isCharging);
-                }
-                else if (chargingFrames > MaxNormalPunchFrames)
-                {
-                    anim.SetBool("IsCharging", isCharging);
-                }
-                else
-                {
-
-                }
-            }
-            
-            if (!gameInput.GetButton("Right"))
+            //Get Attack Input for this frame
+            if (chargingAttack == attackType.None)
             {
-                if (isCharging)
-                {
-                    if (chargingFrames < MaxNormalPunchFrames)
-                    {
-                        myAudioSrc.PlayOneShot(PunchNoise);
-                        StartCoroutine(stopAnimationWithDelay("NormalAttackForward"));
-                        anim.SetBool("NormalAttackForward", true);
-                        totalAttackFrames = AttackLag;
-                    }
-                    else if (chargingFrames < MaxChargePunchFrames)
-                    {
-                        //launch charging animation
-                        anim.SetTrigger("ChargeReleased");
-                        //return;
-                        chargePercentage = ((float)chargingFrames) / (float)MaxChargePunchFrames;
-                    }
-                    else
-                    {
-                        //Cancel charging animation
-                    }
-                    chargingFrames = 0;
-                    isCharging = false;
-                    anim.SetBool("IsCharging", isCharging);
-                }
-                anim.SetTrigger("ChargeReleased");
+                //startingPunchTime will always be the time of the 
+                //previous frame before attacking
+                startingPunchTime = Time.time;
                 movSpeedChargeModifier = 1.0f;
                 jumpSpeedChargeModifier = 1.0f;
+                if (gameInput.GetButton("Right"))
+                {
+                    chargingAttack = attackType.Right;
+                    anim.SetTrigger("IsHoriz");
+                    setFacingDirection(chargingAttack == attackType.Right);
+                }
+                else if (gameInput.GetButton("Left"))
+                {
+                    anim.SetTrigger("IsHoriz");
+                    chargingAttack = attackType.Left;
+                    setFacingDirection(chargingAttack == attackType.Right);
+                }
+                else if (gameInput.GetButton("Up"))
+                {
+                    chargingAttack = attackType.Up;
+                    anim.SetTrigger("IsVert");
+                    anim.SetTrigger("IsUp");
+                }
+                else if (gameInput.GetButton("Down"))
+                {
+                    chargingAttack = attackType.Down;
+                    anim.SetTrigger("IsVert");
+                    anim.SetTrigger("IsDown");
+                }
             }
 
-            if (!facingRight && (Input.GetButtonDown("Left") || gameInput.GetButton("Left"))) {
-                //AttackObjs[1].SetActive(true);
-                myAudioSrc.PlayOneShot(PunchNoise);
-                StartCoroutine(stopAnimationWithDelay("NormalAttackForward"));
-                anim.SetBool("NormalAttackForward", true);
-                totalAttackFrames = AttackLag;
-                //_PhotonView.RPC("ForwardAttack", PhotonTargets.Others);
+            // Begin Per frame while charging check
+            if (chargingAttack != attackType.None)
+            {
+                // Cancel charging animation if you charge for too long.
+                if (Time.time - startingPunchTime > (MaxChargePunchTime + MaxChargePunchHold))
+                {
+                    chargingAttack = attackType.None;
+                    anim.SetBool("IsCharging", false);
+                    anim.SetTrigger("ChargeFailed");
+                }
+                else if (Time.time - startingPunchTime > MaxNormalPunchTime)
+                {
+                    movSpeedChargeModifier = SpeedWhileChargingModifier;
+                    jumpSpeedChargeModifier = JumpSpeedWhileChargingModifier;
+                    anim.SetBool("IsCharging", true);
+                }
             }
+            //End Per Frame WHILE Charging Check
+
+            //Begin Charge Attack Release check
+            if (chargingAttack != attackType.None)
+            {
+                string attackName = "";
+                switch (chargingAttack)
+                {
+                    case attackType.Right:
+                        if (!gameInput.GetButton("Right"))
+                        {
+                            chargingAttack = attackType.None;
+                            attackName = "NormalAttackForward";
+                        }
+                        break;
+                    case attackType.Left:
+                        if (!gameInput.GetButton("Left"))
+                        {
+                            chargingAttack = attackType.None;
+                            attackName = "NormalAttackForward";
+                        }
+                        break;
+                    case attackType.Up:
+                        if (!gameInput.GetButton("Up"))
+                        {
+                            chargingAttack = attackType.None;
+                            attackName = "NormalAttackUp";
+                        }
+                        break;
+                    case attackType.Down:
+                        if (!gameInput.GetButton("Down"))
+                        {
+                            chargingAttack = attackType.None;
+                            attackName = "NormalAttackDown";
+                        }
+                        break;
+                }//end charge attack release check
+
+                //If it's now none after we find out the holding button was released.
+                if (chargingAttack == attackType.None)
+                {
+                    if (Time.time - startingPunchTime < MaxNormalPunchTime)
+                    {
+                        PitchAudio.Rand(myAudioSrc);
+                        myAudioSrc.PlayOneShot(PunchNoise);
+                        StartCoroutine(stopAnimationWithDelay(attackName));
+                        anim.SetBool(attackName, true);
+                        totalAttackFrames = AttackLag;
+                        chargePercentage = 0f;
+                    }
+                    else if (Time.time - startingPunchTime < (MaxChargePunchTime + MaxChargePunchHold))
+                    {
+                        float totalEffectiveChargeTime = Mathf.Clamp(Time.time - startingPunchTime, 
+                                                                    0f,
+                                                                    MaxChargePunchTime);
+                        //launch charging animation
+                        chargePercentage = Mathf.Pow(totalEffectiveChargeTime, ExponentialDamageMod) / MaxChargePunchTime;
+                        anim.SetTrigger("ChargeReleased"); //TODO: SET ANIMATION NAMES FOR UP AND DOWN
+                    }
+                        //CBUG.Do("TOtal held down time: " + (Time.time - startingPunchTime));
+                    anim.SetBool("IsCharging", false);
+                }
+            }   
+            //if (gameInput.GetButton("Up")) {
+            //    //AttackObjs[0].SetActive(true);
+            //    myAudioSrc.PlayOneShot(PunchNoise);
+            //    StartCoroutine(stopAnimationWithDelay("NormalAttackUp"));
+            //    anim.SetBool("NormalAttackUp", true);
+            //    totalAttackFrames = AttackLag;
+            //    //_PhotonView.RPC("UpAttack", PhotonTargets.Others);
+            //}
+            //if (gameInput.GetButton("Down")) {
+            //    //AttackObjs[2].SetActive(true);
+            //    myAudioSrc.PlayOneShot(PunchNoise);
+            //    StartCoroutine(stopAnimationWithDelay("NormalAttackDown"));
+            //    anim.SetBool("NormalAttackDown", true);
+            //    totalAttackFrames = AttackLag;
+            //    //_PhotonView.RPC("DownAttack", PhotonTargets.Others);
+            //}
+
+            //if (!facingRight && (Input.GetButtonDown("Left") || gameInput.GetButton("Left"))) {
+            //    //AttackObjs[1].SetActive(true);
+            //    myAudioSrc.PlayOneShot(PunchNoise);
+            //    StartCoroutine(stopAnimationWithDelay("NormalAttackForward"));
+            //    anim.SetBool("NormalAttackForward", true);
+            //    totalAttackFrames = AttackLag;
+            //    //_PhotonView.RPC("ForwardAttack", PhotonTargets.Others);
+            //}
         }
         totalAttackFrames -= 1;
     }
@@ -634,7 +722,8 @@ public class PlayerController2DOffline : PlayerController2D
             } else {
                 invincibilityCount = InvicibilityFrames;
             }
-            damage += (PunchPercentAdd + (PunchPercentAdd * chargePercentage));
+            float enemyChargePercentage = col.GetComponentInParent<PlayerController2DOffline>().GetChargePercent();
+            damage += (PunchPercentAdd + (PunchPercentAdd * enemyChargePercentage));
 
 
             if (damage < 30)
@@ -799,6 +888,37 @@ public class PlayerController2DOffline : PlayerController2D
             AttackObjs[1].transform.localScale = new Vector3(fistScale, fistScale, 1f);
             AttackObjs[2].transform.localScale = new Vector3(fistScale, fistScale, 1f);
         }
+    }
+
+    public float GetChargePercent ()
+    {
+        return chargePercentage;
+    }
+
+    public void PlayCharacterSFX(int SfxNum)
+    {
+        if (currentSFX == SfxNum)
+            return;
+        currentSFX = SfxNum;
+        //myAudioSrc.Stop();
+        myAudioSrc.clip = ChargeSFX[SfxNum];
+        myAudioSrc.Play();
+    }
+
+
+    public void PlayCharacterSFX_OneShot(int SfxNum)
+    {
+        myAudioSrc.PlayOneShot(ChargeSFX[SfxNum]);
+    }
+
+    public void DisableFacingDirectionChange()
+    {
+        canTurnAround = false;
+    }
+
+    public void EnableFacingDirectionChange()
+    {
+        canTurnAround = true;
     }
 }
 //public void CheckWon()
