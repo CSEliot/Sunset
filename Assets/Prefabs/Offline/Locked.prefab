@@ -1302,7 +1302,6 @@ MonoBehaviour:
   GroundCheckEndPoint: 0
   jumpLag: 0
   AttackLag: 0
-  AttackLife: 0
   InvicibilityFrames: 0
   PunchPercentAdd: 0
   PunchForceUp: 0
@@ -1311,6 +1310,12 @@ MonoBehaviour:
   PunchForceDown: 0
   PunchForceDecel: 0
   PunchDisablePerc: 0
+  MaxNormalPunchTime: 0.2
+  MaxChargePunchTime: 2
+  MaxChargePunchHold: 2
+  SpeedWhileChargingModifier: 0.2
+  JumpSpeedWhileChargingModifier: 0.75
+  ExponentialDamageMod: 1.75
   DeathNoise: {fileID: 0}
   PunchNoise: {fileID: 0}
   BoxPunch: 0

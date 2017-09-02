@@ -5,7 +5,7 @@ AnimationClip:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: ChargeAttack 3
+  m_Name: ChargeAttack 3 Horiz
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -635,6 +635,13 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_GenerateMotionCurves: 0
   m_Events:
+  - time: 0
+    functionName: PlayCharacterSFX
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 3
+    messageOptions: 0
   - time: 0.05
     functionName: AssignFistSize
     data: 
