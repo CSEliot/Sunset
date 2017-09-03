@@ -5,7 +5,7 @@ using UnityEditor;
 public class SelectByTag : MonoBehaviour
 {
 
-    private static string SelectedTag = "WaitGUI";
+    private static string SelectedTag = "PlayerSelf";
 
     [MenuItem("Helpers/Select By Tag")]
     public static void SelectObjectsWithTag()

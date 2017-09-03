@@ -883,6 +883,7 @@ MonoBehaviour:
   SpeedWhileChargingModifier: 0.2
   JumpSpeedWhileChargingModifier: 0.75
   ExponentialDamageMod: 1.75
+  ChargeSFX: []
   DeathNoise: {fileID: 8300000, guid: da0dc1881e1d84368ba88ea848692f7c, type: 3}
   PunchNoise: {fileID: 8300000, guid: 54a8c03987aa44500ab40b86abe29ebc, type: 3}
   BoxPunch: 500
@@ -10656,7 +10657,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 4
   m_Sprite: {fileID: 21300000, guid: 26d0afffc83394e6c8c252406f49a68b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -10697,7 +10698,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 4
   m_Sprite: {fileID: 21300000, guid: 26d0afffc83394e6c8c252406f49a68b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -10738,7 +10739,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 4
   m_Sprite: {fileID: 21300000, guid: 26d0afffc83394e6c8c252406f49a68b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -10772,7 +10773,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 4
   m_TargetDisplay: 0
 --- !u!224 &224320850668137808
 RectTransform:

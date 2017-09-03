@@ -12,6 +12,6 @@ public static class PitchAudio
     {
         if (originalPitch == -1f)
             originalPitch = src.pitch;
-        src.pitch = src.pitch * Random.Range(pitchMin, pitchMax);
+        src.pitch = originalPitch * Random.Range(pitchMin, pitchMax);
     }
 }

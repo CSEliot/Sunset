@@ -131,12 +131,12 @@ public class Master : MonoBehaviour
         isEast = true;
         //if (Application.isEditor)
         //    PlayerPrefs.DeleteAll();
-        bool tempControlsShown = PlayerPrefs.GetInt("isControlsShown", 1) == 1 ? true : false;
+        bool tempControlsShown = PlayerPrefs.GetInt("ShowControls", 1) == 1 ? true : false;
+        isControlsShown = tempControlsShown;
+        CBUG.Do("Showing Controls set to: " + tempControlsShown);
 
         isFirstTime = PlayerPrefs.GetInt("isFirstTime", 1) == 1? true : false;
         FirstTimeNotice.SetActive(isFirstTime);
-
-        isControlsShown = tempControlsShown;
 
         myMusicAudio = GetComponent<AudioSource>();
         mySFXAudio = transform.GetChild(0).GetComponent<AudioSource>();
@@ -531,6 +531,7 @@ public class Master : MonoBehaviour
             int toShow = value ? 1 : 0;
             PlayerPrefs.SetInt("ShowControls", toShow);
             PlayerPrefs.Save();
+            CBUG.Do("Setting controls to: " + toShow);
         }
     }
 

@@ -167,7 +167,7 @@ public class ScreenController : MonoBehaviour
                 LineZ));
         }
 
-        if (!m.IsControlsShown)
+        if (!m.IsControlsShown && !SceneManagerHelper.ActiveSceneName.Contains("Practice"))
         {
             Line1.enabled = false;
             Line2.enabled = false;

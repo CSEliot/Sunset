@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-public class PlayerController2DOnline : PlayerController2D
+public class PlayerController2DOnlineNew : PlayerController2D 
 {
     public float Defense;
     public float Speed;
@@ -28,6 +28,7 @@ public class PlayerController2DOnline : PlayerController2D
     private Rigidbody2D _Rigibody2D;
     private PhotonView _PhotonView;
     private PhotonTransformView _PhotonTransform;
+    private GameInputController _MobileInput;
     private GameInputController gameInput;
 
     private bool isGrounded;
@@ -49,7 +50,7 @@ public class PlayerController2DOnline : PlayerController2D
 
     private Vector2 position;
     private Vector2 velocity;
-
+    
 
     public int jumpLag;
     private int totalJumpFrames;
@@ -85,10 +86,9 @@ public class PlayerController2DOnline : PlayerController2D
     private Dictionary<string, float> StrengthsList;
     private bool punchForceApplied;
     public float PunchDisablePerc;
-
+    
 
     private enum attackType { Up, Down, Left, Right, None };
-    private enum remoteButtonActivity { Up, Down, Left, Right, None };
     /// <summary>
     /// # of Frames of holding down before a charge is initiated.
     /// </summary>
@@ -140,14 +140,14 @@ public class PlayerController2DOnline : PlayerController2D
 
     public Vector2 LeftRaytraceOffset;
     public Vector2 RightRaytraceOffset;
-
+    
 
     void Awake()
     {
         currentSFX = -1;
         anim = GetComponent<Animator>();
 
-        foreach (ParticleSystem partSys in GetComponentsInChildren<ParticleSystem>())
+        foreach(ParticleSystem partSys in GetComponentsInChildren<ParticleSystem>())
         {
             if (partSys.gameObject.name == "Main Particle System")
             {
@@ -202,6 +202,8 @@ public class PlayerController2DOnline : PlayerController2D
         AttackObjs[1] = transform.Find("PunchForward").gameObject;
         AttackObjs[2] = transform.Find("PunchDown").gameObject;
 
+        if (GameObject.FindGameObjectWithTag("MobileController") != null)
+            _MobileInput = GameObject.FindGameObjectWithTag("MobileController").GetComponent<GameInputController>();
         gameInput = GameObject.FindGameObjectWithTag("MobileController").GetComponent<GameInputController>();
 
         spawnPause = 0.5f;
@@ -211,8 +213,7 @@ public class PlayerController2DOnline : PlayerController2D
         lastHitTime = Time.time;
         lastHitForgetLength = 5;//Seconds
 
-        if (_PhotonView.isMine)
-        {
+        if (_PhotonView.isMine) {
             tag = "PlayerSelf";
             _PhotonView.RPC("SetSlotNum", PhotonTargets.All, NetIDs.PlayerNumber(PhotonNetwork.player.ID));
             CamManager.SetTarget(transform);
@@ -241,12 +242,11 @@ public class PlayerController2DOnline : PlayerController2D
     void Update()
     {
         _PhotonTransform.SetSynchronizedValues(_Rigibody2D.velocity, 0f);
-        if (!_PhotonView.isMine)
+        if(!_PhotonView.isMine)
             return;
 
         //Jump Detection Only, no physics handling.
-        if (controlsPaused)
-        {
+        if (controlsPaused) {
             moveLeft = 0;
             moveRight = 0;
             return;
@@ -254,9 +254,9 @@ public class PlayerController2DOnline : PlayerController2D
 
         if (isFrozen)
             return;
-
+        
         updateJumping();
-        updateDownJumping();
+        updateDownJumping();    
         updateAttacks();
         updateMovement();
         UpdateHurt();
@@ -266,7 +266,7 @@ public class PlayerController2DOnline : PlayerController2D
     {
         updateFacingDirection();
         updateIsGrounded();
-        if (!_PhotonView.isMine)
+        if(!_PhotonView.isMine)
             return;
         if (wasGrounded && isGrounded)
         {
@@ -282,7 +282,7 @@ public class PlayerController2DOnline : PlayerController2D
         ////}
 
         velocity += Vector2.down * GravityForce;
-        if (!isDead)
+        if(!isDead)
             _Rigibody2D.velocity = velocity;
         velocity = Vector3.zero;
     }
@@ -293,8 +293,7 @@ public class PlayerController2DOnline : PlayerController2D
             return;
 
         //Only recent hits count
-        if (Time.time - lastHitTime > lastHitForgetLength)
-        {
+        if(Time.time - lastHitTime > lastHitForgetLength) {
             lastHitBy = -1;
             lastHitTime = Time.time;
         }
@@ -302,7 +301,7 @@ public class PlayerController2DOnline : PlayerController2D
 
     private void UpdateHurt()
     {
-        if (invincibilityCount >= 0)
+        if(invincibilityCount>=0)
             invincibilityCount--;
         //if (invincibilityCount == 0)
         //    TurnPartsOff();
@@ -345,8 +344,8 @@ public class PlayerController2DOnline : PlayerController2D
 
         //CBUG.Do(Input.GetAxisRaw("Jump") + "");
 
-        if ((gameInput.GetButton("Jump") || gameInput.GetAxis("Jump") > 0f)
-            && jumpsRemaining > 0
+        if (  (gameInput.GetButton("Jump") || gameInput.GetAxis("Jump") > 0f)
+            && jumpsRemaining > 0 
             && totalJumpFrames < 0)
         {
             jumped = true;
@@ -359,7 +358,7 @@ public class PlayerController2DOnline : PlayerController2D
 
     private void updateDownJumping()
     {
-        if ((gameInput.GetButton("DownJump") || gameInput.GetAxis("DownJump") < 0f)
+        if (  (gameInput.GetButton("DownJump")|| gameInput.GetAxis("DownJump") < 0f)
             && canDownJump)
         {
             downJumped = true;
@@ -371,18 +370,13 @@ public class PlayerController2DOnline : PlayerController2D
     {
         //tempAxis left n right, keyboar axis left n right, or no input
         tempAxis = gameInput.GetAxis("MoveHorizontal");
-        if (tempAxis > 0)
-        {
+        if (tempAxis > 0) {
             moveLeft = 0;
             moveRight = tempAxis;
-        }
-        else if (tempAxis < 0)
-        {
+        } else if (tempAxis < 0) {
             moveLeft = tempAxis;
             moveRight = 0;
-        }
-        else
-        {
+        } else {
             moveLeft = 0;
             moveRight = 0;
         }
@@ -390,8 +384,7 @@ public class PlayerController2DOnline : PlayerController2D
 
     private void updateDownJumpingPhysics()
     {
-        if (downJumped)
-        {
+        if (downJumped) {
             //CBUG.Log("DownJumped");
             jumpForceTemp = DownJumpForce;
             downJumped = false;
@@ -402,12 +395,11 @@ public class PlayerController2DOnline : PlayerController2D
 
     private void updateJumpingPhysics()
     {
-        if (jumped)
-        {
+        if (jumped) {
             jumpForceTemp = JumpForce * (!isGrounded ? 1.0f : jumpSpeedChargeModifier);
             jumped = false;
             //CBUG.Log("Jumped is false!");
-        }
+        } 
         velocity.y += jumpForceTemp;
         jumpForceTemp = Mathf.Lerp(jumpForceTemp, 0f, JumpDecel);
     }
@@ -418,20 +410,13 @@ public class PlayerController2DOnline : PlayerController2D
         //Normally we'd have any Input Handling get called from Update,
         //But dropped inputs aren't a problem with 'getaxis' since it's
         //Continuous and not a single frame like GetButtonDown
-        if (moveRight != 0)
-        {
+        if(moveRight != 0){
             speedTemp = Mathf.Lerp(speedTemp, Speed * moveRight, SpeedAccel);
-        }
-        else if (moveLeft != 0)
-        {
+        } else if (moveLeft != 0) {
             speedTemp = Mathf.Lerp(speedTemp, Speed * moveLeft, SpeedAccel);
-        }
-        else if (isGrounded)
-        {
+        } else if (isGrounded) {
             speedTemp = Mathf.Lerp(speedTemp, 0f, SpeedDecel);
-        }
-        else
-        {
+        } else {
             speedTemp = Mathf.Lerp(speedTemp, 0f, AirSpeedDecel);
         }
         if (!punchForceApplied)
@@ -458,7 +443,7 @@ public class PlayerController2DOnline : PlayerController2D
                               -Vector2.up,
                               GroundCheckEndPoint,
                               mask.value);
-
+        
         Debug.DrawLine(position + JumpOffset + RightRaytraceOffset,
                        (position + JumpOffset + RightRaytraceOffset) + (-Vector2.up * GroundCheckEndPoint),
                        Color.red,
@@ -471,26 +456,19 @@ public class PlayerController2DOnline : PlayerController2D
 
         //hit.collider.gameObject.layer
         ///Can't regain jumpcounts before jump force is applied.
-        if (isRightGrounded && !jumped)
-        {
+        if (isRightGrounded && !jumped) {
             //CBUG.Log("Grounded on: " + (hit.collider.name));
             jumpsRemaining = TotalJumpsAllowed;
             transform.SetParent(hitRight.collider.transform);
-        }
-        else if (isLeftGrounded && !jumped)
-        {
+        } else if (isLeftGrounded && !jumped) {
             //CBUG.Log("Grounded on: " + (hit.collider.name));
             jumpsRemaining = TotalJumpsAllowed;
             transform.SetParent(hitLeft.collider.transform);
-        }
-        else if (!isGrounded)
-        {
+        } else if (!isGrounded) {
             transform.SetParent(null);
             isGrounded = false;
             //CBUG.Log("Grounded on: " + (hit.collider.name));
-        }
-        else
-        {
+        } else {
             //CBUG.Log("No Raycast Contact.");
         }
         //if(!m_IsGrounded && down)
@@ -508,8 +486,7 @@ public class PlayerController2DOnline : PlayerController2D
             return;
 
         // If ability to attack is on cooldown
-        if (totalAttackFrames < 0)
-        {
+        if (totalAttackFrames < 0) {
 
             //Get Attack Input for this frame
             if (chargingAttack == attackType.None)
@@ -524,30 +501,25 @@ public class PlayerController2DOnline : PlayerController2D
                     chargingAttack = attackType.Right;
                     anim.SetTrigger("IsHoriz");
                     setFacingDirection(chargingAttack == attackType.Right);
-                    _PhotonView.RPC("SendStartCharge", PhotonTargets.Others, chargingAttack);
                 }
                 else if (gameInput.GetButton("Left"))
                 {
                     anim.SetTrigger("IsHoriz");
                     chargingAttack = attackType.Left;
                     setFacingDirection(chargingAttack == attackType.Right);
-                    _PhotonView.RPC("SendStartCharge", PhotonTargets.Others, chargingAttack);
                 }
                 else if (gameInput.GetButton("Up"))
                 {
                     chargingAttack = attackType.Up;
                     anim.SetTrigger("IsVert");
                     anim.SetTrigger("IsUp");
-                    _PhotonView.RPC("SendStartCharge", PhotonTargets.Others, chargingAttack);
                 }
                 else if (gameInput.GetButton("Down"))
                 {
                     chargingAttack = attackType.Down;
                     anim.SetTrigger("IsVert");
                     anim.SetTrigger("IsDown");
-                    _PhotonView.RPC("SendStartCharge", PhotonTargets.Others, chargingAttack);
                 }
-
             }
 
             // Begin Per frame while charging check
@@ -559,22 +531,15 @@ public class PlayerController2DOnline : PlayerController2D
                     chargingAttack = attackType.None;
                     anim.SetBool("IsCharging", false);
                     anim.SetTrigger("ChargeFailed");
-                    _PhotonView.RPC("SendChargeFailure", PhotonTargets.Others);
                 }
                 else if (Time.time - startingPunchTime > MaxNormalPunchTime)
                 {
                     movSpeedChargeModifier = SpeedWhileChargingModifier;
                     jumpSpeedChargeModifier = JumpSpeedWhileChargingModifier;
                     anim.SetBool("IsCharging", true);
-                    _PhotonView.RPC("SendIsCharging", PhotonTargets.Others);
                 }
             }
             //End Per Frame WHILE Charging Check
-
-
-            // BUGS: SIDE THING ON ONE SIDE ONLY AND
-            // AUDIO PER DISTANCE TOO STRONK
-
 
             //Begin Charge Attack Release check
             if (chargingAttack != attackType.None)
@@ -623,22 +588,20 @@ public class PlayerController2DOnline : PlayerController2D
                         anim.SetBool(attackName, true);
                         totalAttackFrames = AttackLag;
                         chargePercentage = 0f;
-                        _PhotonView.RPC("SendChargeRelease", PhotonTargets.Others, attackName, Time.time - startingPunchTime);
                     }
                     else if (Time.time - startingPunchTime < (MaxChargePunchTime + MaxChargePunchHold))
                     {
-                        float totalEffectiveChargeTime = Mathf.Clamp(Time.time - startingPunchTime,
+                        float totalEffectiveChargeTime = Mathf.Clamp(Time.time - startingPunchTime, 
                                                                     0f,
                                                                     MaxChargePunchTime);
                         //launch charging animation
                         chargePercentage = Mathf.Pow(totalEffectiveChargeTime, ExponentialDamageMod) / MaxChargePunchTime;
-                        anim.SetTrigger("ChargeReleased");
-                        _PhotonView.RPC("SendChargeRelease", PhotonTargets.Others, attackName, Time.time - startingPunchTime);
+                        anim.SetTrigger("ChargeReleased"); //TODO: SET ANIMATION NAMES FOR UP AND DOWN
                     }
-                    CBUG.Do("TOtal held down time: " + (Time.time - startingPunchTime));
+                        //CBUG.Do("TOtal held down time: " + (Time.time - startingPunchTime));
                     anim.SetBool("IsCharging", false);
                 }
-            }
+            }   
             //if (gameInput.GetButton("Up")) {
             //    //AttackObjs[0].SetActive(true);
             //    myAudioSrc.PlayOneShot(PunchNoise);
@@ -669,109 +632,6 @@ public class PlayerController2DOnline : PlayerController2D
     }
 
 
-    #region RPC Calls
-    //TODO: Determine allowed scope of RPC functions.
-    [PunRPC]
-    void SetSlotNum(int SlotNUm)
-    {
-        this.SlotNum = SlotNUm;
-        CBUG.Do("Recording ID " + SlotNUm + " with Gamemaster.");
-        CBUG.Do("Character is: " + gameObject.name);
-        GameManager.AddPlayer(SlotNUm, gameObject);
-    }
-
-    [PunRPC]
-    void SendStartCharge(attackType Attack)
-    {
-        CBUG.Do("SendStartCharge Called: " + Attack.ToString());
-        canTurnAround = false;
-        if (Attack == attackType.Right)
-        {
-            anim.SetTrigger("IsHoriz");
-            setFacingDirection(chargingAttack == attackType.Right);
-        }
-        else if (Attack == attackType.Left)
-        {
-            anim.SetTrigger("IsHoriz");
-            setFacingDirection(chargingAttack == attackType.Right);
-        }
-        else if (Attack == attackType.Up)
-        {
-            anim.SetTrigger("IsVert");
-            anim.SetTrigger("IsUp");
-        }
-        else if (Attack == attackType.Up)
-        {
-            anim.SetTrigger("IsVert");
-            anim.SetTrigger("IsDown");
-        }
-    }
-    
-    [PunRPC]
-    void SendIsCharging()
-    {
-        anim.SetBool("IsCharging", true);
-    }
-
-    [PunRPC]
-    void SendChargeRelease(string AttackName, float HoldTime)
-    {
-        CBUG.Do("SendChargeRelease Called: " + AttackName + " Hold: " + HoldTime);
-
-        if (HoldTime < MaxNormalPunchTime)
-        {
-            PitchAudio.Rand(myAudioSrc);
-            myAudioSrc.PlayOneShot(PunchNoise);
-            StartCoroutine(stopAnimationWithDelay(AttackName));
-            anim.SetBool(AttackName, true);
-            totalAttackFrames = AttackLag;
-            chargePercentage = 0f;
-        }
-        else if (HoldTime < (MaxChargePunchTime + MaxChargePunchHold))
-        {
-            float totalEffectiveChargeTime = Mathf.Clamp(HoldTime,
-                                                        0f,
-                                                        MaxChargePunchTime);
-            //launch charging animation
-            chargePercentage = Mathf.Pow(totalEffectiveChargeTime, ExponentialDamageMod) / MaxChargePunchTime;
-            anim.SetTrigger("ChargeReleased");
-        }
-        CBUG.Do("Total held down time remote: " + HoldTime);
-        anim.SetBool("IsCharging", false);
-    }
-
-    [PunRPC]
-    void SendChargeFailure()
-    {
-        CBUG.Do("SendChargeFailure Called.");
-
-        anim.SetBool("IsCharging", false);
-        anim.SetTrigger("ChargeFailed");
-        canTurnAround = true;
-    }
-
-    [PunRPC]
-    void HurtAnim(int hurtNum)
-    {
-        switch (hurtNum)
-        {
-            case 1:
-                anim.SetTrigger("HurtSmall");
-                break;
-            case 2:
-                anim.SetTrigger("HurtMedium");
-                break;
-            case 3:
-                anim.SetTrigger("HurtBig");
-                break;
-            default:
-                CBUG.Error("BAD ANIM NUMBER GIVEN");
-                break;
-        }
-    }
-
-
-
     /// <summary>
     /// Calls GameManager's RecordDeath. Respawn Handling
     /// is done from there.
@@ -797,8 +657,7 @@ public class PlayerController2DOnline : PlayerController2D
         GameManager.RecordDeath(killer, killed, false);
         GameManager.HandleDeath(killed, false);
     }
-    #endregion
-
+    
     /// <summary>
     /// Nothing to do. You stay invisible and immobile
     /// </summary>
@@ -813,8 +672,7 @@ public class PlayerController2DOnline : PlayerController2D
     /// <param name="spawnPoint"></param>
     public override void Respawn(Vector3 spawnPoint)
     {
-        if (_PhotonView.isMine)
-        {
+        if (_PhotonView.isMine) {
             transform.position = spawnPoint;
             GameHUDController.LoseALife();
             GameHUDController.ResetDamage();
@@ -822,7 +680,7 @@ public class PlayerController2DOnline : PlayerController2D
         }
         deathParts.Stop();
         _Rigibody2D.isKinematic = false;
-        StartCoroutine(spawnProtection());
+        StartCoroutine(spawnProtection()); 
     }
 
     private IEnumerator spawnProtection()
@@ -837,7 +695,7 @@ public class PlayerController2DOnline : PlayerController2D
     public void Freeze()
     {
         _Rigibody2D.isKinematic = true;
-        isFrozen = true;
+        isFrozen= true;
     }
     public void UnFreeze()
     {
@@ -887,7 +745,7 @@ public class PlayerController2DOnline : PlayerController2D
                 invincibilityCount = InvicibilityFrames;
                 //TurnPartsOn();
             }
-            float enemyChargePercentage = col.GetComponentInParent<PlayerController2DOnline>().GetChargePercent();
+            float enemyChargePercentage = col.GetComponentInParent<PlayerController2DOffline>().GetChargePercent();
             damage += (PunchPercentAdd + (PunchPercentAdd * enemyChargePercentage));
 
 
@@ -912,35 +770,28 @@ public class PlayerController2DOnline : PlayerController2D
                     Vector2 temp = Vector2.right * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name] - Defense);
                     temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name] - Defense);
                     StartCoroutine(
-                        applyPunchForce(temp * (damage / 100f) * damageTweek)
+                        applyPunchForce(temp * (damage/100f) * damageTweek)
                     );
-                }
-                else
-                {
+                } else {
                     Vector2 temp = Vector2.left * (PunchForceForward_Forward + StrengthsList[col.transform.parent.name] - Defense);
                     temp += Vector2.up * (PunchForceForward_Up + StrengthsList[col.transform.parent.name] - Defense);
                     StartCoroutine(
                         applyPunchForce(temp * (damage / 100f) * damageTweek)
                     );
                 }
-            }
-            else if (col.name == "PunchUp")
-            {
+            } else if (col.name == "PunchUp") {
                 StartCoroutine(
                     applyPunchForce(
-                        (Vector2.up * (PunchForceUp + StrengthsList[col.transform.parent.name] - Defense)
+                        (Vector2.up * (PunchForceUp + StrengthsList[col.transform.parent.name] - Defense) 
                         * (damage / 100f)
                         * damageTweek)
                     )
                 );
-            }
-            else
-            {
-                if (!isGrounded)
-                {
+            } else {
+                if (!isGrounded) {
                     StartCoroutine(
                         applyPunchForce(
-                            (Vector2.down * (PunchForceDown + StrengthsList[col.transform.parent.name] - Defense)
+                            (Vector2.down * (PunchForceDown + StrengthsList[col.transform.parent.name] - Defense) 
                             * (damage / 100f)
                             * damageTweek)
                         )
@@ -979,17 +830,17 @@ public class PlayerController2DOnline : PlayerController2D
         {
             velocity += tempPunchForce;
             tempPunchForce = Vector2.Lerp(tempPunchForce, Vector2.zero, PunchForceDecel);
-
+            
             if (!isTempForceLow &&
                 tempPunchForce.magnitude < punchForce.magnitude * PunchDisablePerc)
             {
                 isTempForceLow = true;
                 //if the force goes below 25%, let the character move again. 
-                punchForceApplied = false;
+	        	punchForceApplied = false;
             }
-            else if (!isTempForceLow)
+            else if(!isTempForceLow)
             {
-                punchForceApplied = true;
+			    punchForceApplied = true;
             }
             yield return null;
         }
@@ -1009,6 +860,25 @@ public class PlayerController2DOnline : PlayerController2D
             _PhotonView.RPC("OnDeath", PhotonTargets.All, lastHitBy, SlotNum);
         }
     }
+
+    private void hurtAnim(int hurtNum)
+    {
+        switch (hurtNum)
+        {
+            case 1:
+                anim.SetBool("HurtSmall", true);
+                break;
+            case 2:
+                anim.SetBool("HurtMedium", true);
+                break;
+            case 3:
+                anim.SetBool("HurtBig", true);
+                break;
+            default:
+                CBUG.Error("BAD ANIM NUMBER GIVEN");
+                break;
+        }
+    }	  	
 
 
     public bool GetIsDead()
@@ -1031,7 +901,7 @@ public class PlayerController2DOnline : PlayerController2D
     /// </summary>
     public void AssignFistSize()
     {
-        if (AttackObjs[0].transform.localScale.x > normalFistSizeMultiplier)
+        if(AttackObjs[0].transform.localScale.x > normalFistSizeMultiplier)
         {
             float temp = normalFistSizeMultiplier;
             AttackObjs[0].transform.localScale = new Vector3(temp, temp, 1f);
@@ -1041,14 +911,14 @@ public class PlayerController2DOnline : PlayerController2D
         else
         {
             float fistScale;
-            fistScale = normalFistSizeMultiplier + chargePercentage * (chargeFistSizeMultiplier - normalFistSizeMultiplier);
+            fistScale = normalFistSizeMultiplier  + chargePercentage * (chargeFistSizeMultiplier - normalFistSizeMultiplier);
             AttackObjs[0].transform.localScale = new Vector3(fistScale, fistScale, 1f);
             AttackObjs[1].transform.localScale = new Vector3(fistScale, fistScale, 1f);
             AttackObjs[2].transform.localScale = new Vector3(fistScale, fistScale, 1f);
         }
     }
 
-    public float GetChargePercent()
+    public float GetChargePercent ()
     {
         return chargePercentage;
     }

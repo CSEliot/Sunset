@@ -259,6 +259,7 @@ public class GameManager : MonoBehaviour {
 
     private void _HandleDeath(int killed, bool isDisconnect)
     {
+        Dictionary<int, GameObject> t = PlayableCharacters;
         if(IsLocalGame)
             StartCoroutine(doRespawnOrGhost<PlayerController2DOffline>(killed, isDisconnect));
         else
