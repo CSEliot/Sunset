@@ -59,4 +59,12 @@ MonoBehaviour:
   - SetID
   - SetSlotNum
   - Flash
+  - UpAttackEnd
+  - UpAttackStart
+  - SendButtonActivityPress
+  - SendButtonActivityRelease
+  - SendStartCharge
+  - SendChargeFailure
+  - SendChargeRelease
+  - SendIsCharging
   DisableAutoOpenWizard: 1

@@ -47,7 +47,7 @@ public class GameInputController : MonoBehaviour {
         SetAxisUp = mobileSetAxisUp;
         SetAxisDown = mobileSetAxisDown;
 
-        if (Application.isEditor || Application.isMobilePlatform)
+        if (Application.isEditor || !Application.isMobilePlatform)
         {
             GetButton = Input.GetButton;
             GetButtonDown = Input.GetButtonDown;

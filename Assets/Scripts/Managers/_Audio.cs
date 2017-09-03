@@ -14,7 +14,7 @@ public class _Audio : MonoBehaviour {
 
     private void Awake()
     {
-        DontDestroyOnLoad(this);
+        //DontDestroyOnLoad(this);
         M = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
     }
  
@@ -22,6 +22,8 @@ public class _Audio : MonoBehaviour {
     void Start () {
         isNewMusicIncoming = false;
         tag = _Audio.myTag;
+        if (GameObject.FindGameObjectsWithTag("AudioHelper").Length > 1)
+            Destroy(gameObject);
 	}
 
     #region Public Methods
