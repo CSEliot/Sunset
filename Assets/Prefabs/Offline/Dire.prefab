@@ -79,7 +79,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 1000
+  MaxDistance: 400
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
@@ -496,8 +496,8 @@ GameObject:
   - component: {fileID: 4263989114250688}
   - component: {fileID: 212721413926629162}
   - component: {fileID: 61695205276208588}
-  - component: {fileID: 114574390728720668}
-  m_Layer: 0
+  - component: {fileID: 114244308857721322}
+  m_Layer: 8
   m_Name: PunchUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -548,8 +548,8 @@ GameObject:
   - component: {fileID: 4128288228218104}
   - component: {fileID: 212797574220640502}
   - component: {fileID: 61512377869221280}
-  - component: {fileID: 114548101982790814}
-  m_Layer: 0
+  - component: {fileID: 114571675066321178}
+  m_Layer: 8
   m_Name: PunchDown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -566,9 +566,8 @@ GameObject:
   - component: {fileID: 4450984484267552}
   - component: {fileID: 212414643909333976}
   - component: {fileID: 61010300867459388}
-  - component: {fileID: 114262840196664838}
-  - component: {fileID: 114202725496524160}
-  m_Layer: 0
+  - component: {fileID: 114549836959945238}
+  m_Layer: 8
   m_Name: PunchForward
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -636,7 +635,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1962841284169296}
   m_LocalRotation: {x: -0, y: -0, z: -0.7071068, w: 0.7071067}
-  m_LocalPosition: {x: 27.399994, y: 7.800003, z: 0}
+  m_LocalPosition: {x: 70.8, y: 7.800003, z: 0}
   m_LocalScale: {x: 0.99999976, y: 0.99999976, z: 1}
   m_Children: []
   m_Father: {fileID: 400000}
@@ -883,20 +882,24 @@ MonoBehaviour:
   SpeedWhileChargingModifier: 0.2
   JumpSpeedWhileChargingModifier: 0.75
   ExponentialDamageMod: 1.75
-  ChargeSFX: []
+  ChargeSFX:
+  - {fileID: 8300000, guid: 94b425c6be44133408cc1c677bd721d7, type: 3}
+  - {fileID: 8300000, guid: 3d0b41d2e7f92a2409afab9e4679862b, type: 3}
+  - {fileID: 8300000, guid: d84481811cf864e4e92029667a098c4d, type: 3}
+  - {fileID: 8300000, guid: 150bd7427dcbce54cb7503f870d47140, type: 3}
   DeathNoise: {fileID: 8300000, guid: da0dc1881e1d84368ba88ea848692f7c, type: 3}
   PunchNoise: {fileID: 8300000, guid: 54a8c03987aa44500ab40b86abe29ebc, type: 3}
   BoxPunch: 500
   LeftRaytraceOffset: {x: -12, y: -5.1}
   RightRaytraceOffset: {x: 9, y: -5.1}
   IsPlayerControlled: 0
---- !u!114 &114202725496524160
+--- !u!114 &114244308857721322
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1744337245466770}
-  m_Enabled: 0
+  m_GameObject: {fileID: 1144656250841124}
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ee9ad4c74b2eff478c683de37b56cee, type: 3}
   m_Name: 
@@ -930,17 +933,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &114262840196664838
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1744337245466770}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114312308084027996
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -962,7 +954,31 @@ MonoBehaviour:
   m_FallbackScreenDPI: 124
   m_DefaultSpriteDPI: 74.7
   m_DynamicPixelsPerUnit: 0
---- !u!114 &114548101982790814
+--- !u!114 &114549836959945238
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1744337245466770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ee9ad4c74b2eff478c683de37b56cee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ForceMaterial: {fileID: 0}
+  ActiveChange: 1
+  _Alpha: 1
+  __MainTex2: {fileID: 2800000, guid: 21297ee56dfcb3744aeca141dd1a29de, type: 3}
+  _Value1: 136
+  _Value2: 1.512
+  _Value3: 1
+  _Value4: 0
+  _AutoScrollX: 0
+  _AutoScrollSpeedX: 0
+  _AutoScrollY: 0
+  _AutoScrollSpeedY: 0
+  ShaderChange: 0
+--- !u!114 &114571675066321178
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -970,20 +986,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1649701406849372}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
+  m_Script: {fileID: 11500000, guid: 4ee9ad4c74b2eff478c683de37b56cee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114574390728720668
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1144656250841124}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  ForceMaterial: {fileID: 0}
+  ActiveChange: 1
+  _Alpha: 1
+  __MainTex2: {fileID: 2800000, guid: 21297ee56dfcb3744aeca141dd1a29de, type: 3}
+  _Value1: 136
+  _Value2: 1.512
+  _Value3: 1
+  _Value4: 0
+  _AutoScrollX: 0
+  _AutoScrollSpeedX: 0
+  _AutoScrollY: 0
+  _AutoScrollSpeedY: 0
+  ShaderChange: 0
 --- !u!114 &114676542974610102
 MonoBehaviour:
   m_ObjectHideFlags: 1

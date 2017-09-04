@@ -688,19 +688,19 @@ public class PlayerController2DOnline : PlayerController2D
         if (Attack == attackType.Right)
         {
             anim.SetTrigger("IsHoriz");
-            setFacingDirection(chargingAttack == attackType.Right);
+            setFacingDirection(Attack == attackType.Right);
         }
         else if (Attack == attackType.Left)
         {
             anim.SetTrigger("IsHoriz");
-            setFacingDirection(chargingAttack == attackType.Right);
+            setFacingDirection(Attack == attackType.Right);
         }
         else if (Attack == attackType.Up)
         {
             anim.SetTrigger("IsVert");
             anim.SetTrigger("IsUp");
         }
-        else if (Attack == attackType.Up)
+        else if (Attack == attackType.Down)
         {
             anim.SetTrigger("IsVert");
             anim.SetTrigger("IsDown");
@@ -829,9 +829,9 @@ public class PlayerController2DOnline : PlayerController2D
     {
         yield return spawnPauseWait;
         //TODO: Spawn animation
-        transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Image>().enabled = true;
-
+        bodyImg.enabled = true;
         isDead = false;
+        deathParts.Stop();
     }
 
     public void Freeze()

@@ -75,8 +75,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ALL_DEBUG_ENABLED: 1
   SendToConsole: 1
-  DisableOnScreen: 0
-  ClearTime: 3.5
+  DisableOnScreen: 1
+  ClearTime: 3
   Clear: 0
   ClearAmount: 2
   ClearAll: 0
@@ -101,6 +101,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.0000009536743}
-  m_SizeDelta: {x: 0, y: -0.0000019073486}
+  m_AnchoredPosition: {x: -200, y: 0}
+  m_SizeDelta: {x: -400, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

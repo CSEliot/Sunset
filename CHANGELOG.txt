@@ -7,9 +7,7 @@ KEY: (/) Change, (+) Addition, (-) Removal, (O) Known but not Fixed
 
 	Gameplay:
 	 - Down Jumping now works in Offline/Practice Mode.
-	 - CHARGE ATTACK:
-		- Move speed and jump height halved while charging.
-		- 
+	 - CHARGE ATTACKS!
 
 	Fixes:
 	O Previous character selected in previous game doesn't assign properly, related to old bug.

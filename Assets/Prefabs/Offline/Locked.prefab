@@ -103,7 +103,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 69, y: 146, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 469018}
@@ -513,7 +513,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 1000
+  MaxDistance: 400
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
@@ -1326,7 +1326,11 @@ MonoBehaviour:
   SpeedWhileChargingModifier: 0.2
   JumpSpeedWhileChargingModifier: 0.75
   ExponentialDamageMod: 1.75
-  ChargeSFX: []
+  ChargeSFX:
+  - {fileID: 8300000, guid: 94b425c6be44133408cc1c677bd721d7, type: 3}
+  - {fileID: 8300000, guid: 3d0b41d2e7f92a2409afab9e4679862b, type: 3}
+  - {fileID: 8300000, guid: d84481811cf864e4e92029667a098c4d, type: 3}
+  - {fileID: 8300000, guid: 150bd7427dcbce54cb7503f870d47140, type: 3}
   DeathNoise: {fileID: 0}
   PunchNoise: {fileID: 0}
   BoxPunch: 0

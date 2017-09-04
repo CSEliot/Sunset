@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 11493470}
   - component: {fileID: 11445700}
   - component: {fileID: 8293614}
+  - component: {fileID: 95455953548335676}
   m_Layer: 10
   m_Name: Locked
   m_TagString: PlayerOther
@@ -105,7 +106,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 69, y: 146, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 469018}
@@ -515,7 +516,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 1000
+  MaxDistance: 400
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
@@ -736,8 +737,22 @@ MonoBehaviour:
   PunchForceDown: 2700
   PunchForceDecel: 0.04
   PunchDisablePerc: 0.5
+  MaxNormalPunchTime: 0.2
+  MaxChargePunchTime: 2
+  MaxChargePunchHold: 2
+  SpeedWhileChargingModifier: 0.2
+  JumpSpeedWhileChargingModifier: 0.75
+  ExponentialDamageMod: 1.75
+  ChargeSFX:
+  - {fileID: 8300000, guid: 94b425c6be44133408cc1c677bd721d7, type: 3}
+  - {fileID: 8300000, guid: 3d0b41d2e7f92a2409afab9e4679862b, type: 3}
+  - {fileID: 8300000, guid: d84481811cf864e4e92029667a098c4d, type: 3}
+  - {fileID: 8300000, guid: 150bd7427dcbce54cb7503f870d47140, type: 3}
   DeathNoise: {fileID: 8300000, guid: da0dc1881e1d84368ba88ea848692f7c, type: 3}
+  PunchNoise: {fileID: 8300000, guid: 54a8c03987aa44500ab40b86abe29ebc, type: 3}
   BoxPunch: 500
+  LeftRaytraceOffset: {x: -12, y: 0}
+  RightRaytraceOffset: {x: 9, y: 0}
 --- !u!114 &11404760
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1366,6 +1381,23 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 100000}
   m_IsPrefabParent: 1
+--- !u!95 &95455953548335676
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9518653a4faf0024c9effa9efd6d8321, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &114000012895037842
 MonoBehaviour:
   m_ObjectHideFlags: 1
