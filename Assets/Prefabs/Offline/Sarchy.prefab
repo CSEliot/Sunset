@@ -80,7 +80,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 1000
+  MaxDistance: 400
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
@@ -469,8 +469,8 @@ GameObject:
   - component: {fileID: 4287437576032502}
   - component: {fileID: 212240444685256312}
   - component: {fileID: 61548349733188736}
-  - component: {fileID: 114708319456919206}
-  m_Layer: 0
+  - component: {fileID: 114419857032741252}
+  m_Layer: 8
   m_Name: PunchUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -503,8 +503,8 @@ GameObject:
   - component: {fileID: 4989425140774452}
   - component: {fileID: 212659136791314436}
   - component: {fileID: 61519302030305006}
-  - component: {fileID: 114269003501143768}
-  m_Layer: 0
+  - component: {fileID: 114450030871942562}
+  m_Layer: 8
   m_Name: PunchDown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -540,9 +540,8 @@ GameObject:
   - component: {fileID: 4441748912675216}
   - component: {fileID: 212630442098616722}
   - component: {fileID: 61416953638711266}
-  - component: {fileID: 114455616916633850}
-  - component: {fileID: 114101928026558880}
-  m_Layer: 0
+  - component: {fileID: 114513409982192304}
+  m_Layer: 8
   m_Name: PunchForward
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -638,7 +637,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1693164732342750}
   m_LocalRotation: {x: -0, y: -0, z: -0.7071068, w: 0.7071067}
-  m_LocalPosition: {x: 27.399994, y: 7.800003, z: 0}
+  m_LocalPosition: {x: 70.8, y: 7.800003, z: 0}
   m_LocalScale: {x: 0.99999976, y: 0.99999976, z: 1}
   m_Children: []
   m_Father: {fileID: 400000}
@@ -952,7 +951,11 @@ MonoBehaviour:
   SpeedWhileChargingModifier: 0.2
   JumpSpeedWhileChargingModifier: 0.75
   ExponentialDamageMod: 1.75
-  ChargeSFX: []
+  ChargeSFX:
+  - {fileID: 8300000, guid: 94b425c6be44133408cc1c677bd721d7, type: 3}
+  - {fileID: 8300000, guid: 3d0b41d2e7f92a2409afab9e4679862b, type: 3}
+  - {fileID: 8300000, guid: d84481811cf864e4e92029667a098c4d, type: 3}
+  - {fileID: 8300000, guid: 150bd7427dcbce54cb7503f870d47140, type: 3}
   DeathNoise: {fileID: 8300000, guid: da0dc1881e1d84368ba88ea848692f7c, type: 3}
   PunchNoise: {fileID: 8300000, guid: 54a8c03987aa44500ab40b86abe29ebc, type: 3}
   BoxPunch: 500
@@ -986,41 +989,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114101928026558880
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1692029958359344}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ee9ad4c74b2eff478c683de37b56cee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ForceMaterial: {fileID: 0}
-  ActiveChange: 1
-  _Alpha: 1
-  __MainTex2: {fileID: 2800000, guid: 21297ee56dfcb3744aeca141dd1a29de, type: 3}
-  _Value1: 136
-  _Value2: 1.512
-  _Value3: 1
-  _Value4: 0
-  _AutoScrollX: 0
-  _AutoScrollSpeedX: 0
-  _AutoScrollY: 0
-  _AutoScrollSpeedY: 0
-  ShaderChange: 0
---- !u!114 &114269003501143768
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1545168597314234}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114416979941458022
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1073,6 +1041,30 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &114419857032741252
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1364670482570214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ee9ad4c74b2eff478c683de37b56cee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ForceMaterial: {fileID: 0}
+  ActiveChange: 1
+  _Alpha: 1
+  __MainTex2: {fileID: 2800000, guid: 21297ee56dfcb3744aeca141dd1a29de, type: 3}
+  _Value1: 136
+  _Value2: 1.512
+  _Value3: 1
+  _Value4: 0
+  _AutoScrollX: 0
+  _AutoScrollSpeedX: 0
+  _AutoScrollY: 0
+  _AutoScrollSpeedY: 0
+  ShaderChange: 0
 --- !u!114 &114444771048553820
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1089,17 +1081,30 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &114455616916633850
+--- !u!114 &114450030871942562
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1692029958359344}
+  m_GameObject: {fileID: 1545168597314234}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
+  m_Script: {fileID: 11500000, guid: 4ee9ad4c74b2eff478c683de37b56cee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ForceMaterial: {fileID: 0}
+  ActiveChange: 1
+  _Alpha: 1
+  __MainTex2: {fileID: 2800000, guid: 21297ee56dfcb3744aeca141dd1a29de, type: 3}
+  _Value1: 136
+  _Value2: 1.512
+  _Value3: 1
+  _Value4: 0
+  _AutoScrollX: 0
+  _AutoScrollSpeedX: 0
+  _AutoScrollY: 0
+  _AutoScrollSpeedY: 0
+  ShaderChange: 0
 --- !u!114 &114502529590665742
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1121,6 +1126,30 @@ MonoBehaviour:
   m_FallbackScreenDPI: 124
   m_DefaultSpriteDPI: 74.7
   m_DynamicPixelsPerUnit: 0
+--- !u!114 &114513409982192304
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1692029958359344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ee9ad4c74b2eff478c683de37b56cee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ForceMaterial: {fileID: 0}
+  ActiveChange: 1
+  _Alpha: 1
+  __MainTex2: {fileID: 2800000, guid: 21297ee56dfcb3744aeca141dd1a29de, type: 3}
+  _Value1: 136
+  _Value2: 1.512
+  _Value3: 1
+  _Value4: 0
+  _AutoScrollX: 0
+  _AutoScrollSpeedX: 0
+  _AutoScrollY: 0
+  _AutoScrollSpeedY: 0
+  ShaderChange: 0
 --- !u!114 &114549699208177842
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1137,17 +1166,6 @@ MonoBehaviour:
   _Alpha: 1
   Blur: 0
   ShaderChange: 0
---- !u!114 &114708319456919206
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1364670482570214}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!198 &198550232093204358
 ParticleSystem:
   m_ObjectHideFlags: 1

@@ -31,9 +31,9 @@ Transform:
   m_Children:
   - {fileID: 4533293247872092}
   - {fileID: 4079060261246614}
+  - {fileID: 4453239166706864}
   - {fileID: 4750583311491744}
   - {fileID: 4505278737127508}
-  - {fileID: 4453239166706864}
   - {fileID: 4186910327552256}
   - {fileID: 4047035582114404}
   m_Father: {fileID: 0}
@@ -71,7 +71,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
-  m_Pitch: 1
+  m_Pitch: 0.5
   Loop: 0
   Mute: 0
   Spatialize: 0
@@ -79,7 +79,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 1000
+  MaxDistance: 400
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
@@ -501,8 +501,8 @@ GameObject:
   - component: {fileID: 4505278737127508}
   - component: {fileID: 212486352142304804}
   - component: {fileID: 61949473634576194}
-  - component: {fileID: 114828601032493452}
-  m_Layer: 0
+  - component: {fileID: 114873048282471104}
+  m_Layer: 8
   m_Name: PunchDown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -537,8 +537,8 @@ GameObject:
   - component: {fileID: 4750583311491744}
   - component: {fileID: 212753522721723496}
   - component: {fileID: 61886437527352190}
-  - component: {fileID: 114262197707642568}
-  m_Layer: 0
+  - component: {fileID: 114400039798636614}
+  m_Layer: 8
   m_Name: PunchUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -588,9 +588,8 @@ GameObject:
   - component: {fileID: 4453239166706864}
   - component: {fileID: 212823702665774580}
   - component: {fileID: 61107172446563016}
-  - component: {fileID: 114032494465927664}
-  - component: {fileID: 114048879507338716}
-  m_Layer: 0
+  - component: {fileID: 114666179000922286}
+  m_Layer: 8
   m_Name: PunchForward
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -653,7 +652,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1159227728502892}
   m_LocalRotation: {x: -0, y: -0, z: -0.7071068, w: 0.7071067}
-  m_LocalPosition: {x: 27.399994, y: 7.800003, z: 0}
+  m_LocalPosition: {x: 70.8, y: 7.800003, z: 0}
   m_LocalScale: {x: 0.99999976, y: 0.99999976, z: 1}
   m_Children: []
   m_Father: {fileID: 400000}
@@ -684,7 +683,7 @@ Transform:
   m_LocalScale: {x: 0.74999976, y: 0.74999976, z: 1}
   m_Children: []
   m_Father: {fileID: 400000}
-  m_RootOrder: 4
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4505278737127508
 Transform:
@@ -697,7 +696,7 @@ Transform:
   m_LocalScale: {x: 0.75, y: 0.75, z: 1}
   m_Children: []
   m_Father: {fileID: 400000}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4533293247872092
 Transform:
@@ -723,7 +722,7 @@ Transform:
   m_LocalScale: {x: 0.75, y: 0.75, z: 1}
   m_Children: []
   m_Father: {fileID: 400000}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &61107172446563016
 BoxCollider2D:
@@ -858,7 +857,7 @@ MonoBehaviour:
   SpeedAccel: 0.5
   AirSpeedDecel: 0.07
   SpeedDecel: 0.6
-  JumpForce: 950
+  JumpForce: 750
   DownJumpForce: -130
   JumpDecel: 0.062
   DownJumpDecel: 0.03
@@ -887,24 +886,17 @@ MonoBehaviour:
   SpeedWhileChargingModifier: 0.2
   JumpSpeedWhileChargingModifier: 0.75
   ExponentialDamageMod: 1.75
-  ChargeSFX: []
+  ChargeSFX:
+  - {fileID: 8300000, guid: 94b425c6be44133408cc1c677bd721d7, type: 3}
+  - {fileID: 8300000, guid: 3d0b41d2e7f92a2409afab9e4679862b, type: 3}
+  - {fileID: 8300000, guid: d84481811cf864e4e92029667a098c4d, type: 3}
+  - {fileID: 8300000, guid: 150bd7427dcbce54cb7503f870d47140, type: 3}
   DeathNoise: {fileID: 8300000, guid: da0dc1881e1d84368ba88ea848692f7c, type: 3}
   PunchNoise: {fileID: 8300000, guid: 54a8c03987aa44500ab40b86abe29ebc, type: 3}
   BoxPunch: 500
   LeftRaytraceOffset: {x: -12, y: 0}
   RightRaytraceOffset: {x: 9, y: 0}
   IsPlayerControlled: 0
---- !u!114 &114032494465927664
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1790089411629008}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114036022492810006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -957,13 +949,13 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &114048879507338716
+--- !u!114 &114400039798636614
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1790089411629008}
-  m_Enabled: 0
+  m_GameObject: {fileID: 1523182527356648}
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ee9ad4c74b2eff478c683de37b56cee, type: 3}
   m_Name: 
@@ -981,17 +973,6 @@ MonoBehaviour:
   _AutoScrollY: 0
   _AutoScrollSpeedY: 0
   ShaderChange: 0
---- !u!114 &114262197707642568
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1523182527356648}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114542252612884476
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1023,6 +1004,30 @@ MonoBehaviour:
   ActiveChange: 1
   _Alpha: 1
   Blur: 0
+  ShaderChange: 0
+--- !u!114 &114666179000922286
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1790089411629008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ee9ad4c74b2eff478c683de37b56cee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ForceMaterial: {fileID: 0}
+  ActiveChange: 1
+  _Alpha: 1
+  __MainTex2: {fileID: 2800000, guid: 21297ee56dfcb3744aeca141dd1a29de, type: 3}
+  _Value1: 136
+  _Value2: 1.512
+  _Value3: 1
+  _Value4: 0
+  _AutoScrollX: 0
+  _AutoScrollSpeedX: 0
+  _AutoScrollY: 0
+  _AutoScrollSpeedY: 0
   ShaderChange: 0
 --- !u!114 &114768226069763578
 MonoBehaviour:
@@ -1072,7 +1077,7 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114828601032493452
+--- !u!114 &114873048282471104
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -1080,9 +1085,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1183677271228262}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
+  m_Script: {fileID: 11500000, guid: 4ee9ad4c74b2eff478c683de37b56cee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ForceMaterial: {fileID: 0}
+  ActiveChange: 1
+  _Alpha: 1
+  __MainTex2: {fileID: 2800000, guid: 21297ee56dfcb3744aeca141dd1a29de, type: 3}
+  _Value1: 136
+  _Value2: 1.512
+  _Value3: 1
+  _Value4: 0
+  _AutoScrollX: 0
+  _AutoScrollSpeedX: 0
+  _AutoScrollY: 0
+  _AutoScrollSpeedY: 0
+  ShaderChange: 0
 --- !u!198 &198008282694844270
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -7391,7 +7409,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -389249939
+  randomSeed: 1662319683
   InitialModule:
     serializedVersion: 3
     enabled: 1

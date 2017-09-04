@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 8286886}
   - component: {fileID: 114000012583775832}
   - component: {fileID: 95800608472545142}
-  - component: {fileID: 114273931782134874}
   m_Layer: 0
   m_Name: Fang
   m_TagString: PlayerSelf
@@ -46,7 +45,6 @@ GameObject:
   - component: {fileID: 476464}
   - component: {fileID: 21236670}
   - component: {fileID: 6181646}
-  - component: {fileID: 11413848}
   - component: {fileID: 114179054317495274}
   m_Layer: 8
   m_Name: PunchForward
@@ -65,7 +63,6 @@ GameObject:
   - component: {fileID: 491000}
   - component: {fileID: 21232500}
   - component: {fileID: 6141274}
-  - component: {fileID: 11457694}
   - component: {fileID: 114368444332184924}
   m_Layer: 8
   m_Name: PunchDown
@@ -84,7 +81,6 @@ GameObject:
   - component: {fileID: 442396}
   - component: {fileID: 21281242}
   - component: {fileID: 6189852}
-  - component: {fileID: 11425888}
   - component: {fileID: 114764487795065318}
   m_Layer: 8
   m_Name: PunchUp
@@ -298,7 +294,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
-  m_Pitch: 1
+  m_Pitch: 1.5
   Loop: 0
   Mute: 0
   Spatialize: 0
@@ -306,7 +302,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 1000
+  MaxDistance: 400
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
@@ -366,39 +362,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
---- !u!114 &11413848
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 116222}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &11425888
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 191234}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &11457694
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 136468}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e1d1f588cd39a84bb73679b2ab0993d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!212 &21232500
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -1202,7 +1165,7 @@ MonoBehaviour:
   _Alpha: 1
   __MainTex2: {fileID: 2800000, guid: 21297ee56dfcb3744aeca141dd1a29de, type: 3}
   _Value1: 136
-  _Value2: 0
+  _Value2: 1.512
   _Value3: 1
   _Value4: 0
   _AutoScrollX: 0
@@ -1210,17 +1173,6 @@ MonoBehaviour:
   _AutoScrollY: 0
   _AutoScrollSpeedY: 0
   ShaderChange: 0
---- !u!114 &114273931782134874
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f4e5ff6b8a782e40a5d1d8a5771e044, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114368444332184924
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1237,7 +1189,7 @@ MonoBehaviour:
   _Alpha: 1
   __MainTex2: {fileID: 2800000, guid: 21297ee56dfcb3744aeca141dd1a29de, type: 3}
   _Value1: 136
-  _Value2: 0
+  _Value2: 1.512
   _Value3: 1
   _Value4: 0
   _AutoScrollX: 0
@@ -1277,7 +1229,7 @@ MonoBehaviour:
   _Alpha: 1
   __MainTex2: {fileID: 2800000, guid: 21297ee56dfcb3744aeca141dd1a29de, type: 3}
   _Value1: 136
-  _Value2: 0
+  _Value2: 1.512
   _Value3: 1
   _Value4: 0
   _AutoScrollX: 0
