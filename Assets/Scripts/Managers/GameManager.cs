@@ -246,11 +246,12 @@ public class GameManager : MonoBehaviour {
         }
         else
         {
-            //Note: Killer=-1 means player suicided.
-            if(killer != -1) {
+            //Note: Killer=killed means player suicided.
+            if(killer != killed) {
                 killsMatrix[killer, killed]++;
                 CBUG.Do("Player " + (killer+1) + " knocked out Player " + (killed+1));
             } else {
+                killsMatrix[killer, killed]++; //todo i'm aware this is bad code
                 CBUG.Do("Player " + (killed+1) + " Suicided!");
             }
             playerLives[killed]--;

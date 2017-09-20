@@ -1,21 +1,18 @@
 CHANGELOG - V0.7
 KEY: (/) Change, (+) Addition, (-) Removal, (O) Known but not Fixed
 	Art:
+	 + WebGL support enabled.
+	 + New music!! Lots!
 
 	General:
 	 - Beta tag removed from in-game.
+	 + Previous character selected remembered.
 
 	Gameplay:
 	 - Down Jumping now works in Offline/Practice Mode.
 	 - CHARGE ATTACKS!
 
 	Fixes:
-	O Previous character selected in previous game doesn't assign properly, related to old bug.
-	O Leaving game via intentional escape method (leaving early) causes "spectating" to remain.
+	+ Previous character selected in previous game doesn't assign properly, related to old bug.
+	/ Leaving game via intentional escape method (leaving early) causes "spectating" to remain.
 	O O After that, player 1 (normal) Showed "2/" and Player 2 (early leaver last game) didn't fully spawn (did kinda).
-
-
-spoken w/ brandan. Dev team i sin Louisiana, New Orleans. very close social environment, working close w/ designers, and under a designer vet.
-would use ruby on rails. "only hiring really nice people". UI programmer.
-
-410-227-4901 - Nicholas Jackson

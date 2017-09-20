@@ -256,5 +256,21 @@ public class WaitGUIController : MonoBehaviour{
         //j.GameStarted(N.GetSlotNum(PhotonNetwork.player.ID));
         transform.GetChild(0).gameObject.SetActive(false);
         PlayerHead.sprite = getImage(getImageNum());
+        _Audio.ChangeMusic();
+        if (M.StageName.Contains("Pil"))
+        {
+            _Audio.ChangeMusic();
+            _Audio.Play(2);
+        }
+        else if (M.StageName.Contains("Voi"))
+        {
+            _Audio.ChangeMusic();
+            _Audio.Play(9);
+        }
+        else if (M.StageName.Contains("Lai"))
+        {
+            _Audio.ChangeMusic();
+            _Audio.Play(10);
+        }
     }
 }

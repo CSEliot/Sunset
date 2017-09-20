@@ -33,7 +33,7 @@ public class Master : MonoBehaviour
     private GameObject clientCharacter;
     public int PlayerCharNum;
 
-    private string stageName;
+    public string StageName;
 
     public AudioClip[] SFX;
     public AudioClip[] MSX;
@@ -63,6 +63,9 @@ public class Master : MonoBehaviour
 
     private int charactersUnlockedTotal;
     private int defaultUnlocked = 6;
+
+    private float minConnectingWaitTime = 2f;
+    private float startedConnectingTime = 0f;
 
 	public enum Menu
 	{
@@ -126,7 +129,7 @@ public class Master : MonoBehaviour
         currentMap = Map.pillar;
         rmAction = RoomAction.unset;
         
-        stageName = "Pillar";
+        StageName = "Pillar";
         
         isEast = true;
         //if (Application.isEditor)
@@ -140,10 +143,8 @@ public class Master : MonoBehaviour
 
         myMusicAudio = GetComponent<AudioSource>();
         mySFXAudio = transform.GetChild(0).GetComponent<AudioSource>();
-        PlayMSX(3);
         if (SceneManager.GetActiveScene().name.Contains("Practice"))
         {
-            PlayMSX(0);
             isFirstTime = false;
             PlayerPrefs.SetInt("isFirstTime", 0);
         }
@@ -191,15 +192,16 @@ public class Master : MonoBehaviour
         if (escapeDisabled)
             return;
 
-        if(escapePresses == 1 && !escapeHardened)
-        {
-			GoBack ();
-            escapePresses = 0;
-        }else if(escapePresses == 3) {
-            GoBack();
-            escapePresses = 0;
-            //ACTIVATE "ARE YOU SURE YOU WANT TO QUIT?"
-        }
+        //todo proper implementation of leaving current game.
+   //     if(escapePresses == 1 && !escapeHardened)
+   //     {
+			//GoBack ();
+   //         escapePresses = 0;
+   //     }else if(escapePresses == 3) {
+   //         GoBack();
+   //         escapePresses = 0;
+   //         //ACTIVATE "ARE YOU SURE YOU WANT TO QUIT?"
+   //     }
     }
 
 	/// <summary>
@@ -215,7 +217,8 @@ public class Master : MonoBehaviour
 		    case Menu.main:
 			    PlayerPrefs.Save ();
 			    Application.Quit ();
-			    break; 
+                _Audio.Play(9);
+                break; 
 		    case Menu.chara:
                 if (currentMap == Map.practice)
                 {
@@ -227,12 +230,16 @@ public class Master : MonoBehaviour
                 switchCanvas((int)Menu.map);
                 unloadStage();
                 N.LeaveRoom();
+                _Audio.ChangeMusic();
+                _Audio.Play(5);
                 break;
 		    case Menu.map: 
 			    currentMenu = Menu.main;
 			    switchCanvas ((int)Menu.main);
                 N.LeaveServer();
-			    break;
+                _Audio.ChangeMusic();
+                _Audio.Play(3);
+                break;
 		    case Menu.ingame:
                 //Leaving after game started means GOTO->Map Select, so unload stage.
                 if (GameManager.GameStarted) {
@@ -242,7 +249,12 @@ public class Master : MonoBehaviour
                     switchCanvas((int)Menu.map);
                     unloadStage();
                     N.LeaveRoom();
-                }else {//Else we're just changing character.
+                    _Audio.ChangeMusic();
+                    _Audio.Play(5);
+                }
+                else {//Else we're just changing character.
+                    _Audio.ChangeMusic();
+                    _Audio.Play(6);
                     currentMenu = Menu.chara;
                     loadMenu();
                     escapeHardened = false;
@@ -252,6 +264,8 @@ public class Master : MonoBehaviour
             case Menu.options:
                 currentMenu = Menu.main;
                 switchCanvas((int)Menu.main);
+                _Audio.ChangeMusic();
+                _Audio.Play(3);
                 break;
             default:
 			    break;
@@ -267,29 +281,35 @@ public class Master : MonoBehaviour
 		switch (to) {
 		    case (int)Menu.main:
 			    switchCanvas ((int)Menu.main);
-			    break;
+                _Audio.ChangeMusic();
+                _Audio.Play(3);
+                break;
 		    case (int)Menu.map:
                 N.JoinServer(true);
                 StartCoroutine(gotoMap());
-			    break;
+                _Audio.ChangeMusic();
+                _Audio.Play(4);
+                break;
 		    case (int)Menu.chara:
                 StartCoroutine(gotoCharacterSelect());
                 break; 
             case (int)Menu.options:
                 switchCanvas((int)Menu.options);
+                _Audio.ChangeMusic();
+                _Audio.Play(8);
                 break;
             case (int)Menu.ingame: //game is actually loaded up from map -> chara.
                 //This just disables the main menu.
                 switchCanvas((int)Menu.ingame);
                 unloadMenu();
-                PlayMSX(1);
+                _Audio.ChangeMusic();
+                _Audio.Play(1);
                 GameObject.FindGameObjectWithTag("StageCamera").GetComponent<AudioListener>().enabled = true;
                 break;
             case (int)Menu.practice:
                 loadStage();
                 switchCanvas((int)Menu.ingame);
                 unloadMenu();
-                PlayMSX(1);
                 break;
             case -1: //Disabling all UI
                 switchCanvas(-1);
@@ -310,7 +330,9 @@ public class Master : MonoBehaviour
         timeConnecting = Time.time;
         ToggleConnectLoadScreen(true);
         GoTo(-1);
-        while (!PhotonNetwork.connectedAndReady)
+
+        startedConnectingTime = Time.time;
+        while (!PhotonNetwork.connectedAndReady || (Time.time - startedConnectingTime < minConnectingWaitTime))
         {
             if (Time.time - timeConnecting > ConnectToServerMaxWaitTime)
             {
@@ -325,9 +347,15 @@ public class Master : MonoBehaviour
         }
         if (PhotonNetwork.connectedAndReady)
         {
-            AssignPlayerCharacter(0);
             switchCanvas((int)Menu.map);
             _Audio.Play(12); //Say "Pillar"
+            _Audio.ChangeMusic();
+            _Audio.Play(5);
+            GameObject.Find("ServerRegion").GetComponent<Text>().text = "Server Region: " + PhotonNetwork.networkingPeer.CloudRegion.ToString();
+            GameObject.Find("ServerRegion").transform.GetChild(0).GetComponent<Text>().text = "Server Region: " + PhotonNetwork.networkingPeer.CloudRegion.ToString();
+            GameObject.Find("ServerVersion").GetComponent<Text>().text = "Server Version: " + Application.version;
+            GameObject.Find("ServerVersion").transform.GetChild(0).GetComponentInChildren<Text>().text = "Server Version: " + Application.version;
+
         }
     }
 
@@ -365,6 +393,8 @@ public class Master : MonoBehaviour
         {
             switchCanvas((int)Menu.chara);
             loadStage(); //the InGame map is loaded in the background.
+            _Audio.ChangeMusic();
+            _Audio.Play(6);
         }
         ToggleConnectLoadScreen(false);
     }
@@ -405,7 +435,6 @@ public class Master : MonoBehaviour
 
     private void loadMenu()
     {
-        PlayMSX(0);
         GameObject[] menuObjs = SceneManager.GetSceneByName("MainMenu").GetRootGameObjects();
         for (int i = 0; i < menuObjs.Length; i++)
         {
@@ -491,7 +520,7 @@ public class Master : MonoBehaviour
 
     public void SetStageName(string stage_name)
     {
-        stageName = stage_name;
+        StageName = stage_name;
         switch (stage_name)
         {
             case "Practice":
@@ -514,7 +543,7 @@ public class Master : MonoBehaviour
 
     public string GetStageName()
     {
-        return stageName;
+        return StageName;
     }
 
     public bool IsControlsShown
@@ -634,10 +663,6 @@ public class Master : MonoBehaviour
     {
         LoadingUI.SetActive(isActive);
         Rays.SetActive(!isActive);
-        if (isActive)
-            myMusicAudio.Pause();
-        else
-            myMusicAudio.Play();
     }
 
     void OnApplicationQuit()

@@ -207,7 +207,7 @@ public class PlayerController2DOnline : PlayerController2D
         spawnPause = 0.5f;
         spawnPauseWait = new WaitForSeconds(spawnPause);
 
-        lastHitBy = -1;
+        lastHitBy = SlotNum; //self, in case suicide without getting hit.
         lastHitTime = Time.time;
         lastHitForgetLength = 5;//Seconds
 
@@ -295,7 +295,7 @@ public class PlayerController2DOnline : PlayerController2D
         //Only recent hits count
         if (Time.time - lastHitTime > lastHitForgetLength)
         {
-            lastHitBy = -1;
+            lastHitBy = SlotNum;
             lastHitTime = Time.time;
         }
     }
@@ -350,7 +350,6 @@ public class PlayerController2DOnline : PlayerController2D
             && totalJumpFrames < 0)
         {
             jumped = true;
-            //CBUG.Log("Jumped is true!");
             jumpsRemaining -= 1;
             totalJumpFrames = jumpLag;
         }
@@ -796,6 +795,9 @@ public class PlayerController2DOnline : PlayerController2D
         // doRespawnOrGhost
         GameManager.RecordDeath(killer, killed, false);
         GameManager.HandleDeath(killed, false);
+
+        anim.SetTrigger("ChargeFailed");
+        _PhotonView.RPC("SendChargeFailure", PhotonTargets.Others);
     }
     #endregion
 
