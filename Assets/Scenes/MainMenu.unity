@@ -3404,6 +3404,10 @@ Prefab:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: MSX.Array.size
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
       propertyPath: DontUnloadObjs.Array.size
       value: 7
       objectReference: {fileID: 0}
@@ -3552,6 +3556,42 @@ Prefab:
       propertyPath: DontUnloadObjs.Array.data[6]
       value: 
       objectReference: {fileID: 846910846}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: MSX.Array.data[4]
+      value: 
+      objectReference: {fileID: 8300000, guid: a26b1f3b1a54f684eb8f0d06e5bd4ef8, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: MSX.Array.data[5]
+      value: 
+      objectReference: {fileID: 8300000, guid: ce6e2bf9bc8ac9041b73bd8d5576991e, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: MSX.Array.data[6]
+      value: 
+      objectReference: {fileID: 8300000, guid: 30c7441067d9a08458db135194fbbb11, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: MSX.Array.data[7]
+      value: 
+      objectReference: {fileID: 8300000, guid: f0d7561e7f99f8642a301d8cff18bda4, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: MSX.Array.data[8]
+      value: 
+      objectReference: {fileID: 8300000, guid: 916159dc8423e0449a824b0f3acb9640, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: MSX.Array.data[9]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4b8ea08185d480e489597768df35a35c, type: 3}
+    - target: {fileID: 11426406, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: MSX.Array.data[10]
+      value: 
+      objectReference: {fileID: 8300000, guid: a82b9dad3306c95438012e6852babd6b, type: 3}
+    - target: {fileID: 8260162, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: m_PlayOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8260162, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 219de431b18449b4297ca91c834c568f, type: 3}
     m_RemovedComponents:
     - {fileID: 114283241368552544, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: aa40ced3b2f8cb54dbd667820987631b, type: 2}
@@ -7330,7 +7370,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &948514858
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9275,7 +9315,6 @@ GameObject:
   - component: {fileID: 1192057767}
   - component: {fileID: 1192057766}
   - component: {fileID: 1192057765}
-  - component: {fileID: 1192057764}
   - component: {fileID: 1192057768}
   - component: {fileID: 1192057769}
   - component: {fileID: 1192057770}
@@ -9304,23 +9343,6 @@ RectTransform:
   m_AnchoredPosition: {x: -70, y: 30}
   m_SizeDelta: {x: 243, y: 84}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!95 &1192057764
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1192057762}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e89f9ad71d28649bf99e3a6f1178b522, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &1192057765
 MonoBehaviour:
   m_ObjectHideFlags: 0

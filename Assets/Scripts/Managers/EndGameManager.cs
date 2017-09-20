@@ -119,34 +119,38 @@ public class EndGameManager : MonoBehaviour {
         bestKillers.Clear();
         bestSurvivors.Clear();
         //CBUG.Do("X max: " + totalPlayers);
+        //killed by
         for(int x = 0; x < totalPlayers; x++) {
-            tempKills = 0;
-            for(int y = 0; y < totalPlayers; y++) {
-                CBUG.Do("Y Max: " + KillsMatrix.GetLength(1));
-                CBUG.Do("" + x + " Killed " + y + "|" + KillsMatrix[x, y]);
-                tempKills += KillsMatrix[x,y];
-            }
-            if (tempKills == mostKills) {
-                bestKillers.Add(x);
-            } else if(tempKills > mostKills) {
-                bestKillers.Clear();
-                mostKills = tempKills;
-                bestKillers.Add(x);
-            }
-        }
-
-        for (int y = 0; y < totalPlayers; y++) {
             tempDeaths = 0;
-            for (int x = 0; x < totalPlayers; x++) {
+            for(int y = 0; y < totalPlayers; y++) {
                 tempDeaths += KillsMatrix[x, y];
-            }
-            if(tempDeaths == leastDeaths) {
-                bestSurvivors.Add(y);
+                //CBUG.Do("Y Max: " + KillsMatrix.GetLength(1));
+                //CBUG.Do("" + x + " Killed " + y + "|" + KillsMatrix[x, y]);
             }
             if (tempDeaths < leastDeaths) {
                 bestSurvivors.Clear();
                 leastDeaths = tempDeaths;
-                bestSurvivors.Add(y);
+                bestSurvivors.Add(x);
+            }
+            if(tempDeaths == leastDeaths) {
+                bestSurvivors.Add(x);
+            }
+        }
+
+        for (int y = 0; y < totalPlayers; y++) {
+            tempKills = 0;
+            for (int x = 0; x < totalPlayers; x++) {
+                if(x == y)
+                    tempKills -= KillsMatrix[x, y];
+                else
+                    tempKills += KillsMatrix[x, y];
+            }
+            if (tempKills == mostKills) {
+                bestKillers.Add(y);
+            } else if(tempKills > mostKills) {
+                bestKillers.Clear();
+                mostKills = tempKills;
+                bestKillers.Add(y);
             }
         }
 

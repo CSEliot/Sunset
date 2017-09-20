@@ -12,7 +12,7 @@ public class DisableOnWeb : MonoBehaviour {
 	void Update () {
         if (Application.isWebPlayer)
         {
-            gameObject.SetActive(false);
+            transform.gameObject.SetActive(false);
         }
 	}
 }

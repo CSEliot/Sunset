@@ -39,13 +39,13 @@ public class CharacterSelectUIController : MonoBehaviour {
         N = GameObject.FindGameObjectWithTag("Networking").GetComponent<NetworkManager>();
         M = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
         setDesc();
+        currentSelector = PlayerPrefs.GetInt("currentSelector", 0);
+        assign();
 	}
     
     void OnEnable ()
     {
-        //resetUI();
-        N.SetCharacter();
-        _Audio.Play(16);
+        assign();
     }
 
     // Update is called once per frame
@@ -63,18 +63,23 @@ public class CharacterSelectUIController : MonoBehaviour {
 
         currentSelector += shiftLeft ? -1 : 1;
 
+        assign();  
+    }
+
+    private void assign()
+    {
         bool isLeftActive = currentSelector > 0;
         bool isRightActive = currentSelector < AllSprites.Length - 1;
 
         chosenChar = currentSelector; //char num is 0 -> 5, currentSelector is 0 -> 6;
         LeftFrame_B.interactable = isLeftActive;
-        LeftArrow.SetActive( isLeftActive );
+        LeftArrow.SetActive(isLeftActive);
         RightFrame_B.interactable = isRightActive;
         RightArrow.SetActive(isRightActive);
         //Reassign sprite images.
-        LeftFrame_I.sprite = AllSprites[ isLeftActive ? currentSelector - 1 : currentSelector];
+        LeftFrame_I.sprite = AllSprites[isLeftActive ? currentSelector - 1 : currentSelector];
         MidFrame_I.sprite = AllSprites[currentSelector];
-        RightFrame_I.sprite = AllSprites[ isRightActive ? currentSelector + 1: currentSelector];
+        RightFrame_I.sprite = AllSprites[isRightActive ? currentSelector + 1 : currentSelector];
         //Reassign description info.
         Desc1.text = charDesc[currentSelector];
         Desc2.text = charDesc[currentSelector];
@@ -94,6 +99,7 @@ public class CharacterSelectUIController : MonoBehaviour {
         M.AssignPlayerCharacter(chosenChar);
         N.SetCharacter();
         _Audio.Play(chosenChar + 20);
+        PlayerPrefs.SetInt("currentSelector", currentSelector);
     }
 
     private void resetUI()

@@ -196,7 +196,7 @@ public class PlayerController2DOffline : PlayerController2D
         spawnPause = 0.5f;
         spawnPauseWait = new WaitForSeconds(spawnPause);
 
-        lastHitBy = -1;
+        lastHitBy = ID;
         lastHitTime = Time.time;
         lastHitForgetLength = 5;//Seconds
 
@@ -269,7 +269,7 @@ public class PlayerController2DOffline : PlayerController2D
     {
         //Only recent hits count
         if (Time.time - lastHitTime > lastHitForgetLength) {
-            lastHitBy = -1;
+            lastHitBy = ID;
             lastHitTime = Time.time;
         }
     }
@@ -465,7 +465,6 @@ public class PlayerController2DOffline : PlayerController2D
 
         // If ability to attack is on cooldown
         if (totalAttackFrames < 0) {
-
             //Get Attack Input for this frame
             if (chargingAttack == attackType.None)
             {
@@ -644,8 +643,9 @@ public class PlayerController2DOffline : PlayerController2D
 
         //Death Map: OnDeath > RecordDeath > HandleDeath >
         // doRespawnOrGhost
-        GameManager.RecordDeath(killer, killed, false);
+        //GameManager.RecordDeath(killer, killed, false);
         GameManager.HandleDeath(killed, false);
+        anim.SetTrigger("ChargeFailed");
     }
     #endregion
 

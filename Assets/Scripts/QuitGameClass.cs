@@ -5,7 +5,7 @@ public class QuitGameClass : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        if (Application.isMobilePlatform || Application.isWebPlayer)
+        if (Application.isWebPlayer)
         {
             gameObject.SetActive(false);
             CBUG.Do("Disabling exit button!");
@@ -19,7 +19,7 @@ public class QuitGameClass : MonoBehaviour {
 
     public void QuitGame()
     {
-		System.Diagnostics.Process.GetCurrentProcess().Kill();
+		//System.Diagnostics.Process.GetCurrentProcess().Kill();
 		//
         Application.Quit();
 		//Test

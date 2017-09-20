@@ -121,7 +121,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 0.6.94
+  bundleVersion: 0.7
   preloadedAssets: []
   metroInputSource: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -145,9 +145,9 @@ PlayerSettings:
     iOS: com.KiteLion.Sunset
     tvOS: com.KiteLion.Sunset
   buildNumber:
-    Standalone: 40
+    Standalone: 42
     iOS: 0
-  AndroidBundleVersionCode: 41
+  AndroidBundleVersionCode: 43
   AndroidMinSdkVersion: 19
   AndroidTargetSdkVersion: 25
   AndroidPreferredInstallLocation: 0
@@ -571,7 +571,7 @@ PlayerSettings:
     type: 3}
   spritePackerPolicy: 
   webGLMemorySize: 256
-  webGLExceptionSupport: 0
+  webGLExceptionSupport: 2
   webGLNameFilesAsHashes: 0
   webGLDataCaching: 1
   webGLDebugSymbols: 0

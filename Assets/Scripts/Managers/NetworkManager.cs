@@ -237,11 +237,7 @@ public class NetworkManager : Photon.MonoBehaviour{
         //PhotonNetwork.JoinOrCreateRoom("Waiting", new RoomOptions() { MaxPlayers = Convert.ToByte(serverPlayerMax) }, null);
 
         inLobby = true;
-        GameObject.Find(serverRegionDisplayObjName).GetComponent<Text>().text = "Server Region: " + PhotonNetwork.networkingPeer.CloudRegion.ToString();
-        GameObject.Find(serverRegionDisplayObjName).transform.GetChild(0).GetComponent<Text>().text = "Server Region: " + PhotonNetwork.networkingPeer.CloudRegion.ToString();
-        GameObject.Find(serverVersionDisplayObjName).GetComponent<Text>().text = "Server Version: " + Application.version;
-        GameObject.Find(serverVersionDisplayObjName).transform.GetChild(0).GetComponentInChildren<Text>().text = "Server Version: " + Application.version;
-    }
+     }
 
     public void OnLeftLobby()
     {
