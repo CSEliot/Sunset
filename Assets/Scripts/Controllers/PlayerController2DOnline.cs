@@ -793,8 +793,7 @@ public class PlayerController2DOnline : PlayerController2D
 
         //Death Map: OnDeath > RecordDeath > HandleDeath >
         // doRespawnOrGhost
-        GameManager.RecordDeath(killer, killed, false);
-        GameManager.HandleDeath(killed, false);
+        GameManager.HandleDeath(killer, killed, false);
 
         anim.SetTrigger("ChargeFailed");
         _PhotonView.RPC("SendChargeFailure", PhotonTargets.Others);
@@ -878,6 +877,7 @@ public class PlayerController2DOnline : PlayerController2D
         {
             //Get name of puncher
             lastHitBy = col.GetComponentInParent<PlayerController2DOnline>().SlotNum;
+            CBUG.Do("I am " + SlotNum + " and got punched by: " + lastHitBy);
             lastHitTime = Time.time;
 
             if (invincibilityCount > 0)
@@ -1008,6 +1008,7 @@ public class PlayerController2DOnline : PlayerController2D
             if (!_PhotonView.isMine)
                 return;
 
+            CBUG.Do("I am " + SlotNum + "killed by: " + lastHitBy);
             _PhotonView.RPC("OnDeath", PhotonTargets.All, lastHitBy, SlotNum);
         }
     }

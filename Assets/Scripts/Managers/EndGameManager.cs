@@ -52,22 +52,22 @@ public class EndGameManager : MonoBehaviour {
     public Text[] WinnerTexts;
     public Text[] WinnerTexts_BG;
 
-    private List<int> bestKillers; //Only relevant to most recent game
-    private List<int> bestSurvivors; //Only relevant to most recent game
+    private List<int> BestKillers; //Only relevant to most recent game
+    private List<int> BestSurvivors; //Only relevant to most recent game
 
     // Use this for initialization
     void Start () {
 
         Players = new Dictionary<int, GameObject>();
 
-          tag = "EndGameManager";
+        tag = "EndGameManager";
         onScoreboard = false;
 
         slomoTimeSeconds = new WaitForSeconds(SlomoTime);
         autoKickSeconds = new WaitForSeconds(AutoKickTime);
 
-        bestKillers = new List<int>();
-        bestSurvivors = new List<int>();
+        BestKillers = new List<int>();
+        BestSurvivors = new List<int>();
 	}
 	
 	// Update is called once per frame
@@ -96,6 +96,11 @@ public class EndGameManager : MonoBehaviour {
             return getRef().onScoreboard;
         }
     }
+
+    public static void CalculateBests(int[,] KillsMatrix)
+    {
+        getRef()._CalculateBests(KillsMatrix);
+    }
     #endregion
 
     #region Public Functions
@@ -108,51 +113,64 @@ public class EndGameManager : MonoBehaviour {
     #endregion
 
     #region Private Helper Functions
-    private void _LaunchEndGame(int[,] KillsMatrix)
+    private void _CalculateBests(int[,] killsMatrix)
     {
-        int totalPlayers = KillsMatrix.GetLength(0);
+
+        int totalPlayers = killsMatrix.GetLength(0);
         int mostKills = 0;
         int tempKills = 0;
         int leastDeaths = SettingsManager._StartLives;
         int tempDeaths = 0;
 
-        bestKillers.Clear();
-        bestSurvivors.Clear();
+        BestKillers.Clear();
+        BestSurvivors.Clear();
         //CBUG.Do("X max: " + totalPlayers);
         //killed by
-        for(int x = 0; x < totalPlayers; x++) {
+        for (int y = 0; y < totalPlayers; y++)
+        {
             tempDeaths = 0;
-            for(int y = 0; y < totalPlayers; y++) {
-                tempDeaths += KillsMatrix[x, y];
-                //CBUG.Do("Y Max: " + KillsMatrix.GetLength(1));
-                //CBUG.Do("" + x + " Killed " + y + "|" + KillsMatrix[x, y]);
+            for (int x = 0; x < totalPlayers; x++)
+            {
+                    tempDeaths += killsMatrix[x, y];
+                    CBUG.Do("Y Max: " + killsMatrix.GetLength(1));
+                    CBUG.Do("" + x + " Killed " + y + "|" + killsMatrix[x, y]);
             }
-            if (tempDeaths < leastDeaths) {
-                bestSurvivors.Clear();
+            if (tempDeaths < leastDeaths)
+            {
+                BestSurvivors.Clear();
                 leastDeaths = tempDeaths;
-                bestSurvivors.Add(x);
+                BestSurvivors.Add(y);
             }
-            if(tempDeaths == leastDeaths) {
-                bestSurvivors.Add(x);
+            else if (tempDeaths == leastDeaths)
+            {
+                BestSurvivors.Add(y);
             }
         }
 
-        for (int y = 0; y < totalPlayers; y++) {
+        for (int x = 0; x < totalPlayers; x++)
+        {
             tempKills = 0;
-            for (int x = 0; x < totalPlayers; x++) {
-                if(x == y)
-                    tempKills -= KillsMatrix[x, y];
-                else
-                    tempKills += KillsMatrix[x, y];
+            for (int y = 0; y < totalPlayers; y++)
+            {
+                if (x != y)
+                    tempKills += killsMatrix[x, y];
             }
-            if (tempKills == mostKills) {
-                bestKillers.Add(y);
-            } else if(tempKills > mostKills) {
-                bestKillers.Clear();
+            if (tempKills == mostKills)
+            {
+                BestKillers.Add(x);
+            }
+            else if (tempKills > mostKills)
+            {
+                BestKillers.Clear();
                 mostKills = tempKills;
-                bestKillers.Add(y);
+                BestKillers.Add(x);
             }
         }
+    }
+    private void _LaunchEndGame(int[,] KillsMatrix)
+    {
+
+        CalculateBests(KillsMatrix);
 
         for(int x = 0; x < 5; x++) {
             WinnerTexts[x].text = "";
@@ -169,17 +187,17 @@ public class EndGameManager : MonoBehaviour {
         for (int x = startSlot; x < endSlot; x++) {
             RootPlayerSlots[x].SetActive(true);
             playerImages[x].sprite = M.AllCharacters[N.GetCharNum(NetIDs.GetNetID(tempPlayerNum))].GetComponentInChildren<Image>().sprite;
-            if(bestKillers.Contains(tempPlayerNum) || bestSurvivors.Contains(tempPlayerNum)) {
+            if(BestKillers.Contains(tempPlayerNum) || BestSurvivors.Contains(tempPlayerNum)) {
                 winnerGraphicImages[x].SetActive(true);
-                if (bestKillers.Contains(tempPlayerNum)) {
+                if (BestKillers.Contains(tempPlayerNum)) {
                     WinnerTexts[x].text += "Most Kills";
                     WinnerTexts_BG[x].text += "Most Kills";
                 }
-                if(bestKillers.Contains(tempPlayerNum) && bestSurvivors.Contains(tempPlayerNum)) {
+                if(BestKillers.Contains(tempPlayerNum) && BestSurvivors.Contains(tempPlayerNum)) {
                     WinnerTexts[x].text += "\n";
                     WinnerTexts_BG[x].text += "\n";
                 }
-                if (bestSurvivors.Contains(tempPlayerNum)) {
+                if (BestSurvivors.Contains(tempPlayerNum)) {
                     WinnerTexts[x].text += "Most Lives";
                     WinnerTexts_BG[x].text += "Most Lives";
                 }

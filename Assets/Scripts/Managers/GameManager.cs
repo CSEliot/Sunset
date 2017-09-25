@@ -109,24 +109,15 @@ public class GameManager : MonoBehaviour {
             return getRef().gameEnded;
         }
     }
-    /// <summary>
-    /// Records death and
-    /// </summary>
-    /// <param name="Killer"></param>
-    /// <param name="Killed"></param>
-    public static void RecordDeath(int Killer, int Killed, bool IsDisconnect)
-    {
-        getRef()._RecordDeath(Killer, Killed, IsDisconnect);
-    }
 
     public static void GameStart(int myID, string charName)
     {
         getRef()._GameStart(myID, charName);   
     }
 
-    public static void HandleDeath(int Killed, bool IsDisconnect)
+    public static void HandleDeath(int Killer, int Killed, bool IsDisconnect)
     {
-        getRef()._HandleDeath(Killed, IsDisconnect);
+        getRef()._HandleDeath(Killer, Killed, IsDisconnect);
     }
 
     public static void AddPlayer(int ID, GameObject Player)
@@ -230,7 +221,7 @@ public class GameManager : MonoBehaviour {
         EndGameManager.LaunchEndGame(killsMatrix, PlayableCharacters);
     }
 
-    private void _RecordDeath(int killer, int killed, bool isDisconnect)
+    private void recordDeath(int killer, int killed, bool isDisconnect)
     {
         /*
          * Players know when they've killed someone, but they think they
@@ -247,29 +238,31 @@ public class GameManager : MonoBehaviour {
         else
         {
             //Note: Killer=killed means player suicided.
+            killsMatrix[killer, killed]++;
             if(killer != killed) {
-                killsMatrix[killer, killed]++;
-                CBUG.Do("Player " + (killer+1) + " knocked out Player " + (killed+1));
+                CBUG.Do("Player " + (killer) + " knocked out Player " + (killed));
             } else {
-                killsMatrix[killer, killed]++; //todo i'm aware this is bad code
-                CBUG.Do("Player " + (killed+1) + " Suicided!");
+                //killsMatrix[killer, killed]++;
+                CBUG.Do("Player " + (killed) + " Suicided!");
             }
             playerLives[killed]--;
         }
+        EndGameManager.CalculateBests(killsMatrix);
     }
 
-    private void _HandleDeath(int killed, bool isDisconnect)
+    private void _HandleDeath(int killer, int killed, bool isDisconnect)
     {
         Dictionary<int, GameObject> t = PlayableCharacters;
         if(IsLocalGame)
             StartCoroutine(doRespawnOrGhost<PlayerController2DOffline>(killed, isDisconnect));
         else
             StartCoroutine(doRespawnOrGhost<PlayerController2DOnline>(killed, isDisconnect));
+        recordDeath(killer, killed, isDisconnect);
     }
 
     private IEnumerator doRespawnOrGhost<PlayerController>(int deadPlayerNum, bool isDisconnect) where PlayerController : PlayerController2D
     {
-        if (playerLives[deadPlayerNum] <= -1 || isDisconnect) {
+        if (playerLives[deadPlayerNum] <= 0 || isDisconnect) {
             totalGhosts++;
             PlayableCharacters[deadPlayerNum].GetComponent<PlayerController>().Ghost(); 
             //ONLY OUR PLAYER SHOPULD SPECTATE MODE

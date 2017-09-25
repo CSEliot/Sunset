@@ -227,8 +227,6 @@ public class PlayerController2DOffline : PlayerController2D
         if (CamManager.GetTarget().gameObject.name != gameObject.name)
             return;
 
-        //CBUG.Log("OOOH I AM" + name);
-        //Jump Detection Only, no physics handling.
         if (controlsPaused) {
             moveLeft = 0;
             moveRight = 0;
@@ -643,8 +641,7 @@ public class PlayerController2DOffline : PlayerController2D
 
         //Death Map: OnDeath > RecordDeath > HandleDeath >
         // doRespawnOrGhost
-        //GameManager.RecordDeath(killer, killed, false);
-        GameManager.HandleDeath(killed, false);
+        GameManager.HandleDeath(killer, killed, false);
         anim.SetTrigger("ChargeFailed");
     }
     #endregion
