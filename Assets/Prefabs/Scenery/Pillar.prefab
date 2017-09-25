@@ -96,7 +96,6 @@ GameObject:
   - component: {fileID: 251000012846776628}
   - component: {fileID: 212000012425214740}
   - component: {fileID: 95586790690548866}
-  - component: {fileID: 114210482959015376}
   m_Layer: 0
   m_Name: Floor
   m_TagString: StageAnim
@@ -253,6 +252,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
+--- !u!1 &1555759495093714
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4295712494204390}
+  - component: {fileID: 114311347075453066}
+  m_Layer: 0
+  m_Name: StageAnimHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1603205666146080
 GameObject:
   m_ObjectHideFlags: 1
@@ -403,6 +418,7 @@ Transform:
   - {fileID: 4000010509431084}
   - {fileID: 4609706251894746}
   - {fileID: 4000013191546662}
+  - {fileID: 4295712494204390}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -536,6 +552,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4000011455827302}
   m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4295712494204390
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1555759495093714}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4000011455827302}
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4421653124396642
 Transform:
@@ -987,17 +1016,6 @@ MonoBehaviour:
   _AutoScrollY: 0
   _AutoScrollSpeedY: 0
   ShaderChange: 0
---- !u!114 &114210482959015376
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000011495990436}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a260596609ecf54d83e2e6fd3cf0ef3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114259167415262886
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1010,6 +1028,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentFollowing: 0
+--- !u!114 &114311347075453066
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1555759495093714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a260596609ecf54d83e2e6fd3cf0ef3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  List:
+  - {fileID: 95586790690548866}
 --- !u!114 &114493070360644732
 MonoBehaviour:
   m_ObjectHideFlags: 1

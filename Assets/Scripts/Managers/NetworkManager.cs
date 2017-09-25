@@ -364,8 +364,7 @@ public class NetworkManager : Photon.MonoBehaviour{
         rdyStateChange = true;
         if (gameStarted)
         {
-            GameManager.RecordDeath(-1, NetIDs.PlayerNumber(player.ID), true);
-            GameManager.HandleDeath(NetIDs.PlayerNumber(player.ID), true);
+            GameManager.HandleDeath(-1, NetIDs.PlayerNumber(player.ID), true);
         }
         else
         {
@@ -640,7 +639,7 @@ public class NetworkManager : Photon.MonoBehaviour{
         //Update local player's chosen character locally.
         ID_to_CharNum[playerID] = newChar;
         charStateChange = true;
-        CBUG.Log(string.Format("Received PlayerID: {0} to Char: {1}", playerID, newChar));
+        //CBUG.Log(string.Format("Received PlayerID: {0} to Char: {1}", playerID, newChar));
     }
 
     private void printStatus()

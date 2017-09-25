@@ -2,19 +2,19 @@
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-[RequireComponent(typeof(Animator))]
 public class StageAnimations : MonoBehaviour {
 
-    private Animator localAnim;
-
+    public Animator[] List; 
 
 	// Use this for initialization
 	void Start () {
-        localAnim = GetComponent<Animator>();
-        localAnim.enabled = false;
-        gameObject.tag = "StageAnim";
+        for (int x = 0; x < List.Length; x++)
+        {
+            List[x].enabled = false;
+            List[x].Play("Entry");
+        }
         if (SceneManager.GetActiveScene().name == "GameScreen_Practice")
-            ActivateLocal();
+            Activate();
 	}
 	
 	// Update is called once per frame
@@ -24,18 +24,19 @@ public class StageAnimations : MonoBehaviour {
 
     public static void Activate()
     {
-        GameObject[] localAnims = GameObject.FindGameObjectsWithTag("StageAnim");
-        if (localAnims == null || localAnims.Length == 0)
-            return;
-
-        for(int x = 0; x < localAnims.Length; x++) {
-            localAnims[x].GetComponent<StageAnimations>().ActivateLocal();
-        }
+        GameObject.FindGameObjectWithTag("StageAnim").GetComponent<StageAnimations>()._Activate();
     }
 
-    public void ActivateLocal()
+    public void _Activate()
     {
-        localAnim.enabled = true;
+        if (List == null || List.Length == 0)
+            return;
+
+        for (int x = 0; x < List.Length; x++)
+        {
+            List[x].enabled = true;
+            List[x].Play("Entry");
+        }
     }
 
 
