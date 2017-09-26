@@ -17,3 +17,6 @@ MonoBehaviour:
       Props\n5 = Stage Props Foreground\n|\n|\n|\n|\n10 - 20 = In-Game UI\n10 = GUI
       Backgrounds Only\n11 = Buttons\n|\n|\n|\n|\n|\n|\n|\n|\n20 - 30 = Menu UI\n20
       = UI Backgrounds\n21 = Buttons\n22+ = Everything else.\n"
+  - title: Stability Bugs
+    note: "BUG 000: Logged in w/ 4 players, game didn't start. Perhaps because the
+      room number wasn't updated?\n - UI "

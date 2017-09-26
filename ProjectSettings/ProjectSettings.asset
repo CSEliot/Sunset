@@ -121,7 +121,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 0.7
+  bundleVersion: 0.71
   preloadedAssets: []
   metroInputSource: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -145,7 +145,7 @@ PlayerSettings:
     iOS: com.KiteLion.Sunset
     tvOS: com.KiteLion.Sunset
   buildNumber:
-    Standalone: 42
+    Standalone: 43
     iOS: 0
   AndroidBundleVersionCode: 43
   AndroidMinSdkVersion: 19
