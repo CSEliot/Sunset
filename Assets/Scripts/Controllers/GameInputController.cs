@@ -4,16 +4,20 @@ using System.Collections.Generic;
 
 public class GameInputController : MonoBehaviour {
 
-    private static Dictionary<string, bool> ButtonStatesIsDown;
-    private static Dictionary<string, bool> ButtonStatesChanged;
-    private static Dictionary<string, float> AxisStates;
+    public bool DebugTouchscreen;
+
+    class ButtonState { public ButtonState(bool @is) { this.@is = @is; } public bool @is; }
+    private static Dictionary<string, ButtonState> ButtonStatesIsDown;
+    private static Dictionary<string, ButtonState> ButtonStatesChanged;
+    class AxisState { public AxisState(float @is) { this.@is = @is; } public float @is; }
+    private static Dictionary<string, AxisState> AxisStates;
 
     public delegate bool stringName (string Name);
     public delegate float stringNameFloat (string Name);
     public delegate void stringNameVoid (string Name);
 
     public delegate void stringNameFloatAxis (string Name, float Axis);
-    public delegate void stringNameParams (string Name, params string[] Names);
+    public delegate void stringNameParams (params string[] Names);
     
     /// <summary>
     /// Returns true for as long as the button is held down.
@@ -29,13 +33,14 @@ public class GameInputController : MonoBehaviour {
     public stringNameFloatAxis SetAxisDown;
 
     private bool buttonStateChange;
+    
 
     // Use this for initialization
     void Awake () {
-        ButtonStatesIsDown = new Dictionary<string, bool>();
-        ButtonStatesChanged = new Dictionary<string, bool>();
+        ButtonStatesIsDown = new Dictionary<string, ButtonState>();
+        ButtonStatesChanged = new Dictionary<string, ButtonState>();
 
-        AxisStates = new Dictionary<string, float>();
+        AxisStates = new Dictionary<string, AxisState>();
 
 
         GetButton = mobileGetButton;
@@ -53,6 +58,12 @@ public class GameInputController : MonoBehaviour {
             GetButtonDown = Input.GetButtonDown;
             GetButtonUp = Input.GetButtonUp;
             GetAxis = Input.GetAxis;
+            if (Application.isEditor && DebugTouchscreen)
+            {
+                SetButtonUp("Left", "Down", "Up", "Right", "Jump", "DownJump");
+                SetAxisUp("MoveHorizontal");
+            }
+                
         }
 
         buttonStateChange = false;
@@ -66,61 +77,66 @@ public class GameInputController : MonoBehaviour {
             buttonStateChange = false;
             foreach (var state in ButtonStatesChanged)
             {
-                if (state.Value == true)
-                    ButtonStatesChanged[state.Key] = false;
+                if (state.Value.@is == true)
+                    state.Value.@is = false;
             }
         }
 	}
 
-    private void mobileSetButtonDown(string name, params string[] names)
+    private void mobileSetButtonDown(params string[] names)
     {
         int totalUp = (names == null) ? -1 : names.Length;
         buttonStateChange = true;
 
-        if (!ButtonStatesIsDown.ContainsKey(name))
+        foreach (var name in names)
         {
-            ButtonStatesIsDown.Add(name, true);
-            ButtonStatesChanged.Add(name, true);
-        }
-        else
-        {
-            ButtonStatesIsDown[name] = true;
-            ButtonStatesChanged[name] = true;
-
+            if (!ButtonStatesIsDown.ContainsKey(name))
+            {
+                ButtonStatesIsDown.Add(name, new ButtonState(true));
+                ButtonStatesChanged.Add(name, new ButtonState(true));
+            }
+            else
+            {
+                ButtonStatesIsDown[name].@is = true;
+                ButtonStatesChanged[name].@is = true;
+            }
         }
 
         if (totalUp > 0)
         {
             for (int x = 0; x < totalUp; x++)
             {
-                ButtonStatesIsDown[names[x]] = true;
-                ButtonStatesChanged[names[x]] = true;
+                ButtonStatesIsDown[names[x]].@is = true;
+                ButtonStatesChanged[names[x]].@is = true;
             }
         }
     }
 
-    private void mobileSetButtonUp(string name, params string[] names)
+    private void mobileSetButtonUp(params string[] names)
     {
         int totalUp = (names == null) ? -1 : names.Length;
         buttonStateChange = true;
 
-        if (!ButtonStatesIsDown.ContainsKey(name))
+        foreach (var name in names)
         {
-            ButtonStatesIsDown.Add(name, false);
-            ButtonStatesChanged.Add(name, true);
-        }
-        else
-        {
-            ButtonStatesIsDown[name] = false;
-            ButtonStatesChanged[name] = true;
+            if (!ButtonStatesIsDown.ContainsKey(name))
+            {
+                ButtonStatesIsDown.Add(name, new ButtonState(false));
+                ButtonStatesChanged.Add(name, new ButtonState(true));
+            }
+            else
+            {
+                ButtonStatesIsDown[name].@is = true;
+                ButtonStatesChanged[name].@is = true;
+            }
         }
 
         if (totalUp > 0)
         {
             for (int x = 0; x < totalUp; x++)
             {
-                ButtonStatesIsDown[names[x]] = false;
-                ButtonStatesChanged[names[x]] = true;
+                ButtonStatesIsDown[names[x]].@is = false;
+                ButtonStatesChanged[names[x]].@is = true;
             }
         }
     }
@@ -132,10 +148,10 @@ public class GameInputController : MonoBehaviour {
     {
         if (!ButtonStatesIsDown.ContainsKey(name))
         {
-            ButtonStatesIsDown.Add(name, false);
+            ButtonStatesIsDown.Add(name, new ButtonState(false));
             return false;
         }
-        return ButtonStatesIsDown[name];
+        return ButtonStatesIsDown[name].@is;
     }
 
     /// <summary>
@@ -146,11 +162,11 @@ public class GameInputController : MonoBehaviour {
     {
         if (!ButtonStatesIsDown.ContainsKey(name))
         {
-            ButtonStatesIsDown.Add(name, false);
-            ButtonStatesChanged.Add(name, true);
+            ButtonStatesIsDown.Add(name, new ButtonState(false));
+            ButtonStatesChanged.Add(name, new ButtonState(true));
             return false;
         }
-        if (ButtonStatesChanged[name] && ButtonStatesIsDown[name])
+        if (ButtonStatesChanged[name].@is && ButtonStatesIsDown[name].@is)
             return true;
         else
             return false;
@@ -163,11 +179,11 @@ public class GameInputController : MonoBehaviour {
     {
         if (!ButtonStatesIsDown.ContainsKey(name))
         {
-            ButtonStatesIsDown.Add(name, false);
-            ButtonStatesChanged.Add(name, true);
+            ButtonStatesIsDown.Add(name, new ButtonState(false));
+            ButtonStatesChanged.Add(name, new ButtonState(true));
             return false;
         }
-        if(ButtonStatesChanged[name] && !ButtonStatesIsDown[name])
+        if(ButtonStatesChanged[name].@is && !ButtonStatesIsDown[name].@is)
             return true;
         else
             return false; 
@@ -182,11 +198,11 @@ public class GameInputController : MonoBehaviour {
     {
         if (!AxisStates.ContainsKey(name))
         {
-            AxisStates.Add(name, 0f);
+            AxisStates.Add(name, new AxisState(0f));
             return 0f;
         }
-        float temp = AxisStates[name];
-        AxisStates[name] = 0f;
+        float temp = AxisStates[name].@is;
+        AxisStates[name].@is = 0f;
 
         return temp;
     }
@@ -195,11 +211,11 @@ public class GameInputController : MonoBehaviour {
     {
         if (!AxisStates.ContainsKey(name))
         {
-            AxisStates.Add(name, axis);
+            AxisStates.Add(name, new AxisState(axis));
         }
         else
         {
-            AxisStates[name] = axis;
+            AxisStates[name].@is = axis;
         }
     }
 
@@ -207,11 +223,11 @@ public class GameInputController : MonoBehaviour {
     {
         if (!AxisStates.ContainsKey(name))
         {
-            AxisStates.Add(name, 0f);
+            AxisStates.Add(name, new AxisState(0f));
         }
         else
         {
-            AxisStates[name] = 0f;
+            AxisStates[name].@is = 0f;
         }
     }
 }

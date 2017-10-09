@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class ScreenController : MonoBehaviour
 {
@@ -14,6 +15,11 @@ public class ScreenController : MonoBehaviour
 
     private float mouseX;
     private float mouseY;
+
+    public Sprite FistOverlayImage;
+    public Sprite MovementOverlayImage;
+    public GameObject FistOverlayObjectUI;
+    public GameObject MovementOverlayObjectUI;
 
     private float screenLength;
     private float rgnLength;
@@ -72,7 +78,11 @@ public class ScreenController : MonoBehaviour
     void Start()
     {
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
-        
+
+        FistOverlayObjectUI.GetComponent<SpriteRenderer>().sprite = FistOverlayImage;
+        MovementOverlayObjectUI.GetComponent<SpriteRenderer>().sprite = MovementOverlayImage;
+
+
         line1PointList = new int [] {0, 1, 2, 3, 5, 20, 4, 0, 1, 20, 12, 15, 11, 15, 14, 15, 13};
 		line2PointList = new int [] {10, 6, 10, 7, 10, 8, 10, 9};
 		line3PointList = new int [] {16, 17, 19, 18, 16};
@@ -192,9 +202,20 @@ public class ScreenController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Application.isEditor || !Application.isMobilePlatform)
-            return; //assignScreenActivityPCTEST();
-        else
+        if (mCtrl.DebugTouchscreen && Application.isEditor)
+        {
+            assignScreenActivityPCTEST();
+        }
+        else if (!Application.isMobilePlatform)
+        {
+            Line1.enabled = false;
+            Line2.enabled = false;
+            Line3.enabled = false;
+            GetComponent<ScreenController>().enabled = false;
+            return;
+        }
+
+        if(Application.isMobilePlatform)
             readScreenActivity();
 
         registerAttacks();
@@ -452,34 +473,55 @@ public class ScreenController : MonoBehaviour
             mCtrl.SetButtonUp("Jump");
             mCtrl.SetButtonUp("DownJump");
             mCtrl.SetAxisUp("MoveHorizontal");
+            MovementOverlayObjectUI.SetActive(false);
             return;
         }
+        MovementOverlayObjectUI.SetActive(true);
 
         //get distance first.
         tempDist = Vector2.Distance(leftRgnCenter, LeftScnPos);
         tempSpeed = tempDist > distLimit ? 1.0f : tempDist / distMax; //OR DISTMAX?!
 
 
+        Vector3 moveIconRot = new Vector3();
         //now get location to apply distance.
         if (LeftScnPos.x - leftRgnCenter.x > 0)
         {
             mCtrl.SetAxisDown("MoveHorizontal", tempSpeed);
+            moveIconRot += new Vector3(0f, 0f, -90f);
+            if (LeftScnPos.y - leftRgnCenter.y > 0)
+            {
+                mCtrl.SetAxisUp("DownJump");
+                mCtrl.SetAxisDown("Jump", tempSpeed);
+                moveIconRot += new Vector3(0f, 0f, 45f);
+            }
+            else
+            {
+                mCtrl.SetAxisUp("Jump");
+                mCtrl.SetAxisDown("DownJump", -tempSpeed);
+                moveIconRot += new Vector3(0f, 0f, -45f);
+            }
         }
         else
         {
             mCtrl.SetAxisDown("MoveHorizontal", -tempSpeed);
+            moveIconRot += new Vector3(0f, 0f, 90f);
+            if (LeftScnPos.y - leftRgnCenter.y > 0)
+            {
+                mCtrl.SetAxisUp("DownJump");
+                mCtrl.SetAxisDown("Jump", tempSpeed);
+                moveIconRot += new Vector3(0f, 0f, -45f);
+            }
+            else
+            {
+                mCtrl.SetAxisUp("Jump");
+                mCtrl.SetAxisDown("DownJump", -tempSpeed);
+                moveIconRot += new Vector3(0f, 0f, 45f);
+            }
         }
 
-        if (LeftScnPos.y - leftRgnCenter.y > 0)
-        {
-            mCtrl.SetAxisUp("DownJump");
-            mCtrl.SetAxisDown("Jump", tempSpeed);
-        }
-        else
-        {
-            mCtrl.SetAxisUp("Jump");
-            mCtrl.SetAxisDown("DownJump", -tempSpeed);
-        }
+        
+        MovementOverlayObjectUI.transform.rotation = Quaternion.Euler(moveIconRot);
     }
 
     private void registerAttacks()
@@ -488,8 +530,10 @@ public class ScreenController : MonoBehaviour
         if (!isRightActive)
         {
             mCtrl.SetButtonUp("Left", "Down", "Up", "Right");
+            FistOverlayObjectUI.SetActive(false);
             return;
         }
+        FistOverlayObjectUI.SetActive(true);
 
         angle = Mathf.Atan2(RightScnPos.y - rightRgnCenter.y, RightScnPos.x - rightRgnCenter.x);
         angle = angle * (180f / Mathf.PI);
@@ -498,21 +542,25 @@ public class ScreenController : MonoBehaviour
         {
             mCtrl.SetButtonDown("Right");
             mCtrl.SetButtonUp("Left", "Down", "Up");
+            FistOverlayObjectUI.transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, -90f));
         }
         else if (angle < topLeftLimit && angle > topRightLimit)
         {
             mCtrl.SetButtonDown("Up");
             mCtrl.SetButtonUp("Left", "Down", "Right");
+            FistOverlayObjectUI.transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, 0f));
         }
         else if (angle < bottomLeftLimit || angle > topLeftLimit)
         {
             mCtrl.SetButtonDown("Left");
             mCtrl.SetButtonUp("Down", "Up", "Right");
+            FistOverlayObjectUI.transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, 90f));
         }
         else if (angle > bottomLeftLimit && angle < bottomRightLimit)
         {
             mCtrl.SetButtonDown("Down");
             mCtrl.SetButtonUp("Left", "Up", "Right");
+            FistOverlayObjectUI.transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, 180f));
         }
     }
 
@@ -540,6 +588,7 @@ public class ScreenController : MonoBehaviour
                 if (tempTouch.position.y < leftRgnHeight)
                 {
                     LeftScnPos = tempTouch.position;
+                    MovementOverlayObjectUI.transform.position = cam.ScreenToWorldPoint((Vector3)LeftScnPos + new Vector3(0f, 0f, 100f));
                     isLeftActive = true;
                 }
             }
@@ -548,6 +597,7 @@ public class ScreenController : MonoBehaviour
                 if (tempTouch.position.y < rightRgnHeight)
                 {
                     RightScnPos = tempTouch.position;
+                    FistOverlayObjectUI.transform.position = cam.ScreenToWorldPoint((Vector3)RightScnPos + new Vector3(0f, 0f, 100f));
                     isRightActive = true;
                 }
             }
@@ -571,6 +621,7 @@ public class ScreenController : MonoBehaviour
             if (Input.mousePosition.y < leftRgnHeight)
             {
                 LeftScnPos = Input.mousePosition;
+                MovementOverlayObjectUI.transform.position = cam.ScreenToWorldPoint((Vector3)LeftScnPos + new Vector3(0f, 0f, 100f));
                 isLeftActive = true;
             }
         }
@@ -579,6 +630,7 @@ public class ScreenController : MonoBehaviour
             if (Input.mousePosition.y < rightRgnHeight)
             {
                 RightScnPos = Input.mousePosition;
+                FistOverlayObjectUI.transform.position = cam.ScreenToWorldPoint((Vector3)RightScnPos + new Vector3(0f, 0f, 100f));
                 isRightActive = true;
             }
         }
