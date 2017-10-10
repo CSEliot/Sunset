@@ -53,6 +53,11 @@ public class _Audio : MonoBehaviour {
     {
         _Audio.GetRef().isNewMusicIncoming = true;
     }
+
+    public static void StopMusic()
+    {
+        _Audio.GetRef()._stop();
+    }
     #endregion
 
     #region Private Helper Methods
@@ -69,6 +74,10 @@ public class _Audio : MonoBehaviour {
             return;
         } 
         M.PlaySFX(audNum);
+    }
+    private void _stop()
+    {
+        M.StopMSX();
     }
     #endregion
 }

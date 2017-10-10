@@ -20,6 +20,8 @@ public class ScreenController : MonoBehaviour
     public Sprite MovementOverlayImage;
     public GameObject FistOverlayObjectUI;
     public GameObject MovementOverlayObjectUI;
+   
+    public float IconDisplacementScaler; //0 - 1.0
 
     private float screenLength;
     private float rgnLength;
@@ -78,10 +80,12 @@ public class ScreenController : MonoBehaviour
     void Start()
     {
         m = GameObject.FindGameObjectWithTag("Master").GetComponent<Master>();
+        mCtrl = GameObject.FindGameObjectWithTag("MobileController").GetComponent<GameInputController>();
 
         FistOverlayObjectUI.GetComponent<SpriteRenderer>().sprite = FistOverlayImage;
         MovementOverlayObjectUI.GetComponent<SpriteRenderer>().sprite = MovementOverlayImage;
-
+        FistOverlayObjectUI.SetActive(false);
+        MovementOverlayObjectUI.SetActive(false);
 
         line1PointList = new int [] {0, 1, 2, 3, 5, 20, 4, 0, 1, 20, 12, 15, 11, 15, 14, 15, 13};
 		line2PointList = new int [] {10, 6, 10, 7, 10, 8, 10, 9};
@@ -499,7 +503,6 @@ public class ScreenController : MonoBehaviour
             {
                 mCtrl.SetAxisUp("Jump");
                 mCtrl.SetAxisDown("DownJump", -tempSpeed);
-                moveIconRot += new Vector3(0f, 0f, -45f);
             }
         }
         else
@@ -516,7 +519,6 @@ public class ScreenController : MonoBehaviour
             {
                 mCtrl.SetAxisUp("Jump");
                 mCtrl.SetAxisDown("DownJump", -tempSpeed);
-                moveIconRot += new Vector3(0f, 0f, 45f);
             }
         }
 
@@ -588,7 +590,8 @@ public class ScreenController : MonoBehaviour
                 if (tempTouch.position.y < leftRgnHeight)
                 {
                     LeftScnPos = tempTouch.position;
-                    MovementOverlayObjectUI.transform.position = cam.ScreenToWorldPoint((Vector3)LeftScnPos + new Vector3(0f, 0f, 100f));
+                    MovementOverlayObjectUI.transform.position = cam.ScreenToWorldPoint((Vector3)LeftScnPos + 
+                        new Vector3(0f, screenHeight * IconDisplacementScaler, 100f));
                     isLeftActive = true;
                 }
             }
@@ -597,7 +600,8 @@ public class ScreenController : MonoBehaviour
                 if (tempTouch.position.y < rightRgnHeight)
                 {
                     RightScnPos = tempTouch.position;
-                    FistOverlayObjectUI.transform.position = cam.ScreenToWorldPoint((Vector3)RightScnPos + new Vector3(0f, 0f, 100f));
+                    FistOverlayObjectUI.transform.position = cam.ScreenToWorldPoint((Vector3)RightScnPos + 
+                        new Vector3(0f, screenHeight * IconDisplacementScaler, 100f));
                     isRightActive = true;
                 }
             }
@@ -621,7 +625,8 @@ public class ScreenController : MonoBehaviour
             if (Input.mousePosition.y < leftRgnHeight)
             {
                 LeftScnPos = Input.mousePosition;
-                MovementOverlayObjectUI.transform.position = cam.ScreenToWorldPoint((Vector3)LeftScnPos + new Vector3(0f, 0f, 100f));
+                MovementOverlayObjectUI.transform.position = cam.ScreenToWorldPoint((Vector3)LeftScnPos + 
+                    new Vector3(0f, screenHeight * IconDisplacementScaler, 100f));
                 isLeftActive = true;
             }
         }
@@ -630,7 +635,8 @@ public class ScreenController : MonoBehaviour
             if (Input.mousePosition.y < rightRgnHeight)
             {
                 RightScnPos = Input.mousePosition;
-                FistOverlayObjectUI.transform.position = cam.ScreenToWorldPoint((Vector3)RightScnPos + new Vector3(0f, 0f, 100f));
+                FistOverlayObjectUI.transform.position = cam.ScreenToWorldPoint((Vector3)RightScnPos + 
+                    new Vector3(0f, screenHeight * IconDisplacementScaler, 100f));
                 isRightActive = true;
             }
         }

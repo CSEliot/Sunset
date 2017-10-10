@@ -94,11 +94,19 @@ public class CharacterSelectUIController : MonoBehaviour {
         Select.interactable = isRightActive;
 
         if (chosenChar >= M.CharactersUnlockedTotal)
+        {
+            _Audio.StopMusic();
             return;
+        }
 
         M.AssignPlayerCharacter(chosenChar);
         N.SetCharacter();
         _Audio.Play(chosenChar + 20);
+        _Audio.ChangeMusic();
+        _Audio.Play(chosenChar + 11);
+
+        if(chosenChar == 6)
+
         PlayerPrefs.SetInt("currentSelector", currentSelector);
     }
 

@@ -24,7 +24,8 @@ public class StageAnimations : MonoBehaviour {
 
     public static void Activate()
     {
-        GameObject.FindGameObjectWithTag("StageAnim").GetComponent<StageAnimations>()._Activate();
+        if(GameObject.FindGameObjectWithTag("StageAnim") != null)
+            GameObject.FindGameObjectWithTag("StageAnim").GetComponent<StageAnimations>()._Activate();
     }
 
     public void _Activate()
