@@ -140,7 +140,7 @@ public class Master : MonoBehaviour
 
         isFirstTime = PlayerPrefs.GetInt("isFirstTime", 1) == 1? true : false;
         FirstTimeNotice.SetActive(isFirstTime);
-
+        
         myMusicAudio = GetComponent<AudioSource>();
         mySFXAudio = transform.GetChild(0).GetComponent<AudioSource>();
         if (SceneManager.GetActiveScene().name.Contains("Practice"))
@@ -231,7 +231,7 @@ public class Master : MonoBehaviour
                 unloadStage();
                 N.LeaveRoom();
                 _Audio.ChangeMusic();
-                _Audio.Play(5);
+                _Audio.Play(2);
                 break;
 		    case Menu.map: 
 			    currentMenu = Menu.main;
@@ -250,11 +250,11 @@ public class Master : MonoBehaviour
                     unloadStage();
                     N.LeaveRoom();
                     _Audio.ChangeMusic();
-                    _Audio.Play(5);
+                    _Audio.Play(2);
                 }
                 else {//Else we're just changing character.
-                    _Audio.ChangeMusic();
-                    _Audio.Play(6);
+                    //_Audio.ChangeMusic();
+                    //_Audio.Play(6);
                     currentMenu = Menu.chara;
                     loadMenu();
                     escapeHardened = false;
@@ -350,7 +350,7 @@ public class Master : MonoBehaviour
             switchCanvas((int)Menu.map);
             _Audio.Play(12); //Say "Pillar"
             _Audio.ChangeMusic();
-            _Audio.Play(5);
+            _Audio.Play(2);
             GameObject.Find("ServerRegion").GetComponent<Text>().text = "Server Region: " + PhotonNetwork.networkingPeer.CloudRegion.ToString();
             GameObject.Find("ServerRegion").transform.GetChild(0).GetComponent<Text>().text = "Server Region: " + PhotonNetwork.networkingPeer.CloudRegion.ToString();
             GameObject.Find("ServerVersion").GetComponent<Text>().text = "Server Version: " + Application.version;
@@ -393,8 +393,6 @@ public class Master : MonoBehaviour
         {
             switchCanvas((int)Menu.chara);
             loadStage(); //the InGame map is loaded in the background.
-            _Audio.ChangeMusic();
-            _Audio.Play(6);
         }
         ToggleConnectLoadScreen(false);
     }
@@ -486,6 +484,11 @@ public class Master : MonoBehaviour
 		myMusicAudio.time = (num == 3) ? 8 : 0; //Song 4 starts at 8, post intro.
         myMusicAudio.clip = MSX[num];
         myMusicAudio.Play();
+    }
+
+    public void StopMSX()
+    {
+        myMusicAudio.Stop();
     }
 
     #region Getters and Setters

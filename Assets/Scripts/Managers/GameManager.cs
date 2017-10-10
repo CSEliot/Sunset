@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour {
         if(secondsPlayed + startTime < Time.time)
         {
             secondsPlayed++;
-            GameHUDController.SetClock("" + (gameLength - secondsPlayed));//"" + (secondsPlayed / 60) + ":" + (secondsPlayed - (secondsPlayed / 60) * 60));
+            GameHUDController.SetClock("" + (gameLength - secondsPlayed + 1));//"" + (secondsPlayed / 60) + ":" + (secondsPlayed - (secondsPlayed / 60) * 60));
         }
 
         if (CBUG.DEBUG_ON && ((int)(Time.time))%20 == 0) {

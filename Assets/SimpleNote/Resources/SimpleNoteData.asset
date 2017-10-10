@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Name: SimpleNoteData
   m_EditorClassIdentifier: 
   notes:
-  - title: UI Arrangement
-    note: "0 - 10 = In-Game\n0 = Backgrounds Only\n1 = Stage Props \n2,\n3,\n4 = Character
-      Props\n5 = Stage Props Foreground\n|\n|\n|\n|\n10 - 20 = In-Game UI\n10 = GUI
-      Backgrounds Only\n11 = Buttons\n|\n|\n|\n|\n|\n|\n|\n|\n20 - 30 = Menu UI\n20
-      = UI Backgrounds\n21 = Buttons\n22+ = Everything else.\n"
-  - title: Stability Bugs
-    note: "BUG 000: Logged in w/ 4 players, game didn't start. Perhaps because the
-      room number wasn't updated?\n - UI "
+  - title: Title
+    note: Note Here
+  - title: Note for tomorrow
+    note: 'Don''t forget to take a sleep
+
+      Drink a cola at 7pm
+
+      Don''t forget to eat'
+  - title: Title
+    note: Note Here

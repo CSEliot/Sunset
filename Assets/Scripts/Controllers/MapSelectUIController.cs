@@ -144,14 +144,20 @@ public class MapSelectUIController : MonoBehaviour {
         if (RoomNameHelper.RoomName.Equals("Pillar"))
         {
             _Audio.Play(12);
+            _Audio.ChangeMusic();
+            _Audio.Play(2);
         }
         if (RoomNameHelper.RoomName.Equals("Void"))
         {
             _Audio.Play(13);
+            _Audio.ChangeMusic();
+            _Audio.Play(9);
         }
         if (RoomNameHelper.RoomName.Equals("Lair"))
         {
             _Audio.Play(14);
+            _Audio.ChangeMusic();
+            _Audio.Play(10);
         }
     }
 
@@ -205,14 +211,20 @@ public class MapSelectUIController : MonoBehaviour {
         if (RoomNameHelper.RoomName.Equals("Pillar"))
         {
             _Audio.Play(12);
+            _Audio.ChangeMusic();
+            _Audio.Play(2);
         }
         if (RoomNameHelper.RoomName.Equals("Void"))
         {
             _Audio.Play(13);
+            _Audio.ChangeMusic();
+            _Audio.Play(9);
         }
         if (RoomNameHelper.RoomName.Equals("Lair"))
         {
             _Audio.Play(14);
+            _Audio.ChangeMusic();
+            _Audio.Play(10);
         }
     }
 
