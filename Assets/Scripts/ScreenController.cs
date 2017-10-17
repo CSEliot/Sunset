@@ -110,8 +110,8 @@ public class ScreenController : MonoBehaviour
         rgnLength = screenLength / 2;
         screenHeight = 200f; //Cam height is always 100 at all resolutions.
 
-        leftRgnScaler = PlayerPrefs.GetFloat("leftRgnScaler", 0.5f);
-        rightRgnScaler = PlayerPrefs.GetFloat("rightRgnScaler", 0.5f);
+        leftRgnScaler = PlayerPrefs.GetFloat("leftRgnScaler", 0.35f);
+        rightRgnScaler = PlayerPrefs.GetFloat("rightRgnScaler", 0.35f);
 
         leftRgnHeight = screenHeight * leftRgnScaler;
         rightRgnHeight = screenHeight * rightRgnScaler;

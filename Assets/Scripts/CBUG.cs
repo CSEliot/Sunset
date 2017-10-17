@@ -72,6 +72,8 @@ public class CBUG : MonoBehaviour {
     void Start()
     {
         showAnyway = (PlayerPrefs.GetInt("CBUG_ON", 0) == 1);
+        if (showAnyway)
+            CBUG.Do("CBUG ENABLED MANUALLY!");
     }
 
     // Update is called once per frame
@@ -146,10 +148,10 @@ public class CBUG : MonoBehaviour {
         currentTaps++;
         if (currentTaps >= tapsUntilEnable)
         {
-            if (!showAnyway)
-                PlayerPrefs.SetInt("CBUG_ON", 1);
-            else
+            if (showAnyway)
                 PlayerPrefs.SetInt("CBUG_ON", 0);
+            else
+                PlayerPrefs.SetInt("CBUG_ON", 1);
 
             PlayerPrefs.Save();
             Application.Quit();

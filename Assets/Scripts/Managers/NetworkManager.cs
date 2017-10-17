@@ -41,6 +41,8 @@ public class NetworkManager : Photon.MonoBehaviour{
     private string serverRegionDisplayObjName;
     private string serverVersionDisplayObjName;
 
+    private bool isLocalGame;
+
     #region Room State Tracking
     private GameManager gameMan;
     private bool gameStarted;
@@ -91,6 +93,9 @@ public class NetworkManager : Photon.MonoBehaviour{
 
     void Start()
     {
+
+        isLocalGame = PlayerPrefs.GetInt("IsLocalGame", 0) == 1 ? true : false;
+
         serverRegionDisplayObjName = "ServerRegion";
         serverVersionDisplayObjName = "ServerVersion";
 
@@ -135,6 +140,10 @@ public class NetworkManager : Photon.MonoBehaviour{
             {
                 PhotonNetwork.ConnectToBestCloudServer(version);
                 CBUG.Log("Connecting to Best Region.");
+            }
+            else if(isLocalGame)
+            {
+                PhotonNetwork.ConnectToMaster("127.0.0.1", 1025, "bc96fcec-a98e-482c-a870-d1d65d0bf442", version);
             }
             else
             {
@@ -780,6 +789,13 @@ public class NetworkManager : Photon.MonoBehaviour{
         plrStateChange = true;                 
         rdyStateChange = true;
         startCountdown = false;
+    }
+
+    public void ToggleLocalGame()
+    {
+        PlayerPrefs.SetInt("IsLocalGame", PlayerPrefs.GetInt("IsLocalGame", 0) == 1 ? 0 : 1);
+        PlayerPrefs.Save();
+        Application.Quit();
     }
 
 }
