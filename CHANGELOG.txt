@@ -1,18 +1,16 @@
-CHANGELOG - V0.7
+CHANGELOG - V0.82
 KEY: (/) Change, (+) Addition, (-) Removal, (O) Known but not Fixed
 	Art:
-	 + WebGL support enabled.
-	 + New music!! Lots!
+	 + Character and Stage themes play when viewed.
+	 + Test Controls now on front Main Menu screen.
 
 	General:
-	 - Beta tag removed from in-game.
-	 + Previous character selected remembered.
+	 - Can no longer create rooms by clicking on the map img.
 
 	Gameplay:
-	 - Down Jumping now works in Offline/Practice Mode.
-	 - CHARGE ATTACKS!
+	 + No lives! Play until the end of the time limit.
 
-	Fixes:
-	+ Previous character selected in previous game doesn't assign properly, related to old bug.
+	Bugs/Fixes:
 	/ Leaving game via intentional escape method (leaving early) causes "spectating" to remain.
 	O O After that, player 1 (normal) Showed "2/" and Player 2 (early leaver last game) didn't fully spawn (did kinda).
+	O Player hitting "go back" doesn't unready for everyone.
