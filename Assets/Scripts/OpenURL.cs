@@ -5,7 +5,7 @@ public class OpenURL : MonoBehaviour {
 
 	public void Do()
     {
-        if(Application.isWebPlayer)
+        if(Application.platform == RuntimePlatform.WebGLPlayer)
             Application.ExternalEval("window.open(\"http://www.unity3d.com\")");
         else
             Application.OpenURL("http://sunset.btong.me/");

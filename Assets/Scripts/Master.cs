@@ -80,7 +80,7 @@ public class Master : MonoBehaviour
 
     public enum Map
     {
-        inmenu, //NOT USED. 
+        inmenu = 0, //NOT USED. 
         practice,
         pillar,
         _void,
@@ -307,6 +307,7 @@ public class Master : MonoBehaviour
                 GameObject.FindGameObjectWithTag("StageCamera").GetComponent<AudioListener>().enabled = true;
                 break;
             case (int)Menu.practice:
+                currentMap = Map.practice;
                 loadStage();
                 switchCanvas((int)Menu.ingame);
                 unloadMenu();
@@ -409,8 +410,10 @@ public class Master : MonoBehaviour
 
     private void loadStage()
     {
-        SceneManager.LoadScene((int)currentMap, LoadSceneMode.Additive);
-        SceneManager.SetActiveScene(SceneManager.GetSceneAt(1));
+        LoadSceneMode loadStyle = currentMap == Map.practice ? LoadSceneMode.Single : LoadSceneMode.Additive;
+        SceneManager.LoadScene((int)currentMap, loadStyle);
+        if(loadStyle == LoadSceneMode.Additive)
+            SceneManager.SetActiveScene(SceneManager.GetSceneAt((int)currentMap));
     }
 
     private void unloadStage()

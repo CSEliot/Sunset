@@ -10,7 +10,7 @@ public class DisableOnWeb : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Application.isWebPlayer)
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
             transform.gameObject.SetActive(false);
         }
