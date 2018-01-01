@@ -5,7 +5,7 @@ public class QuitGameClass : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        if (Application.isWebPlayer)
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
             gameObject.SetActive(false);
             CBUG.Do("Disabling exit button!");

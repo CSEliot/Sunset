@@ -1,14 +1,11 @@
-CHANGELOG - V0.82
+CHANGELOG - V0.9
 KEY: (/) Change, (+) Addition, (-) Removal, (O) Known but not Fixed
 	Art:
-	 + Character and Stage themes play when viewed.
-	 + Test Controls now on front Main Menu screen.
 
 	General:
-	 - Can no longer create rooms by clicking on the map img.
+	 - Upgraded to Unity 2017.
 
 	Gameplay:
-	 + No lives! Play until the end of the time limit.
 
 	Bugs/Fixes:
 	/ Leaving game via intentional escape method (leaving early) causes "spectating" to remain.
